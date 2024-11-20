@@ -1,0 +1,6 @@
+C:\Users\admin\Desktop\ONIModSource\ONIMod\ModTool\bin\usually\ModTool.dll
+C:\Users\admin\Desktop\ONIModSource\ONIMod\ModTool\bin\usually\ModTool.pdb
+C:\Users\admin\Desktop\ONIModSource\ONIMod\ModTool\obj\usually\ModTool.csproj.AssemblyReference.cache
+C:\Users\admin\Desktop\ONIModSource\ONIMod\ModTool\obj\usually\ModTool.csproj.CoreCompileInputs.cache
+C:\Users\admin\Desktop\ONIModSource\ONIMod\ModTool\obj\usually\ModTool.dll
+C:\Users\admin\Desktop\ONIModSource\ONIMod\ModTool\obj\usually\ModTool.pdb

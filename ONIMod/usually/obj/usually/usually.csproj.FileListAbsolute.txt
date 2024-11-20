@@ -1,0 +1,13 @@
+C:\Users\admin\Desktop\ONIModSource\ONIMod\usually\bin\usually\usually.dll
+C:\Users\admin\Desktop\ONIModSource\ONIMod\usually\bin\usually\usually.pdb
+C:\Users\admin\Desktop\ONIModSource\ONIMod\usually\bin\usually\ModTool.dll
+C:\Users\admin\Desktop\ONIModSource\ONIMod\usually\bin\usually\Newtonsoft.Json.dll
+C:\Users\admin\Desktop\ONIModSource\ONIMod\usually\bin\usually\PLib.dll
+C:\Users\admin\Desktop\ONIModSource\ONIMod\usually\bin\usually\ModTool.pdb
+C:\Users\admin\Desktop\ONIModSource\ONIMod\usually\obj\usually\usually.csproj.AssemblyReference.cache
+C:\Users\admin\Desktop\ONIModSource\ONIMod\usually\obj\usually\usually.csproj.CoreCompileInputs.cache
+C:\Users\admin\Desktop\ONIModSource\ONIMod\usually\obj\usually\usually.csproj.CopyComplete
+C:\Users\admin\Desktop\ONIModSource\ONIMod\usually\obj\usually\usually.dll
+C:\Users\admin\Desktop\ONIModSource\ONIMod\usually\obj\usually\usually.pdb
+C:\Users\admin\Documents\Klei\OxygenNotIncluded\mods\dev\自用\usually.dll
+C:\Users\admin\Documents\Klei\OxygenNotIncluded\mods\dev\自用\usually.pdb

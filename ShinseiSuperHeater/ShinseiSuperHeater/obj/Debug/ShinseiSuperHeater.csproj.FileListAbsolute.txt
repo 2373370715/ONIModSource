@@ -1,0 +1,6 @@
+D:\文档\Klei\OxygenNotIncluded\mods\dev\testMod\ShinseiSuperHeater.dll
+D:\文档\Klei\OxygenNotIncluded\mods\dev\testMod\ShinseiSuperHeater.pdb
+D:\文档\Klei\OxygenNotIncluded\mod_souce\ShinseiSuperHeater\ShinseiSuperHeater\obj\Debug\ShinseiSuperHeater.csproj.AssemblyReference.cache
+D:\文档\Klei\OxygenNotIncluded\mod_souce\ShinseiSuperHeater\ShinseiSuperHeater\obj\Debug\ShinseiSuperHeater.csproj.CoreCompileInputs.cache
+D:\文档\Klei\OxygenNotIncluded\mod_souce\ShinseiSuperHeater\ShinseiSuperHeater\obj\Debug\ShinseiSuperHeater.dll
+D:\文档\Klei\OxygenNotIncluded\mod_souce\ShinseiSuperHeater\ShinseiSuperHeater\obj\Debug\ShinseiSuperHeater.pdb

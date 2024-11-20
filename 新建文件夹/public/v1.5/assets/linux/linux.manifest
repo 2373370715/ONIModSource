@@ -1,0 +1,7 @@
+ManifestFileVersion: 0
+CRC: 116397927
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: transferport
+      Dependencies: {}

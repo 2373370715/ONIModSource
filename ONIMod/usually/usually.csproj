@@ -1,0 +1,137 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props"
+            Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')"/>
+    <PropertyGroup>
+        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+        <ProjectGuid>{7C40B37A-4082-47A6-A82D-CEF5AFA4633A}</ProjectGuid>
+        <OutputType>Library</OutputType>
+        <AppDesignerFolder>Properties</AppDesignerFolder>
+        <RootNamespace>usually</RootNamespace>
+        <AssemblyName>usually</AssemblyName>
+        <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+        <FileAlignment>512</FileAlignment>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'usually|AnyCPU' ">
+        <DebugSymbols>true</DebugSymbols>
+        <DebugType>full</DebugType>
+        <Optimize>true</Optimize>
+        <DefineConstants>DEBUG;TRACE;净水器;分子熔炉;原油精炼器;玻璃熔炉;碎石机;聚合物压塑器;脱盐器;金属精炼器;不会过热;变速;复制人速度;挖掘范围;挖掘质量;揭示全图;泉水;电力调整;机械气闸;存储箱;干板墙;隔热砖;电解器;碳素脱离器;空气净化器;排液口;液泵;排气口;气泵;变温板;油井;液体加热器;太空服锻造台;超级计算机;液冷;人力发电机;电池;蒸汽机;挖机;自动清扫器;冰箱;孵化器;燃气灶;电动烤炉;食物压制器;植物自动收获;泉水;电力调整;壁虎;驯化;动物拥挤;usually</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+      <OutputPath>C:\Users\admin\Documents\Klei\OxygenNotIncluded\mods\dev\自用</OutputPath>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == '挖机|AnyCPU' ">
+      <OutputPath>bin\挖机</OutputPath>
+      <DefineConstants>挖机</DefineConstants>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == '孵化器|AnyCPU' ">
+      <DefineConstants>孵化器;孵化器mod</DefineConstants>
+      <OutputPath>bin\孵化器\</OutputPath>
+    </PropertyGroup>
+    <ItemGroup>
+        <Reference Include="0Harmony">
+          <HintPath>..\..\..\..\..\..\game\steam\steamapps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed\0Harmony.dll</HintPath>
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Assembly-CSharp">
+          <HintPath>..\..\..\..\..\..\game\steam\steamapps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed\Assembly-CSharp.dll</HintPath>
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Assembly-CSharp-firstpass">
+          <HintPath>..\..\..\..\..\..\game\steam\steamapps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Newtonsoft.Json">
+          <HintPath>..\..\..\..\..\..\game\steam\steamapps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed\Newtonsoft.Json.dll</HintPath>
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="PLib">
+          <HintPath>..\..\..\..\..\..\game\steam\steamapps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed\PLib.dll</HintPath>
+        </Reference>
+        <Reference Include="System"/>
+        <Reference Include="System.Core"/>
+        <Reference Include="System.Data"/>
+        <Reference Include="System.Xml"/>
+        <Reference Include="UnityEngine.CoreModule">
+          <HintPath>..\..\..\..\..\..\game\steam\steamapps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+          <Private>False</Private>
+        </Reference>
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="Data.cs" />
+        <Compile Include="Patch.cs" />
+        <Compile Include="Properties\AssemblyInfo.cs"/>
+        <Compile Include="Setting.cs" />
+        <Compile Include="动物\动物拥挤.cs" />
+        <Compile Include="动物\壁虎.cs" />
+        <Compile Include="动物\驯化.cs" />
+        <Compile Include="建筑\基地Base\PressureDoor.cs" />
+        <Compile Include="建筑\基地Base\PressureDoorAddToBuild.cs" />
+        <Compile Include="建筑\基地Base\存储箱.cs" />
+        <Compile Include="建筑\基地Base\干板墙.cs" />
+        <Compile Include="建筑\基地Base\隔热转.cs" />
+        <Compile Include="建筑\实用\BetterCoolers\BetterCoolerControl.cs" />
+        <Compile Include="建筑\实用\BetterCoolers\BetterCoolerControlStrings.cs" />
+        <Compile Include="建筑\实用\BetterCoolers\液冷.cs" />
+        <Compile Include="建筑\实用\变温板.cs" />
+        <Compile Include="建筑\实用\油井.cs" />
+        <Compile Include="建筑\实用\液体加热器.cs" />
+        <Compile Include="建筑\氧气\电解器.cs" />
+        <Compile Include="建筑\氧气\碳素脱离器.cs" />
+        <Compile Include="建筑\氧气\空气净化器旋转.cs" />
+        <Compile Include="建筑\水管\排液口.cs" />
+        <Compile Include="建筑\水管\液泵.cs" />
+        <Compile Include="建筑\电力\人力发电机.cs" />
+        <Compile Include="建筑\电力\巨型电池.cs" />
+        <Compile Include="建筑\电力\智能电池.cs" />
+        <Compile Include="建筑\电力\电池.cs" />
+        <Compile Include="建筑\电力\蒸汽机.cs" />
+        <Compile Include="建筑\站台\太空服锻造台.cs" />
+        <Compile Include="建筑\站台\超级计算机.cs" />
+        <Compile Include="建筑\精炼\tool\AutomaticOilRefinery.cs" />
+        <Compile Include="建筑\精炼\净水器.cs" />
+        <Compile Include="建筑\精炼\分子熔炉.cs" />
+        <Compile Include="建筑\精炼\原油精炼器.cs" />
+        <Compile Include="建筑\精炼\玻璃熔炉.cs" />
+        <Compile Include="建筑\精炼\碎石机.cs" />
+        <Compile Include="建筑\精炼\聚合物压塑器.cs" />
+        <Compile Include="建筑\精炼\脱盐器.cs" />
+        <Compile Include="建筑\精炼\金属精炼器.cs" />
+        <Compile Include="建筑\运输\挖机.cs" />
+        <Compile Include="建筑\运输\自动清扫器.cs" />
+        <Compile Include="建筑\通风\排气口.cs" />
+        <Compile Include="建筑\通风\气泵.cs" />
+        <Compile Include="建筑\食物\冰箱.cs" />
+        <Compile Include="建筑\食物\孵化器.cs" />
+        <Compile Include="建筑\食物\燃气灶.cs" />
+        <Compile Include="建筑\食物\电动烤炉.cs" />
+        <Compile Include="建筑\食物\食物压制机.cs" />
+        <Compile Include="系统\不会过热.cs" />
+        <Compile Include="系统\变速.cs" />
+        <Compile Include="系统\复制人速度.cs" />
+        <Compile Include="系统\开局全科技.cs" />
+        <Compile Include="系统\挖掘范围.cs" />
+        <Compile Include="系统\挖掘质量.cs" />
+        <Compile Include="系统\揭示全图.cs" />
+        <Compile Include="系统\植物自动收获.cs" />
+        <Compile Include="系统\泉水.cs" />
+        <Compile Include="系统\电力调整.cs" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\ModTool\ModTool.csproj">
+        <Project>{d56138a0-c3a4-4e12-9d00-74d51661f8a4}</Project>
+        <Name>ModTool</Name>
+      </ProjectReference>
+    </ItemGroup>
+    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
+    <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+         Other similar extension points exist, see Microsoft.Common.targets.
+    <Target Name="BeforeBuild">
+    </Target>
+    <Target Name="AfterBuild">
+    </Target>
+    -->
+
+</Project>

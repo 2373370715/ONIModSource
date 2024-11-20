@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "usually", "usually\usually.csproj", "{7C40B37A-4082-47A6-A82D-CEF5AFA4633A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModTool", "ModTool\ModTool.csproj", "{D56138A0-C3A4-4E12-9D00-74D51661F8A4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Store", "Store\Store.csproj", "{DD80806D-E428-4008-864A-B5F0FE142770}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XRay", "XRay\XRay.csproj", "{EE31289F-D035-4600-9425-EBA0AB12EB6B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "传送端口", "传送端口\传送端口.csproj", "{16D85140-0D80-4FF8-B0EF-A80B93F0546D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		usually|Any CPU = usually|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D56138A0-C3A4-4E12-9D00-74D51661F8A4}.usually|Any CPU.ActiveCfg = usually|Any CPU
+		{D56138A0-C3A4-4E12-9D00-74D51661F8A4}.usually|Any CPU.Build.0 = usually|Any CPU
+		{DD80806D-E428-4008-864A-B5F0FE142770}.usually|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE31289F-D035-4600-9425-EBA0AB12EB6B}.usually|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C40B37A-4082-47A6-A82D-CEF5AFA4633A}.usually|Any CPU.ActiveCfg = 挖机|Any CPU
+		{7C40B37A-4082-47A6-A82D-CEF5AFA4633A}.usually|Any CPU.Build.0 = 挖机|Any CPU
+		{16D85140-0D80-4FF8-B0EF-A80B93F0546D}.usually|Any CPU.ActiveCfg = Debug|Any CPU
+		{16D85140-0D80-4FF8-B0EF-A80B93F0546D}.usually|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 317f894c6d47482b8eca9497844a9467, type: 3}
+  m_Name: BodyAsset
+  m_EditorClassIdentifier: 
+  unconnectedChannelIcon: {fileID: 21300000, guid: 92f90f58bf9392942a4f0bc6aadfefab,
+    type: 3}
+  globalConnectivityIcon: {fileID: 21300000, guid: 7bf195bc093f8784fb27d66b8e13a2bb,
+    type: 3}
+  planetaryIsolationIcon: {fileID: 21300000, guid: a80d9d29dcedd4841b6b5436cb4daf3d,
+    type: 3}
+  showOverlayButton: {fileID: 21300000, guid: 7bf195bc093f8784fb27d66b8e13a2bb, type: 3}
+  portOverlayButton: {fileID: 21300000, guid: 3bc7ca4a1c4f3af4cbebf99f7cc7b0c3, type: 3}
+  portChannelSideScreen: {fileID: 340991551391496063, guid: 6496dadb8cb0a5045b226f5cec1e5b53,
+    type: 3}
+  lineArrow: {fileID: 3237790540735430301, guid: f3cf499b9cb9ec04085cbdcff0d7b3fd,
+    type: 3}
+  lineCenterImage: {fileID: 8884446061452660562, guid: 905e7a6da65f78d4a91726ecfdf7b451,
+    type: 3}
+  portChannelName: {fileID: 23205916844348939, guid: f8e50ad2a95b8a845a30e57cbad97c60,
+    type: 3}

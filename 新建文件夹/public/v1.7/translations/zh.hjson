@@ -1,0 +1,271 @@
+{
+  STRINGS:
+  {
+    BUILDING: 
+    {
+      STATUSITEMS: 
+      {
+        RSRADIANTPARTICLESTRANSFERSENDERINFO:
+        {
+          NAME: 传送出口堵塞，关闭捕获辐射粒子
+          TOOLTIP: 传送出口堵塞，关闭捕获辐射粒子
+        }
+        RSTRANSFERPORTCHANNELCONNECTION:
+        {
+          NAME: 未连接频道
+          TOOLTIP: 通过频道名称建立或加入频道
+        }
+        RSCHANNELPLANETARYISOLATIONMODEL:
+        {
+          NAME: 行星隔离模式
+          TOOLTIP: 该模式无法进行跨行星或火箭传送，可在频道设置切换为宇宙互通模式
+        }
+        RSCHANNELGLOBALCONNECTIVITYMODEL: 
+        {
+          NAME: 宇宙互通模式
+          TOOLTIP: 该模式可进行跨行星或火箭传送，可在频道设置切换为行星隔离模式
+        }
+      }
+    }
+    BUILDINGS:
+    {
+      PREFABS:
+      {
+        RSLIQUIDTRANSFERCONDUITSENDER:
+        {
+          NAME: <link="RSLIQUIDTRANSFERCONDUITSENDER">液体管道传送入口</link>
+          DESC: 你还在为管道太长而烦恼吗，来试试这个吧，解决管道太长，影响规划，性能等问题。
+          EFFECT: 通过频道名称建立频道，将液体传送到同一频道的<link="RSLIQUIDTRANSFERCONDUITRECEIVER">液体管道传送出口</link>
+          DEFAULTNAME: 液体管道传送入口
+        }
+        RSLIQUIDTRANSFERCONDUITRECEIVER:
+        {
+          NAME: <link="RSLIQUIDTRANSFERCONDUITRECEIVER">液体管道传送出口</link>
+          DESC: 你还在为管道太长而烦恼吗，来试试这个吧，解决管道太长，影响规划，性能等问题。
+          EFFECT: 通过频道名称建立频道，接收同一频道<link="RSLIQUIDTRANSFERCONDUITSENDER">液体管道传送入口</link>的液体
+          DEFAULTNAME: 液体管道传送出口
+        }
+        RSGASTRANSFERCONDUITSENDER:
+        {
+          NAME: <link="RSGASTRANSFERCONDUITSENDER">气体管道传送入口</link>
+          DESC: 你还在为管道太长而烦恼吗，来试试这个吧，解决管道太长，影响规划，性能等问题。
+          EFFECT: 通过频道名称建立频道，将气体传送到同一频道的<link="RSGASTRANSFERCONDUITRECEIVER">气体管道传送出口</link>
+          DEFAULTNAME: 气体管道传送入口
+        }
+        RSGASTRANSFERCONDUITRECEIVER:
+        {
+          NAME: <link="RSGASTRANSFERCONDUITRECEIVER">气体管道传送出口</link>
+          DESC: 你还在为管道太长而烦恼吗，来试试这个吧，解决管道太长，影响规划，性能等问题。
+          EFFECT: 通过频道名称建立频道，接收同一频道<link="RSLIQUIDTRANSFERCONDUITSENDER">气体管道传送入口</link>的气体
+          DEFAULTNAME: 气体管道传送出口
+        }
+        RSSOLIDTRANSFERCONDUITSENDER:
+        {
+          NAME: <link="RSSOLIDTRANSFERCONDUITSENDER">固体轨道传送入口</link>
+          DESC: 你还在为管道太长而烦恼吗，来试试这个吧，解决管道太长，影响规划，性能等问题。
+          EFFECT: 通过频道名称建立频道，接收同一频道<link="RSSOLIDTRANSFERCONDUITRECEIVER">固体轨道传送出口</link>
+          DEFAULTNAME: 固体轨道传送入口
+        }
+        RSSOLIDTRANSFERCONDUITRECEIVER:
+        {
+          NAME: <link="RSSOLIDTRANSFERCONDUITRECEIVER">固体轨道传送出口</link>
+          DESC: 你还在为管道太长而烦恼吗，来试试这个吧，解决管道太长，影响规划，性能等问题。
+          EFFECT: 通过频道名称建立频道，接收同一频道<link="RSSOLIDTRANSFERCONDUITSENDER">固体轨道传送入口</link>的固体
+          DEFAULTNAME: 固体轨道传送出口
+        }
+        RSWIRELESSPOWERPORT:
+        {
+          NAME: <link="RSWIRELESSPOWERPORT">无线电力端口</link>
+          DESC: 你还在为电线太长而烦恼吗，来试试这个吧，解决电线太长，影响规划，性能等问题。
+          EFFECT: 通过频道名称建立频道，同一频道可视为同一条线路
+          DEFAULTNAME: 无线电力端口
+        }
+        RSWIRELESSLOGICSENDER:
+        {
+          NAME: <link="RSWIRELESSLOGICSENDER">无线信号播报端口</link>
+          DESC: 你还在为管道太长而烦恼吗，来试试这个吧，解决管道太长，影响规划，性能等问题。
+          EFFECT: 通过频道名称建立频道，将信号播报给同一频道的<link="RSWIRELESSLOGICRECEIVER">无线信号接收端口</link>
+          DEFAULTNAME: 无线信号播报端口
+        }
+        RSWIRELESSLOGICRECEIVER:
+        {
+          NAME: <link="RSWIRELESSLOGICRECEIVER">无线信号接收端口</link>
+          DESC: 你还在为管道太长而烦恼吗，来试试这个吧，解决管道太长，影响规划，性能等问题。
+          EFFECT: 通过频道名称建立频道，接收同一频道<link="RSWIRELESSLOGICSENDER">无线信号播报端口</link>的信号
+          DEFAULTNAME: 无线信号接收端口
+        }
+        RSRADIANTPARTICLESTRANSFERSENDER:
+        {
+          NAME: <link="RSRADIANTPARTICLESTRANSFERSENDER">辐射粒子传送入口</link>
+          DESC: 你还在为管道太长而烦恼吗，来试试这个吧，解决管道太长，影响规划，性能等问题。
+          EFFECT: 通过频道名称建立频道,将辐射粒子传送到同一频道的<link="RSRADIANTPARTICLESTRANSFERRECEIVER">辐射粒子传送出口</link>
+          LOGIC_PORT: 需要辐射粒子
+          LOGIC_PORT_ACTIVE: <b><style="logic_on">绿色信号</style></b>: 接收到出口发送的绿色信号
+          LOGIC_PORT_INACTIVE: <b><style="logic_off">红色信号</style></b>: 接收到出口发送的红色信号
+        }
+        RSRADIANTPARTICLESTRANSFERRECEIVER:
+        {
+          NAME: 辐射粒子传送出口
+          DESC: 你还在为管道太长而烦恼吗，来试试这个吧，解决管道太长，影响规划，性能等问题。
+          EFFECT: 通过频道名称建立频道，接收同一频道<link="RSRADIANTPARTICLESTRANSFERSENDER">辐射粒子传送入口</link>的辐射粒子
+          LOGIC_PORT: 需要辐射粒子
+          LOGIC_PORT_ACTIVE: <b><style="logic_on">绿色信号</style></b>: 启用传送，并发送绿色信号到入口
+          LOGIC_PORT_INACTIVE: <b><style="logic_off">红色信号</style></b>: 禁用传送，并发送红色信号到入口
+        }
+        RSTRANSFERPORTCENTER:
+        {
+          NAME: <link="RSTRANSFERPORTCENTER">传送端口终端</link>
+          DESC: 已发现的世界是会进行一格一物模拟，将开发过完成的世界设置为未发现有助于优化性能
+          EFFECT: 设置是否已发现某些世界
+        }
+      }
+    }
+    UI:
+    {
+      NEWBUILDCATEGORIES: 
+      {
+        RS_TRANSFER_PORT: 
+        {
+          NAME: 传送端口
+          BUILDMENUTITLE: 传送端口
+        }
+      }
+      TOOLTIPS:
+      {
+        PORTCHANNELMODE_OVERLAY_STRING: 显示传送端口的频道建立情况
+      }
+      USERMENU:
+      {
+        SHOWOVERLAYSELF_BUTTON:
+        {
+          NAME: 显示该频道概览
+          TOOLTIP: 仅显示该频道的概览
+        }
+      }
+      OVERLAYS:
+      {
+        PORTCHANNELMODE:
+        {
+          BUTTON: 传送频道概览
+          NAME: 传送频道概览
+        }
+      }
+      SIDESCREEN:
+      {
+        RS_PORT_CHANNEL:
+        {
+          TITLE: 传送端口频道设置
+          CHANNEL_NAME: 频道名称
+          CHANNEL_LIST: 频道列表
+          CHANNEL_NULL: "(空频道)"
+          DETAIL_LEVEL_TOOLTIP: 切换列表信息展示等级
+          WARIN_BATCH_MODE: 批量修改模式
+          BATCH_NAME_TOOLTIP: 进入批量修改模式,可以修改同频道下的所有端口的频道名称或频道模式
+          CANDIDATE_NAME_TOOLTIP: 打开或关闭候选词库
+          GLOBAL_TOOLTIP: 开启或关闭全球互通模式,可批量操作
+          PRIORITY_TOOLTIP: "传送优先级，可在传送频道概览查看，可批量操作\n<color=#888888>灰色</color>: 无\n<color=#4ABEC9>蓝色</color>: 该优先级有被使用\n<color=#EFB258>黄色</color>: 当前端口的优先级"
+          PRIORITY_LINE_INFO: "优先级: {0}   入口: {1}   出口: {2}"
+        }
+        WORLDDISCOVEREDSIDESCREEN: {
+          TITLE: 世界发现设置
+          HEADE: 是否已发现世界，未发现的世界不会一格一物模拟
+        }
+        RS_CANDIDATE_NAME:
+        {
+          TITLE: 候选名字
+          SUPPLY_STATE_0: 切换供应或回收，当前:<style="KKeyword">无</style>
+          SUPPLY_STATE_1: 切换供应或回收，当前:<style="KKeyword">供应</style>
+          SUPPLY_STATE_2: 切换供应或回收，当前:<style="KKeyword">回收</style>
+
+          TEMPERATURE_STATE_0: 切换高温或低温，当前:<style="KKeyword">无</style>
+          TEMPERATURE_STATE_1: 切换高温或低温，当前:<style="KKeyword">低温</style>
+          TEMPERATURE_STATE_2: 切换高温或低温，当前:<style="KKeyword">高温</style>
+
+          S_NAMES:
+          {
+            SUPPLY: 供应
+            RECYCLE: 回收
+            HIGH_TEMPERATURE: 高温
+            LOW_TEMPERATURE: 低温
+          }
+          LABELS: {
+            GAS_0: 基地氧气
+            GAS_1: 工业氧气
+            GAS_2: 二氧化碳
+            GAS_3: 氯气
+            GAS_4: 氢气
+            GAS_5: 天然气
+            GAS_6: 蒸汽
+            GAS_7: 杂气
+
+            LIQUID_0: 清水
+            LIQUID_1: 污染水
+            LIQUID_2: 浓盐水
+            LIQUID_3: 盐水
+            LIQUID_4: 石油
+            LIQUID_5: 原油
+            LIQUID_6: 乙醇
+            LIQUID_7: 冷却剂
+            LIQUID_8: 杂水
+            LIQUID_9: 液态氢
+            LIQUID_10: 液态氧
+            LIQUID_11: 粘性凝胶
+            LIQUID_12: 石脑油
+            
+            SOLID_0: 基地存储
+            SOLID_1: 食物冷藏
+            SOLID_2: 杀毒
+            SOLID_3: 泥土
+            SOLID_4: 硫
+            SOLID_5: 磷
+            SOLID_6: 菌泥
+            SOLID_7: 漂白石
+            SOLID_8: 有机物
+            SOLID_9: 过滤介质
+
+
+            POWER_0: 基地高复合导线
+            POWER_1: 高复合导线
+            POWER_2: 基地导线
+            POWER_3: 导线
+            POWER_4: 基地电线
+            POWER_5: 电线
+
+            HEP_0: 粒子1
+            HEP_1: 粒子25
+            HEP_2: 粒子50
+            HEP_3: 粒子100
+            HEP_4: 粒子500
+            HEP_5: 粒子回收
+
+            LOGIC_0: 陨石雨
+            LOGIC_1: 火箭1
+            LOGIC_2: 火箭2
+            LOGIC_3: 火箭3
+            LOGIC_4: 火箭4
+          }
+        }
+      }
+      TOOLS:
+      {
+        FILTERLAYERS:
+        {
+          RS_ALL_PORT: 所有端口
+          RS_GAS_PORT: 气体端口
+          RS_LIQUID_PORT: 液体端口
+          RS_SOLID_PORT: 固体端口
+          RS_POWER_PORT: 电力端口
+          RS_LOGIC_PORT: 信号端口
+          RS_HEP_PORT: 辐射粒子端口
+          RS_CENTER_LINE: 中心连接线
+          RS_NEAR_LINE: 就近连接线
+          RS_Hide_LINE: 隐藏连接线
+          RS_ONLY_NULL_CHANNEL: 仅显示(空频道)
+          RS_ONLY_GLOBAL_CHANNEL: 仅显示全球互通模式频道
+          RS_SHOW_PRIORITY: 显示优先级信息
+          RS_DISABLE_LINE_ANIM: 禁用连线动画
+        }
+      }
+    }
+  }
+}

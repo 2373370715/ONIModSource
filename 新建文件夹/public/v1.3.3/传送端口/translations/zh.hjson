@@ -1,0 +1,162 @@
+{
+  STRINGS:
+  {
+    BUILDING: 
+    {
+      STATUSITEMS: 
+      {
+        RSRADIANTPARTICLESTRANSFERSENDERINFO:
+        {
+          NAME: 传送出口堵塞，关闭捕获辐射粒子
+          TOOLTIP: 传送出口堵塞，关闭捕获辐射粒子
+        }
+        RSTRANSFERPORTCHANNELCONNECTION:
+        {
+          NAME: 未连接频道
+          TOOLTIP: 通过频道名称建立或加入频道
+        }
+        RSCHANNELPLANETARYISOLATIONMODEL:
+        {
+          NAME: 行星隔离模式
+          TOOLTIP: 该模式无法进行跨行星或火箭传送，若需要可建造<link="RsTransferPortCenter">传送端口终端</link>,即切换为宇宙互通模式"
+        }
+        RSCHANNELGLOBALCONNECTIVITYMODEL: 
+        {
+          NAME: 宇宙互通模式
+          TOOLTIP: 该模式可进行跨行星或火箭传送，若需要关闭需要拆除所有的<link="RsTransferPortCenter">传送端口终端</link>,即切换为行星隔离模式"
+        }
+      }
+    }
+    BUILDINGS:
+    {
+      PREFABS:
+      {
+        RSLIQUIDTRANSFERCONDUITSENDER:
+        {
+          NAME: <link="RSLIQUIDTRANSFERCONDUITSENDER">液体管道传送入口</link>
+          DESC: 你还在为管道太长而烦恼吗，来试试这个吧，解决管道太长，影响规划，性能等问题。
+          EFFECT: 通过频道名称建立频道，将液体传送到同一频道的<link="RSLIQUIDTRANSFERCONDUITRECEIVER">液体管道传送出口</link>
+          DEFAULTNAME: 液体管道传送入口
+        }
+        RSLIQUIDTRANSFERCONDUITRECEIVER:
+        {
+          NAME: <link="RSLIQUIDTRANSFERCONDUITRECEIVER">液体管道传送出口</link>
+          DESC: 你还在为管道太长而烦恼吗，来试试这个吧，解决管道太长，影响规划，性能等问题。
+          EFFECT: 通过频道名称建立频道，接收同一频道<link="RSLIQUIDTRANSFERCONDUITSENDER">液体管道传送入口</link>的液体
+          DEFAULTNAME: 液体管道传送出口
+        }
+        RSGASTRANSFERCONDUITSENDER:
+        {
+          NAME: <link="RSGASTRANSFERCONDUITSENDER">气体管道传送入口</link>
+          DESC: 你还在为管道太长而烦恼吗，来试试这个吧，解决管道太长，影响规划，性能等问题。
+          EFFECT: 通过频道名称建立频道，将气体传送到同一频道的<link="RSGASTRANSFERCONDUITRECEIVER">气体管道传送出口</link>
+          DEFAULTNAME: 气体管道传送入口
+        }
+        RSGASTRANSFERCONDUITRECEIVER:
+        {
+          NAME: <link="RSGASTRANSFERCONDUITRECEIVER">气体管道传送出口</link>
+          DESC: 你还在为管道太长而烦恼吗，来试试这个吧，解决管道太长，影响规划，性能等问题。
+          EFFECT: 通过频道名称建立频道，接收同一频道<link="RSLIQUIDTRANSFERCONDUITSENDER">气体管道传送入口</link>的气体
+          DEFAULTNAME: 气体管道传送出口
+        }
+        RSSOLIDTRANSFERCONDUITSENDER:
+        {
+          NAME: <link="RSSOLIDTRANSFERCONDUITSENDER">固体轨道传送入口</link>
+          DESC: 你还在为管道太长而烦恼吗，来试试这个吧，解决管道太长，影响规划，性能等问题。
+          EFFECT: 通过频道名称建立频道，接收同一频道<link="RSSOLIDTRANSFERCONDUITRECEIVER">固体轨道传送出口</link>
+          DEFAULTNAME: 固体轨道传送入口
+        }
+        RSSOLIDTRANSFERCONDUITRECEIVER:
+        {
+          NAME: <link="RSSOLIDTRANSFERCONDUITRECEIVER">固体轨道传送出口</link>
+          DESC: 你还在为管道太长而烦恼吗，来试试这个吧，解决管道太长，影响规划，性能等问题。
+          EFFECT: 通过频道名称建立频道，接收同一频道<link="RSSOLIDTRANSFERCONDUITSENDER">固体轨道传送入口</link>的固体
+          DEFAULTNAME: 固体轨道传送出口
+        }
+        RSWIRELESSPOWERPORT:
+        {
+          NAME: <link="RSWIRELESSPOWERPORT">无线电力端口</link>
+          DESC: 你还在为电线太长而烦恼吗，来试试这个吧，解决电线太长，影响规划，性能等问题。
+          EFFECT: 通过频道名称建立频道，同一频道可视为同一条线路
+          DEFAULTNAME: 无线电力端口
+        }
+        RSWIRELESSLOGICSENDER:
+        {
+          NAME: <link="RSWIRELESSLOGICSENDER">无线信号播报端口</link>
+          DESC: 你还在为管道太长而烦恼吗，来试试这个吧，解决管道太长，影响规划，性能等问题。
+          EFFECT: 通过频道名称建立频道，将信号播报给同一频道的<link="RSWIRELESSLOGICRECEIVER">无线信号接收端口</link>
+          DEFAULTNAME: 无线信号播报端口
+        }
+        RSWIRELESSLOGICRECEIVER:
+        {
+          NAME: <link="RSWIRELESSLOGICRECEIVER">无线信号接收端口</link>
+          DESC: 你还在为管道太长而烦恼吗，来试试这个吧，解决管道太长，影响规划，性能等问题。
+          EFFECT: 通过频道名称建立频道，接收同一频道<link="RSWIRELESSLOGICSENDER">无线信号播报端口</link>的信号
+          DEFAULTNAME: 无线信号接收端口
+        }
+        RSRADIANTPARTICLESTRANSFERSENDER:
+        {
+          NAME: <link="RSRADIANTPARTICLESTRANSFERSENDER">辐射粒子传送入口</link>
+          DESC: 你还在为管道太长而烦恼吗，来试试这个吧，解决管道太长，影响规划，性能等问题。
+          EFFECT: 通过频道名称建立频道,将辐射粒子传送到同一频道的<link="RSRADIANTPARTICLESTRANSFERRECEIVER">辐射粒子传送出口</link>
+          LOGIC_PORT: 需要辐射粒子
+          LOGIC_PORT_ACTIVE: <b><style="logic_on">绿色信号</style></b>: 接收到出口发送的绿色信号
+          LOGIC_PORT_INACTIVE: <b><style="logic_off">红色信号</style></b>: 接收到出口发送的红色信号
+        }
+        RSRADIANTPARTICLESTRANSFERRECEIVER:
+        {
+          NAME: 辐射粒子传送出口
+          DESC: 你还在为管道太长而烦恼吗，来试试这个吧，解决管道太长，影响规划，性能等问题。
+          EFFECT: 通过频道名称建立频道，接收同一频道<link="RSRADIANTPARTICLESTRANSFERSENDER">辐射粒子传送入口</link>的辐射粒子
+          LOGIC_PORT: 需要辐射粒子
+          LOGIC_PORT_ACTIVE: <b><style="logic_on">绿色信号</style></b>: 启用传送，并发送绿色信号到入口
+          LOGIC_PORT_INACTIVE: <b><style="logic_off">红色信号</style></b>: 禁用传送，并发送红色信号到入口
+        }
+        RSTRANSFERPORTCENTER:
+        {
+          NAME: <link="RSTRANSFERPORTCENTER">传送端口终端</link>
+          DESC: 全星球有一个或以上该建筑，则启动全球公共频道，实现跨行星传送。
+          EFFECT: 建筑该建筑，将已有的传送端口频道，改为全球互连。
+        }
+      }
+    }
+    UI:
+    {
+      TOOLTIPS:
+      {
+        PORTCHANNELMODE_OVERLAY_STRING: 显示传送端口的频道建立情况
+      }
+      OVERLAYS:
+      {
+        PORTCHANNELMODE:
+        {
+          BUTTON: 传送频道概览
+          NAME: 传送频道概览
+        }
+      }
+      SIDESCREEN:
+      {
+        CHANNELNAMESETTING:
+        {
+          CHANGE_NAME_MODE: 频道名称
+          CHANGE_NULL: (空频道)
+        }
+      }
+      TOOLS:
+      {
+        FILTERLAYERS:
+        {
+          RS_GAS_PORT: 气体端口
+          RS_LIQUID_PORT: 液体端口
+          RS_SOLID_PORT: 固体端口
+          RS_POWER_PORT: 电力端口
+          RS_LOGIC_PORT: 信号端口
+          RS_HEP_PORT: 辐射粒子端口
+          RS_CENTER_LINE: 中心连接
+          RS_NEAR_LINE: 就近连接
+          RS_ONLY_NULL_CHANNEL: 仅显示(空频道)
+        }
+      }
+    }
+  }
+}

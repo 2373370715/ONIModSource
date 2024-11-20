@@ -1,0 +1,8 @@
+C:\Users\admin\Desktop\ONIModSource\ONIMod\usually\bin\挖机\usually.dll
+C:\Users\admin\Desktop\ONIModSource\ONIMod\usually\bin\挖机\ModTool.dll
+C:\Users\admin\Desktop\ONIModSource\ONIMod\usually\bin\挖机\PLib.dll
+C:\Users\admin\Desktop\ONIModSource\ONIMod\usually\bin\挖机\ModTool.pdb
+C:\Users\admin\Desktop\ONIModSource\ONIMod\usually\obj\挖机\usually.csproj.AssemblyReference.cache
+C:\Users\admin\Desktop\ONIModSource\ONIMod\usually\obj\挖机\usually.csproj.CoreCompileInputs.cache
+C:\Users\admin\Desktop\ONIModSource\ONIMod\usually\obj\挖机\usually.csproj.CopyComplete
+C:\Users\admin\Desktop\ONIModSource\ONIMod\usually\obj\挖机\usually.dll
