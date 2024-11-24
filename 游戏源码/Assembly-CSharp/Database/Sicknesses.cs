@@ -1,0 +1,45 @@
+using Klei.AI;
+
+namespace Database;
+
+public class Sicknesses : ResourceSet<Sickness>
+{
+	public Sickness FoodSickness;
+
+	public Sickness SlimeSickness;
+
+	public Sickness ZombieSickness;
+
+	public Sickness Allergies;
+
+	public Sickness RadiationSickness;
+
+	public Sickness Sunburn;
+
+	public Sicknesses(ResourceSet parent)
+		: base("Sicknesses", parent)
+	{
+		FoodSickness = Add(new FoodSickness());
+		SlimeSickness = Add(new SlimeSickness());
+		ZombieSickness = Add(new ZombieSickness());
+		if (DlcManager.FeatureRadiationEnabled())
+		{
+			RadiationSickness = Add(new RadiationSickness());
+		}
+		Allergies = Add(new Allergies());
+		Sunburn = Add(new Sunburn());
+	}
+
+	public static bool IsValidID(string id)
+	{
+		bool result = false;
+		foreach (Sickness resource in Db.Get().Sicknesses.resources)
+		{
+			if (resource.Id == id)
+			{
+				result = true;
+			}
+		}
+		return result;
+	}
+}

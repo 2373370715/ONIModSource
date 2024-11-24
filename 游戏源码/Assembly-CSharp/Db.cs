@@ -1,0 +1,256 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Database;
+using Klei;
+using Klei.AI;
+using STRINGS;
+using UnityEngine;
+
+public class Db : EntityModifierSet
+{
+	[Serializable]
+	public class SlotInfo : Resource
+	{
+	}
+
+	private static Db _Instance;
+
+	public TextAsset researchTreeFileVanilla;
+
+	public TextAsset researchTreeFileExpansion1;
+
+	public Diseases Diseases;
+
+	public Database.Sicknesses Sicknesses;
+
+	public Urges Urges;
+
+	public AssignableSlots AssignableSlots;
+
+	public StateMachineCategories StateMachineCategories;
+
+	public Personalities Personalities;
+
+	public Faces Faces;
+
+	public Shirts Shirts;
+
+	public Expressions Expressions;
+
+	public Emotes Emotes;
+
+	public Thoughts Thoughts;
+
+	public Dreams Dreams;
+
+	public BuildingStatusItems BuildingStatusItems;
+
+	public MiscStatusItems MiscStatusItems;
+
+	public CreatureStatusItems CreatureStatusItems;
+
+	public RobotStatusItems RobotStatusItems;
+
+	public StatusItemCategories StatusItemCategories;
+
+	public Deaths Deaths;
+
+	public ChoreTypes ChoreTypes;
+
+	public TechItems TechItems;
+
+	public AccessorySlots AccessorySlots;
+
+	public Accessories Accessories;
+
+	public ScheduleBlockTypes ScheduleBlockTypes;
+
+	public ScheduleGroups ScheduleGroups;
+
+	public RoomTypeCategories RoomTypeCategories;
+
+	public RoomTypes RoomTypes;
+
+	public ArtifactDropRates ArtifactDropRates;
+
+	public SpaceDestinationTypes SpaceDestinationTypes;
+
+	public SkillPerks SkillPerks;
+
+	public SkillGroups SkillGroups;
+
+	public Skills Skills;
+
+	public ColonyAchievements ColonyAchievements;
+
+	public Quests Quests;
+
+	public GameplayEvents GameplayEvents;
+
+	public GameplaySeasons GameplaySeasons;
+
+	public PlantMutations PlantMutations;
+
+	public Spices Spices;
+
+	public Techs Techs;
+
+	public TechTreeTitles TechTreeTitles;
+
+	public OrbitalTypeCategories OrbitalTypeCategories;
+
+	public PermitResources Permits;
+
+	public ArtableStatuses ArtableStatuses;
+
+	public Stories Stories;
+
+	public static string GetPath(string dlcId, string folder)
+	{
+		if (dlcId == "")
+		{
+			return FileSystem.Normalize(Path.Combine(Application.streamingAssetsPath, folder));
+		}
+		string contentDirectoryName = DlcManager.GetContentDirectoryName(dlcId);
+		return FileSystem.Normalize(Path.Combine(Application.streamingAssetsPath, "dlc", contentDirectoryName, folder));
+	}
+
+	public static Db Get()
+	{
+		if (_Instance == null)
+		{
+			_Instance = Resources.Load<Db>("Db");
+			_Instance.Initialize();
+		}
+		return _Instance;
+	}
+
+	public static BuildingFacades GetBuildingFacades()
+	{
+		return Get().Permits.BuildingFacades;
+	}
+
+	public static ArtableStages GetArtableStages()
+	{
+		return Get().Permits.ArtableStages;
+	}
+
+	public static EquippableFacades GetEquippableFacades()
+	{
+		return Get().Permits.EquippableFacades;
+	}
+
+	public static StickerBombs GetStickerBombs()
+	{
+		return Get().Permits.StickerBombs;
+	}
+
+	public static MonumentParts GetMonumentParts()
+	{
+		return Get().Permits.MonumentParts;
+	}
+
+	public override void Initialize()
+	{
+		base.Initialize();
+		Urges = new Urges();
+		AssignableSlots = new AssignableSlots();
+		StateMachineCategories = new StateMachineCategories();
+		Personalities = new Personalities();
+		Faces = new Faces();
+		Shirts = new Shirts();
+		Expressions = new Expressions(Root);
+		Emotes = new Emotes(Root);
+		Thoughts = new Thoughts(Root);
+		Dreams = new Dreams(Root);
+		Deaths = new Deaths(Root);
+		StatusItemCategories = new StatusItemCategories(Root);
+		TechTreeTitles = new TechTreeTitles(Root);
+		TechTreeTitles.Load(DlcManager.IsExpansion1Active() ? researchTreeFileExpansion1 : researchTreeFileVanilla);
+		Techs = new Techs(Root);
+		TechItems = new TechItems(Root);
+		Techs.Init();
+		Techs.Load(DlcManager.IsExpansion1Active() ? researchTreeFileExpansion1 : researchTreeFileVanilla);
+		TechItems.Init();
+		Accessories = new Accessories(Root);
+		AccessorySlots = new AccessorySlots(Root);
+		ScheduleBlockTypes = new ScheduleBlockTypes(Root);
+		ScheduleGroups = new ScheduleGroups(Root);
+		RoomTypeCategories = new RoomTypeCategories(Root);
+		RoomTypes = new RoomTypes(Root);
+		ArtifactDropRates = new ArtifactDropRates(Root);
+		SpaceDestinationTypes = new SpaceDestinationTypes(Root);
+		Diseases = new Diseases(Root);
+		Sicknesses = new Database.Sicknesses(Root);
+		SkillPerks = new SkillPerks(Root);
+		SkillGroups = new SkillGroups(Root);
+		Skills = new Skills(Root);
+		ColonyAchievements = new ColonyAchievements(Root);
+		MiscStatusItems = new MiscStatusItems(Root);
+		CreatureStatusItems = new CreatureStatusItems(Root);
+		BuildingStatusItems = new BuildingStatusItems(Root);
+		RobotStatusItems = new RobotStatusItems(Root);
+		ChoreTypes = new ChoreTypes(Root);
+		Quests = new Quests(Root);
+		GameplayEvents = new GameplayEvents(Root);
+		GameplaySeasons = new GameplaySeasons(Root);
+		Stories = new Stories(Root);
+		if (DlcManager.FeaturePlantMutationsEnabled())
+		{
+			PlantMutations = new PlantMutations(Root);
+		}
+		OrbitalTypeCategories = new OrbitalTypeCategories(Root);
+		ArtableStatuses = new ArtableStatuses(Root);
+		Permits = new PermitResources(Root);
+		Effect effect = new Effect("CenterOfAttention", DUPLICANTS.MODIFIERS.CENTEROFATTENTION.NAME, DUPLICANTS.MODIFIERS.CENTEROFATTENTION.TOOLTIP, 0f, show_in_ui: true, trigger_floating_text: true, is_bad: false);
+		effect.Add(new AttributeModifier("StressDelta", -1f / 120f, DUPLICANTS.MODIFIERS.CENTEROFATTENTION.NAME));
+		effects.Add(effect);
+		Spices = new Spices(Root);
+		CollectResources(Root, ResourceTable);
+	}
+
+	public void PostProcess()
+	{
+		Techs.PostProcess();
+		Permits.PostProcess();
+	}
+
+	private void CollectResources(Resource resource, List<Resource> resource_table)
+	{
+		if (resource.Guid != null)
+		{
+			resource_table.Add(resource);
+		}
+		if (resource is ResourceSet resourceSet)
+		{
+			for (int i = 0; i < resourceSet.Count; i++)
+			{
+				CollectResources(resourceSet.GetResource(i), resource_table);
+			}
+		}
+	}
+
+	public ResourceType GetResource<ResourceType>(ResourceGuid guid) where ResourceType : Resource
+	{
+		Resource resource = ResourceTable.FirstOrDefault((Resource s) => s.Guid == guid);
+		if (resource == null)
+		{
+			Debug.LogWarning("Could not find resource: " + guid);
+			return null;
+		}
+		ResourceType val = (ResourceType)resource;
+		if (val == null)
+		{
+			Debug.LogError("Resource type mismatch for resource: " + resource.Id + "\nExpecting Type: " + typeof(ResourceType).Name + "\nGot Type: " + resource.GetType().Name);
+			return null;
+		}
+		return val;
+	}
+
+	public void ResetProblematicDbs()
+	{
+		Emotes.ResetProblematicReferences();
+	}
+}

@@ -1,0 +1,396 @@
+using System;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
+using System.Text;
+using Klei.CustomSettings;
+using KSerialization;
+using Newtonsoft.Json;
+using ProcGen;
+using STRINGS;
+using UnityEngine;
+
+[SerializationConfig(KSerialization.MemberSerialization.OptIn)]
+[AddComponentMenu("KMonoBehaviour/scripts/SaveGame")]
+public class SaveGame : KMonoBehaviour, ISaveLoadable
+{
+	public struct Header
+	{
+		public uint buildVersion;
+
+		public int headerSize;
+
+		public uint headerVersion;
+
+		public int compression;
+
+		public bool IsCompressed => compression != 0;
+	}
+
+	public struct GameInfo
+	{
+		public int numberOfCycles;
+
+		public int numberOfDuplicants;
+
+		public string baseName;
+
+		public bool isAutoSave;
+
+		public string originalSaveName;
+
+		public int saveMajorVersion;
+
+		public int saveMinorVersion;
+
+		public string clusterId;
+
+		public string[] worldTraits;
+
+		public bool sandboxEnabled;
+
+		public Guid colonyGuid;
+
+		[Obsolete("Please use dlcIds instead.")]
+		public string dlcId;
+
+		public List<string> dlcIds;
+
+		public GameInfo(int numberOfCycles, int numberOfDuplicants, string baseName, bool isAutoSave, string originalSaveName, string clusterId, string[] worldTraits, Guid colonyGuid, List<string> dlcIds, bool sandboxEnabled = false)
+		{
+			this.numberOfCycles = numberOfCycles;
+			this.numberOfDuplicants = numberOfDuplicants;
+			this.baseName = baseName;
+			this.isAutoSave = isAutoSave;
+			this.originalSaveName = originalSaveName;
+			this.clusterId = clusterId;
+			this.worldTraits = worldTraits;
+			this.colonyGuid = colonyGuid;
+			this.sandboxEnabled = sandboxEnabled;
+			this.dlcIds = dlcIds;
+			dlcId = null;
+			saveMajorVersion = 7;
+			saveMinorVersion = 34;
+		}
+
+		public bool IsVersionOlderThan(int major, int minor)
+		{
+			if (saveMajorVersion >= major)
+			{
+				if (saveMajorVersion == major)
+				{
+					return saveMinorVersion < minor;
+				}
+				return false;
+			}
+			return true;
+		}
+
+		public bool IsVersionExactly(int major, int minor)
+		{
+			if (saveMajorVersion == major)
+			{
+				return saveMinorVersion == minor;
+			}
+			return false;
+		}
+
+		public bool IsCompatableWithCurrentDlcConfiguration(out HashSet<string> dlcIdsToEnable, out HashSet<string> dlcIdToDisable)
+		{
+			dlcIdsToEnable = new HashSet<string>();
+			foreach (string dlcId in dlcIds)
+			{
+				if (!DlcManager.IsContentSubscribed(dlcId))
+				{
+					dlcIdsToEnable.Add(dlcId);
+				}
+			}
+			dlcIdToDisable = new HashSet<string>();
+			if (!dlcIds.Contains("EXPANSION1_ID") && DlcManager.IsExpansion1Active())
+			{
+				dlcIdToDisable.Add("EXPANSION1_ID");
+			}
+			if (dlcIdsToEnable.Count == 0)
+			{
+				return dlcIdToDisable.Count == 0;
+			}
+			return false;
+		}
+	}
+
+	[Serialize]
+	private int speed;
+
+	[Serialize]
+	public List<Tag> expandedResourceTags = new List<Tag>();
+
+	[Serialize]
+	public int minGermCountForDisinfect = 10000;
+
+	[Serialize]
+	public bool enableAutoDisinfect = true;
+
+	[Serialize]
+	public bool sandboxEnabled;
+
+	[Serialize]
+	public float relativeTemperatureOverlaySliderValue = 294.15f;
+
+	[Serialize]
+	private int autoSaveCycleInterval = 1;
+
+	[Serialize]
+	private Vector2I timelapseResolution = new Vector2I(512, 768);
+
+	private string baseName;
+
+	public static SaveGame Instance;
+
+	private ColonyAchievementTracker colonyAchievementTracker;
+
+	public EntombedItemManager entombedItemManager;
+
+	public WorldGenSpawner worldGenSpawner;
+
+	[MyCmpReq]
+	public MaterialSelectorSerializer materialSelectorSerializer;
+
+	private static bool debug_SaveFileHeaderBlank_sent;
+
+	public int AutoSaveCycleInterval
+	{
+		get
+		{
+			return autoSaveCycleInterval;
+		}
+		set
+		{
+			autoSaveCycleInterval = value;
+		}
+	}
+
+	public Vector2I TimelapseResolution
+	{
+		get
+		{
+			return timelapseResolution;
+		}
+		set
+		{
+			timelapseResolution = value;
+		}
+	}
+
+	public string BaseName => baseName;
+
+	public ColonyAchievementTracker ColonyAchievementTracker
+	{
+		get
+		{
+			if (colonyAchievementTracker == null)
+			{
+				colonyAchievementTracker = GetComponent<ColonyAchievementTracker>();
+			}
+			return colonyAchievementTracker;
+		}
+	}
+
+	public static void DestroyInstance()
+	{
+		Instance = null;
+	}
+
+	protected override void OnPrefabInit()
+	{
+		Instance = this;
+		new ColonyRationMonitor.Instance(this).StartSM();
+		entombedItemManager = base.gameObject.AddComponent<EntombedItemManager>();
+		worldGenSpawner = base.gameObject.AddComponent<WorldGenSpawner>();
+		base.gameObject.AddOrGetDef<GameplaySeasonManager.Def>();
+		base.gameObject.AddOrGetDef<ClusterFogOfWarManager.Def>();
+	}
+
+	[OnSerializing]
+	private void OnSerialize()
+	{
+		speed = SpeedControlScreen.Instance.GetSpeed();
+	}
+
+	[OnDeserializing]
+	private void OnDeserialize()
+	{
+		baseName = SaveLoader.Instance.GameInfo.baseName;
+	}
+
+	public int GetSpeed()
+	{
+		return speed;
+	}
+
+	public byte[] GetSaveHeader(bool isAutoSave, bool isCompressed, out Header header)
+	{
+		string text = null;
+		string originalSaveFileName = SaveLoader.GetOriginalSaveFileName(SaveLoader.GetActiveSaveFilePath());
+		text = JsonConvert.SerializeObject(new GameInfo(GameClock.Instance.GetCycle(), Components.LiveMinionIdentities.Count, baseName, isAutoSave, originalSaveFileName, SaveLoader.Instance.GameInfo.clusterId, SaveLoader.Instance.GameInfo.worldTraits, SaveLoader.Instance.GameInfo.colonyGuid, SaveLoader.Instance.GameInfo.dlcIds, sandboxEnabled));
+		byte[] bytes = Encoding.UTF8.GetBytes(text);
+		header = default(Header);
+		header.buildVersion = 623711u;
+		header.headerSize = bytes.Length;
+		header.headerVersion = 1u;
+		header.compression = (isCompressed ? 1 : 0);
+		return bytes;
+	}
+
+	public static string GetSaveUniqueID(GameInfo info)
+	{
+		if (!(info.colonyGuid != Guid.Empty))
+		{
+			return info.baseName + "/" + info.clusterId;
+		}
+		return info.colonyGuid.ToString();
+	}
+
+	public static Tuple<Header, GameInfo> GetFileInfo(string filename)
+	{
+		try
+		{
+			Header header;
+			GameInfo b = SaveLoader.LoadHeader(filename, out header);
+			if (b.saveMajorVersion >= 7)
+			{
+				return new Tuple<Header, GameInfo>(header, b);
+			}
+		}
+		catch (Exception ex)
+		{
+			Debug.LogWarning("Exception while loading " + filename);
+			Debug.LogWarning(ex);
+		}
+		return null;
+	}
+
+	public static GameInfo GetHeader(IReader br, out Header header, string debugFileName)
+	{
+		header = default(Header);
+		header.buildVersion = br.ReadUInt32();
+		header.headerSize = br.ReadInt32();
+		header.headerVersion = br.ReadUInt32();
+		if (1 <= header.headerVersion)
+		{
+			header.compression = br.ReadInt32();
+		}
+		byte[] data = br.ReadBytes(header.headerSize);
+		if (header.headerSize == 0 && !debug_SaveFileHeaderBlank_sent)
+		{
+			debug_SaveFileHeaderBlank_sent = true;
+			Debug.LogWarning("SaveFileHeaderBlank - " + debugFileName);
+		}
+		GameInfo gameInfo = GetGameInfo(data);
+		if (gameInfo.IsVersionOlderThan(7, 14) && gameInfo.worldTraits != null)
+		{
+			string[] worldTraits = gameInfo.worldTraits;
+			for (int i = 0; i < worldTraits.Length; i++)
+			{
+				worldTraits[i] = worldTraits[i].Replace('\\', '/');
+			}
+		}
+		if (gameInfo.IsVersionOlderThan(7, 20))
+		{
+			gameInfo.dlcId = "";
+		}
+		if (gameInfo.IsVersionOlderThan(7, 34))
+		{
+			gameInfo.dlcIds = new List<string> { gameInfo.dlcId };
+		}
+		return gameInfo;
+	}
+
+	public static GameInfo GetGameInfo(byte[] data)
+	{
+		return JsonConvert.DeserializeObject<GameInfo>(Encoding.UTF8.GetString(data));
+	}
+
+	public void SetBaseName(string newBaseName)
+	{
+		if (string.IsNullOrEmpty(newBaseName))
+		{
+			Debug.LogWarning("Cannot give the base an empty name");
+		}
+		else
+		{
+			baseName = newBaseName;
+		}
+	}
+
+	protected override void OnSpawn()
+	{
+		ThreadedHttps<KleiMetrics>.Instance.SendProfileStats();
+		Game.Instance.Trigger(-1917495436);
+	}
+
+	public List<Tuple<string, TextStyleSetting>> GetColonyToolTip()
+	{
+		List<Tuple<string, TextStyleSetting>> list = new List<Tuple<string, TextStyleSetting>>();
+		SettingLevel currentQualitySetting = CustomGameSettings.Instance.GetCurrentQualitySetting(CustomGameSettingConfigs.ClusterLayout);
+		SettingsCache.clusterLayouts.clusterCache.TryGetValue(currentQualitySetting.id, out var value);
+		list.Add(new Tuple<string, TextStyleSetting>(baseName, ToolTipScreen.Instance.defaultTooltipHeaderStyle));
+		if (DlcManager.IsExpansion1Active())
+		{
+			StringEntry stringEntry = Strings.Get(value.name);
+			list.Add(new Tuple<string, TextStyleSetting>(stringEntry, ToolTipScreen.Instance.defaultTooltipBodyStyle));
+		}
+		if (GameClock.Instance != null)
+		{
+			list.Add(new Tuple<string, TextStyleSetting>(" ", null));
+			list.Add(new Tuple<string, TextStyleSetting>(string.Format(UI.ASTEROIDCLOCK.CYCLES_OLD, GameUtil.GetCurrentCycle()), ToolTipScreen.Instance.defaultTooltipHeaderStyle));
+			list.Add(new Tuple<string, TextStyleSetting>(string.Format(UI.ASTEROIDCLOCK.TIME_PLAYED, (GameClock.Instance.GetTimePlayedInSeconds() / 3600f).ToString("0.00")), ToolTipScreen.Instance.defaultTooltipBodyStyle));
+		}
+		int cameraActiveCluster = CameraController.Instance.cameraActiveCluster;
+		WorldContainer world = ClusterManager.Instance.GetWorld(cameraActiveCluster);
+		list.Add(new Tuple<string, TextStyleSetting>(" ", null));
+		if (DlcManager.IsExpansion1Active())
+		{
+			list.Add(new Tuple<string, TextStyleSetting>(world.GetComponent<ClusterGridEntity>().Name, ToolTipScreen.Instance.defaultTooltipHeaderStyle));
+		}
+		else
+		{
+			StringEntry stringEntry2 = Strings.Get(value.name);
+			list.Add(new Tuple<string, TextStyleSetting>(stringEntry2, ToolTipScreen.Instance.defaultTooltipHeaderStyle));
+		}
+		if (SaveLoader.Instance.GameInfo.worldTraits != null && SaveLoader.Instance.GameInfo.worldTraits.Length != 0)
+		{
+			string[] worldTraits = SaveLoader.Instance.GameInfo.worldTraits;
+			for (int i = 0; i < worldTraits.Length; i++)
+			{
+				WorldTrait cachedWorldTrait = SettingsCache.GetCachedWorldTrait(worldTraits[i], assertMissingTrait: false);
+				if (cachedWorldTrait != null)
+				{
+					list.Add(new Tuple<string, TextStyleSetting>(Strings.Get(cachedWorldTrait.name), ToolTipScreen.Instance.defaultTooltipBodyStyle));
+				}
+				else
+				{
+					list.Add(new Tuple<string, TextStyleSetting>(WORLD_TRAITS.MISSING_TRAIT, ToolTipScreen.Instance.defaultTooltipBodyStyle));
+				}
+			}
+		}
+		else if (world.WorldTraitIds != null)
+		{
+			foreach (string worldTraitId in world.WorldTraitIds)
+			{
+				WorldTrait cachedWorldTrait2 = SettingsCache.GetCachedWorldTrait(worldTraitId, assertMissingTrait: false);
+				if (cachedWorldTrait2 != null)
+				{
+					list.Add(new Tuple<string, TextStyleSetting>(Strings.Get(cachedWorldTrait2.name), ToolTipScreen.Instance.defaultTooltipBodyStyle));
+				}
+				else
+				{
+					list.Add(new Tuple<string, TextStyleSetting>(WORLD_TRAITS.MISSING_TRAIT, ToolTipScreen.Instance.defaultTooltipBodyStyle));
+				}
+			}
+			if (world.WorldTraitIds.Count == 0)
+			{
+				list.Add(new Tuple<string, TextStyleSetting>(WORLD_TRAITS.NO_TRAITS.NAME_SHORTHAND, ToolTipScreen.Instance.defaultTooltipBodyStyle));
+			}
+		}
+		return list;
+	}
+}

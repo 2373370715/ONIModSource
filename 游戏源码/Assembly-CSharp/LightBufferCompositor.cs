@@ -1,0 +1,92 @@
+using UnityEngine;
+
+public class LightBufferCompositor : MonoBehaviour
+{
+	[SerializeField]
+	private Material material;
+
+	[SerializeField]
+	private Material blurMaterial;
+
+	private bool particlesEnabled = true;
+
+	private void Start()
+	{
+		material = new Material(Shader.Find("Klei/PostFX/LightBufferCompositor"));
+		material.SetTexture("_InvalidTex", Assets.instance.invalidAreaTex);
+		blurMaterial = new Material(Shader.Find("Klei/PostFX/Blur"));
+		OnShadersReloaded();
+		ShaderReloader.Register(OnShadersReloaded);
+	}
+
+	private void OnEnable()
+	{
+		OnShadersReloaded();
+	}
+
+	private void DownSample4x(Texture source, RenderTexture dest)
+	{
+		float num = 1f;
+		Graphics.BlitMultiTap(source, dest, blurMaterial, new Vector2(0f - num, 0f - num), new Vector2(0f - num, num), new Vector2(num, num), new Vector2(num, 0f - num));
+	}
+
+	[ContextMenu("ToggleParticles")]
+	private void ToggleParticles()
+	{
+		particlesEnabled = !particlesEnabled;
+		UpdateMaterialState();
+	}
+
+	public void SetParticlesEnabled(bool enabled)
+	{
+		particlesEnabled = enabled;
+		UpdateMaterialState();
+	}
+
+	private void UpdateMaterialState()
+	{
+		if (particlesEnabled)
+		{
+			material.DisableKeyword("DISABLE_TEMPERATURE_PARTICLES");
+		}
+		else
+		{
+			material.EnableKeyword("DISABLE_TEMPERATURE_PARTICLES");
+		}
+	}
+
+	private void OnRenderImage(RenderTexture src, RenderTexture dest)
+	{
+		RenderTexture renderTexture = null;
+		if (PropertyTextures.instance != null)
+		{
+			Texture texture = PropertyTextures.instance.GetTexture(PropertyTextures.Property.Temperature);
+			texture.name = "temperature_tex";
+			renderTexture = RenderTexture.GetTemporary(Screen.width / 8, Screen.height / 8);
+			renderTexture.filterMode = FilterMode.Bilinear;
+			Graphics.Blit(texture, renderTexture, blurMaterial);
+			Shader.SetGlobalTexture("_BlurredTemperature", renderTexture);
+		}
+		material.SetTexture("_LightBufferTex", LightBuffer.Instance.Texture);
+		Graphics.Blit(src, dest, material);
+		if (renderTexture != null)
+		{
+			RenderTexture.ReleaseTemporary(renderTexture);
+		}
+	}
+
+	private void OnShadersReloaded()
+	{
+		if (material != null && Lighting.Instance != null)
+		{
+			material.SetTexture("_EmberTex", Lighting.Instance.Settings.EmberTex);
+			material.SetTexture("_FrostTex", Lighting.Instance.Settings.FrostTex);
+			material.SetTexture("_Thermal1Tex", Lighting.Instance.Settings.Thermal1Tex);
+			material.SetTexture("_Thermal2Tex", Lighting.Instance.Settings.Thermal2Tex);
+			material.SetTexture("_RadHaze1Tex", Lighting.Instance.Settings.Radiation1Tex);
+			material.SetTexture("_RadHaze2Tex", Lighting.Instance.Settings.Radiation2Tex);
+			material.SetTexture("_RadHaze3Tex", Lighting.Instance.Settings.Radiation3Tex);
+			material.SetTexture("_NoiseTex", Lighting.Instance.Settings.NoiseTex);
+		}
+	}
+}

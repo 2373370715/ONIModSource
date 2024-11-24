@@ -1,0 +1,256 @@
+using System.Collections.Generic;
+using ProcGen;
+using ProcGenGame;
+using STRINGS;
+using UnityEngine;
+
+public class ColonyDestinationAsteroidBeltData
+{
+	private ProcGen.World startWorld;
+
+	private ClusterLayout clusterLayout;
+
+	private MutatedClusterLayout mutatedClusterLayout;
+
+	private List<AsteroidDescriptor> paramDescriptors = new List<AsteroidDescriptor>();
+
+	private List<AsteroidDescriptor> traitDescriptors = new List<AsteroidDescriptor>();
+
+	public static List<Tuple<string, string, string>> survivalOptions = new List<Tuple<string, string, string>>
+	{
+		new Tuple<string, string, string>(WORLDS.SURVIVAL_CHANCE.MOSTHOSPITABLE, "", "D2F40C"),
+		new Tuple<string, string, string>(WORLDS.SURVIVAL_CHANCE.VERYHIGH, "", "7DE419"),
+		new Tuple<string, string, string>(WORLDS.SURVIVAL_CHANCE.HIGH, "", "36D246"),
+		new Tuple<string, string, string>(WORLDS.SURVIVAL_CHANCE.NEUTRAL, "", "63C2B7"),
+		new Tuple<string, string, string>(WORLDS.SURVIVAL_CHANCE.LOW, "", "6A8EB1"),
+		new Tuple<string, string, string>(WORLDS.SURVIVAL_CHANCE.VERYLOW, "", "937890"),
+		new Tuple<string, string, string>(WORLDS.SURVIVAL_CHANCE.LEASTHOSPITABLE, "", "9636DF")
+	};
+
+	public float TargetScale { get; set; }
+
+	public float Scale { get; set; }
+
+	public int seed { get; private set; }
+
+	public string startWorldPath => startWorld.filePath;
+
+	public Sprite sprite { get; private set; }
+
+	public int difficulty { get; private set; }
+
+	public string startWorldName => Strings.Get(startWorld.name);
+
+	public string properName
+	{
+		get
+		{
+			if (clusterLayout == null)
+			{
+				return "";
+			}
+			return clusterLayout.name;
+		}
+	}
+
+	public string beltPath
+	{
+		get
+		{
+			if (clusterLayout == null)
+			{
+				return WorldGenSettings.ClusterDefaultName;
+			}
+			return clusterLayout.filePath;
+		}
+	}
+
+	public List<ProcGen.World> worlds { get; private set; }
+
+	public ClusterLayout Layout
+	{
+		get
+		{
+			if (mutatedClusterLayout != null)
+			{
+				return mutatedClusterLayout.layout;
+			}
+			return clusterLayout;
+		}
+	}
+
+	public ProcGen.World GetStartWorld => startWorld;
+
+	public ColonyDestinationAsteroidBeltData(string staringWorldName, int seed, string clusterPath)
+	{
+		startWorld = SettingsCache.worlds.GetWorldData(staringWorldName);
+		Scale = (TargetScale = startWorld.iconScale);
+		worlds = new List<ProcGen.World>();
+		if (clusterPath != null)
+		{
+			clusterLayout = SettingsCache.clusterLayouts.GetClusterData(clusterPath);
+		}
+		ReInitialize(seed);
+	}
+
+	public static Sprite GetUISprite(string filename)
+	{
+		if (filename.IsNullOrWhiteSpace())
+		{
+			filename = (DlcManager.FeatureClusterSpaceEnabled() ? "asteroid_sandstone_start_kanim" : "Asteroid_sandstone");
+		}
+		Assets.TryGetAnim(filename, out var anim);
+		if (anim != null)
+		{
+			return Def.GetUISpriteFromMultiObjectAnim(anim);
+		}
+		return Assets.GetSprite(filename);
+	}
+
+	public void ReInitialize(int seed)
+	{
+		this.seed = seed;
+		paramDescriptors.Clear();
+		traitDescriptors.Clear();
+		sprite = GetUISprite(startWorld.asteroidIcon);
+		difficulty = clusterLayout.difficulty;
+		mutatedClusterLayout = WorldgenMixing.DoWorldMixing(clusterLayout, seed, isRunningWorldgenDebug: true, muteErrors: true);
+		RemixClusterLayout();
+	}
+
+	public void RemixClusterLayout()
+	{
+		WorldgenMixing.RefreshWorldMixing(mutatedClusterLayout, seed, isRunningWorldgenDebug: true, muteErrors: true);
+		worlds.Clear();
+		for (int i = 0; i < Layout.worldPlacements.Count; i++)
+		{
+			if (i != Layout.startWorldIndex)
+			{
+				worlds.Add(SettingsCache.worlds.GetWorldData(Layout.worldPlacements[i].world));
+			}
+		}
+	}
+
+	public List<AsteroidDescriptor> GetParamDescriptors()
+	{
+		if (paramDescriptors.Count == 0)
+		{
+			paramDescriptors = GenerateParamDescriptors();
+		}
+		return paramDescriptors;
+	}
+
+	public List<AsteroidDescriptor> GetTraitDescriptors()
+	{
+		if (traitDescriptors.Count == 0)
+		{
+			traitDescriptors = GenerateTraitDescriptors();
+		}
+		return traitDescriptors;
+	}
+
+	private List<AsteroidDescriptor> GenerateParamDescriptors()
+	{
+		List<AsteroidDescriptor> list = new List<AsteroidDescriptor>();
+		if (clusterLayout != null && DlcManager.FeatureClusterSpaceEnabled())
+		{
+			list.Add(new AsteroidDescriptor(string.Format(WORLDS.SURVIVAL_CHANCE.CLUSTERNAME, Strings.Get(clusterLayout.name)), Strings.Get(clusterLayout.description), Color.white));
+		}
+		list.Add(new AsteroidDescriptor(string.Format(WORLDS.SURVIVAL_CHANCE.PLANETNAME, startWorldName), null, Color.white));
+		list.Add(new AsteroidDescriptor(Strings.Get(startWorld.description), null, Color.white));
+		if (DlcManager.FeatureClusterSpaceEnabled())
+		{
+			list.Add(new AsteroidDescriptor(string.Format(WORLDS.SURVIVAL_CHANCE.MOONNAMES), null, Color.white));
+			foreach (ProcGen.World world in worlds)
+			{
+				list.Add(new AsteroidDescriptor($"{Strings.Get(world.name)}", Strings.Get(world.description), Color.white));
+			}
+		}
+		int index = Mathf.Clamp(difficulty, 0, survivalOptions.Count - 1);
+		Tuple<string, string, string> tuple = survivalOptions[index];
+		list.Add(new AsteroidDescriptor(string.Format(WORLDS.SURVIVAL_CHANCE.TITLE, tuple.first, tuple.third), null, Color.white));
+		return list;
+	}
+
+	private List<AsteroidDescriptor> GenerateTraitDescriptors()
+	{
+		List<AsteroidDescriptor> list = new List<AsteroidDescriptor>();
+		List<ProcGen.World> list2 = new List<ProcGen.World>();
+		list2.Add(startWorld);
+		list2.AddRange(worlds);
+		for (int i = 0; i < list2.Count; i++)
+		{
+			ProcGen.World world = list2[i];
+			if (DlcManager.IsExpansion1Active())
+			{
+				list.Add(new AsteroidDescriptor("", null, Color.white));
+				list.Add(new AsteroidDescriptor($"<b>{Strings.Get(world.name)}</b>", null, Color.white));
+			}
+			List<WorldTrait> worldTraits = GetWorldTraits(world);
+			foreach (WorldTrait item in worldTraits)
+			{
+				string associatedIcon = item.filePath.Substring(item.filePath.LastIndexOf("/") + 1);
+				list.Add(new AsteroidDescriptor(string.Format("<color=#{1}>{0}</color>", Strings.Get(item.name), item.colorHex), Strings.Get(item.description), Util.ColorFromHex(item.colorHex), null, associatedIcon));
+			}
+			if (worldTraits.Count == 0)
+			{
+				list.Add(new AsteroidDescriptor(WORLD_TRAITS.NO_TRAITS.NAME, WORLD_TRAITS.NO_TRAITS.DESCRIPTION, Color.white, null, "NoTraits"));
+			}
+		}
+		return list;
+	}
+
+	public List<AsteroidDescriptor> GenerateTraitDescriptors(ProcGen.World singleWorld, bool includeDefaultTrait = true)
+	{
+		List<AsteroidDescriptor> list = new List<AsteroidDescriptor>();
+		List<ProcGen.World> list2 = new List<ProcGen.World>();
+		list2.Add(startWorld);
+		list2.AddRange(worlds);
+		for (int i = 0; i < list2.Count; i++)
+		{
+			if (list2[i] != singleWorld)
+			{
+				continue;
+			}
+			ProcGen.World singleWorld2 = list2[i];
+			List<WorldTrait> worldTraits = GetWorldTraits(singleWorld2);
+			foreach (WorldTrait item in worldTraits)
+			{
+				string associatedIcon = item.filePath.Substring(item.filePath.LastIndexOf("/") + 1);
+				list.Add(new AsteroidDescriptor(string.Format("<color=#{1}>{0}</color>", Strings.Get(item.name), item.colorHex), Strings.Get(item.description), Util.ColorFromHex(item.colorHex), null, associatedIcon));
+			}
+			if (worldTraits.Count == 0 && includeDefaultTrait)
+			{
+				list.Add(new AsteroidDescriptor(WORLD_TRAITS.NO_TRAITS.NAME, WORLD_TRAITS.NO_TRAITS.DESCRIPTION, Color.white, null, "NoTraits"));
+			}
+		}
+		return list;
+	}
+
+	public List<WorldTrait> GetWorldTraits(ProcGen.World singleWorld)
+	{
+		List<WorldTrait> list = new List<WorldTrait>();
+		List<ProcGen.World> list2 = new List<ProcGen.World>();
+		list2.Add(startWorld);
+		list2.AddRange(worlds);
+		for (int i = 0; i < list2.Count; i++)
+		{
+			if (list2[i] != singleWorld)
+			{
+				continue;
+			}
+			ProcGen.World world = list2[i];
+			int num = seed;
+			if (num > 0)
+			{
+				num += clusterLayout.worldPlacements.FindIndex((WorldPlacement x) => x.world == world.filePath);
+			}
+			foreach (string randomTrait in SettingsCache.GetRandomTraits(num, world))
+			{
+				WorldTrait cachedWorldTrait = SettingsCache.GetCachedWorldTrait(randomTrait, assertMissingTrait: true);
+				list.Add(cachedWorldTrait);
+			}
+		}
+		return list;
+	}
+}

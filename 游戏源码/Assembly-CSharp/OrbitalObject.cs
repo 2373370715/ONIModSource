@@ -1,0 +1,173 @@
+using System;
+using System.Collections.Generic;
+using KSerialization;
+using UnityEngine;
+
+[AddComponentMenu("KMonoBehaviour/scripts/OrbitalObject")]
+[SerializationConfig(MemberSerialization.OptIn)]
+public class OrbitalObject : KMonoBehaviour, IRenderEveryTick
+{
+	private WorldContainer world;
+
+	private OrbitalData orbitData;
+
+	private KBatchedAnimController animController;
+
+	[Serialize]
+	private string animFilename;
+
+	[Serialize]
+	private string initialAnim;
+
+	[Serialize]
+	private Vector3 worldOrbitingOrigin;
+
+	[Serialize]
+	private int orbitingWorldId;
+
+	[Serialize]
+	private float angle;
+
+	[Serialize]
+	public int timeoffset;
+
+	[Serialize]
+	public string orbitalDBId;
+
+	public void Init(string orbit_data_name, WorldContainer orbiting_world, List<Ref<OrbitalObject>> orbiting_obj)
+	{
+		OrbitalData orbitalData = Db.Get().OrbitalTypeCategories.Get(orbit_data_name);
+		if (orbiting_world != null)
+		{
+			orbitingWorldId = orbiting_world.id;
+			world = orbiting_world;
+			worldOrbitingOrigin = GetWorldOrigin(world, orbitalData);
+		}
+		else
+		{
+			worldOrbitingOrigin = new Vector3((float)Grid.WidthInCells * 0.5f, (float)Grid.HeightInCells * orbitalData.yGridPercent, 0f);
+		}
+		animFilename = orbitalData.animFile;
+		initialAnim = GetInitialAnim(orbitalData);
+		angle = GetAngle(orbitalData);
+		timeoffset = GetTimeOffset(orbiting_obj);
+		orbitalDBId = orbitalData.Id;
+	}
+
+	protected override void OnSpawn()
+	{
+		world = ClusterManager.Instance.GetWorld(orbitingWorldId);
+		orbitData = Db.Get().OrbitalTypeCategories.Get(orbitalDBId);
+		base.gameObject.SetActive(value: false);
+		KBatchedAnimController kBatchedAnimController = base.gameObject.AddComponent<KBatchedAnimController>();
+		kBatchedAnimController.isMovable = true;
+		kBatchedAnimController.initialAnim = initialAnim;
+		kBatchedAnimController.AnimFiles = new KAnimFile[1] { Assets.GetAnim(animFilename) };
+		kBatchedAnimController.initialMode = KAnim.PlayMode.Loop;
+		kBatchedAnimController.visibilityType = KAnimControllerBase.VisibilityType.Always;
+		animController = kBatchedAnimController;
+	}
+
+	public void RenderEveryTick(float dt)
+	{
+		float time = GameClock.Instance.GetTime();
+		bool behind;
+		Vector3 vector = CalculateWorldPos(time, out behind);
+		Vector3 vector2 = vector;
+		if (orbitData.periodInCycles > 0f)
+		{
+			vector2.x = vector.x / (float)Grid.WidthInCells;
+			vector2.y = vector.y / (float)Grid.HeightInCells;
+			vector2.x = Camera.main.ViewportToWorldPoint(vector2).x;
+			vector2.y = Camera.main.ViewportToWorldPoint(vector2).y;
+		}
+		bool flag = (!orbitData.rotatesBehind || !behind) && (world == null || ClusterManager.Instance.activeWorldId == world.id);
+		Vector3 offset = vector2 - base.gameObject.transform.position;
+		offset.z = 0f;
+		animController.Offset = offset;
+		Vector3 position = vector2;
+		position.x = worldOrbitingOrigin.x;
+		position.y = worldOrbitingOrigin.y;
+		base.gameObject.transform.SetPosition(position);
+		if (orbitData.periodInCycles > 0f)
+		{
+			base.gameObject.transform.localScale = Vector3.one * (CameraController.Instance.baseCamera.orthographicSize / orbitData.distance);
+		}
+		else
+		{
+			base.gameObject.transform.localScale = Vector3.one * orbitData.distance;
+		}
+		if (base.gameObject.activeSelf != flag)
+		{
+			base.gameObject.SetActive(flag);
+		}
+	}
+
+	private Vector3 CalculateWorldPos(float time, out bool behind)
+	{
+		Vector3 result;
+		if (orbitData.periodInCycles > 0f)
+		{
+			float num = orbitData.periodInCycles * 600f;
+			float f = ((time + (float)timeoffset) / num - (float)(int)((time + (float)timeoffset) / num)) * 2f * (float)Math.PI;
+			float num2 = 0.5f * orbitData.radiusScale * (float)world.WorldSize.x;
+			Vector3 vector = new Vector3(Mathf.Cos(f), 0f, Mathf.Sin(f));
+			behind = vector.z > orbitData.behindZ;
+			Vector3 vector2 = Quaternion.Euler(angle, 0f, 0f) * (vector * num2);
+			result = worldOrbitingOrigin + vector2;
+			result.z = ((orbitData.GetRenderZ == null) ? orbitData.renderZ : orbitData.GetRenderZ());
+		}
+		else
+		{
+			behind = false;
+			result = worldOrbitingOrigin;
+			result.z = ((orbitData.GetRenderZ == null) ? orbitData.renderZ : orbitData.GetRenderZ());
+		}
+		return result;
+	}
+
+	private string GetInitialAnim(OrbitalData data)
+	{
+		if (data.initialAnim.IsNullOrWhiteSpace())
+		{
+			KAnimFileData data2 = Assets.GetAnim(data.animFile).GetData();
+			int index = new KRandom().Next(0, data2.animCount - 1);
+			return data2.GetAnim(index).name;
+		}
+		return data.initialAnim;
+	}
+
+	private Vector3 GetWorldOrigin(WorldContainer wc, OrbitalData data)
+	{
+		if (wc != null)
+		{
+			float x = (float)wc.WorldOffset.x + (float)wc.WorldSize.x * data.xGridPercent;
+			float y = (float)wc.WorldOffset.y + (float)wc.WorldSize.y * data.yGridPercent;
+			return new Vector3(x, y, 0f);
+		}
+		return new Vector3((float)Grid.WidthInCells * data.xGridPercent, (float)Grid.HeightInCells * data.yGridPercent, 0f);
+	}
+
+	private float GetAngle(OrbitalData data)
+	{
+		return UnityEngine.Random.Range(data.minAngle, data.maxAngle);
+	}
+
+	private int GetTimeOffset(List<Ref<OrbitalObject>> orbiting_obj)
+	{
+		List<int> list = new List<int>();
+		foreach (Ref<OrbitalObject> item in orbiting_obj)
+		{
+			if (item.Get().world == world)
+			{
+				list.Add(item.Get().timeoffset);
+			}
+		}
+		int num = UnityEngine.Random.Range(0, 600);
+		while (list.Contains(num))
+		{
+			num = UnityEngine.Random.Range(0, 600);
+		}
+		return num;
+	}
+}

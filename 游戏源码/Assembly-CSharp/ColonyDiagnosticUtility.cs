@@ -1,0 +1,368 @@
+using System;
+using System.Collections.Generic;
+using KSerialization;
+using STRINGS;
+using UnityEngine;
+
+public class ColonyDiagnosticUtility : KMonoBehaviour, ISim1000ms
+{
+	public enum DisplaySetting
+	{
+		Always,
+		AlertOnly,
+		Never,
+		LENGTH
+	}
+
+	public static ColonyDiagnosticUtility Instance;
+
+	private Dictionary<int, List<ColonyDiagnostic>> worldDiagnostics = new Dictionary<int, List<ColonyDiagnostic>>();
+
+	[Serialize]
+	public Dictionary<int, Dictionary<string, DisplaySetting>> diagnosticDisplaySettings = new Dictionary<int, Dictionary<string, DisplaySetting>>();
+
+	[Serialize]
+	public Dictionary<int, Dictionary<string, List<string>>> diagnosticCriteriaDisabled = new Dictionary<int, Dictionary<string, List<string>>>();
+
+	[Serialize]
+	private Dictionary<string, float> diagnosticTutorialStatus = new Dictionary<string, float>
+	{
+		{ "ToiletDiagnostic", 450f },
+		{ "BedDiagnostic", 900f },
+		{ "BreathabilityDiagnostic", 1800f },
+		{ "FoodDiagnostic", 3000f },
+		{ "FarmDiagnostic", 6000f },
+		{ "StressDiagnostic", 9000f },
+		{ "PowerUseDiagnostic", 12000f },
+		{ "BatteryDiagnostic", 12000f },
+		{ "IdleDiagnostic", 600f }
+	};
+
+	public static bool IgnoreFirstUpdate = true;
+
+	public static ColonyDiagnostic.DiagnosticResult NoDataResult = new ColonyDiagnostic.DiagnosticResult(ColonyDiagnostic.DiagnosticResult.Opinion.Normal, UI.COLONY_DIAGNOSTICS.NO_DATA);
+
+	public static void DestroyInstance()
+	{
+		Instance = null;
+	}
+
+	public ColonyDiagnostic.DiagnosticResult.Opinion GetWorldDiagnosticResult(int worldID)
+	{
+		ColonyDiagnostic.DiagnosticResult.Opinion opinion = ColonyDiagnostic.DiagnosticResult.Opinion.Good;
+		foreach (ColonyDiagnostic item in worldDiagnostics[worldID])
+		{
+			if (Instance.diagnosticDisplaySettings[worldID][item.id] != DisplaySetting.Never && !Instance.IsDiagnosticTutorialDisabled(item.id))
+			{
+				switch (diagnosticDisplaySettings[worldID][item.id])
+				{
+				case DisplaySetting.Always:
+				case DisplaySetting.AlertOnly:
+					opinion = (ColonyDiagnostic.DiagnosticResult.Opinion)Math.Min((int)opinion, (int)item.LatestResult.opinion);
+					break;
+				}
+			}
+		}
+		return opinion;
+	}
+
+	public string GetWorldDiagnosticResultStatus(int worldID)
+	{
+		ColonyDiagnostic colonyDiagnostic = null;
+		foreach (ColonyDiagnostic item in worldDiagnostics[worldID])
+		{
+			if (Instance.diagnosticDisplaySettings[worldID][item.id] == DisplaySetting.Never || Instance.IsDiagnosticTutorialDisabled(item.id))
+			{
+				continue;
+			}
+			switch (diagnosticDisplaySettings[worldID][item.id])
+			{
+			case DisplaySetting.Always:
+			case DisplaySetting.AlertOnly:
+				if (colonyDiagnostic == null || item.LatestResult.opinion < colonyDiagnostic.LatestResult.opinion)
+				{
+					colonyDiagnostic = item;
+				}
+				break;
+			}
+		}
+		if (colonyDiagnostic == null || colonyDiagnostic.LatestResult.opinion == ColonyDiagnostic.DiagnosticResult.Opinion.Normal)
+		{
+			return "";
+		}
+		return colonyDiagnostic.name;
+	}
+
+	public string GetWorldDiagnosticResultTooltip(int worldID)
+	{
+		string text = "";
+		foreach (ColonyDiagnostic item in worldDiagnostics[worldID])
+		{
+			if (Instance.diagnosticDisplaySettings[worldID][item.id] == DisplaySetting.Never || Instance.IsDiagnosticTutorialDisabled(item.id))
+			{
+				continue;
+			}
+			switch (diagnosticDisplaySettings[worldID][item.id])
+			{
+			case DisplaySetting.Always:
+			case DisplaySetting.AlertOnly:
+				if (item.LatestResult.opinion < ColonyDiagnostic.DiagnosticResult.Opinion.Normal)
+				{
+					text = text + "\n" + item.LatestResult.GetFormattedMessage();
+				}
+				break;
+			}
+		}
+		return text;
+	}
+
+	public bool IsDiagnosticTutorialDisabled(string id)
+	{
+		if (Instance.diagnosticTutorialStatus.ContainsKey(id) && GameClock.Instance.GetTime() < Instance.diagnosticTutorialStatus[id])
+		{
+			return true;
+		}
+		return false;
+	}
+
+	public void ClearDiagnosticTutorialSetting(string id)
+	{
+		if (Instance.diagnosticTutorialStatus.ContainsKey(id))
+		{
+			Instance.diagnosticTutorialStatus[id] = -1f;
+		}
+	}
+
+	public bool IsCriteriaEnabled(int worldID, string diagnosticID, string criteriaID)
+	{
+		Dictionary<string, List<string>> dictionary = diagnosticCriteriaDisabled[worldID];
+		if (!dictionary.ContainsKey(diagnosticID))
+		{
+			return false;
+		}
+		return !dictionary[diagnosticID].Contains(criteriaID);
+	}
+
+	public void SetCriteriaEnabled(int worldID, string diagnosticID, string criteriaID, bool enabled)
+	{
+		Dictionary<string, List<string>> dictionary = diagnosticCriteriaDisabled[worldID];
+		Debug.Assert(dictionary.ContainsKey(diagnosticID), $"Trying to set criteria on World {worldID} lacks diagnostic {diagnosticID} that criteria {criteriaID} relates to");
+		List<string> list = dictionary[diagnosticID];
+		if (enabled && list.Contains(criteriaID))
+		{
+			list.Remove(criteriaID);
+		}
+		if (!enabled && !list.Contains(criteriaID))
+		{
+			list.Add(criteriaID);
+		}
+	}
+
+	protected override void OnPrefabInit()
+	{
+		base.OnPrefabInit();
+		Instance = this;
+	}
+
+	protected override void OnSpawn()
+	{
+		base.OnSpawn();
+		if (SaveLoader.Instance.GameInfo.IsVersionOlderThan(7, 33))
+		{
+			string key = "IdleDiagnostic";
+			foreach (int key2 in diagnosticDisplaySettings.Keys)
+			{
+				WorldContainer world = ClusterManager.Instance.GetWorld(key2);
+				if (diagnosticDisplaySettings[key2].ContainsKey(key) && diagnosticDisplaySettings[key2][key] != 0)
+				{
+					diagnosticDisplaySettings[key2][key] = ((!world.IsModuleInterior) ? DisplaySetting.AlertOnly : DisplaySetting.Never);
+				}
+			}
+		}
+		foreach (int item in ClusterManager.Instance.GetWorldIDsSorted())
+		{
+			AddWorld(item);
+		}
+		ClusterManager.Instance.Subscribe(-1280433810, Refresh);
+		ClusterManager.Instance.Subscribe(-1078710002, RemoveWorld);
+	}
+
+	private void Refresh(object data)
+	{
+		int worldID = (int)data;
+		AddWorld(worldID);
+	}
+
+	private void RemoveWorld(object data)
+	{
+		int key = (int)data;
+		if (!diagnosticDisplaySettings.Remove(key))
+		{
+			return;
+		}
+		if (worldDiagnostics.TryGetValue(key, out var value))
+		{
+			foreach (ColonyDiagnostic item in value)
+			{
+				item.OnCleanUp();
+			}
+		}
+		worldDiagnostics.Remove(key);
+	}
+
+	public ColonyDiagnostic GetDiagnostic(string id, int worldID)
+	{
+		return worldDiagnostics[worldID].Find((ColonyDiagnostic match) => match.id == id);
+	}
+
+	public T GetDiagnostic<T>(int worldID) where T : ColonyDiagnostic
+	{
+		return (T)worldDiagnostics[worldID].Find((ColonyDiagnostic match) => match is T);
+	}
+
+	public string GetDiagnosticName(string id)
+	{
+		foreach (KeyValuePair<int, List<ColonyDiagnostic>> worldDiagnostic in worldDiagnostics)
+		{
+			foreach (ColonyDiagnostic item in worldDiagnostic.Value)
+			{
+				if (item.id == id)
+				{
+					return item.name;
+				}
+			}
+		}
+		Debug.LogWarning("Cannot locate name of diagnostic " + id + " because no worlds have a diagnostic with that id ");
+		return "";
+	}
+
+	public ChoreGroupDiagnostic GetChoreGroupDiagnostic(int worldID, ChoreGroup choreGroup)
+	{
+		return (ChoreGroupDiagnostic)worldDiagnostics[worldID].Find((ColonyDiagnostic match) => match is ChoreGroupDiagnostic && ((ChoreGroupDiagnostic)match).choreGroup == choreGroup);
+	}
+
+	public WorkTimeDiagnostic GetWorkTimeDiagnostic(int worldID, ChoreGroup choreGroup)
+	{
+		return (WorkTimeDiagnostic)worldDiagnostics[worldID].Find((ColonyDiagnostic match) => match is WorkTimeDiagnostic && ((WorkTimeDiagnostic)match).choreGroup == choreGroup);
+	}
+
+	private void TryAddDiagnosticToWorldCollection(ref List<ColonyDiagnostic> newWorldDiagnostics, ColonyDiagnostic newDiagnostic)
+	{
+		if (DlcManager.IsDlcListValidForCurrentContent(newDiagnostic.GetDlcIds()))
+		{
+			newWorldDiagnostics.Add(newDiagnostic);
+		}
+	}
+
+	public void AddWorld(int worldID)
+	{
+		bool flag = false;
+		if (!diagnosticDisplaySettings.ContainsKey(worldID))
+		{
+			diagnosticDisplaySettings.Add(worldID, new Dictionary<string, DisplaySetting>());
+			flag = true;
+		}
+		if (!diagnosticCriteriaDisabled.ContainsKey(worldID))
+		{
+			diagnosticCriteriaDisabled.Add(worldID, new Dictionary<string, List<string>>());
+		}
+		List<ColonyDiagnostic> newWorldDiagnostics = new List<ColonyDiagnostic>();
+		TryAddDiagnosticToWorldCollection(ref newWorldDiagnostics, new BreathabilityDiagnostic(worldID));
+		TryAddDiagnosticToWorldCollection(ref newWorldDiagnostics, new FoodDiagnostic(worldID));
+		TryAddDiagnosticToWorldCollection(ref newWorldDiagnostics, new StressDiagnostic(worldID));
+		TryAddDiagnosticToWorldCollection(ref newWorldDiagnostics, new RadiationDiagnostic(worldID));
+		TryAddDiagnosticToWorldCollection(ref newWorldDiagnostics, new ReactorDiagnostic(worldID));
+		TryAddDiagnosticToWorldCollection(ref newWorldDiagnostics, new IdleDiagnostic(worldID));
+		if (ClusterManager.Instance.GetWorld(worldID).IsModuleInterior)
+		{
+			TryAddDiagnosticToWorldCollection(ref newWorldDiagnostics, new FloatingRocketDiagnostic(worldID));
+			TryAddDiagnosticToWorldCollection(ref newWorldDiagnostics, new RocketFuelDiagnostic(worldID));
+			TryAddDiagnosticToWorldCollection(ref newWorldDiagnostics, new RocketOxidizerDiagnostic(worldID));
+		}
+		else
+		{
+			TryAddDiagnosticToWorldCollection(ref newWorldDiagnostics, new BedDiagnostic(worldID));
+			TryAddDiagnosticToWorldCollection(ref newWorldDiagnostics, new ToiletDiagnostic(worldID));
+			TryAddDiagnosticToWorldCollection(ref newWorldDiagnostics, new PowerUseDiagnostic(worldID));
+			TryAddDiagnosticToWorldCollection(ref newWorldDiagnostics, new BatteryDiagnostic(worldID));
+			TryAddDiagnosticToWorldCollection(ref newWorldDiagnostics, new TrappedDuplicantDiagnostic(worldID));
+			TryAddDiagnosticToWorldCollection(ref newWorldDiagnostics, new FarmDiagnostic(worldID));
+			TryAddDiagnosticToWorldCollection(ref newWorldDiagnostics, new EntombedDiagnostic(worldID));
+			TryAddDiagnosticToWorldCollection(ref newWorldDiagnostics, new RocketsInOrbitDiagnostic(worldID));
+			TryAddDiagnosticToWorldCollection(ref newWorldDiagnostics, new MeteorDiagnostic(worldID));
+		}
+		worldDiagnostics.Add(worldID, newWorldDiagnostics);
+		foreach (ColonyDiagnostic item in newWorldDiagnostics)
+		{
+			if (!diagnosticDisplaySettings[worldID].ContainsKey(item.id))
+			{
+				diagnosticDisplaySettings[worldID].Add(item.id, DisplaySetting.AlertOnly);
+			}
+			if (!diagnosticCriteriaDisabled[worldID].ContainsKey(item.id))
+			{
+				diagnosticCriteriaDisabled[worldID].Add(item.id, new List<string>());
+			}
+		}
+		if (flag)
+		{
+			diagnosticDisplaySettings[worldID]["BreathabilityDiagnostic"] = DisplaySetting.Always;
+			diagnosticDisplaySettings[worldID]["FoodDiagnostic"] = DisplaySetting.Always;
+			diagnosticDisplaySettings[worldID]["StressDiagnostic"] = DisplaySetting.Always;
+			if (ClusterManager.Instance.GetWorld(worldID).IsModuleInterior)
+			{
+				diagnosticDisplaySettings[worldID]["FloatingRocketDiagnostic"] = DisplaySetting.Always;
+				diagnosticDisplaySettings[worldID]["RocketFuelDiagnostic"] = DisplaySetting.Always;
+				diagnosticDisplaySettings[worldID]["RocketOxidizerDiagnostic"] = DisplaySetting.Always;
+				diagnosticDisplaySettings[worldID]["IdleDiagnostic"] = DisplaySetting.Never;
+			}
+			else
+			{
+				diagnosticDisplaySettings[worldID]["IdleDiagnostic"] = DisplaySetting.AlertOnly;
+			}
+		}
+	}
+
+	public void Sim1000ms(float dt)
+	{
+		if (IgnoreFirstUpdate)
+		{
+			IgnoreFirstUpdate = false;
+		}
+	}
+
+	public static bool PastNewBuildingGracePeriod(Transform building)
+	{
+		BuildingComplete component = building.GetComponent<BuildingComplete>();
+		if (component != null && GameClock.Instance.GetTime() - component.creationTime < 600f)
+		{
+			return false;
+		}
+		return true;
+	}
+
+	public static bool IgnoreRocketsWithNoCrewRequested(int worldID, out ColonyDiagnostic.DiagnosticResult result)
+	{
+		WorldContainer world = ClusterManager.Instance.GetWorld(worldID);
+		string message = (world.IsModuleInterior ? UI.COLONY_DIAGNOSTICS.NO_MINIONS_ROCKET : UI.COLONY_DIAGNOSTICS.NO_MINIONS_PLANETOID);
+		result = new ColonyDiagnostic.DiagnosticResult(ColonyDiagnostic.DiagnosticResult.Opinion.Normal, message);
+		if (world.IsModuleInterior)
+		{
+			for (int i = 0; i < Components.Clustercrafts.Count; i++)
+			{
+				WorldContainer interiorWorld = Components.Clustercrafts[i].ModuleInterface.GetInteriorWorld();
+				if (!(interiorWorld == null) && interiorWorld.id == worldID)
+				{
+					PassengerRocketModule passengerModule = Components.Clustercrafts[i].ModuleInterface.GetPassengerModule();
+					if (passengerModule != null && !passengerModule.ShouldCrewGetIn())
+					{
+						result = default(ColonyDiagnostic.DiagnosticResult);
+						result.opinion = ColonyDiagnostic.DiagnosticResult.Opinion.Normal;
+						result.Message = UI.COLONY_DIAGNOSTICS.NO_MINIONS_REQUESTED;
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+}

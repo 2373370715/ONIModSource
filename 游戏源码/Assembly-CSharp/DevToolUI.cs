@@ -1,0 +1,108 @@
+using System.Collections.Generic;
+using ImGuiNET;
+using UnityEngine;
+using UnityEngine.EventSystems;
+
+public class DevToolUI : DevTool
+{
+	private List<RaycastResult> m_raycast_hits = new List<RaycastResult>();
+
+	private RaycastResult? m_last_pinged_hit;
+
+	protected override void RenderTo(DevPanel panel)
+	{
+		RepopulateRaycastHits();
+		DrawPingObject();
+		DrawRaycastHits();
+	}
+
+	private void DrawPingObject()
+	{
+		if (m_last_pinged_hit.HasValue)
+		{
+			GameObject gameObject = m_last_pinged_hit.Value.gameObject;
+			if (gameObject != null && (bool)gameObject)
+			{
+				ImGui.Text("Last Pinged: \"" + GetQualifiedName(gameObject) + "\"");
+				ImGui.SameLine();
+				if (ImGui.Button("Inspect"))
+				{
+					DevToolSceneInspector.Inspect(gameObject);
+				}
+				ImGui.Spacing();
+				ImGui.Spacing();
+			}
+			else
+			{
+				m_last_pinged_hit = null;
+			}
+		}
+		ImGui.Text("Press \",\" to ping the top hovered ui object");
+		ImGui.Spacing();
+		ImGui.Spacing();
+	}
+
+	private void Internal_Ping(RaycastResult raycastResult)
+	{
+		_ = raycastResult.gameObject;
+		m_last_pinged_hit = raycastResult;
+	}
+
+	public static void PingHoveredObject()
+	{
+		using ListPool<RaycastResult, DevToolUI>.PooledList pooledList = PoolsFor<DevToolUI>.AllocateList<RaycastResult>();
+		UnityEngine.EventSystems.EventSystem current = UnityEngine.EventSystems.EventSystem.current;
+		if (!(current == null) && (bool)current)
+		{
+			current.RaycastAll(new PointerEventData(current)
+			{
+				position = Input.mousePosition
+			}, pooledList);
+			DevToolUI devToolUI = DevToolManager.Instance.panels.AddOrGetDevTool<DevToolUI>();
+			if (pooledList.Count > 0)
+			{
+				devToolUI.Internal_Ping(pooledList[0]);
+			}
+		}
+	}
+
+	private void DrawRaycastHits()
+	{
+		if (m_raycast_hits.Count <= 0)
+		{
+			ImGui.Text("Didn't hit any ui");
+			return;
+		}
+		ImGui.Text("Raycast Hits:");
+		ImGui.Indent();
+		for (int i = 0; i < m_raycast_hits.Count; i++)
+		{
+			RaycastResult raycastResult = m_raycast_hits[i];
+			ImGui.BulletText($"[{i}] {GetQualifiedName(raycastResult.gameObject)}");
+		}
+		ImGui.Unindent();
+	}
+
+	private void RepopulateRaycastHits()
+	{
+		m_raycast_hits.Clear();
+		UnityEngine.EventSystems.EventSystem current = UnityEngine.EventSystems.EventSystem.current;
+		if (!(current == null) && (bool)current)
+		{
+			current.RaycastAll(new PointerEventData(current)
+			{
+				position = Input.mousePosition
+			}, m_raycast_hits);
+		}
+	}
+
+	private static string GetQualifiedName(GameObject game_object)
+	{
+		KScreen componentInParent = game_object.GetComponentInParent<KScreen>();
+		if (componentInParent != null)
+		{
+			return componentInParent.gameObject.name + " :: " + game_object.name;
+		}
+		return game_object.name ?? "";
+	}
+}
