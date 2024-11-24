@@ -1,9 +1,10 @@
+﻿using System;
 using ImGuiNET;
 
+// Token: 0x02000BC3 RID: 3011
 public class DevToolSaveGameInfo : DevTool
 {
-	private string clSearch = "";
-
+	// Token: 0x0600399F RID: 14751 RVA: 0x002221C0 File Offset: 0x002203C0
 	protected override void RenderTo(DevPanel panel)
 	{
 		if (Game.Instance == null)
@@ -13,25 +14,28 @@ public class DevToolSaveGameInfo : DevTool
 		}
 		ImGui.Text("Seed: " + CustomGameSettings.Instance.GetSettingsCoordinate());
 		ImGui.Text("Generated: " + Game.Instance.dateGenerated);
-		ImGui.Text("DebugWasUsed: " + Game.Instance.debugWasUsed);
+		ImGui.Text("DebugWasUsed: " + Game.Instance.debugWasUsed.ToString());
 		ImGui.Text("Content Enabled: ");
-		foreach (string dlcId in SaveLoader.Instance.GameInfo.dlcIds)
+		foreach (string text in SaveLoader.Instance.GameInfo.dlcIds)
 		{
-			string text = ((dlcId == "") ? "VANILLA_ID" : dlcId);
-			ImGui.Text(" - " + text);
+			string str = (text == "") ? "VANILLA_ID" : text;
+			ImGui.Text(" - " + str);
 		}
 		ImGui.PushItemWidth(100f);
 		ImGui.NewLine();
 		ImGui.Text("Changelists played on");
-		ImGui.InputText("Search", ref clSearch, 10u);
+		ImGui.InputText("Search", ref this.clSearch, 10U);
 		ImGui.PopItemWidth();
-		foreach (uint item in Game.Instance.changelistsPlayedOn)
+		foreach (uint num in Game.Instance.changelistsPlayedOn)
 		{
-			if (clSearch.IsNullOrWhiteSpace() || item.ToString().Contains(clSearch))
+			if (this.clSearch.IsNullOrWhiteSpace() || num.ToString().Contains(this.clSearch))
 			{
-				ImGui.Text(item.ToString());
+				ImGui.Text(num.ToString());
 			}
 		}
 		ImGui.NewLine();
 	}
+
+	// Token: 0x0400273E RID: 10046
+	private string clSearch = "";
 }

@@ -1,50 +1,16 @@
+﻿using System;
+
+// Token: 0x02001657 RID: 5719
 [SkipSaveFileSerialization]
 public class SolitarySleeper : StateMachineComponent<SolitarySleeper.StatesInstance>
 {
-	public class StatesInstance : GameStateMachine<States, StatesInstance, SolitarySleeper, object>.GameInstance
-	{
-		public StatesInstance(SolitarySleeper master)
-			: base(master)
-		{
-		}
-	}
-
-	public class States : GameStateMachine<States, StatesInstance, SolitarySleeper>
-	{
-		public State satisfied;
-
-		public State suffering;
-
-		public override void InitializeStates(out BaseState default_state)
-		{
-			default_state = satisfied;
-			root.TagTransition(GameTags.Dead, null).EventTransition(GameHashes.NewDay, satisfied).Update("SolitarySleeperCheck", delegate(StatesInstance smi, float dt)
-			{
-				if (smi.master.IsUncomfortable())
-				{
-					if (smi.GetCurrentState() != suffering)
-					{
-						smi.GoTo(suffering);
-					}
-				}
-				else if (smi.GetCurrentState() != satisfied)
-				{
-					smi.GoTo(satisfied);
-				}
-			}, UpdateRate.SIM_4000ms);
-			suffering.AddEffect("PeopleTooCloseWhileSleeping").ToggleExpression(Db.Get().Expressions.Uncomfortable).Update("PeopleTooCloseSleepFail", delegate(StatesInstance smi, float dt)
-			{
-				smi.master.gameObject.Trigger(1338475637, this);
-			}, UpdateRate.SIM_1000ms);
-			satisfied.DoNothing();
-		}
-	}
-
+	// Token: 0x06007621 RID: 30241 RVA: 0x000EDA1B File Offset: 0x000EBC1B
 	protected override void OnSpawn()
 	{
 		base.smi.StartSM();
 	}
 
+	// Token: 0x06007622 RID: 30242 RVA: 0x0030882C File Offset: 0x00306A2C
 	protected bool IsUncomfortable()
 	{
 		if (!base.gameObject.GetSMI<StaminaMonitor.Instance>().IsSleeping())
@@ -67,18 +33,63 @@ public class SolitarySleeper : StateMachineComponent<SolitarySleeper.StatesInsta
 			{
 				flag2 = false;
 			}
-			foreach (MinionIdentity item in Components.LiveMinionIdentities.Items)
+			foreach (MinionIdentity minionIdentity in Components.LiveMinionIdentities.Items)
 			{
-				if (flag && Grid.PosToCell(item.gameObject) == num3)
+				if (flag && Grid.PosToCell(minionIdentity.gameObject) == num3)
 				{
 					return true;
 				}
-				if (flag2 && Grid.PosToCell(item.gameObject) == num2)
+				if (flag2 && Grid.PosToCell(minionIdentity.gameObject) == num2)
 				{
 					return true;
 				}
 			}
 		}
 		return false;
+	}
+
+	// Token: 0x02001658 RID: 5720
+	public class StatesInstance : GameStateMachine<SolitarySleeper.States, SolitarySleeper.StatesInstance, SolitarySleeper, object>.GameInstance
+	{
+		// Token: 0x06007624 RID: 30244 RVA: 0x000EDA30 File Offset: 0x000EBC30
+		public StatesInstance(SolitarySleeper master) : base(master)
+		{
+		}
+	}
+
+	// Token: 0x02001659 RID: 5721
+	public class States : GameStateMachine<SolitarySleeper.States, SolitarySleeper.StatesInstance, SolitarySleeper>
+	{
+		// Token: 0x06007625 RID: 30245 RVA: 0x00308928 File Offset: 0x00306B28
+		public override void InitializeStates(out StateMachine.BaseState default_state)
+		{
+			default_state = this.satisfied;
+			this.root.TagTransition(GameTags.Dead, null, false).EventTransition(GameHashes.NewDay, this.satisfied, null).Update("SolitarySleeperCheck", delegate(SolitarySleeper.StatesInstance smi, float dt)
+			{
+				if (smi.master.IsUncomfortable())
+				{
+					if (smi.GetCurrentState() != this.suffering)
+					{
+						smi.GoTo(this.suffering);
+						return;
+					}
+				}
+				else if (smi.GetCurrentState() != this.satisfied)
+				{
+					smi.GoTo(this.satisfied);
+				}
+			}, UpdateRate.SIM_4000ms, false);
+			this.suffering.AddEffect("PeopleTooCloseWhileSleeping").ToggleExpression(Db.Get().Expressions.Uncomfortable, null).Update("PeopleTooCloseSleepFail", delegate(SolitarySleeper.StatesInstance smi, float dt)
+			{
+				smi.master.gameObject.Trigger(1338475637, this);
+			}, UpdateRate.SIM_1000ms, false);
+			this.satisfied.DoNothing();
+		}
+
+		// Token: 0x04005883 RID: 22659
+		public GameStateMachine<SolitarySleeper.States, SolitarySleeper.StatesInstance, SolitarySleeper, object>.State satisfied;
+
+		// Token: 0x04005884 RID: 22660
+		public GameStateMachine<SolitarySleeper.States, SolitarySleeper.StatesInstance, SolitarySleeper, object>.State suffering;
 	}
 }

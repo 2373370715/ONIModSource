@@ -1,56 +1,60 @@
-namespace Database;
+﻿using System;
 
-public abstract class PermitResource : Resource
+namespace Database
 {
-	public string Description;
-
-	public PermitCategory Category;
-
-	public PermitRarity Rarity;
-
-	public string[] DlcIds;
-
-	public PermitResource(string id, string Name, string Desc, PermitCategory permitCategory, PermitRarity rarity, string[] DLCIds)
-		: base(id, Name)
+	// Token: 0x0200214F RID: 8527
+	public abstract class PermitResource : Resource
 	{
-		DebugUtil.DevAssert(Name != null, "Name must be provided for permit with id \"" + id + "\" of type " + GetType().Name);
-		DebugUtil.DevAssert(Desc != null, "Description must be provided for permit with id \"" + id + "\" of type " + GetType().Name);
-		Description = Desc;
-		Category = permitCategory;
-		Rarity = rarity;
-		DlcIds = DLCIds;
-	}
-
-	public abstract PermitPresentationInfo GetPermitPresentationInfo();
-
-	public bool IsOwnableOnServer()
-	{
-		if (Rarity != PermitRarity.Universal)
+		// Token: 0x0600B5A5 RID: 46501 RVA: 0x00452718 File Offset: 0x00450918
+		public PermitResource(string id, string Name, string Desc, PermitCategory permitCategory, PermitRarity rarity, string[] DLCIds) : base(id, Name)
 		{
-			return Rarity != PermitRarity.UniversalLocked;
+			DebugUtil.DevAssert(Name != null, "Name must be provided for permit with id \"" + id + "\" of type " + base.GetType().Name, null);
+			DebugUtil.DevAssert(Desc != null, "Description must be provided for permit with id \"" + id + "\" of type " + base.GetType().Name, null);
+			this.Description = Desc;
+			this.Category = permitCategory;
+			this.Rarity = rarity;
+			this.DlcIds = DLCIds;
 		}
-		return false;
-	}
 
-	public bool IsUnlocked()
-	{
-		if (Rarity != PermitRarity.Universal)
-		{
-			return PermitItems.IsPermitUnlocked(this);
-		}
-		return true;
-	}
+		// Token: 0x0600B5A6 RID: 46502
+		public abstract PermitPresentationInfo GetPermitPresentationInfo();
 
-	public string GetDlcIdFrom()
-	{
-		if (DlcIds == DlcManager.AVAILABLE_ALL_VERSIONS || DlcIds == DlcManager.AVAILABLE_VANILLA_ONLY)
+		// Token: 0x0600B5A7 RID: 46503 RVA: 0x0011523E File Offset: 0x0011343E
+		public bool IsOwnableOnServer()
 		{
-			return null;
+			return this.Rarity != PermitRarity.Universal && this.Rarity != PermitRarity.UniversalLocked;
 		}
-		if (DlcIds.Length == 0)
+
+		// Token: 0x0600B5A8 RID: 46504 RVA: 0x00115257 File Offset: 0x00113457
+		public bool IsUnlocked()
 		{
-			return null;
+			return this.Rarity == PermitRarity.Universal || PermitItems.IsPermitUnlocked(this);
 		}
-		return DlcIds[0];
+
+		// Token: 0x0600B5A9 RID: 46505 RVA: 0x0011526A File Offset: 0x0011346A
+		public string GetDlcIdFrom()
+		{
+			if (this.DlcIds == DlcManager.AVAILABLE_ALL_VERSIONS || this.DlcIds == DlcManager.AVAILABLE_VANILLA_ONLY)
+			{
+				return null;
+			}
+			if (this.DlcIds.Length == 0)
+			{
+				return null;
+			}
+			return this.DlcIds[0];
+		}
+
+		// Token: 0x0400939B RID: 37787
+		public string Description;
+
+		// Token: 0x0400939C RID: 37788
+		public PermitCategory Category;
+
+		// Token: 0x0400939D RID: 37789
+		public PermitRarity Rarity;
+
+		// Token: 0x0400939E RID: 37790
+		public string[] DlcIds;
 	}
 }

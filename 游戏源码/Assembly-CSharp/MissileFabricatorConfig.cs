@@ -1,41 +1,43 @@
+﻿using System;
 using System.Collections.Generic;
 using STRINGS;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x0200048F RID: 1167
 public class MissileFabricatorConfig : IBuildingConfig
 {
-	public const string ID = "MissileFabricator";
-
-	public const float MISSILE_FABRICATION_TIME = 80f;
-
-	public const float CO2_PRODUCTION_RATE = 0.0125f;
-
-	private static readonly List<Storage.StoredItemModifier> RefineryStoredItemModifiers = new List<Storage.StoredItemModifier>
-	{
-		Storage.StoredItemModifier.Hide,
-		Storage.StoredItemModifier.Preserve,
-		Storage.StoredItemModifier.Seal
-	};
-
+	// Token: 0x06001488 RID: 5256 RVA: 0x00190C38 File Offset: 0x0018EE38
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef("MissileFabricator", 5, 4, "missile_fabricator_kanim", 250, 60f, TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER5, MATERIALS.REFINED_METALS, 1600f, BuildLocationRule.OnFloor, noise: NOISE_POLLUTION.NOISY.TIER6, decor: TUNING.BUILDINGS.DECOR.PENALTY.TIER2);
-		obj.RequiresPowerInput = true;
-		obj.EnergyConsumptionWhenActive = 960f;
-		obj.SelfHeatKilowattsWhenActive = 8f;
-		obj.ExhaustKilowattsWhenActive = 0f;
-		obj.ViewMode = OverlayModes.Power.ID;
-		obj.AudioCategory = "Metal";
-		obj.PowerInputOffset = new CellOffset(1, 0);
-		obj.InputConduitType = ConduitType.Liquid;
-		obj.UtilityInputOffset = new CellOffset(-1, 1);
-		return obj;
+		string id = "MissileFabricator";
+		int width = 5;
+		int height = 4;
+		string anim = "missile_fabricator_kanim";
+		int hitpoints = 250;
+		float construction_time = 60f;
+		float[] tier = TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER5;
+		string[] refined_METALS = MATERIALS.REFINED_METALS;
+		float melting_point = 1600f;
+		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
+		EffectorValues tier2 = NOISE_POLLUTION.NOISY.TIER6;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, refined_METALS, melting_point, build_location_rule, TUNING.BUILDINGS.DECOR.PENALTY.TIER2, tier2, 0.2f);
+		buildingDef.RequiresPowerInput = true;
+		buildingDef.EnergyConsumptionWhenActive = 960f;
+		buildingDef.SelfHeatKilowattsWhenActive = 8f;
+		buildingDef.ExhaustKilowattsWhenActive = 0f;
+		buildingDef.ViewMode = OverlayModes.Power.ID;
+		buildingDef.AudioCategory = "Metal";
+		buildingDef.PowerInputOffset = new CellOffset(1, 0);
+		buildingDef.InputConduitType = ConduitType.Liquid;
+		buildingDef.UtilityInputOffset = new CellOffset(-1, 1);
+		return buildingDef;
 	}
 
+	// Token: 0x06001489 RID: 5257 RVA: 0x00190CE0 File Offset: 0x0018EEE0
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		go.AddOrGet<DropAllWorkable>();
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
 		ComplexFabricator complexFabricator = go.AddOrGet<ComplexFabricator>();
@@ -44,14 +46,17 @@ public class MissileFabricatorConfig : IBuildingConfig
 		go.AddOrGet<CopyBuildingSettings>();
 		complexFabricator.keepExcessLiquids = true;
 		complexFabricator.allowManualFluidDelivery = false;
-		ComplexFabricatorWorkable complexFabricatorWorkable = go.AddOrGet<ComplexFabricatorWorkable>();
+		Workable workable = go.AddOrGet<ComplexFabricatorWorkable>();
 		complexFabricator.duplicantOperated = true;
 		BuildingTemplates.CreateComplexFabricatorStorage(go, complexFabricator);
 		complexFabricator.storeProduced = false;
-		complexFabricator.inStorage.SetDefaultStoredItemModifiers(RefineryStoredItemModifiers);
-		complexFabricator.buildStorage.SetDefaultStoredItemModifiers(RefineryStoredItemModifiers);
+		complexFabricator.inStorage.SetDefaultStoredItemModifiers(MissileFabricatorConfig.RefineryStoredItemModifiers);
+		complexFabricator.buildStorage.SetDefaultStoredItemModifiers(MissileFabricatorConfig.RefineryStoredItemModifiers);
 		complexFabricator.outputOffset = new Vector3(1f, 0.5f);
-		complexFabricatorWorkable.overrideAnims = new KAnimFile[1] { Assets.GetAnim("anim_interacts_missile_fabricator_kanim") };
+		workable.overrideAnims = new KAnimFile[]
+		{
+			Assets.GetAnim("anim_interacts_missile_fabricator_kanim")
+		};
 		BuildingElementEmitter buildingElementEmitter = go.AddOrGet<BuildingElementEmitter>();
 		buildingElementEmitter.emitRate = 0.0125f;
 		buildingElementEmitter.temperature = 313.15f;
@@ -64,14 +69,14 @@ public class MissileFabricatorConfig : IBuildingConfig
 		conduitConsumer.alwaysConsume = false;
 		conduitConsumer.forceAlwaysSatisfied = true;
 		conduitConsumer.wrongElementResult = ConduitConsumer.WrongElementResult.Store;
-		ComplexRecipe.RecipeElement[] array = new ComplexRecipe.RecipeElement[2]
+		ComplexRecipe.RecipeElement[] array = new ComplexRecipe.RecipeElement[]
 		{
-			new ComplexRecipe.RecipeElement(ElementLoader.FindElementByHash(SimHashes.Iron).tag, 25f, inheritElement: true),
+			new ComplexRecipe.RecipeElement(ElementLoader.FindElementByHash(SimHashes.Iron).tag, 25f, true),
 			new ComplexRecipe.RecipeElement(ElementLoader.FindElementByHash(SimHashes.Petroleum).tag, 50f)
 		};
-		ComplexRecipe.RecipeElement[] array2 = new ComplexRecipe.RecipeElement[1]
+		ComplexRecipe.RecipeElement[] array2 = new ComplexRecipe.RecipeElement[]
 		{
-			new ComplexRecipe.RecipeElement("MissileBasic", 5f, ComplexRecipe.RecipeElement.TemperatureOperation.AverageTemperature)
+			new ComplexRecipe.RecipeElement("MissileBasic", 5f, ComplexRecipe.RecipeElement.TemperatureOperation.AverageTemperature, false)
 		};
 		string obsolete_id = ComplexRecipeManager.MakeObsoleteRecipeID("MissileFabricator", array[0].material);
 		string text = ComplexRecipeManager.MakeRecipeID("MissileFabricator", array, array2);
@@ -79,18 +84,21 @@ public class MissileFabricatorConfig : IBuildingConfig
 		{
 			time = 80f,
 			nameDisplay = ComplexRecipe.RecipeNameDisplay.ResultWithIngredient,
-			description = string.Format(STRINGS.BUILDINGS.PREFABS.MISSILEFABRICATOR.RECIPE_DESCRIPTION, ITEMS.MISSILE_BASIC.NAME, ElementLoader.GetElement(array[0].material).name, ElementLoader.GetElement(array[1].material).name),
-			fabricators = new List<Tag> { TagManager.Create("MissileFabricator") }
+			description = string.Format(STRINGS.BUILDINGS.PREFABS.MISSILEFABRICATOR.RECIPE_DESCRIPTION, STRINGS.ITEMS.MISSILE_BASIC.NAME, ElementLoader.GetElement(array[0].material).name, ElementLoader.GetElement(array[1].material).name),
+			fabricators = new List<Tag>
+			{
+				TagManager.Create("MissileFabricator")
+			}
 		};
 		ComplexRecipeManager.Get().AddObsoleteIDMapping(obsolete_id, text);
-		ComplexRecipe.RecipeElement[] array3 = new ComplexRecipe.RecipeElement[2]
+		ComplexRecipe.RecipeElement[] array3 = new ComplexRecipe.RecipeElement[]
 		{
-			new ComplexRecipe.RecipeElement(ElementLoader.FindElementByHash(SimHashes.Copper).tag, 25f, inheritElement: true),
+			new ComplexRecipe.RecipeElement(ElementLoader.FindElementByHash(SimHashes.Copper).tag, 25f, true),
 			new ComplexRecipe.RecipeElement(ElementLoader.FindElementByHash(SimHashes.Petroleum).tag, 50f)
 		};
-		ComplexRecipe.RecipeElement[] array4 = new ComplexRecipe.RecipeElement[1]
+		ComplexRecipe.RecipeElement[] array4 = new ComplexRecipe.RecipeElement[]
 		{
-			new ComplexRecipe.RecipeElement("MissileBasic", 5f, ComplexRecipe.RecipeElement.TemperatureOperation.AverageTemperature)
+			new ComplexRecipe.RecipeElement("MissileBasic", 5f, ComplexRecipe.RecipeElement.TemperatureOperation.AverageTemperature, false)
 		};
 		string obsolete_id2 = ComplexRecipeManager.MakeObsoleteRecipeID("MissileFabricator", array3[0].material);
 		string text2 = ComplexRecipeManager.MakeRecipeID("MissileFabricator", array3, array4);
@@ -98,18 +106,21 @@ public class MissileFabricatorConfig : IBuildingConfig
 		{
 			time = 80f,
 			nameDisplay = ComplexRecipe.RecipeNameDisplay.ResultWithIngredient,
-			description = string.Format(STRINGS.BUILDINGS.PREFABS.MISSILEFABRICATOR.RECIPE_DESCRIPTION, ITEMS.MISSILE_BASIC.NAME, ElementLoader.GetElement(array3[0].material).name, ElementLoader.GetElement(array3[1].material).name),
-			fabricators = new List<Tag> { TagManager.Create("MissileFabricator") }
+			description = string.Format(STRINGS.BUILDINGS.PREFABS.MISSILEFABRICATOR.RECIPE_DESCRIPTION, STRINGS.ITEMS.MISSILE_BASIC.NAME, ElementLoader.GetElement(array3[0].material).name, ElementLoader.GetElement(array3[1].material).name),
+			fabricators = new List<Tag>
+			{
+				TagManager.Create("MissileFabricator")
+			}
 		};
 		ComplexRecipeManager.Get().AddObsoleteIDMapping(obsolete_id2, text2);
-		ComplexRecipe.RecipeElement[] array5 = new ComplexRecipe.RecipeElement[2]
+		ComplexRecipe.RecipeElement[] array5 = new ComplexRecipe.RecipeElement[]
 		{
-			new ComplexRecipe.RecipeElement(ElementLoader.FindElementByHash(SimHashes.Aluminum).tag, 25f, inheritElement: true),
+			new ComplexRecipe.RecipeElement(ElementLoader.FindElementByHash(SimHashes.Aluminum).tag, 25f, true),
 			new ComplexRecipe.RecipeElement(ElementLoader.FindElementByHash(SimHashes.Petroleum).tag, 50f)
 		};
-		ComplexRecipe.RecipeElement[] array6 = new ComplexRecipe.RecipeElement[1]
+		ComplexRecipe.RecipeElement[] array6 = new ComplexRecipe.RecipeElement[]
 		{
-			new ComplexRecipe.RecipeElement("MissileBasic", 5f, ComplexRecipe.RecipeElement.TemperatureOperation.AverageTemperature)
+			new ComplexRecipe.RecipeElement("MissileBasic", 5f, ComplexRecipe.RecipeElement.TemperatureOperation.AverageTemperature, false)
 		};
 		string obsolete_id3 = ComplexRecipeManager.MakeObsoleteRecipeID("MissileFabricator", array5[0].material);
 		string text3 = ComplexRecipeManager.MakeRecipeID("MissileFabricator", array5, array6);
@@ -117,20 +128,23 @@ public class MissileFabricatorConfig : IBuildingConfig
 		{
 			time = 80f,
 			nameDisplay = ComplexRecipe.RecipeNameDisplay.ResultWithIngredient,
-			description = string.Format(STRINGS.BUILDINGS.PREFABS.MISSILEFABRICATOR.RECIPE_DESCRIPTION, ITEMS.MISSILE_BASIC.NAME, ElementLoader.GetElement(array5[0].material).name, ElementLoader.GetElement(array5[1].material).name),
-			fabricators = new List<Tag> { TagManager.Create("MissileFabricator") }
+			description = string.Format(STRINGS.BUILDINGS.PREFABS.MISSILEFABRICATOR.RECIPE_DESCRIPTION, STRINGS.ITEMS.MISSILE_BASIC.NAME, ElementLoader.GetElement(array5[0].material).name, ElementLoader.GetElement(array5[1].material).name),
+			fabricators = new List<Tag>
+			{
+				TagManager.Create("MissileFabricator")
+			}
 		};
 		ComplexRecipeManager.Get().AddObsoleteIDMapping(obsolete_id3, text3);
 		if (ElementLoader.FindElementByHash(SimHashes.Cobalt) != null)
 		{
-			ComplexRecipe.RecipeElement[] array7 = new ComplexRecipe.RecipeElement[2]
+			ComplexRecipe.RecipeElement[] array7 = new ComplexRecipe.RecipeElement[]
 			{
-				new ComplexRecipe.RecipeElement(ElementLoader.FindElementByHash(SimHashes.Cobalt).tag, 25f, inheritElement: true),
+				new ComplexRecipe.RecipeElement(ElementLoader.FindElementByHash(SimHashes.Cobalt).tag, 25f, true),
 				new ComplexRecipe.RecipeElement(ElementLoader.FindElementByHash(SimHashes.Petroleum).tag, 50f)
 			};
-			ComplexRecipe.RecipeElement[] array8 = new ComplexRecipe.RecipeElement[1]
+			ComplexRecipe.RecipeElement[] array8 = new ComplexRecipe.RecipeElement[]
 			{
-				new ComplexRecipe.RecipeElement("MissileBasic", 5f, ComplexRecipe.RecipeElement.TemperatureOperation.AverageTemperature)
+				new ComplexRecipe.RecipeElement("MissileBasic", 5f, ComplexRecipe.RecipeElement.TemperatureOperation.AverageTemperature, false)
 			};
 			string obsolete_id4 = ComplexRecipeManager.MakeObsoleteRecipeID("MissileFabricator", array7[0].material);
 			string text4 = ComplexRecipeManager.MakeRecipeID("MissileFabricator", array7, array8);
@@ -138,14 +152,18 @@ public class MissileFabricatorConfig : IBuildingConfig
 			{
 				time = 80f,
 				nameDisplay = ComplexRecipe.RecipeNameDisplay.ResultWithIngredient,
-				description = string.Format(STRINGS.BUILDINGS.PREFABS.MISSILEFABRICATOR.RECIPE_DESCRIPTION, ITEMS.MISSILE_BASIC.NAME, ElementLoader.GetElement(array7[0].material).name, ElementLoader.GetElement(array7[1].material).name),
-				fabricators = new List<Tag> { TagManager.Create("MissileFabricator") }
+				description = string.Format(STRINGS.BUILDINGS.PREFABS.MISSILEFABRICATOR.RECIPE_DESCRIPTION, STRINGS.ITEMS.MISSILE_BASIC.NAME, ElementLoader.GetElement(array7[0].material).name, ElementLoader.GetElement(array7[1].material).name),
+				fabricators = new List<Tag>
+				{
+					TagManager.Create("MissileFabricator")
+				}
 			};
 			ComplexRecipeManager.Get().AddObsoleteIDMapping(obsolete_id4, text4);
 		}
 		Prioritizable.AddRef(go);
 	}
 
+	// Token: 0x0600148A RID: 5258 RVA: 0x000AEFA4 File Offset: 0x000AD1A4
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.GetComponent<KPrefabID>().prefabSpawnFn += delegate(GameObject game_object)
@@ -159,4 +177,21 @@ public class MissileFabricatorConfig : IBuildingConfig
 			component.requiredSkillPerk = Db.Get().SkillPerks.CanMakeMissiles.Id;
 		};
 	}
+
+	// Token: 0x04000DBA RID: 3514
+	public const string ID = "MissileFabricator";
+
+	// Token: 0x04000DBB RID: 3515
+	public const float MISSILE_FABRICATION_TIME = 80f;
+
+	// Token: 0x04000DBC RID: 3516
+	public const float CO2_PRODUCTION_RATE = 0.0125f;
+
+	// Token: 0x04000DBD RID: 3517
+	private static readonly List<Storage.StoredItemModifier> RefineryStoredItemModifiers = new List<Storage.StoredItemModifier>
+	{
+		Storage.StoredItemModifier.Hide,
+		Storage.StoredItemModifier.Preserve,
+		Storage.StoredItemModifier.Seal
+	};
 }

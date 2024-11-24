@@ -1,67 +1,79 @@
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using STRINGS;
 
-namespace Database;
-
-public class EatXKCalProducedByY : ColonyAchievementRequirement, AchievementRequirementSerialization_Deprecated
+namespace Database
 {
-	private int numCalories;
-
-	private List<Tag> foodProducers;
-
-	public EatXKCalProducedByY(int numCalories, List<Tag> foodProducers)
+	// Token: 0x0200219C RID: 8604
+	public class EatXKCalProducedByY : ColonyAchievementRequirement, AchievementRequirementSerialization_Deprecated
 	{
-		this.numCalories = numCalories;
-		this.foodProducers = foodProducers;
-	}
-
-	public override bool Success()
-	{
-		List<string> list = new List<string>();
-		foreach (ComplexRecipe recipe in ComplexRecipeManager.Get().recipes)
+		// Token: 0x0600B6D2 RID: 46802 RVA: 0x00115CEC File Offset: 0x00113EEC
+		public EatXKCalProducedByY(int numCalories, List<Tag> foodProducers)
 		{
-			foreach (Tag foodProducer in foodProducers)
+			this.numCalories = numCalories;
+			this.foodProducers = foodProducers;
+		}
+
+		// Token: 0x0600B6D3 RID: 46803 RVA: 0x0045AC20 File Offset: 0x00458E20
+		public override bool Success()
+		{
+			List<string> list = new List<string>();
+			foreach (ComplexRecipe complexRecipe in ComplexRecipeManager.Get().recipes)
 			{
-				foreach (Tag fabricator in recipe.fabricators)
+				foreach (Tag b in this.foodProducers)
 				{
-					if (fabricator == foodProducer)
+					using (List<Tag>.Enumerator enumerator3 = complexRecipe.fabricators.GetEnumerator())
 					{
-						list.Add(recipe.FirstResult.ToString());
+						while (enumerator3.MoveNext())
+						{
+							if (enumerator3.Current == b)
+							{
+								list.Add(complexRecipe.FirstResult.ToString());
+							}
+						}
 					}
 				}
 			}
+			return WorldResourceAmountTracker<RationTracker>.Get().GetAmountConsumedForIDs(list.Distinct<string>().ToList<string>()) / 1000f > (float)this.numCalories;
 		}
-		return RationTracker.Get().GetCaloiresConsumedByFood(list.Distinct().ToList()) / 1000f > (float)numCalories;
-	}
 
-	public void Deserialize(IReader reader)
-	{
-		int num = reader.ReadInt32();
-		foodProducers = new List<Tag>(num);
-		for (int i = 0; i < num; i++)
+		// Token: 0x0600B6D4 RID: 46804 RVA: 0x0045AD3C File Offset: 0x00458F3C
+		public void Deserialize(IReader reader)
 		{
-			string name = reader.ReadKleiString();
-			foodProducers.Add(new Tag(name));
+			int num = reader.ReadInt32();
+			this.foodProducers = new List<Tag>(num);
+			for (int i = 0; i < num; i++)
+			{
+				string name = reader.ReadKleiString();
+				this.foodProducers.Add(new Tag(name));
+			}
+			this.numCalories = reader.ReadInt32();
 		}
-		numCalories = reader.ReadInt32();
-	}
 
-	public override string GetProgress(bool complete)
-	{
-		string text = "";
-		for (int i = 0; i < foodProducers.Count; i++)
+		// Token: 0x0600B6D5 RID: 46805 RVA: 0x0045AD8C File Offset: 0x00458F8C
+		public override string GetProgress(bool complete)
 		{
-			if (i != 0)
+			string text = "";
+			for (int i = 0; i < this.foodProducers.Count; i++)
 			{
-				text += COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.PREPARED_SEPARATOR;
+				if (i != 0)
+				{
+					text += COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.PREPARED_SEPARATOR;
+				}
+				BuildingDef buildingDef = Assets.GetBuildingDef(this.foodProducers[i].Name);
+				if (buildingDef != null)
+				{
+					text += buildingDef.Name;
+				}
 			}
-			BuildingDef buildingDef = Assets.GetBuildingDef(foodProducers[i].Name);
-			if (buildingDef != null)
-			{
-				text += buildingDef.Name;
-			}
+			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.CONSUME_ITEM, text);
 		}
-		return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.CONSUME_ITEM, text);
+
+		// Token: 0x0400950F RID: 38159
+		private int numCalories;
+
+		// Token: 0x04009510 RID: 38160
+		private List<Tag> foodProducers;
 	}
 }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,147 +6,169 @@ using System.Reflection;
 using HarmonyLib;
 using UnityEngine;
 
-namespace KMod;
-
-internal static class DLLLoader
+namespace KMod
 {
-	private const string managed_path = "Managed";
-
-	public static bool LoadUserModLoaderDLL()
+	// Token: 0x020021CC RID: 8652
+	internal static class DLLLoader
 	{
-		try
+		// Token: 0x0600B771 RID: 46961 RVA: 0x0046105C File Offset: 0x0045F25C
+		public static bool LoadUserModLoaderDLL()
 		{
-			string path = Path.Combine(Path.Combine(Application.dataPath, "Managed"), "ModLoader.dll");
-			if (!File.Exists(path))
+			try
 			{
-				return false;
-			}
-			Assembly assembly = Assembly.LoadFile(path);
-			if (assembly == null)
-			{
-				return false;
-			}
-			Type type = assembly.GetType("ModLoader.ModLoader");
-			if (type == null)
-			{
-				return false;
-			}
-			MethodInfo method = type.GetMethod("Start");
-			if (method == null)
-			{
-				return false;
-			}
-			method.Invoke(null, null);
-			Debug.Log("Successfully started ModLoader.dll");
-			return true;
-		}
-		catch (Exception ex)
-		{
-			Debug.Log(ex.ToString());
-		}
-		return false;
-	}
-
-	public static LoadedModData LoadDLLs(Mod ownerMod, string harmonyId, string path, bool isDev)
-	{
-		LoadedModData loadedModData = new LoadedModData();
-		try
-		{
-			if (Testing.dll_loading == Testing.DLLLoading.Fail)
-			{
-				return null;
-			}
-			if (Testing.dll_loading == Testing.DLLLoading.UseModLoaderDLLExclusively)
-			{
-				return null;
-			}
-			DirectoryInfo directoryInfo = new DirectoryInfo(path);
-			if (!directoryInfo.Exists)
-			{
-				return null;
-			}
-			List<Assembly> list = new List<Assembly>();
-			FileInfo[] files = directoryInfo.GetFiles();
-			foreach (FileInfo fileInfo in files)
-			{
-				if (fileInfo.Name.ToLower().EndsWith(".dll"))
+				string path = Path.Combine(Path.Combine(Application.dataPath, "Managed"), "ModLoader.dll");
+				if (!File.Exists(path))
 				{
-					Debug.Log($"Loading MOD dll: {fileInfo.Name}");
-					Assembly assembly = Assembly.LoadFrom(fileInfo.FullName);
-					if (assembly != null)
-					{
-						list.Add(assembly);
-					}
+					return false;
 				}
-			}
-			if (list.Count == 0)
-			{
-				return null;
-			}
-			loadedModData.dlls = new HashSet<Assembly>();
-			loadedModData.userMod2Instances = new Dictionary<Assembly, UserMod2>();
-			foreach (Assembly item in list)
-			{
-				loadedModData.dlls.Add(item);
-				UserMod2 userMod = null;
-				Type[] types = item.GetTypes();
-				foreach (Type type in types)
+				Assembly assembly = Assembly.LoadFile(path);
+				if (assembly == null)
 				{
-					if (!(type == null) && typeof(UserMod2).IsAssignableFrom(type))
+					return false;
+				}
+				Type type = assembly.GetType("ModLoader.ModLoader");
+				if (type == null)
+				{
+					return false;
+				}
+				MethodInfo method = type.GetMethod("Start");
+				if (method == null)
+				{
+					return false;
+				}
+				method.Invoke(null, null);
+				global::Debug.Log("Successfully started ModLoader.dll");
+				return true;
+			}
+			catch (Exception ex)
+			{
+				global::Debug.Log(ex.ToString());
+			}
+			return false;
+		}
+
+		// Token: 0x0600B772 RID: 46962 RVA: 0x00461114 File Offset: 0x0045F314
+		public static LoadedModData LoadDLLs(Mod ownerMod, string harmonyId, string path, bool isDev)
+		{
+			LoadedModData loadedModData = new LoadedModData();
+			LoadedModData result;
+			try
+			{
+				if (Testing.dll_loading == Testing.DLLLoading.Fail)
+				{
+					result = null;
+				}
+				else if (Testing.dll_loading == Testing.DLLLoading.UseModLoaderDLLExclusively)
+				{
+					result = null;
+				}
+				else
+				{
+					DirectoryInfo directoryInfo = new DirectoryInfo(path);
+					if (!directoryInfo.Exists)
 					{
-						if (userMod != null)
+						result = null;
+					}
+					else
+					{
+						List<Assembly> list = new List<Assembly>();
+						foreach (FileInfo fileInfo in directoryInfo.GetFiles())
 						{
-							Debug.LogError("Found more than one class inheriting `UserMod2` in " + item.FullName + ", only one per assembly is allowed. Aborting load.");
-							return null;
+							if (fileInfo.Name.ToLower().EndsWith(".dll"))
+							{
+								global::Debug.Log(string.Format("Loading MOD dll: {0}", fileInfo.Name));
+								Assembly assembly = Assembly.LoadFrom(fileInfo.FullName);
+								if (assembly != null)
+								{
+									list.Add(assembly);
+								}
+							}
 						}
-						userMod = Activator.CreateInstance(type) as UserMod2;
+						if (list.Count == 0)
+						{
+							result = null;
+						}
+						else
+						{
+							loadedModData.dlls = new HashSet<Assembly>();
+							loadedModData.userMod2Instances = new Dictionary<Assembly, UserMod2>();
+							foreach (Assembly assembly2 in list)
+							{
+								loadedModData.dlls.Add(assembly2);
+								UserMod2 userMod = null;
+								foreach (Type type in assembly2.GetTypes())
+								{
+									if (!(type == null) && typeof(UserMod2).IsAssignableFrom(type))
+									{
+										if (userMod != null)
+										{
+											global::Debug.LogError("Found more than one class inheriting `UserMod2` in " + assembly2.FullName + ", only one per assembly is allowed. Aborting load.");
+											return null;
+										}
+										userMod = (Activator.CreateInstance(type) as UserMod2);
+									}
+								}
+								if (userMod == null)
+								{
+									if (isDev)
+									{
+										global::Debug.LogWarning(string.Format("{0} at {1} has no classes inheriting from UserMod, creating one...", assembly2.GetName(), path));
+									}
+									userMod = new UserMod2();
+								}
+								userMod.assembly = assembly2;
+								userMod.path = path;
+								userMod.mod = ownerMod;
+								loadedModData.userMod2Instances[assembly2] = userMod;
+							}
+							loadedModData.harmony = new Harmony(harmonyId);
+							if (loadedModData.harmony != null)
+							{
+								foreach (KeyValuePair<Assembly, UserMod2> keyValuePair in loadedModData.userMod2Instances)
+								{
+									keyValuePair.Value.OnLoad(loadedModData.harmony);
+								}
+							}
+							loadedModData.patched_methods = (from method in loadedModData.harmony.GetPatchedMethods()
+							where Harmony.GetPatchInfo(method).Owners.Contains(harmonyId)
+							select method).ToList<MethodBase>();
+							result = loadedModData;
+						}
 					}
 				}
-				if (userMod == null)
-				{
-					if (isDev)
-					{
-						Debug.LogWarning($"{item.GetName()} at {path} has no classes inheriting from UserMod, creating one...");
-					}
-					userMod = new UserMod2();
-				}
-				userMod.assembly = item;
-				userMod.path = path;
-				userMod.mod = ownerMod;
-				loadedModData.userMod2Instances[item] = userMod;
 			}
-			loadedModData.harmony = new Harmony(harmonyId);
-			if (loadedModData.harmony != null)
+			catch (Exception e)
 			{
-				foreach (KeyValuePair<Assembly, UserMod2> userMod2Instance in loadedModData.userMod2Instances)
+				DebugUtil.LogException(null, string.Concat(new string[]
 				{
-					userMod2Instance.Value.OnLoad(loadedModData.harmony);
-				}
+					"Exception while loading mod ",
+					harmonyId,
+					" at ",
+					path,
+					"."
+				}), e);
+				result = null;
 			}
-			loadedModData.patched_methods = (from method in loadedModData.harmony.GetPatchedMethods()
-				where Harmony.GetPatchInfo(method).Owners.Contains(harmonyId)
-				select method).ToList();
-			return loadedModData;
+			return result;
 		}
-		catch (Exception e)
-		{
-			DebugUtil.LogException(null, "Exception while loading mod " + harmonyId + " at " + path + ".", e);
-			return null;
-		}
-	}
 
-	public static void PostLoadDLLs(string harmonyId, LoadedModData modData, IReadOnlyList<Mod> mods)
-	{
-		try
+		// Token: 0x0600B773 RID: 46963 RVA: 0x00461420 File Offset: 0x0045F620
+		public static void PostLoadDLLs(string harmonyId, LoadedModData modData, IReadOnlyList<Mod> mods)
 		{
-			foreach (KeyValuePair<Assembly, UserMod2> userMod2Instance in modData.userMod2Instances)
+			try
 			{
-				userMod2Instance.Value.OnAllModsLoaded(modData.harmony, mods);
+				foreach (KeyValuePair<Assembly, UserMod2> keyValuePair in modData.userMod2Instances)
+				{
+					keyValuePair.Value.OnAllModsLoaded(modData.harmony, mods);
+				}
+			}
+			catch (Exception e)
+			{
+				DebugUtil.LogException(null, "Exception while postLoading mod " + harmonyId + ".", e);
 			}
 		}
-		catch (Exception e)
-		{
-			DebugUtil.LogException(null, "Exception while postLoading mod " + harmonyId + ".", e);
-		}
+
+		// Token: 0x0400961E RID: 38430
+		private const string managed_path = "Managed";
 	}
 }

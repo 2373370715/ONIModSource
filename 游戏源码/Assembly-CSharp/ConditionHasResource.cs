@@ -1,13 +1,10 @@
+﻿using System;
 using STRINGS;
 
+// Token: 0x02001984 RID: 6532
 public class ConditionHasResource : ProcessCondition
 {
-	private Storage storage;
-
-	private SimHashes resource;
-
-	private float thresholdMass;
-
+	// Token: 0x0600882E RID: 34862 RVA: 0x000F903E File Offset: 0x000F723E
 	public ConditionHasResource(Storage storage, SimHashes resource, float thresholdMass)
 	{
 		this.storage = storage;
@@ -15,39 +12,72 @@ public class ConditionHasResource : ProcessCondition
 		this.thresholdMass = thresholdMass;
 	}
 
-	public override Status EvaluateCondition()
+	// Token: 0x0600882F RID: 34863 RVA: 0x000F905B File Offset: 0x000F725B
+	public override ProcessCondition.Status EvaluateCondition()
 	{
-		if (!(storage.GetAmountAvailable(resource.CreateTag()) >= thresholdMass))
+		if (this.storage.GetAmountAvailable(this.resource.CreateTag()) < this.thresholdMass)
 		{
-			return Status.Warning;
+			return ProcessCondition.Status.Warning;
 		}
-		return Status.Ready;
+		return ProcessCondition.Status.Ready;
 	}
 
-	public override string GetStatusMessage(Status status)
+	// Token: 0x06008830 RID: 34864 RVA: 0x003534A4 File Offset: 0x003516A4
+	public override string GetStatusMessage(ProcessCondition.Status status)
 	{
-		string text = "";
-		return status switch
+		string result;
+		if (status != ProcessCondition.Status.Failure)
 		{
-			Status.Ready => string.Format(UI.STARMAP.LAUNCHCHECKLIST.HAS_RESOURCE.STATUS.READY, storage.GetProperName(), ElementLoader.GetElement(resource.CreateTag()).name), 
-			Status.Failure => string.Format(UI.STARMAP.LAUNCHCHECKLIST.HAS_RESOURCE.STATUS.FAILURE, storage.GetProperName(), ElementLoader.GetElement(resource.CreateTag()).name), 
-			_ => string.Format(UI.STARMAP.LAUNCHCHECKLIST.HAS_RESOURCE.STATUS.WARNING, storage.GetProperName(), ElementLoader.GetElement(resource.CreateTag()).name), 
-		};
+			if (status == ProcessCondition.Status.Ready)
+			{
+				result = string.Format(UI.STARMAP.LAUNCHCHECKLIST.HAS_RESOURCE.STATUS.READY, this.storage.GetProperName(), ElementLoader.GetElement(this.resource.CreateTag()).name);
+			}
+			else
+			{
+				result = string.Format(UI.STARMAP.LAUNCHCHECKLIST.HAS_RESOURCE.STATUS.WARNING, this.storage.GetProperName(), ElementLoader.GetElement(this.resource.CreateTag()).name);
+			}
+		}
+		else
+		{
+			result = string.Format(UI.STARMAP.LAUNCHCHECKLIST.HAS_RESOURCE.STATUS.FAILURE, this.storage.GetProperName(), ElementLoader.GetElement(this.resource.CreateTag()).name);
+		}
+		return result;
 	}
 
-	public override string GetStatusTooltip(Status status)
+	// Token: 0x06008831 RID: 34865 RVA: 0x00353554 File Offset: 0x00351754
+	public override string GetStatusTooltip(ProcessCondition.Status status)
 	{
-		string text = "";
-		return status switch
+		string result;
+		if (status != ProcessCondition.Status.Failure)
 		{
-			Status.Ready => string.Format(UI.STARMAP.LAUNCHCHECKLIST.HAS_RESOURCE.TOOLTIP.READY, storage.GetProperName(), ElementLoader.GetElement(resource.CreateTag()).name), 
-			Status.Failure => string.Format(UI.STARMAP.LAUNCHCHECKLIST.HAS_RESOURCE.TOOLTIP.FAILURE, storage.GetProperName(), GameUtil.GetFormattedMass(thresholdMass), ElementLoader.GetElement(resource.CreateTag()).name), 
-			_ => string.Format(UI.STARMAP.LAUNCHCHECKLIST.HAS_RESOURCE.TOOLTIP.WARNING, storage.GetProperName(), GameUtil.GetFormattedMass(thresholdMass), ElementLoader.GetElement(resource.CreateTag()).name), 
-		};
+			if (status == ProcessCondition.Status.Ready)
+			{
+				result = string.Format(UI.STARMAP.LAUNCHCHECKLIST.HAS_RESOURCE.TOOLTIP.READY, this.storage.GetProperName(), ElementLoader.GetElement(this.resource.CreateTag()).name);
+			}
+			else
+			{
+				result = string.Format(UI.STARMAP.LAUNCHCHECKLIST.HAS_RESOURCE.TOOLTIP.WARNING, this.storage.GetProperName(), GameUtil.GetFormattedMass(this.thresholdMass, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"), ElementLoader.GetElement(this.resource.CreateTag()).name);
+			}
+		}
+		else
+		{
+			result = string.Format(UI.STARMAP.LAUNCHCHECKLIST.HAS_RESOURCE.TOOLTIP.FAILURE, this.storage.GetProperName(), GameUtil.GetFormattedMass(this.thresholdMass, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"), ElementLoader.GetElement(this.resource.CreateTag()).name);
+		}
+		return result;
 	}
 
+	// Token: 0x06008832 RID: 34866 RVA: 0x000A65EC File Offset: 0x000A47EC
 	public override bool ShowInUI()
 	{
 		return true;
 	}
+
+	// Token: 0x04006695 RID: 26261
+	private Storage storage;
+
+	// Token: 0x04006696 RID: 26262
+	private SimHashes resource;
+
+	// Token: 0x04006697 RID: 26263
+	private float thresholdMass;
 }

@@ -1,125 +1,119 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using UnityEngine;
 
+// Token: 0x02001675 RID: 5749
 [SkipSaveFileSerialization]
 [AddComponentMenu("KMonoBehaviour/scripts/OccupyArea")]
 public class OccupyArea : KMonoBehaviour
 {
-	private CellOffset[] AboveOccupiedCellOffsets;
-
-	private CellOffset[] BelowOccupiedCellOffsets;
-
-	private int[] occupiedGridCells;
-
-	[MyCmpGet]
-	private Rotatable rotatable;
-
-	private Orientation appliedOrientation;
-
-	public CellOffset[] _UnrotatedOccupiedCellsOffsets;
-
-	public CellOffset[] _RotatedOccupiedCellsOffsets;
-
-	public ObjectLayer[] objectLayers = new ObjectLayer[0];
-
-	[SerializeField]
-	private bool applyToCells = true;
-
+	// Token: 0x1700077D RID: 1917
+	// (get) Token: 0x060076B9 RID: 30393 RVA: 0x000EE03C File Offset: 0x000EC23C
 	public CellOffset[] OccupiedCellsOffsets
 	{
 		get
 		{
-			UpdateRotatedCells();
-			return _RotatedOccupiedCellsOffsets;
+			this.UpdateRotatedCells();
+			return this._RotatedOccupiedCellsOffsets;
 		}
 	}
 
+	// Token: 0x1700077E RID: 1918
+	// (get) Token: 0x060076BA RID: 30394 RVA: 0x000EE04A File Offset: 0x000EC24A
+	// (set) Token: 0x060076BB RID: 30395 RVA: 0x000EE052 File Offset: 0x000EC252
 	public bool ApplyToCells
 	{
 		get
 		{
-			return applyToCells;
+			return this.applyToCells;
 		}
 		set
 		{
-			if (value != applyToCells)
+			if (value != this.applyToCells)
 			{
 				if (value)
 				{
-					UpdateOccupiedArea();
+					this.UpdateOccupiedArea();
 				}
 				else
 				{
-					ClearOccupiedArea();
+					this.ClearOccupiedArea();
 				}
-				applyToCells = value;
+				this.applyToCells = value;
 			}
 		}
 	}
 
+	// Token: 0x060076BC RID: 30396 RVA: 0x000EE075 File Offset: 0x000EC275
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		if (applyToCells)
+		if (this.applyToCells)
 		{
-			UpdateOccupiedArea();
+			this.UpdateOccupiedArea();
 		}
 	}
 
+	// Token: 0x060076BD RID: 30397 RVA: 0x000EE08B File Offset: 0x000EC28B
 	private void ValidatePosition()
 	{
 		if (!Grid.IsValidCell(Grid.PosToCell(this)))
 		{
-			Debug.LogWarning(base.name + " is outside the grid! DELETING!");
+			global::Debug.LogWarning(base.name + " is outside the grid! DELETING!");
 			Util.KDestroyGameObject(base.gameObject);
 		}
 	}
 
+	// Token: 0x060076BE RID: 30398 RVA: 0x000EE0BA File Offset: 0x000EC2BA
 	[OnSerializing]
 	private void OnSerializing()
 	{
-		ValidatePosition();
+		this.ValidatePosition();
 	}
 
+	// Token: 0x060076BF RID: 30399 RVA: 0x000EE0BA File Offset: 0x000EC2BA
 	[OnDeserialized]
 	private void OnDeserialized()
 	{
-		ValidatePosition();
+		this.ValidatePosition();
 	}
 
+	// Token: 0x060076C0 RID: 30400 RVA: 0x0030A190 File Offset: 0x00308390
 	public int GetOffsetCellWithRotation(CellOffset cellOffset)
 	{
 		CellOffset offset = cellOffset;
-		if (rotatable != null)
+		if (this.rotatable != null)
 		{
-			offset = rotatable.GetRotatedCellOffset(cellOffset);
+			offset = this.rotatable.GetRotatedCellOffset(cellOffset);
 		}
 		return Grid.OffsetCell(Grid.PosToCell(base.gameObject), offset);
 	}
 
+	// Token: 0x060076C1 RID: 30401 RVA: 0x000EE0C2 File Offset: 0x000EC2C2
 	public void SetCellOffsets(CellOffset[] cells)
 	{
-		_UnrotatedOccupiedCellsOffsets = cells;
-		_RotatedOccupiedCellsOffsets = cells;
-		UpdateRotatedCells();
+		this._UnrotatedOccupiedCellsOffsets = cells;
+		this._RotatedOccupiedCellsOffsets = cells;
+		this.UpdateRotatedCells();
 	}
 
+	// Token: 0x060076C2 RID: 30402 RVA: 0x0030A1CC File Offset: 0x003083CC
 	private void UpdateRotatedCells()
 	{
-		if (rotatable != null && appliedOrientation != rotatable.Orientation)
+		if (this.rotatable != null && this.appliedOrientation != this.rotatable.Orientation)
 		{
-			_RotatedOccupiedCellsOffsets = new CellOffset[_UnrotatedOccupiedCellsOffsets.Length];
-			for (int i = 0; i < _UnrotatedOccupiedCellsOffsets.Length; i++)
+			this._RotatedOccupiedCellsOffsets = new CellOffset[this._UnrotatedOccupiedCellsOffsets.Length];
+			for (int i = 0; i < this._UnrotatedOccupiedCellsOffsets.Length; i++)
 			{
-				CellOffset offset = _UnrotatedOccupiedCellsOffsets[i];
-				_RotatedOccupiedCellsOffsets[i] = rotatable.GetRotatedCellOffset(offset);
+				CellOffset offset = this._UnrotatedOccupiedCellsOffsets[i];
+				this._RotatedOccupiedCellsOffsets[i] = this.rotatable.GetRotatedCellOffset(offset);
 			}
-			appliedOrientation = rotatable.Orientation;
+			this.appliedOrientation = this.rotatable.Orientation;
 		}
 	}
 
+	// Token: 0x060076C3 RID: 30403 RVA: 0x0030A258 File Offset: 0x00308458
 	public bool CheckIsOccupying(int checkCell)
 	{
 		int num = Grid.PosToCell(base.gameObject);
@@ -127,8 +121,7 @@ public class OccupyArea : KMonoBehaviour
 		{
 			return true;
 		}
-		CellOffset[] occupiedCellsOffsets = OccupiedCellsOffsets;
-		foreach (CellOffset offset in occupiedCellsOffsets)
+		foreach (CellOffset offset in this.OccupiedCellsOffsets)
 		{
 			if (Grid.OffsetCell(num, offset) == checkCell)
 			{
@@ -138,127 +131,124 @@ public class OccupyArea : KMonoBehaviour
 		return false;
 	}
 
+	// Token: 0x060076C4 RID: 30404 RVA: 0x000EE0D8 File Offset: 0x000EC2D8
 	protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
-		ClearOccupiedArea();
+		this.ClearOccupiedArea();
 	}
 
+	// Token: 0x060076C5 RID: 30405 RVA: 0x0030A2A4 File Offset: 0x003084A4
 	private void ClearOccupiedArea()
 	{
-		if (occupiedGridCells == null)
+		if (this.occupiedGridCells == null)
 		{
 			return;
 		}
-		ObjectLayer[] array = objectLayers;
-		foreach (ObjectLayer objectLayer in array)
-		{
-			if (objectLayer == ObjectLayer.NumLayers)
-			{
-				continue;
-			}
-			int[] array2 = occupiedGridCells;
-			foreach (int cell in array2)
-			{
-				if (Grid.Objects[cell, (int)objectLayer] == base.gameObject)
-				{
-					Grid.Objects[cell, (int)objectLayer] = null;
-				}
-			}
-		}
-	}
-
-	public void UpdateOccupiedArea()
-	{
-		if (objectLayers.Length == 0)
-		{
-			return;
-		}
-		if (occupiedGridCells == null)
-		{
-			occupiedGridCells = new int[OccupiedCellsOffsets.Length];
-		}
-		ClearOccupiedArea();
-		int cell = Grid.PosToCell(base.gameObject);
-		ObjectLayer[] array = objectLayers;
-		foreach (ObjectLayer objectLayer in array)
+		foreach (ObjectLayer objectLayer in this.objectLayers)
 		{
 			if (objectLayer != ObjectLayer.NumLayers)
 			{
-				for (int j = 0; j < OccupiedCellsOffsets.Length; j++)
+				foreach (int cell in this.occupiedGridCells)
 				{
-					CellOffset offset = OccupiedCellsOffsets[j];
-					int num = Grid.OffsetCell(cell, offset);
-					Grid.Objects[num, (int)objectLayer] = base.gameObject;
-					occupiedGridCells[j] = num;
+					if (Grid.Objects[cell, (int)objectLayer] == base.gameObject)
+					{
+						Grid.Objects[cell, (int)objectLayer] = null;
+					}
 				}
 			}
 		}
 	}
 
+	// Token: 0x060076C6 RID: 30406 RVA: 0x0030A320 File Offset: 0x00308520
+	public void UpdateOccupiedArea()
+	{
+		if (this.objectLayers.Length == 0)
+		{
+			return;
+		}
+		if (this.occupiedGridCells == null)
+		{
+			this.occupiedGridCells = new int[this.OccupiedCellsOffsets.Length];
+		}
+		this.ClearOccupiedArea();
+		int cell = Grid.PosToCell(base.gameObject);
+		foreach (ObjectLayer objectLayer in this.objectLayers)
+		{
+			if (objectLayer != ObjectLayer.NumLayers)
+			{
+				for (int j = 0; j < this.OccupiedCellsOffsets.Length; j++)
+				{
+					CellOffset offset = this.OccupiedCellsOffsets[j];
+					int num = Grid.OffsetCell(cell, offset);
+					Grid.Objects[num, (int)objectLayer] = base.gameObject;
+					this.occupiedGridCells[j] = num;
+				}
+			}
+		}
+	}
+
+	// Token: 0x060076C7 RID: 30407 RVA: 0x0030A3D0 File Offset: 0x003085D0
 	public int GetWidthInCells()
 	{
 		int num = int.MaxValue;
 		int num2 = int.MinValue;
-		CellOffset[] occupiedCellsOffsets = OccupiedCellsOffsets;
-		for (int i = 0; i < occupiedCellsOffsets.Length; i++)
+		foreach (CellOffset cellOffset in this.OccupiedCellsOffsets)
 		{
-			CellOffset cellOffset = occupiedCellsOffsets[i];
 			num = Math.Min(num, cellOffset.x);
 			num2 = Math.Max(num2, cellOffset.x);
 		}
 		return num2 - num + 1;
 	}
 
+	// Token: 0x060076C8 RID: 30408 RVA: 0x0030A428 File Offset: 0x00308628
 	public int GetHeightInCells()
 	{
 		int num = int.MaxValue;
 		int num2 = int.MinValue;
-		CellOffset[] occupiedCellsOffsets = OccupiedCellsOffsets;
-		for (int i = 0; i < occupiedCellsOffsets.Length; i++)
+		foreach (CellOffset cellOffset in this.OccupiedCellsOffsets)
 		{
-			CellOffset cellOffset = occupiedCellsOffsets[i];
 			num = Math.Min(num, cellOffset.y);
 			num2 = Math.Max(num2, cellOffset.y);
 		}
 		return num2 - num + 1;
 	}
 
+	// Token: 0x060076C9 RID: 30409 RVA: 0x000EE0E6 File Offset: 0x000EC2E6
 	public Extents GetExtents()
 	{
-		return new Extents(Grid.PosToCell(base.gameObject), OccupiedCellsOffsets);
+		return new Extents(Grid.PosToCell(base.gameObject), this.OccupiedCellsOffsets);
 	}
 
+	// Token: 0x060076CA RID: 30410 RVA: 0x000EE0FE File Offset: 0x000EC2FE
 	public Extents GetExtents(Orientation orientation)
 	{
-		return new Extents(Grid.PosToCell(base.gameObject), OccupiedCellsOffsets, orientation);
+		return new Extents(Grid.PosToCell(base.gameObject), this.OccupiedCellsOffsets, orientation);
 	}
 
+	// Token: 0x060076CB RID: 30411 RVA: 0x0030A480 File Offset: 0x00308680
 	private void OnDrawGizmosSelected()
 	{
 		int cell = Grid.PosToCell(base.gameObject);
-		if (OccupiedCellsOffsets != null)
+		if (this.OccupiedCellsOffsets != null)
 		{
-			CellOffset[] occupiedCellsOffsets = OccupiedCellsOffsets;
-			foreach (CellOffset offset in occupiedCellsOffsets)
+			foreach (CellOffset offset in this.OccupiedCellsOffsets)
 			{
 				Gizmos.color = Color.cyan;
 				Gizmos.DrawWireCube(Grid.CellToPos(Grid.OffsetCell(cell, offset)) + Vector3.right / 2f + Vector3.up / 2f, Vector3.one);
 			}
 		}
-		if (AboveOccupiedCellOffsets != null)
+		if (this.AboveOccupiedCellOffsets != null)
 		{
-			CellOffset[] occupiedCellsOffsets = AboveOccupiedCellOffsets;
-			foreach (CellOffset offset2 in occupiedCellsOffsets)
+			foreach (CellOffset offset2 in this.AboveOccupiedCellOffsets)
 			{
 				Gizmos.color = Color.blue;
 				Gizmos.DrawWireCube(Grid.CellToPos(Grid.OffsetCell(cell, offset2)) + Vector3.right / 2f + Vector3.up / 2f, Vector3.one * 0.9f);
 			}
 		}
-		if (BelowOccupiedCellOffsets != null)
+		if (this.BelowOccupiedCellOffsets != null)
 		{
-			CellOffset[] occupiedCellsOffsets = BelowOccupiedCellOffsets;
-			foreach (CellOffset offset3 in occupiedCellsOffsets)
+			foreach (CellOffset offset3 in this.BelowOccupiedCellOffsets)
 			{
 				Gizmos.color = Color.yellow;
 				Gizmos.DrawWireCube(Grid.CellToPos(Grid.OffsetCell(cell, offset3)) + Vector3.right / 2f + Vector3.up / 2f, Vector3.one * 0.9f);
@@ -266,11 +256,12 @@ public class OccupyArea : KMonoBehaviour
 		}
 	}
 
+	// Token: 0x060076CC RID: 30412 RVA: 0x0030A5F8 File Offset: 0x003087F8
 	public bool CanOccupyArea(int rootCell, ObjectLayer layer)
 	{
-		for (int i = 0; i < OccupiedCellsOffsets.Length; i++)
+		for (int i = 0; i < this.OccupiedCellsOffsets.Length; i++)
 		{
-			CellOffset offset = OccupiedCellsOffsets[i];
+			CellOffset offset = this.OccupiedCellsOffsets[i];
 			int cell = Grid.OffsetCell(rootCell, offset);
 			if (Grid.Objects[cell, (int)layer] != null)
 			{
@@ -280,11 +271,12 @@ public class OccupyArea : KMonoBehaviour
 		return true;
 	}
 
+	// Token: 0x060076CD RID: 30413 RVA: 0x0030A644 File Offset: 0x00308844
 	public bool TestArea(int rootCell, object data, Func<int, object, bool> testDelegate)
 	{
-		for (int i = 0; i < OccupiedCellsOffsets.Length; i++)
+		for (int i = 0; i < this.OccupiedCellsOffsets.Length; i++)
 		{
-			CellOffset offset = OccupiedCellsOffsets[i];
+			CellOffset offset = this.OccupiedCellsOffsets[i];
 			int arg = Grid.OffsetCell(rootCell, offset);
 			if (!testDelegate(arg, data))
 			{
@@ -294,24 +286,25 @@ public class OccupyArea : KMonoBehaviour
 		return true;
 	}
 
+	// Token: 0x060076CE RID: 30414 RVA: 0x0030A688 File Offset: 0x00308888
 	public bool TestAreaAbove(int rootCell, object data, Func<int, object, bool> testDelegate)
 	{
-		if (AboveOccupiedCellOffsets == null)
+		if (this.AboveOccupiedCellOffsets == null)
 		{
 			List<CellOffset> list = new List<CellOffset>();
-			for (int i = 0; i < OccupiedCellsOffsets.Length; i++)
+			for (int i = 0; i < this.OccupiedCellsOffsets.Length; i++)
 			{
-				CellOffset cellOffset = new CellOffset(OccupiedCellsOffsets[i].x, OccupiedCellsOffsets[i].y + 1);
-				if (Array.IndexOf(OccupiedCellsOffsets, cellOffset) == -1)
+				CellOffset cellOffset = new CellOffset(this.OccupiedCellsOffsets[i].x, this.OccupiedCellsOffsets[i].y + 1);
+				if (Array.IndexOf<CellOffset>(this.OccupiedCellsOffsets, cellOffset) == -1)
 				{
 					list.Add(cellOffset);
 				}
 			}
-			AboveOccupiedCellOffsets = list.ToArray();
+			this.AboveOccupiedCellOffsets = list.ToArray();
 		}
-		for (int j = 0; j < AboveOccupiedCellOffsets.Length; j++)
+		for (int j = 0; j < this.AboveOccupiedCellOffsets.Length; j++)
 		{
-			int arg = Grid.OffsetCell(rootCell, AboveOccupiedCellOffsets[j]);
+			int arg = Grid.OffsetCell(rootCell, this.AboveOccupiedCellOffsets[j]);
 			if (!testDelegate(arg, data))
 			{
 				return false;
@@ -320,24 +313,25 @@ public class OccupyArea : KMonoBehaviour
 		return true;
 	}
 
+	// Token: 0x060076CF RID: 30415 RVA: 0x0030A738 File Offset: 0x00308938
 	public bool TestAreaBelow(int rootCell, object data, Func<int, object, bool> testDelegate)
 	{
-		if (BelowOccupiedCellOffsets == null)
+		if (this.BelowOccupiedCellOffsets == null)
 		{
 			List<CellOffset> list = new List<CellOffset>();
-			for (int i = 0; i < OccupiedCellsOffsets.Length; i++)
+			for (int i = 0; i < this.OccupiedCellsOffsets.Length; i++)
 			{
-				CellOffset cellOffset = new CellOffset(OccupiedCellsOffsets[i].x, OccupiedCellsOffsets[i].y - 1);
-				if (Array.IndexOf(OccupiedCellsOffsets, cellOffset) == -1)
+				CellOffset cellOffset = new CellOffset(this.OccupiedCellsOffsets[i].x, this.OccupiedCellsOffsets[i].y - 1);
+				if (Array.IndexOf<CellOffset>(this.OccupiedCellsOffsets, cellOffset) == -1)
 				{
 					list.Add(cellOffset);
 				}
 			}
-			BelowOccupiedCellOffsets = list.ToArray();
+			this.BelowOccupiedCellOffsets = list.ToArray();
 		}
-		for (int j = 0; j < BelowOccupiedCellOffsets.Length; j++)
+		for (int j = 0; j < this.BelowOccupiedCellOffsets.Length; j++)
 		{
-			int arg = Grid.OffsetCell(rootCell, BelowOccupiedCellOffsets[j]);
+			int arg = Grid.OffsetCell(rootCell, this.BelowOccupiedCellOffsets[j]);
 			if (!testDelegate(arg, data))
 			{
 				return false;
@@ -345,4 +339,33 @@ public class OccupyArea : KMonoBehaviour
 		}
 		return true;
 	}
+
+	// Token: 0x040058D5 RID: 22741
+	private CellOffset[] AboveOccupiedCellOffsets;
+
+	// Token: 0x040058D6 RID: 22742
+	private CellOffset[] BelowOccupiedCellOffsets;
+
+	// Token: 0x040058D7 RID: 22743
+	private int[] occupiedGridCells;
+
+	// Token: 0x040058D8 RID: 22744
+	[MyCmpGet]
+	private Rotatable rotatable;
+
+	// Token: 0x040058D9 RID: 22745
+	private Orientation appliedOrientation;
+
+	// Token: 0x040058DA RID: 22746
+	public CellOffset[] _UnrotatedOccupiedCellsOffsets;
+
+	// Token: 0x040058DB RID: 22747
+	public CellOffset[] _RotatedOccupiedCellsOffsets;
+
+	// Token: 0x040058DC RID: 22748
+	public ObjectLayer[] objectLayers = new ObjectLayer[0];
+
+	// Token: 0x040058DD RID: 22749
+	[SerializeField]
+	private bool applyToCells = true;
 }

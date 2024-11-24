@@ -1,45 +1,44 @@
+﻿using System;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x02000026 RID: 38
 public class AtmoicGardenConfig : IBuildingConfig
 {
-	public const string ID = "AtomicGarden";
-
-	private const float FERTILIZER_PER_LOAD = 10f;
-
-	private const float FERTILIZER_PRODUCTION_RATE = 0.12f;
-
-	private const float METHANE_PRODUCTION_RATE = 0.01f;
-
-	private const float _TOTAL_PRODUCTION = 0.13f;
-
-	private const float DIRT_CONSUMPTION_RATE = 0.065f;
-
-	private const float DIRTY_WATER_CONSUMPTION_RATE = 0.039f;
-
-	private const float PHOSPHORITE_CONSUMPTION_RATE = 0.025999999f;
-
+	// Token: 0x06000099 RID: 153 RVA: 0x001407AC File Offset: 0x0013E9AC
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef("AtomicGarden", 4, 3, "fertilizer_maker_kanim", 30, 30f, BUILDINGS.CONSTRUCTION_MASS_KG.TIER3, MATERIALS.ALL_METALS, 800f, BuildLocationRule.OnFloor, noise: NOISE_POLLUTION.NOISY.TIER5, decor: BUILDINGS.DECOR.PENALTY.TIER2);
-		obj.RequiresPowerInput = true;
-		obj.EnergyConsumptionWhenActive = 120f;
-		obj.ExhaustKilowattsWhenActive = 1f;
-		obj.SelfHeatKilowattsWhenActive = 2f;
-		obj.InputConduitType = ConduitType.Liquid;
-		obj.ViewMode = OverlayModes.LiquidConduits.ID;
-		obj.AudioCategory = "HollowMetal";
-		obj.PowerInputOffset = new CellOffset(1, 0);
-		obj.UtilityInputOffset = new CellOffset(0, 0);
-		obj.LogicInputPorts = LogicOperationalController.CreateSingleInputPortList(new CellOffset(-1, 0));
-		obj.Deprecated = true;
-		return obj;
+		string id = "AtomicGarden";
+		int width = 4;
+		int height = 3;
+		string anim = "fertilizer_maker_kanim";
+		int hitpoints = 30;
+		float construction_time = 30f;
+		float[] tier = BUILDINGS.CONSTRUCTION_MASS_KG.TIER3;
+		string[] all_METALS = MATERIALS.ALL_METALS;
+		float melting_point = 800f;
+		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
+		EffectorValues tier2 = NOISE_POLLUTION.NOISY.TIER5;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, all_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.PENALTY.TIER2, tier2, 0.2f);
+		buildingDef.RequiresPowerInput = true;
+		buildingDef.EnergyConsumptionWhenActive = 120f;
+		buildingDef.ExhaustKilowattsWhenActive = 1f;
+		buildingDef.SelfHeatKilowattsWhenActive = 2f;
+		buildingDef.InputConduitType = ConduitType.Liquid;
+		buildingDef.ViewMode = OverlayModes.LiquidConduits.ID;
+		buildingDef.AudioCategory = "HollowMetal";
+		buildingDef.PowerInputOffset = new CellOffset(1, 0);
+		buildingDef.UtilityInputOffset = new CellOffset(0, 0);
+		buildingDef.LogicInputPorts = LogicOperationalController.CreateSingleInputPortList(new CellOffset(-1, 0));
+		buildingDef.Deprecated = true;
+		return buildingDef;
 	}
 
+	// Token: 0x0600009A RID: 154 RVA: 0x0014086C File Offset: 0x0013EA6C
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery);
-		Storage storage = BuildingTemplates.CreateDefaultStorage(go);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
+		Storage storage = BuildingTemplates.CreateDefaultStorage(go, false);
 		storage.SetDefaultStoredItemModifiers(Storage.StandardSealedStorage);
 		go.AddOrGet<WaterPurifier>();
 		ManualDeliveryKG manualDeliveryKG = go.AddComponent<ManualDeliveryKG>();
@@ -62,15 +61,15 @@ public class AtmoicGardenConfig : IBuildingConfig
 		conduitConsumer.wrongElementResult = ConduitConsumer.WrongElementResult.Dump;
 		conduitConsumer.forceAlwaysSatisfied = true;
 		ElementConverter elementConverter = go.AddOrGet<ElementConverter>();
-		elementConverter.consumedElements = new ElementConverter.ConsumedElement[3]
+		elementConverter.consumedElements = new ElementConverter.ConsumedElement[]
 		{
-			new ElementConverter.ConsumedElement(new Tag("DirtyWater"), 0.039f),
-			new ElementConverter.ConsumedElement(new Tag("Dirt"), 0.065f),
-			new ElementConverter.ConsumedElement(new Tag("Phosphorite"), 0.025999999f)
+			new ElementConverter.ConsumedElement(new Tag("DirtyWater"), 0.039f, true),
+			new ElementConverter.ConsumedElement(new Tag("Dirt"), 0.065f, true),
+			new ElementConverter.ConsumedElement(new Tag("Phosphorite"), 0.025999999f, true)
 		};
-		elementConverter.outputElements = new ElementConverter.OutputElement[1]
+		elementConverter.outputElements = new ElementConverter.OutputElement[]
 		{
-			new ElementConverter.OutputElement(0.12f, SimHashes.Fertilizer, 323.15f, useEntityTemperature: false, storeOutput: true)
+			new ElementConverter.OutputElement(0.12f, SimHashes.Fertilizer, 323.15f, false, true, 0f, 0.5f, 1f, byte.MaxValue, 0, true)
 		};
 		BuildingElementEmitter buildingElementEmitter = go.AddOrGet<BuildingElementEmitter>();
 		buildingElementEmitter.emitRate = 0.01f;
@@ -84,9 +83,34 @@ public class AtmoicGardenConfig : IBuildingConfig
 		Prioritizable.AddRef(go);
 	}
 
+	// Token: 0x0600009B RID: 155 RVA: 0x000A5FB5 File Offset: 0x000A41B5
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicOperationalController>();
 		go.AddOrGetDef<PoweredActiveController.Def>();
 	}
+
+	// Token: 0x0400006F RID: 111
+	public const string ID = "AtomicGarden";
+
+	// Token: 0x04000070 RID: 112
+	private const float FERTILIZER_PER_LOAD = 10f;
+
+	// Token: 0x04000071 RID: 113
+	private const float FERTILIZER_PRODUCTION_RATE = 0.12f;
+
+	// Token: 0x04000072 RID: 114
+	private const float METHANE_PRODUCTION_RATE = 0.01f;
+
+	// Token: 0x04000073 RID: 115
+	private const float _TOTAL_PRODUCTION = 0.13f;
+
+	// Token: 0x04000074 RID: 116
+	private const float DIRT_CONSUMPTION_RATE = 0.065f;
+
+	// Token: 0x04000075 RID: 117
+	private const float DIRTY_WATER_CONSUMPTION_RATE = 0.039f;
+
+	// Token: 0x04000076 RID: 118
+	private const float PHOSPHORITE_CONSUMPTION_RATE = 0.025999999f;
 }

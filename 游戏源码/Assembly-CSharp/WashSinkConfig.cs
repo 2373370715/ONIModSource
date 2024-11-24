@@ -1,44 +1,53 @@
+﻿using System;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x020005E2 RID: 1506
 public class WashSinkConfig : IBuildingConfig
 {
-	public const string ID = "WashSink";
-
-	public const int DISEASE_REMOVAL_COUNT = 120000;
-
-	public const float WATER_PER_USE = 5f;
-
-	public const int USES_PER_FLUSH = 2;
-
-	public const float WORK_TIME = 5f;
-
+	// Token: 0x06001B33 RID: 6963 RVA: 0x001AAAA4 File Offset: 0x001A8CA4
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef("WashSink", 2, 3, "wash_sink_kanim", 30, 30f, BUILDINGS.CONSTRUCTION_MASS_KG.TIER4, MATERIALS.RAW_METALS, 1600f, BuildLocationRule.OnFloor, noise: NOISE_POLLUTION.NOISY.TIER0, decor: BUILDINGS.DECOR.BONUS.TIER1);
-		obj.InputConduitType = ConduitType.Liquid;
-		obj.OutputConduitType = ConduitType.Liquid;
-		obj.ViewMode = OverlayModes.LiquidConduits.ID;
-		obj.AudioCategory = "Metal";
-		obj.UtilityInputOffset = new CellOffset(0, 0);
-		obj.UtilityOutputOffset = new CellOffset(1, 1);
-		return obj;
+		string id = "WashSink";
+		int width = 2;
+		int height = 3;
+		string anim = "wash_sink_kanim";
+		int hitpoints = 30;
+		float construction_time = 30f;
+		float[] tier = BUILDINGS.CONSTRUCTION_MASS_KG.TIER4;
+		string[] raw_METALS = MATERIALS.RAW_METALS;
+		float melting_point = 1600f;
+		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
+		EffectorValues tier2 = NOISE_POLLUTION.NOISY.TIER0;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, raw_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.BONUS.TIER1, tier2, 0.2f);
+		buildingDef.InputConduitType = ConduitType.Liquid;
+		buildingDef.OutputConduitType = ConduitType.Liquid;
+		buildingDef.ViewMode = OverlayModes.LiquidConduits.ID;
+		buildingDef.AudioCategory = "Metal";
+		buildingDef.UtilityInputOffset = new CellOffset(0, 0);
+		buildingDef.UtilityOutputOffset = new CellOffset(1, 1);
+		return buildingDef;
 	}
 
+	// Token: 0x06001B34 RID: 6964 RVA: 0x001AAB28 File Offset: 0x001A8D28
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.WashStation);
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.AdvancedWashStation);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.WashStation, false);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.AdvancedWashStation, false);
 		HandSanitizer handSanitizer = go.AddOrGet<HandSanitizer>();
 		handSanitizer.massConsumedPerUse = 5f;
 		handSanitizer.consumedElement = SimHashes.Water;
 		handSanitizer.outputElement = SimHashes.DirtyWater;
-		handSanitizer.diseaseRemovalCount = 120000;
+		handSanitizer.diseaseRemovalCount = WashSinkConfig.DISEASE_REMOVAL_COUNT;
 		handSanitizer.maxUses = 2;
 		handSanitizer.dirtyMeterOffset = Meter.Offset.Behind;
 		go.AddOrGet<DirectionControl>();
 		HandSanitizer.Work work = go.AddOrGet<HandSanitizer.Work>();
-		work.overrideAnims = new KAnimFile[1] { Assets.GetAnim("anim_interacts_washbasin_kanim") };
+		KAnimFile[] overrideAnims = new KAnimFile[]
+		{
+			Assets.GetAnim("anim_interacts_washbasin_kanim")
+		};
+		work.overrideAnims = overrideAnims;
 		work.workTime = 5f;
 		work.trackUses = true;
 		ConduitConsumer conduitConsumer = go.AddOrGet<ConduitConsumer>();
@@ -49,16 +58,51 @@ public class WashSinkConfig : IBuildingConfig
 		ConduitDispenser conduitDispenser = go.AddOrGet<ConduitDispenser>();
 		conduitDispenser.conduitType = ConduitType.Liquid;
 		conduitDispenser.invertElementFilter = true;
-		conduitDispenser.elementFilter = new SimHashes[1] { SimHashes.Water };
+		conduitDispenser.elementFilter = new SimHashes[]
+		{
+			SimHashes.Water
+		};
 		Storage storage = go.AddOrGet<Storage>();
 		storage.doDiseaseTransfer = false;
 		storage.SetDefaultStoredItemModifiers(Storage.StandardSealedStorage);
 		go.AddOrGet<LoopingSounds>();
 		go.AddOrGet<RequireOutputs>().ignoreFullPipe = true;
 		go.AddOrGetDef<RocketUsageRestriction.Def>();
+		go.GetComponent<KPrefabID>().prefabInitFn += this.OnInit;
 	}
 
+	// Token: 0x06001B35 RID: 6965 RVA: 0x001AAC78 File Offset: 0x001A8E78
+	private void OnInit(GameObject go)
+	{
+		HandSanitizer.Work component = go.GetComponent<HandSanitizer.Work>();
+		KAnimFile[] value = new KAnimFile[]
+		{
+			Assets.GetAnim("anim_interacts_washbasin_kanim")
+		};
+		component.workerTypeOverrideAnims.Add(MinionConfig.ID, value);
+		component.workerTypeOverrideAnims.Add(BionicMinionConfig.ID, new KAnimFile[]
+		{
+			Assets.GetAnim("anim_bionic_interacts_wash_sink_kanim")
+		});
+	}
+
+	// Token: 0x06001B36 RID: 6966 RVA: 0x000A5E40 File Offset: 0x000A4040
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
+
+	// Token: 0x0400112B RID: 4395
+	public const string ID = "WashSink";
+
+	// Token: 0x0400112C RID: 4396
+	public static readonly int DISEASE_REMOVAL_COUNT = DUPLICANTSTATS.STANDARD.Secretions.DISEASE_PER_PEE + 20000;
+
+	// Token: 0x0400112D RID: 4397
+	public const float WATER_PER_USE = 5f;
+
+	// Token: 0x0400112E RID: 4398
+	public const int USES_PER_FLUSH = 2;
+
+	// Token: 0x0400112F RID: 4399
+	public const float WORK_TIME = 5f;
 }

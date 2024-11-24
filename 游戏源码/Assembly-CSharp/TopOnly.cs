@@ -1,31 +1,23 @@
+﻿using System;
 using STRINGS;
 using UnityEngine;
 
+// Token: 0x02001852 RID: 6226
 public class TopOnly : SelectModuleCondition
 {
-	public override bool EvaluateCondition(GameObject existingModule, BuildingDef selectedPart, SelectionContext selectionContext)
+	// Token: 0x060080BE RID: 32958 RVA: 0x0033595C File Offset: 0x00333B5C
+	public override bool EvaluateCondition(GameObject existingModule, BuildingDef selectedPart, SelectModuleCondition.SelectionContext selectionContext)
 	{
-		Debug.Assert(existingModule != null, "Existing module is null in top only condition");
-		if (selectionContext == SelectionContext.ReplaceModule)
+		global::Debug.Assert(existingModule != null, "Existing module is null in top only condition");
+		if (selectionContext == SelectModuleCondition.SelectionContext.ReplaceModule)
 		{
-			Debug.Assert(existingModule.GetComponent<LaunchPad>() == null, "Trying to replace launch pad with rocket module");
-			if (!(existingModule.GetComponent<BuildingAttachPoint>() == null))
-			{
-				return existingModule.GetComponent<BuildingAttachPoint>().points[0].attachedBuilding == null;
-			}
-			return true;
+			global::Debug.Assert(existingModule.GetComponent<LaunchPad>() == null, "Trying to replace launch pad with rocket module");
+			return existingModule.GetComponent<BuildingAttachPoint>() == null || existingModule.GetComponent<BuildingAttachPoint>().points[0].attachedBuilding == null;
 		}
-		if (existingModule.GetComponent<LaunchPad>() != null)
-		{
-			return true;
-		}
-		if (existingModule.GetComponent<BuildingAttachPoint>() != null)
-		{
-			return existingModule.GetComponent<BuildingAttachPoint>().points[0].attachedBuilding == null;
-		}
-		return false;
+		return existingModule.GetComponent<LaunchPad>() != null || (existingModule.GetComponent<BuildingAttachPoint>() != null && existingModule.GetComponent<BuildingAttachPoint>().points[0].attachedBuilding == null);
 	}
 
+	// Token: 0x060080BF RID: 32959 RVA: 0x000F4B66 File Offset: 0x000F2D66
 	public override string GetStatusTooltip(bool ready, GameObject moduleBase, BuildingDef selectedPart)
 	{
 		if (ready)

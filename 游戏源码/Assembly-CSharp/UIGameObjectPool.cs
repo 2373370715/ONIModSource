@@ -1,47 +1,66 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Token: 0x02001A9B RID: 6811
 public class UIGameObjectPool
 {
-	private GameObject prefab;
+	// Token: 0x1700097B RID: 2427
+	// (get) Token: 0x06008E66 RID: 36454 RVA: 0x000FD0FC File Offset: 0x000FB2FC
+	public int ActiveElementsCount
+	{
+		get
+		{
+			return this.activeElements.Count;
+		}
+	}
 
-	private List<GameObject> freeElements = new List<GameObject>();
+	// Token: 0x1700097C RID: 2428
+	// (get) Token: 0x06008E67 RID: 36455 RVA: 0x000FD109 File Offset: 0x000FB309
+	public int FreeElementsCount
+	{
+		get
+		{
+			return this.freeElements.Count;
+		}
+	}
 
-	private List<GameObject> activeElements = new List<GameObject>();
+	// Token: 0x1700097D RID: 2429
+	// (get) Token: 0x06008E68 RID: 36456 RVA: 0x000FD116 File Offset: 0x000FB316
+	public int TotalElementsCount
+	{
+		get
+		{
+			return this.ActiveElementsCount + this.FreeElementsCount;
+		}
+	}
 
-	public Transform disabledElementParent;
-
-	public int ActiveElementsCount => activeElements.Count;
-
-	public int FreeElementsCount => freeElements.Count;
-
-	public int TotalElementsCount => ActiveElementsCount + FreeElementsCount;
-
+	// Token: 0x06008E69 RID: 36457 RVA: 0x000FD125 File Offset: 0x000FB325
 	public UIGameObjectPool(GameObject prefab)
 	{
 		this.prefab = prefab;
-		freeElements = new List<GameObject>();
-		activeElements = new List<GameObject>();
+		this.freeElements = new List<GameObject>();
+		this.activeElements = new List<GameObject>();
 	}
 
+	// Token: 0x06008E6A RID: 36458 RVA: 0x0037056C File Offset: 0x0036E76C
 	public GameObject GetFreeElement(GameObject instantiateParent = null, bool forceActive = false)
 	{
-		if (freeElements.Count == 0)
+		if (this.freeElements.Count == 0)
 		{
-			activeElements.Add(Util.KInstantiateUI(prefab.gameObject, instantiateParent));
+			this.activeElements.Add(Util.KInstantiateUI(this.prefab.gameObject, instantiateParent, false));
 		}
 		else
 		{
-			GameObject gameObject = freeElements[0];
-			activeElements.Add(gameObject);
+			GameObject gameObject = this.freeElements[0];
+			this.activeElements.Add(gameObject);
 			if (gameObject.transform.parent != instantiateParent)
 			{
 				gameObject.transform.SetParent(instantiateParent.transform);
 			}
-			freeElements.RemoveAt(0);
+			this.freeElements.RemoveAt(0);
 		}
-		GameObject gameObject2 = activeElements[activeElements.Count - 1];
+		GameObject gameObject2 = this.activeElements[this.activeElements.Count - 1];
 		if (gameObject2.gameObject.activeInHierarchy != forceActive)
 		{
 			gameObject2.gameObject.SetActive(forceActive);
@@ -49,75 +68,92 @@ public class UIGameObjectPool
 		return gameObject2;
 	}
 
+	// Token: 0x06008E6B RID: 36459 RVA: 0x00370624 File Offset: 0x0036E824
 	public void ClearElement(GameObject element)
 	{
-		if (!activeElements.Contains(element))
+		if (!this.activeElements.Contains(element))
 		{
-			string obj = (freeElements.Contains(element) ? (element.name + ": The element provided is already inactive") : (element.name + ": The element provided does not belong to this pool"));
-			element.SetActive(value: false);
-			if (disabledElementParent != null)
+			object obj = this.freeElements.Contains(element) ? (element.name + ": The element provided is already inactive") : (element.name + ": The element provided does not belong to this pool");
+			element.SetActive(false);
+			if (this.disabledElementParent != null)
 			{
-				element.transform.SetParent(disabledElementParent);
+				element.transform.SetParent(this.disabledElementParent);
 			}
-			Debug.LogError(obj);
+			global::Debug.LogError(obj);
+			return;
 		}
-		else
+		if (this.disabledElementParent != null)
 		{
-			if (disabledElementParent != null)
-			{
-				element.transform.SetParent(disabledElementParent);
-			}
-			element.SetActive(value: false);
-			freeElements.Add(element);
-			activeElements.Remove(element);
+			element.transform.SetParent(this.disabledElementParent);
 		}
+		element.SetActive(false);
+		this.freeElements.Add(element);
+		this.activeElements.Remove(element);
 	}
 
+	// Token: 0x06008E6C RID: 36460 RVA: 0x003706DC File Offset: 0x0036E8DC
 	public void ClearAll()
 	{
-		while (activeElements.Count > 0)
+		while (this.activeElements.Count > 0)
 		{
-			if (disabledElementParent != null)
+			if (this.disabledElementParent != null)
 			{
-				activeElements[0].transform.SetParent(disabledElementParent);
+				this.activeElements[0].transform.SetParent(this.disabledElementParent);
 			}
-			activeElements[0].SetActive(value: false);
-			freeElements.Add(activeElements[0]);
-			activeElements.RemoveAt(0);
+			this.activeElements[0].SetActive(false);
+			this.freeElements.Add(this.activeElements[0]);
+			this.activeElements.RemoveAt(0);
 		}
 	}
 
+	// Token: 0x06008E6D RID: 36461 RVA: 0x000FD160 File Offset: 0x000FB360
 	public void DestroyAll()
 	{
-		DestroyAllActive();
-		DestroyAllFree();
+		this.DestroyAllActive();
+		this.DestroyAllFree();
 	}
 
+	// Token: 0x06008E6E RID: 36462 RVA: 0x000FD16E File Offset: 0x000FB36E
 	public void DestroyAllActive()
 	{
-		activeElements.ForEach(delegate(GameObject ae)
+		this.activeElements.ForEach(delegate(GameObject ae)
 		{
 			UnityEngine.Object.Destroy(ae);
 		});
-		activeElements.Clear();
+		this.activeElements.Clear();
 	}
 
+	// Token: 0x06008E6F RID: 36463 RVA: 0x000FD1A5 File Offset: 0x000FB3A5
 	public void DestroyAllFree()
 	{
-		freeElements.ForEach(delegate(GameObject ae)
+		this.freeElements.ForEach(delegate(GameObject ae)
 		{
 			UnityEngine.Object.Destroy(ae);
 		});
-		freeElements.Clear();
+		this.freeElements.Clear();
 	}
 
+	// Token: 0x06008E70 RID: 36464 RVA: 0x000FD1DC File Offset: 0x000FB3DC
 	public void ForEachActiveElement(Action<GameObject> predicate)
 	{
-		activeElements.ForEach(predicate);
+		this.activeElements.ForEach(predicate);
 	}
 
+	// Token: 0x06008E71 RID: 36465 RVA: 0x000FD1EA File Offset: 0x000FB3EA
 	public void ForEachFreeElement(Action<GameObject> predicate)
 	{
-		freeElements.ForEach(predicate);
+		this.freeElements.ForEach(predicate);
 	}
+
+	// Token: 0x04006B5E RID: 27486
+	private GameObject prefab;
+
+	// Token: 0x04006B5F RID: 27487
+	private List<GameObject> freeElements = new List<GameObject>();
+
+	// Token: 0x04006B60 RID: 27488
+	private List<GameObject> activeElements = new List<GameObject>();
+
+	// Token: 0x04006B61 RID: 27489
+	public Transform disabledElementParent;
 }

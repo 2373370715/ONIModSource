@@ -1,9 +1,12 @@
+﻿using System;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x0200095F RID: 2399
 [AddComponentMenu("KMonoBehaviour/scripts/DuplicantNoiseLevels")]
 public class DuplicantNoiseLevels : KMonoBehaviour
 {
+	// Token: 0x06002B41 RID: 11073 RVA: 0x001DE730 File Offset: 0x001DC930
 	public static void SetupNoiseLevels()
 	{
 		SoundEventVolumeCache.instance.AddVolume("anim_eat_floor_kanim", "Chew_food_gross", NOISE_POLLUTION.CREATURES.TIER2);

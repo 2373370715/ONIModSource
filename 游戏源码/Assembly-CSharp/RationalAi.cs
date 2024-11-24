@@ -1,98 +1,67 @@
+﻿using System;
+using UnityEngine;
+
+// Token: 0x02000641 RID: 1601
 public class RationalAi : GameStateMachine<RationalAi, RationalAi.Instance>
 {
-	public new class Instance : GameInstance
+	// Token: 0x06001D31 RID: 7473 RVA: 0x001AE658 File Offset: 0x001AC858
+	public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
-		public Instance(IStateMachineTarget master)
-			: base(master)
+		default_state = this.root;
+		this.root.ToggleStateMachine((RationalAi.Instance smi) => new DeathMonitor.Instance(smi.master, new DeathMonitor.Def())).Enter(delegate(RationalAi.Instance smi)
 		{
-			ChoreConsumer component = GetComponent<ChoreConsumer>();
+			if (smi.HasTag(GameTags.Dead))
+			{
+				smi.GoTo(this.dead);
+				return;
+			}
+			smi.GoTo(this.alive);
+		});
+		this.alive.TagTransition(GameTags.Dead, this.dead, false).ToggleStateMachineList(new Func<RationalAi.Instance, Func<RationalAi.Instance, StateMachine.Instance>[]>(RationalAi.GetStateMachinesToRunWhenAlive));
+		this.dead.ToggleStateMachine((RationalAi.Instance smi) => new FallWhenDeadMonitor.Instance(smi.master)).ToggleBrain("dead").Enter("RefreshUserMenu", delegate(RationalAi.Instance smi)
+		{
+			smi.RefreshUserMenu();
+		}).Enter("DropStorage", delegate(RationalAi.Instance smi)
+		{
+			smi.GetComponent<Storage>().DropAll(false, false, default(Vector3), true, null);
+		});
+	}
+
+	// Token: 0x06001D32 RID: 7474 RVA: 0x000B33C5 File Offset: 0x000B15C5
+	public static Func<RationalAi.Instance, StateMachine.Instance>[] GetStateMachinesToRunWhenAlive(RationalAi.Instance smi)
+	{
+		return smi.stateMachinesToRunWhenAlive;
+	}
+
+	// Token: 0x04001227 RID: 4647
+	public GameStateMachine<RationalAi, RationalAi.Instance, IStateMachineTarget, object>.State alive;
+
+	// Token: 0x04001228 RID: 4648
+	public GameStateMachine<RationalAi, RationalAi.Instance, IStateMachineTarget, object>.State dead;
+
+	// Token: 0x02000642 RID: 1602
+	public new class Instance : GameStateMachine<RationalAi, RationalAi.Instance, IStateMachineTarget, object>.GameInstance
+	{
+		// Token: 0x06001D35 RID: 7477 RVA: 0x001AE75C File Offset: 0x001AC95C
+		public Instance(IStateMachineTarget master, Tag minionModel) : base(master)
+		{
+			this.MinionModel = minionModel;
+			ChoreConsumer component = base.GetComponent<ChoreConsumer>();
 			component.AddUrge(Db.Get().Urges.EmoteHighPriority);
 			component.AddUrge(Db.Get().Urges.EmoteIdle);
+			component.prioritizeBrainIfNoChore = true;
 		}
 
+		// Token: 0x06001D36 RID: 7478 RVA: 0x000B33FD File Offset: 0x000B15FD
 		public void RefreshUserMenu()
 		{
 			Game.Instance.userMenu.Refresh(base.master.gameObject);
 		}
-	}
 
-	public State alive;
+		// Token: 0x04001229 RID: 4649
+		public Tag MinionModel;
 
-	public State dead;
-
-	public override void InitializeStates(out BaseState default_state)
-	{
-		default_state = root;
-		root.ToggleStateMachine((Instance smi) => new DeathMonitor.Instance(smi.master, new DeathMonitor.Def())).Enter(delegate(Instance smi)
-		{
-			if (smi.HasTag(GameTags.Dead))
-			{
-				smi.GoTo(dead);
-			}
-			else
-			{
-				smi.GoTo(alive);
-			}
-		});
-		alive.TagTransition(GameTags.Dead, dead).ToggleStateMachine((Instance smi) => new ThoughtGraph.Instance(smi.master)).ToggleStateMachine((Instance smi) => new Dreamer.Instance(smi.master))
-			.ToggleStateMachine((Instance smi) => new StaminaMonitor.Instance(smi.master))
-			.ToggleStateMachine((Instance smi) => new StressMonitor.Instance(smi.master))
-			.ToggleStateMachine((Instance smi) => new EmoteMonitor.Instance(smi.master))
-			.ToggleStateMachine((Instance smi) => new SneezeMonitor.Instance(smi.master))
-			.ToggleStateMachine((Instance smi) => new DecorMonitor.Instance(smi.master))
-			.ToggleStateMachine((Instance smi) => new IncapacitationMonitor.Instance(smi.master))
-			.ToggleStateMachine((Instance smi) => new IdleMonitor.Instance(smi.master))
-			.ToggleStateMachine((Instance smi) => new RationMonitor.Instance(smi.master))
-			.ToggleStateMachine((Instance smi) => new CalorieMonitor.Instance(smi.master))
-			.ToggleStateMachine((Instance smi) => new DoctorMonitor.Instance(smi.master))
-			.ToggleStateMachine((Instance smi) => new SicknessMonitor.Instance(smi.master))
-			.ToggleStateMachine((Instance smi) => new GermExposureMonitor.Instance(smi.master))
-			.ToggleStateMachine((Instance smi) => new BreathMonitor.Instance(smi.master))
-			.ToggleStateMachine((Instance smi) => new RoomMonitor.Instance(smi.master))
-			.ToggleStateMachine((Instance smi) => new TemperatureMonitor.Instance(smi.master))
-			.ToggleStateMachine((Instance smi) => new ExternalTemperatureMonitor.Instance(smi.master))
-			.ToggleStateMachine((Instance smi) => new ScaldingMonitor.Instance(smi.master, new ScaldingMonitor.Def
-			{
-				defaultScaldingTreshold = 345f
-			}))
-			.ToggleStateMachine((Instance smi) => new ColdImmunityMonitor.Instance(smi.master))
-			.ToggleStateMachine((Instance smi) => new HeatImmunityMonitor.Instance(smi.master))
-			.ToggleStateMachine((Instance smi) => new BladderMonitor.Instance(smi.master))
-			.ToggleStateMachine((Instance smi) => new SteppedInMonitor.Instance(smi.master))
-			.ToggleStateMachine((Instance smi) => new LightMonitor.Instance(smi.master))
-			.ToggleStateMachine((Instance smi) => new RadiationMonitor.Instance(smi.master))
-			.ToggleStateMachine((Instance smi) => new RedAlertMonitor.Instance(smi.master))
-			.ToggleStateMachine((Instance smi) => new CringeMonitor.Instance(smi.master))
-			.ToggleStateMachine((Instance smi) => new HygieneMonitor.Instance(smi.master))
-			.ToggleStateMachine((Instance smi) => new FallMonitor.Instance(smi.master, shouldPlayEmotes: true, "anim_emotes_default_kanim"))
-			.ToggleStateMachine((Instance smi) => new ThreatMonitor.Instance(smi.master, new ThreatMonitor.Def
-			{
-				fleethresholdState = Health.HealthState.Critical,
-				offsets = MinionConfig.ATTACK_OFFSETS
-			}))
-			.ToggleStateMachine((Instance smi) => new WoundMonitor.Instance(smi.master))
-			.ToggleStateMachine((Instance smi) => new TiredMonitor.Instance(smi.master))
-			.ToggleStateMachine((Instance smi) => new MoveToLocationMonitor.Instance(smi.master))
-			.ToggleStateMachine((Instance smi) => new RocketPassengerMonitor.Instance(smi.master))
-			.ToggleStateMachine((Instance smi) => new ReactionMonitor.Instance(smi.master, new ReactionMonitor.Def()))
-			.ToggleStateMachine((Instance smi) => new SuitWearer.Instance(smi.master))
-			.ToggleStateMachine((Instance smi) => new TubeTraveller.Instance(smi.master))
-			.ToggleStateMachine((Instance smi) => new MingleMonitor.Instance(smi.master))
-			.ToggleStateMachine((Instance smi) => new MournMonitor.Instance(smi.master))
-			.ToggleStateMachine((Instance smi) => new SpeechMonitor.Instance(smi.master, new SpeechMonitor.Def()))
-			.ToggleStateMachine((Instance smi) => new BlinkMonitor.Instance(smi.master, new BlinkMonitor.Def()))
-			.ToggleStateMachine((Instance smi) => new ConversationMonitor.Instance(smi.master, new ConversationMonitor.Def()))
-			.ToggleStateMachine((Instance smi) => new CoughMonitor.Instance(smi.master, new CoughMonitor.Def()))
-			.ToggleStateMachine((Instance smi) => new GameplayEventMonitor.Instance(smi.master, new GameplayEventMonitor.Def()))
-			.ToggleStateMachine((Instance smi) => new GasLiquidExposureMonitor.Instance(smi.master, new GasLiquidExposureMonitor.Def()))
-			.ToggleStateMachine((Instance smi) => new InspirationEffectMonitor.Instance(smi.master, new InspirationEffectMonitor.Def()));
-		dead.ToggleStateMachine((Instance smi) => new FallWhenDeadMonitor.Instance(smi.master)).ToggleBrain("dead").Enter("RefreshUserMenu", delegate(Instance smi)
-		{
-			smi.RefreshUserMenu();
-		})
-			.Enter("DropStorage", delegate(Instance smi)
-			{
-				smi.GetComponent<Storage>().DropAll();
-			});
+		// Token: 0x0400122A RID: 4650
+		public Func<RationalAi.Instance, StateMachine.Instance>[] stateMachinesToRunWhenAlive;
 	}
 }

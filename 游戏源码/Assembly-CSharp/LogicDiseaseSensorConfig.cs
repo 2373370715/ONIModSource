@@ -1,39 +1,62 @@
+﻿using System;
 using System.Collections.Generic;
 using STRINGS;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x020003D8 RID: 984
 public class LogicDiseaseSensorConfig : IBuildingConfig
 {
-	public static string ID = "LogicDiseaseSensor";
-
+	// Token: 0x06001056 RID: 4182 RVA: 0x00180B74 File Offset: 0x0017ED74
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef(ID, 1, 1, "diseasesensor_kanim", 30, 30f, new float[2]
+		string id = LogicDiseaseSensorConfig.ID;
+		int width = 1;
+		int height = 1;
+		string anim = "diseasesensor_kanim";
+		int hitpoints = 30;
+		float construction_time = 30f;
+		float[] construction_mass = new float[]
 		{
 			TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER0[0],
 			TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER1[0]
-		}, new string[2] { "RefinedMetal", "Plastic" }, 1600f, BuildLocationRule.Anywhere, noise: NOISE_POLLUTION.NONE, decor: TUNING.BUILDINGS.DECOR.PENALTY.TIER0);
-		obj.Overheatable = false;
-		obj.Floodable = false;
-		obj.Entombable = false;
-		obj.ViewMode = OverlayModes.Logic.ID;
-		obj.AudioCategory = "Metal";
-		obj.SceneLayer = Grid.SceneLayer.Building;
-		obj.AlwaysOperational = true;
-		obj.LogicOutputPorts = new List<LogicPorts.Port> { LogicPorts.Port.OutputPort(LogicSwitch.PORT_ID, new CellOffset(0, 0), STRINGS.BUILDINGS.PREFABS.LOGICDISEASESENSOR.LOGIC_PORT, STRINGS.BUILDINGS.PREFABS.LOGICDISEASESENSOR.LOGIC_PORT_ACTIVE, STRINGS.BUILDINGS.PREFABS.LOGICDISEASESENSOR.LOGIC_PORT_INACTIVE, show_wire_missing_icon: true) };
+		};
+		string[] construction_materials = new string[]
+		{
+			"RefinedMetal",
+			"Plastic"
+		};
+		float melting_point = 1600f;
+		BuildLocationRule build_location_rule = BuildLocationRule.Anywhere;
+		EffectorValues none = NOISE_POLLUTION.NONE;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, construction_mass, construction_materials, melting_point, build_location_rule, TUNING.BUILDINGS.DECOR.PENALTY.TIER0, none, 0.2f);
+		buildingDef.Overheatable = false;
+		buildingDef.Floodable = false;
+		buildingDef.Entombable = false;
+		buildingDef.ViewMode = OverlayModes.Logic.ID;
+		buildingDef.AudioCategory = "Metal";
+		buildingDef.SceneLayer = Grid.SceneLayer.Building;
+		buildingDef.AlwaysOperational = true;
+		buildingDef.LogicOutputPorts = new List<LogicPorts.Port>
+		{
+			LogicPorts.Port.OutputPort(LogicSwitch.PORT_ID, new CellOffset(0, 0), STRINGS.BUILDINGS.PREFABS.LOGICDISEASESENSOR.LOGIC_PORT, STRINGS.BUILDINGS.PREFABS.LOGICDISEASESENSOR.LOGIC_PORT_ACTIVE, STRINGS.BUILDINGS.PREFABS.LOGICDISEASESENSOR.LOGIC_PORT_INACTIVE, true, false)
+		};
 		SoundEventVolumeCache.instance.AddVolume("diseasesensor_kanim", "PowerSwitch_on", NOISE_POLLUTION.NOISY.TIER3);
 		SoundEventVolumeCache.instance.AddVolume("diseasesensor_kanim", "PowerSwitch_off", NOISE_POLLUTION.NOISY.TIER3);
-		GeneratedBuildings.RegisterWithOverlay(OverlayModes.Logic.HighlightItemIDs, ID);
-		return obj;
+		GeneratedBuildings.RegisterWithOverlay(OverlayModes.Logic.HighlightItemIDs, LogicDiseaseSensorConfig.ID);
+		return buildingDef;
 	}
 
+	// Token: 0x06001057 RID: 4183 RVA: 0x000AD212 File Offset: 0x000AB412
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		LogicDiseaseSensor logicDiseaseSensor = go.AddOrGet<LogicDiseaseSensor>();
 		logicDiseaseSensor.Threshold = 0f;
 		logicDiseaseSensor.ActivateAboveThreshold = true;
 		logicDiseaseSensor.manuallyControlled = false;
-		go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayInFrontOfConduits);
+		go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayInFrontOfConduits, false);
 	}
+
+	// Token: 0x04000B78 RID: 2936
+	public static string ID = "LogicDiseaseSensor";
 }

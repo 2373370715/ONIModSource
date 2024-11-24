@@ -1,46 +1,55 @@
+﻿using System;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x02001249 RID: 4681
 [AddComponentMenu("KMonoBehaviour/Workable/DoctorStationDoctorWorkable")]
 public class DoctorStationDoctorWorkable : Workable
 {
-	[MyCmpReq]
-	private DoctorStation station;
-
+	// Token: 0x06005FE4 RID: 24548 RVA: 0x000C9266 File Offset: 0x000C7466
 	private DoctorStationDoctorWorkable()
 	{
-		synchronizeAnims = false;
+		this.synchronizeAnims = false;
 	}
 
+	// Token: 0x06005FE5 RID: 24549 RVA: 0x00237470 File Offset: 0x00235670
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		attributeConverter = Db.Get().AttributeConverters.DoctorSpeed;
-		attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.BARELY_EVER_EXPERIENCE;
-		skillExperienceSkillGroup = Db.Get().SkillGroups.MedicalAid.Id;
-		skillExperienceMultiplier = SKILLS.BARELY_EVER_EXPERIENCE;
+		this.attributeConverter = Db.Get().AttributeConverters.DoctorSpeed;
+		this.attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.BARELY_EVER_EXPERIENCE;
+		this.skillExperienceSkillGroup = Db.Get().SkillGroups.MedicalAid.Id;
+		this.skillExperienceMultiplier = SKILLS.BARELY_EVER_EXPERIENCE;
 	}
 
+	// Token: 0x06005FE6 RID: 24550 RVA: 0x000AB70D File Offset: 0x000A990D
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
 	}
 
-	protected override void OnStartWork(Worker worker)
+	// Token: 0x06005FE7 RID: 24551 RVA: 0x000DE7B2 File Offset: 0x000DC9B2
+	protected override void OnStartWork(WorkerBase worker)
 	{
 		base.OnStartWork(worker);
-		station.SetHasDoctor(has: true);
+		this.station.SetHasDoctor(true);
 	}
 
-	protected override void OnStopWork(Worker worker)
+	// Token: 0x06005FE8 RID: 24552 RVA: 0x000DE7C7 File Offset: 0x000DC9C7
+	protected override void OnStopWork(WorkerBase worker)
 	{
 		base.OnStopWork(worker);
-		station.SetHasDoctor(has: false);
+		this.station.SetHasDoctor(false);
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+	// Token: 0x06005FE9 RID: 24553 RVA: 0x000DE7DC File Offset: 0x000DC9DC
+	protected override void OnCompleteWork(WorkerBase worker)
 	{
 		base.OnCompleteWork(worker);
-		station.CompleteDoctoring();
+		this.station.CompleteDoctoring();
 	}
+
+	// Token: 0x04004401 RID: 17409
+	[MyCmpReq]
+	private DoctorStation station;
 }

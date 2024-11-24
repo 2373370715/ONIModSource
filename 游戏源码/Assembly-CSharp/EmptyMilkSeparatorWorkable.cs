@@ -1,27 +1,38 @@
-using System;
+﻿using System;
 using TUNING;
 
+// Token: 0x02000EBA RID: 3770
 public class EmptyMilkSeparatorWorkable : Workable
 {
-	public System.Action OnWork_PST_Begins;
-
+	// Token: 0x06004BF9 RID: 19449 RVA: 0x002601E8 File Offset: 0x0025E3E8
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		workLayer = Grid.SceneLayer.BuildingFront;
-		workerStatusItem = Db.Get().DuplicantStatusItems.Cleaning;
-		workingStatusItem = Db.Get().MiscStatusItems.Cleaning;
-		overrideAnims = new KAnimFile[1] { Assets.GetAnim("anim_interacts_milk_separator_kanim") };
-		attributeConverter = Db.Get().AttributeConverters.TidyingSpeed;
-		attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.PART_DAY_EXPERIENCE;
-		skillExperienceMultiplier = SKILLS.PART_DAY_EXPERIENCE;
-		SetWorkTime(15f);
-		synchronizeAnims = true;
+		this.workLayer = Grid.SceneLayer.BuildingFront;
+		this.workerStatusItem = Db.Get().DuplicantStatusItems.Cleaning;
+		this.workingStatusItem = Db.Get().MiscStatusItems.Cleaning;
+		this.overrideAnims = new KAnimFile[]
+		{
+			Assets.GetAnim("anim_interacts_milk_separator_kanim")
+		};
+		this.attributeConverter = Db.Get().AttributeConverters.TidyingSpeed;
+		this.attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.PART_DAY_EXPERIENCE;
+		this.skillExperienceMultiplier = SKILLS.PART_DAY_EXPERIENCE;
+		base.SetWorkTime(15f);
+		this.synchronizeAnims = true;
 	}
 
-	public override void OnPendingCompleteWork(Worker worker)
+	// Token: 0x06004BFA RID: 19450 RVA: 0x000D126D File Offset: 0x000CF46D
+	public override void OnPendingCompleteWork(WorkerBase worker)
 	{
-		OnWork_PST_Begins?.Invoke();
+		System.Action onWork_PST_Begins = this.OnWork_PST_Begins;
+		if (onWork_PST_Begins != null)
+		{
+			onWork_PST_Begins();
+		}
 		base.OnPendingCompleteWork(worker);
 	}
+
+	// Token: 0x040034A7 RID: 13479
+	public System.Action OnWork_PST_Begins;
 }

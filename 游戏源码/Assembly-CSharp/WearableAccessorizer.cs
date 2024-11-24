@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -6,232 +6,134 @@ using Database;
 using KSerialization;
 using UnityEngine;
 
+// Token: 0x02000B70 RID: 2928
 [AddComponentMenu("KMonoBehaviour/scripts/WearableAccessorizer")]
 public class WearableAccessorizer : KMonoBehaviour
 {
-	public enum WearableType
-	{
-		Basic,
-		CustomClothing,
-		Outfit,
-		Suit,
-		CustomSuit
-	}
-
-	[SerializationConfig(MemberSerialization.OptIn)]
-	public class Wearable
-	{
-		private List<KAnimFile> buildAnims;
-
-		[Serialize]
-		private List<string> animNames;
-
-		[Serialize]
-		public int buildOverridePriority;
-
-		public List<KAnimFile> BuildAnims => buildAnims;
-
-		public List<string> AnimNames => animNames;
-
-		public Wearable(List<KAnimFile> buildAnims, int buildOverridePriority)
-		{
-			this.buildAnims = buildAnims;
-			animNames = buildAnims.Select((KAnimFile animFile) => animFile.name).ToList();
-			this.buildOverridePriority = buildOverridePriority;
-		}
-
-		public Wearable(KAnimFile buildAnim, int buildOverridePriority)
-		{
-			buildAnims = new List<KAnimFile> { buildAnim };
-			animNames = new List<string> { buildAnim.name };
-			this.buildOverridePriority = buildOverridePriority;
-		}
-
-		public Wearable(List<ResourceRef<ClothingItemResource>> items, int buildOverridePriority)
-		{
-			buildAnims = new List<KAnimFile>();
-			animNames = new List<string>();
-			this.buildOverridePriority = buildOverridePriority;
-			foreach (ResourceRef<ClothingItemResource> item in items)
-			{
-				ClothingItemResource clothingItemResource = item.Get();
-				buildAnims.Add(clothingItemResource.AnimFile);
-				animNames.Add(clothingItemResource.animFilename);
-			}
-		}
-
-		public void AddCustomItems(List<ResourceRef<ClothingItemResource>> items)
-		{
-			foreach (ResourceRef<ClothingItemResource> item in items)
-			{
-				ClothingItemResource clothingItemResource = item.Get();
-				buildAnims.Add(clothingItemResource.AnimFile);
-				animNames.Add(clothingItemResource.animFilename);
-			}
-		}
-
-		public void Deserialize()
-		{
-			if (animNames == null)
-			{
-				return;
-			}
-			buildAnims = new List<KAnimFile>();
-			for (int i = 0; i < animNames.Count; i++)
-			{
-				KAnimFile anim = null;
-				if (Assets.TryGetAnim(animNames[i], out anim))
-				{
-					buildAnims.Add(anim);
-				}
-			}
-		}
-
-		public void AddAnim(KAnimFile animFile)
-		{
-			buildAnims.Add(animFile);
-			animNames.Add(animFile.name);
-		}
-
-		public bool RemoveAnim(KAnimFile animFile)
-		{
-			return buildAnims.Remove(animFile) | animNames.Remove(animFile.name);
-		}
-
-		public void ClearAnims()
-		{
-			buildAnims.Clear();
-			animNames.Clear();
-		}
-	}
-
-	[MyCmpReq]
-	private KAnimControllerBase animController;
-
-	[Obsolete("Deprecated, use customOufitItems[ClothingOutfitUtility.OutfitType.Clothing]")]
-	[Serialize]
-	private List<ResourceRef<ClothingItemResource>> clothingItems = new List<ResourceRef<ClothingItemResource>>();
-
-	[Serialize]
-	private string joyResponsePermitId;
-
-	[Serialize]
-	private Dictionary<ClothingOutfitUtility.OutfitType, List<ResourceRef<ClothingItemResource>>> customOutfitItems = new Dictionary<ClothingOutfitUtility.OutfitType, List<ResourceRef<ClothingItemResource>>>();
-
-	private bool waitingForOutfitChangeFX;
-
-	[Serialize]
-	private Dictionary<WearableType, Wearable> wearables = new Dictionary<WearableType, Wearable>();
-
-	private static string torso = "torso";
-
-	private static string cropped = "_cropped";
-
-	public Dictionary<WearableType, Wearable> Wearables => wearables;
-
+	// Token: 0x060037A2 RID: 14242 RVA: 0x000C414B File Offset: 0x000C234B
 	public Dictionary<ClothingOutfitUtility.OutfitType, List<ResourceRef<ClothingItemResource>>> GetCustomClothingItems()
 	{
-		return customOutfitItems;
+		return this.customOutfitItems;
 	}
 
+	// Token: 0x17000267 RID: 615
+	// (get) Token: 0x060037A3 RID: 14243 RVA: 0x000C4153 File Offset: 0x000C2353
+	public Dictionary<WearableAccessorizer.WearableType, WearableAccessorizer.Wearable> Wearables
+	{
+		get
+		{
+			return this.wearables;
+		}
+	}
+
+	// Token: 0x060037A4 RID: 14244 RVA: 0x00218594 File Offset: 0x00216794
 	public string[] GetClothingItemsIds(ClothingOutfitUtility.OutfitType outfitType)
 	{
-		if (customOutfitItems.ContainsKey(outfitType))
+		if (this.customOutfitItems.ContainsKey(outfitType))
 		{
-			string[] array = new string[customOutfitItems[outfitType].Count];
-			for (int i = 0; i < customOutfitItems[outfitType].Count; i++)
+			string[] array = new string[this.customOutfitItems[outfitType].Count];
+			for (int i = 0; i < this.customOutfitItems[outfitType].Count; i++)
 			{
-				array[i] = customOutfitItems[outfitType][i].Get().Id;
+				array[i] = this.customOutfitItems[outfitType][i].Get().Id;
 			}
 			return array;
 		}
 		return new string[0];
 	}
 
+	// Token: 0x060037A5 RID: 14245 RVA: 0x000C415B File Offset: 0x000C235B
 	public Option<string> GetJoyResponseId()
 	{
-		return joyResponsePermitId;
+		return this.joyResponsePermitId;
 	}
 
+	// Token: 0x060037A6 RID: 14246 RVA: 0x000C4168 File Offset: 0x000C2368
 	public void SetJoyResponseId(Option<string> joyResponsePermitId)
 	{
-		this.joyResponsePermitId = joyResponsePermitId.UnwrapOr(null);
+		this.joyResponsePermitId = joyResponsePermitId.UnwrapOr(null, null);
 	}
 
+	// Token: 0x060037A7 RID: 14247 RVA: 0x0021860C File Offset: 0x0021680C
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		if (animController == null)
+		if (this.animController == null)
 		{
-			animController = GetComponent<KAnimControllerBase>();
+			this.animController = base.GetComponent<KAnimControllerBase>();
 		}
-		Subscribe(-448952673, EquippedItem);
-		Subscribe(-1285462312, UnequippedItem);
+		base.Subscribe(-448952673, new Action<object>(this.EquippedItem));
+		base.Subscribe(-1285462312, new Action<object>(this.UnequippedItem));
 	}
 
+	// Token: 0x060037A8 RID: 14248 RVA: 0x0021866C File Offset: 0x0021686C
 	[OnDeserialized]
 	[Obsolete]
 	private void OnDeserialized()
 	{
-		List<WearableType> list = new List<WearableType>();
-		foreach (KeyValuePair<WearableType, Wearable> wearable in wearables)
+		List<WearableAccessorizer.WearableType> list = new List<WearableAccessorizer.WearableType>();
+		foreach (KeyValuePair<WearableAccessorizer.WearableType, WearableAccessorizer.Wearable> keyValuePair in this.wearables)
 		{
-			wearable.Value.Deserialize();
-			if (wearable.Value.BuildAnims == null || wearable.Value.BuildAnims.Count == 0)
+			keyValuePair.Value.Deserialize();
+			if (keyValuePair.Value.BuildAnims == null || keyValuePair.Value.BuildAnims.Count == 0)
 			{
-				list.Add(wearable.Key);
+				list.Add(keyValuePair.Key);
 			}
 		}
-		foreach (WearableType item in list)
+		foreach (WearableAccessorizer.WearableType key in list)
 		{
-			wearables.Remove(item);
+			this.wearables.Remove(key);
 		}
-		if (clothingItems.Count > 0)
+		if (this.clothingItems.Count > 0)
 		{
-			customOutfitItems[ClothingOutfitUtility.OutfitType.Clothing] = new List<ResourceRef<ClothingItemResource>>(clothingItems);
-			clothingItems.Clear();
-			if (!wearables.ContainsKey(WearableType.CustomClothing))
+			this.customOutfitItems[ClothingOutfitUtility.OutfitType.Clothing] = new List<ResourceRef<ClothingItemResource>>(this.clothingItems);
+			this.clothingItems.Clear();
+			if (!this.wearables.ContainsKey(WearableAccessorizer.WearableType.CustomClothing))
 			{
-				foreach (ResourceRef<ClothingItemResource> item2 in customOutfitItems[ClothingOutfitUtility.OutfitType.Clothing])
+				foreach (ResourceRef<ClothingItemResource> resourceRef in this.customOutfitItems[ClothingOutfitUtility.OutfitType.Clothing])
 				{
-					Internal_ApplyClothingItem(ClothingOutfitUtility.OutfitType.Clothing, item2.Get());
+					this.Internal_ApplyClothingItem(ClothingOutfitUtility.OutfitType.Clothing, resourceRef.Get());
 				}
 			}
 		}
-		ApplyWearable();
+		this.ApplyWearable();
 	}
 
+	// Token: 0x060037A9 RID: 14249 RVA: 0x002187D4 File Offset: 0x002169D4
 	public void EquippedItem(object data)
 	{
-		KPrefabID kPrefabID = data as KPrefabID;
-		if (kPrefabID != null)
+		KPrefabID kprefabID = data as KPrefabID;
+		if (kprefabID != null)
 		{
-			Equippable component = kPrefabID.GetComponent<Equippable>();
-			ApplyEquipment(component, component.GetBuildOverride());
+			Equippable component = kprefabID.GetComponent<Equippable>();
+			this.ApplyEquipment(component, component.GetBuildOverride());
 		}
 	}
 
+	// Token: 0x060037AA RID: 14250 RVA: 0x00218808 File Offset: 0x00216A08
 	public void ApplyEquipment(Equippable equippable, KAnimFile animFile)
 	{
-		if (equippable != null && animFile != null && Enum.TryParse<WearableType>(equippable.def.Slot, out var result))
+		WearableAccessorizer.WearableType key;
+		if (equippable != null && animFile != null && Enum.TryParse<WearableAccessorizer.WearableType>(equippable.def.Slot, out key))
 		{
-			if (wearables.ContainsKey(result))
+			if (this.wearables.ContainsKey(key))
 			{
-				RemoveAnimBuild(wearables[result].BuildAnims[0], wearables[result].buildOverridePriority);
+				this.RemoveAnimBuild(this.wearables[key].BuildAnims[0], this.wearables[key].buildOverridePriority);
 			}
-			if (TryGetEquippableClothingType(equippable.def, out var outfitType) && customOutfitItems.ContainsKey(outfitType))
+			ClothingOutfitUtility.OutfitType key2;
+			if (this.TryGetEquippableClothingType(equippable.def, out key2) && this.customOutfitItems.ContainsKey(key2))
 			{
-				wearables[WearableType.CustomSuit] = new Wearable(animFile, equippable.def.BuildOverridePriority);
-				wearables[WearableType.CustomSuit].AddCustomItems(customOutfitItems[outfitType]);
+				this.wearables[WearableAccessorizer.WearableType.CustomSuit] = new WearableAccessorizer.Wearable(animFile, equippable.def.BuildOverridePriority);
+				this.wearables[WearableAccessorizer.WearableType.CustomSuit].AddCustomItems(this.customOutfitItems[key2]);
 			}
 			else
 			{
-				wearables[result] = new Wearable(animFile, equippable.def.BuildOverridePriority);
+				this.wearables[key] = new WearableAccessorizer.Wearable(animFile, equippable.def.BuildOverridePriority);
 			}
-			ApplyWearable();
+			this.ApplyWearable();
 		}
 	}
 
+	// Token: 0x060037AB RID: 14251 RVA: 0x000C4179 File Offset: 0x000C2379
 	private bool TryGetEquippableClothingType(EquipmentDef equipment, out ClothingOutfitUtility.OutfitType outfitType)
 	{
 		if (equipment.Id == "Atmo_Suit")
@@ -243,13 +145,14 @@ public class WearableAccessorizer : KMonoBehaviour
 		return false;
 	}
 
+	// Token: 0x060037AC RID: 14252 RVA: 0x00218900 File Offset: 0x00216B00
 	private Equippable GetSuitEquippable()
 	{
-		MinionIdentity component = GetComponent<MinionIdentity>();
+		MinionIdentity component = base.GetComponent<MinionIdentity>();
 		if (component != null && component.assignableProxy != null && component.assignableProxy.Get() != null)
 		{
 			Equipment equipment = component.GetEquipment();
-			Assignable assignable = ((equipment != null) ? equipment.GetAssignable(Db.Get().AssignableSlots.Suit) : null);
+			Assignable assignable = (equipment != null) ? equipment.GetAssignable(Db.Get().AssignableSlots.Suit) : null;
 			if (assignable != null)
 			{
 				return assignable.GetComponent<Equippable>();
@@ -258,217 +161,228 @@ public class WearableAccessorizer : KMonoBehaviour
 		return null;
 	}
 
-	private WearableType GetHighestAccessory()
+	// Token: 0x060037AD RID: 14253 RVA: 0x00218974 File Offset: 0x00216B74
+	private WearableAccessorizer.WearableType GetHighestAccessory()
 	{
-		WearableType wearableType = WearableType.Basic;
-		foreach (WearableType key in wearables.Keys)
+		WearableAccessorizer.WearableType wearableType = WearableAccessorizer.WearableType.Basic;
+		foreach (WearableAccessorizer.WearableType wearableType2 in this.wearables.Keys)
 		{
-			if (key > wearableType)
+			if (wearableType2 > wearableType)
 			{
-				wearableType = key;
+				wearableType = wearableType2;
 			}
 		}
 		return wearableType;
 	}
 
+	// Token: 0x060037AE RID: 14254 RVA: 0x002189D0 File Offset: 0x00216BD0
 	private void ApplyWearable()
 	{
-		if (animController == null)
+		if (this.animController == null)
 		{
-			animController = GetComponent<KAnimControllerBase>();
-			if (animController == null)
+			this.animController = base.GetComponent<KAnimControllerBase>();
+			if (this.animController == null)
 			{
-				Debug.LogWarning("Missing animcontroller for WearableAccessorizer, bailing early to prevent a crash!");
+				global::Debug.LogWarning("Missing animcontroller for WearableAccessorizer, bailing early to prevent a crash!");
 				return;
 			}
 		}
-		SymbolOverrideController component = GetComponent<SymbolOverrideController>();
-		WearableType highestAccessory = GetHighestAccessory();
-		foreach (WearableType value in Enum.GetValues(typeof(WearableType)))
+		SymbolOverrideController component = base.GetComponent<SymbolOverrideController>();
+		WearableAccessorizer.WearableType highestAccessory = this.GetHighestAccessory();
+		foreach (object obj in Enum.GetValues(typeof(WearableAccessorizer.WearableType)))
 		{
-			if (!wearables.ContainsKey(value))
+			WearableAccessorizer.WearableType wearableType = (WearableAccessorizer.WearableType)obj;
+			if (this.wearables.ContainsKey(wearableType))
 			{
-				continue;
-			}
-			Wearable wearable = wearables[value];
-			int buildOverridePriority = wearable.buildOverridePriority;
-			foreach (KAnimFile buildAnim in wearable.BuildAnims)
-			{
-				KAnim.Build build = buildAnim.GetData().build;
-				if (build == null)
+				WearableAccessorizer.Wearable wearable = this.wearables[wearableType];
+				int buildOverridePriority = wearable.buildOverridePriority;
+				foreach (KAnimFile kanimFile in wearable.BuildAnims)
 				{
-					continue;
-				}
-				for (int i = 0; i < build.symbols.Length; i++)
-				{
-					string text = HashCache.Get().Get(build.symbols[i].hash);
-					if (value == highestAccessory)
+					KAnim.Build build = kanimFile.GetData().build;
+					if (build != null)
 					{
-						component.AddSymbolOverride(text, build.symbols[i], buildOverridePriority);
-						animController.SetSymbolVisiblity(text, is_visible: true);
-					}
-					else
-					{
-						component.RemoveSymbolOverride(text, buildOverridePriority);
+						for (int i = 0; i < build.symbols.Length; i++)
+						{
+							string text = HashCache.Get().Get(build.symbols[i].hash);
+							if (wearableType == highestAccessory)
+							{
+								component.AddSymbolOverride(text, build.symbols[i], buildOverridePriority);
+								this.animController.SetSymbolVisiblity(text, true);
+							}
+							else
+							{
+								component.RemoveSymbolOverride(text, buildOverridePriority);
+							}
+						}
 					}
 				}
 			}
 		}
-		UpdateVisibleSymbols(highestAccessory);
+		this.UpdateVisibleSymbols(highestAccessory);
 	}
 
+	// Token: 0x060037AF RID: 14255 RVA: 0x000C4196 File Offset: 0x000C2396
 	public void UpdateVisibleSymbols(ClothingOutfitUtility.OutfitType outfitType)
 	{
-		if (animController == null)
+		if (this.animController == null)
 		{
-			animController = GetComponent<KAnimControllerBase>();
+			this.animController = base.GetComponent<KAnimControllerBase>();
 		}
-		UpdateVisibleSymbols(ConvertOutfitTypeToWearableType(outfitType));
+		this.UpdateVisibleSymbols(this.ConvertOutfitTypeToWearableType(outfitType));
 	}
 
-	private void UpdateVisibleSymbols(WearableType wearableType)
+	// Token: 0x060037B0 RID: 14256 RVA: 0x00218B68 File Offset: 0x00216D68
+	private void UpdateVisibleSymbols(WearableAccessorizer.WearableType wearableType)
 	{
-		bool flag = wearableType == WearableType.Basic;
-		bool hasHat = GetComponent<Accessorizer>().GetAccessory(Db.Get().AccessorySlots.Hat) != null;
+		bool flag = wearableType == WearableAccessorizer.WearableType.Basic;
+		bool hasHat = base.GetComponent<Accessorizer>().GetAccessory(Db.Get().AccessorySlots.Hat) != null;
 		bool flag2 = false;
 		bool is_visible = false;
 		bool is_visible2 = true;
-		bool is_visible3 = wearableType == WearableType.Basic;
-		bool is_visible4 = wearableType == WearableType.Basic;
-		if (wearables.ContainsKey(wearableType))
+		bool is_visible3 = wearableType == WearableAccessorizer.WearableType.Basic;
+		bool is_visible4 = wearableType == WearableAccessorizer.WearableType.Basic;
+		if (this.wearables.ContainsKey(wearableType))
 		{
-			List<KAnimHashedString> list = wearables[wearableType].BuildAnims.SelectMany((KAnimFile x) => x.GetData().build.symbols.Select((KAnim.Build.Symbol s) => s.hash)).ToList();
-			flag = flag || list.Contains(Db.Get().AccessorySlots.Belt.targetSymbolId);
+			List<KAnimHashedString> list = this.wearables[wearableType].BuildAnims.SelectMany((KAnimFile x) => from s in x.GetData().build.symbols
+			select s.hash).ToList<KAnimHashedString>();
+			flag = (flag || list.Contains(Db.Get().AccessorySlots.Belt.targetSymbolId));
 			flag2 = list.Contains(Db.Get().AccessorySlots.Skirt.targetSymbolId);
 			is_visible = list.Contains(Db.Get().AccessorySlots.Necklace.targetSymbolId);
-			is_visible2 = list.Contains(Db.Get().AccessorySlots.ArmLower.targetSymbolId) || (wearableType != 0 && !HasPermitCategoryItem(ClothingOutfitUtility.OutfitType.Clothing, PermitCategory.DupeTops));
-			is_visible3 = list.Contains(Db.Get().AccessorySlots.Arm.targetSymbolId) || (wearableType != 0 && !HasPermitCategoryItem(ClothingOutfitUtility.OutfitType.Clothing, PermitCategory.DupeTops));
-			is_visible4 = list.Contains(Db.Get().AccessorySlots.Leg.targetSymbolId) || (wearableType != 0 && !HasPermitCategoryItem(ClothingOutfitUtility.OutfitType.Clothing, PermitCategory.DupeBottoms));
+			is_visible2 = (list.Contains(Db.Get().AccessorySlots.ArmLower.targetSymbolId) || (wearableType != WearableAccessorizer.WearableType.Basic && !this.HasPermitCategoryItem(ClothingOutfitUtility.OutfitType.Clothing, PermitCategory.DupeTops)));
+			is_visible3 = (list.Contains(Db.Get().AccessorySlots.Arm.targetSymbolId) || (wearableType != WearableAccessorizer.WearableType.Basic && !this.HasPermitCategoryItem(ClothingOutfitUtility.OutfitType.Clothing, PermitCategory.DupeTops)));
+			is_visible4 = (list.Contains(Db.Get().AccessorySlots.Leg.targetSymbolId) || (wearableType != WearableAccessorizer.WearableType.Basic && !this.HasPermitCategoryItem(ClothingOutfitUtility.OutfitType.Clothing, PermitCategory.DupeBottoms)));
 		}
-		animController.SetSymbolVisiblity(Db.Get().AccessorySlots.Belt.targetSymbolId, flag);
-		animController.SetSymbolVisiblity(Db.Get().AccessorySlots.Necklace.targetSymbolId, is_visible);
-		animController.SetSymbolVisiblity(Db.Get().AccessorySlots.ArmLower.targetSymbolId, is_visible2);
-		animController.SetSymbolVisiblity(Db.Get().AccessorySlots.Arm.targetSymbolId, is_visible3);
-		animController.SetSymbolVisiblity(Db.Get().AccessorySlots.Leg.targetSymbolId, is_visible4);
-		animController.SetSymbolVisiblity(Db.Get().AccessorySlots.Skirt.targetSymbolId, flag2);
+		this.animController.SetSymbolVisiblity(Db.Get().AccessorySlots.Belt.targetSymbolId, flag);
+		this.animController.SetSymbolVisiblity(Db.Get().AccessorySlots.Necklace.targetSymbolId, is_visible);
+		this.animController.SetSymbolVisiblity(Db.Get().AccessorySlots.ArmLower.targetSymbolId, is_visible2);
+		this.animController.SetSymbolVisiblity(Db.Get().AccessorySlots.Arm.targetSymbolId, is_visible3);
+		this.animController.SetSymbolVisiblity(Db.Get().AccessorySlots.Leg.targetSymbolId, is_visible4);
+		this.animController.SetSymbolVisiblity(Db.Get().AccessorySlots.Skirt.targetSymbolId, flag2);
 		if (flag2 || flag)
 		{
-			SkirtHACK(wearableType);
+			this.SkirtHACK(wearableType);
 		}
-		UpdateHairBasedOnHat(animController, hasHat);
+		WearableAccessorizer.UpdateHairBasedOnHat(this.animController, hasHat);
 	}
 
-	private void SkirtHACK(WearableType wearable_type)
+	// Token: 0x060037B1 RID: 14257 RVA: 0x00218DC8 File Offset: 0x00216FC8
+	private void SkirtHACK(WearableAccessorizer.WearableType wearable_type)
 	{
-		if (!wearables.ContainsKey(wearable_type))
+		if (this.wearables.ContainsKey(wearable_type))
 		{
-			return;
-		}
-		SymbolOverrideController component = GetComponent<SymbolOverrideController>();
-		Wearable wearable = wearables[wearable_type];
-		int buildOverridePriority = wearable.buildOverridePriority;
-		foreach (KAnimFile buildAnim in wearable.BuildAnims)
-		{
-			KAnim.Build.Symbol[] symbols = buildAnim.GetData().build.symbols;
-			foreach (KAnim.Build.Symbol symbol in symbols)
+			SymbolOverrideController component = base.GetComponent<SymbolOverrideController>();
+			WearableAccessorizer.Wearable wearable = this.wearables[wearable_type];
+			int buildOverridePriority = wearable.buildOverridePriority;
+			foreach (KAnimFile kanimFile in wearable.BuildAnims)
 			{
-				if (HashCache.Get().Get(symbol.hash).EndsWith(cropped))
+				foreach (KAnim.Build.Symbol symbol in kanimFile.GetData().build.symbols)
 				{
-					component.AddSymbolOverride(torso, symbol, buildOverridePriority);
-					break;
+					if (HashCache.Get().Get(symbol.hash).EndsWith(WearableAccessorizer.cropped))
+					{
+						component.AddSymbolOverride(WearableAccessorizer.torso, symbol, buildOverridePriority);
+						break;
+					}
 				}
 			}
 		}
 	}
 
+	// Token: 0x060037B2 RID: 14258 RVA: 0x00218E98 File Offset: 0x00217098
 	public static void UpdateHairBasedOnHat(KAnimControllerBase kbac, bool hasHat)
 	{
 		if (hasHat)
 		{
-			kbac.SetSymbolVisiblity(Db.Get().AccessorySlots.Hair.targetSymbolId, is_visible: false);
-			kbac.SetSymbolVisiblity(Db.Get().AccessorySlots.HatHair.targetSymbolId, is_visible: true);
-			kbac.SetSymbolVisiblity(Db.Get().AccessorySlots.Hat.targetSymbolId, is_visible: true);
+			kbac.SetSymbolVisiblity(Db.Get().AccessorySlots.Hair.targetSymbolId, false);
+			kbac.SetSymbolVisiblity(Db.Get().AccessorySlots.HatHair.targetSymbolId, true);
+			kbac.SetSymbolVisiblity(Db.Get().AccessorySlots.Hat.targetSymbolId, true);
+			return;
 		}
-		else
-		{
-			kbac.SetSymbolVisiblity(Db.Get().AccessorySlots.Hair.targetSymbolId, is_visible: true);
-			kbac.SetSymbolVisiblity(Db.Get().AccessorySlots.HatHair.targetSymbolId, is_visible: false);
-			kbac.SetSymbolVisiblity(Db.Get().AccessorySlots.Hat.targetSymbolId, is_visible: false);
-		}
+		kbac.SetSymbolVisiblity(Db.Get().AccessorySlots.Hair.targetSymbolId, true);
+		kbac.SetSymbolVisiblity(Db.Get().AccessorySlots.HatHair.targetSymbolId, false);
+		kbac.SetSymbolVisiblity(Db.Get().AccessorySlots.Hat.targetSymbolId, false);
 	}
 
+	// Token: 0x060037B3 RID: 14259 RVA: 0x000C41BF File Offset: 0x000C23BF
 	public static void SkirtAccessory(KAnimControllerBase kbac, bool show_skirt)
 	{
 		kbac.SetSymbolVisiblity(Db.Get().AccessorySlots.Skirt.targetSymbolId, show_skirt);
 		kbac.SetSymbolVisiblity(Db.Get().AccessorySlots.Leg.targetSymbolId, !show_skirt);
 	}
 
+	// Token: 0x060037B4 RID: 14260 RVA: 0x00218F4C File Offset: 0x0021714C
 	private void RemoveAnimBuild(KAnimFile animFile, int override_priority)
 	{
-		SymbolOverrideController component = GetComponent<SymbolOverrideController>();
-		KAnim.Build build = ((animFile != null) ? animFile.GetData().build : null);
+		SymbolOverrideController component = base.GetComponent<SymbolOverrideController>();
+		KAnim.Build build = (animFile != null) ? animFile.GetData().build : null;
 		if (build != null)
 		{
 			for (int i = 0; i < build.symbols.Length; i++)
 			{
-				string text = HashCache.Get().Get(build.symbols[i].hash);
-				component.RemoveSymbolOverride(text, override_priority);
+				string s = HashCache.Get().Get(build.symbols[i].hash);
+				component.RemoveSymbolOverride(s, override_priority);
 			}
 		}
 	}
 
+	// Token: 0x060037B5 RID: 14261 RVA: 0x00218FB4 File Offset: 0x002171B4
 	private void UnequippedItem(object data)
 	{
-		KPrefabID kPrefabID = data as KPrefabID;
-		if (kPrefabID != null)
+		KPrefabID kprefabID = data as KPrefabID;
+		if (kprefabID != null)
 		{
-			Equippable component = kPrefabID.GetComponent<Equippable>();
-			RemoveEquipment(component);
+			Equippable component = kprefabID.GetComponent<Equippable>();
+			this.RemoveEquipment(component);
 		}
 	}
 
+	// Token: 0x060037B6 RID: 14262 RVA: 0x00218FE0 File Offset: 0x002171E0
 	public void RemoveEquipment(Equippable equippable)
 	{
-		if (!(equippable != null) || !Enum.TryParse<WearableType>(equippable.def.Slot, out var result))
+		WearableAccessorizer.WearableType key;
+		if (equippable != null && Enum.TryParse<WearableAccessorizer.WearableType>(equippable.def.Slot, out key))
 		{
-			return;
-		}
-		if (TryGetEquippableClothingType(equippable.def, out var outfitType) && customOutfitItems.ContainsKey(outfitType) && wearables.ContainsKey(WearableType.CustomSuit))
-		{
-			foreach (ResourceRef<ClothingItemResource> item in customOutfitItems[outfitType])
+			ClothingOutfitUtility.OutfitType key2;
+			if (this.TryGetEquippableClothingType(equippable.def, out key2) && this.customOutfitItems.ContainsKey(key2) && this.wearables.ContainsKey(WearableAccessorizer.WearableType.CustomSuit))
 			{
-				RemoveAnimBuild(item.Get().AnimFile, wearables[WearableType.CustomSuit].buildOverridePriority);
+				foreach (ResourceRef<ClothingItemResource> resourceRef in this.customOutfitItems[key2])
+				{
+					this.RemoveAnimBuild(resourceRef.Get().AnimFile, this.wearables[WearableAccessorizer.WearableType.CustomSuit].buildOverridePriority);
+				}
+				this.RemoveAnimBuild(equippable.GetBuildOverride(), this.wearables[WearableAccessorizer.WearableType.CustomSuit].buildOverridePriority);
+				this.wearables.Remove(WearableAccessorizer.WearableType.CustomSuit);
 			}
-			RemoveAnimBuild(equippable.GetBuildOverride(), wearables[WearableType.CustomSuit].buildOverridePriority);
-			wearables.Remove(WearableType.CustomSuit);
+			if (this.wearables.ContainsKey(key))
+			{
+				this.RemoveAnimBuild(equippable.GetBuildOverride(), this.wearables[key].buildOverridePriority);
+				this.wearables.Remove(key);
+			}
+			this.ApplyWearable();
 		}
-		if (wearables.ContainsKey(result))
-		{
-			RemoveAnimBuild(equippable.GetBuildOverride(), wearables[result].buildOverridePriority);
-			wearables.Remove(result);
-		}
-		ApplyWearable();
 	}
 
+	// Token: 0x060037B7 RID: 14263 RVA: 0x00219114 File Offset: 0x00217314
 	public void ClearClothingItems(ClothingOutfitUtility.OutfitType? forOutfitType = null)
 	{
-		foreach (KeyValuePair<ClothingOutfitUtility.OutfitType, List<ResourceRef<ClothingItemResource>>> customOutfitItem in customOutfitItems)
+		foreach (KeyValuePair<ClothingOutfitUtility.OutfitType, List<ResourceRef<ClothingItemResource>>> keyValuePair in this.customOutfitItems)
 		{
-			Util.Deconstruct(customOutfitItem, out var key, out var _);
-			ClothingOutfitUtility.OutfitType outfitType = key;
-			if (forOutfitType.HasValue)
+			ClothingOutfitUtility.OutfitType outfitType;
+			List<ResourceRef<ClothingItemResource>> list;
+			keyValuePair.Deconstruct(out outfitType, out list);
+			ClothingOutfitUtility.OutfitType outfitType2 = outfitType;
+			if (forOutfitType != null)
 			{
-				ClothingOutfitUtility.OutfitType? outfitType2 = forOutfitType;
-				key = outfitType;
-				if (!(outfitType2 == key))
+				ClothingOutfitUtility.OutfitType? outfitType3 = forOutfitType;
+				outfitType = outfitType2;
+				if (!(outfitType3.GetValueOrDefault() == outfitType & outfitType3 != null))
 				{
 					continue;
 				}
 			}
-			ApplyClothingItems(outfitType, Enumerable.Empty<ClothingItemResource>());
+			this.ApplyClothingItems(outfitType2, Enumerable.Empty<ClothingItemResource>());
 		}
 	}
 
+	// Token: 0x060037B8 RID: 14264 RVA: 0x0021919C File Offset: 0x0021739C
 	public void ApplyClothingItems(ClothingOutfitUtility.OutfitType outfitType, IEnumerable<ClothingItemResource> items)
 	{
 		items = items.StableSort(delegate(ClothingItemResource resource)
@@ -485,59 +399,64 @@ public class WearableAccessorizer : KMonoBehaviour
 			{
 				return 7;
 			}
-			return (resource.Category != PermitCategory.DupeShoes) ? 1 : 6;
+			if (resource.Category == PermitCategory.DupeShoes)
+			{
+				return 6;
+			}
+			return 1;
 		});
-		if (customOutfitItems.ContainsKey(outfitType))
+		if (this.customOutfitItems.ContainsKey(outfitType))
 		{
-			customOutfitItems[outfitType].Clear();
+			this.customOutfitItems[outfitType].Clear();
 		}
-		WearableType key = ConvertOutfitTypeToWearableType(outfitType);
-		if (wearables.ContainsKey(key))
+		WearableAccessorizer.WearableType key = this.ConvertOutfitTypeToWearableType(outfitType);
+		if (this.wearables.ContainsKey(key))
 		{
-			foreach (KAnimFile buildAnim in wearables[key].BuildAnims)
+			foreach (KAnimFile animFile in this.wearables[key].BuildAnims)
 			{
-				RemoveAnimBuild(buildAnim, wearables[key].buildOverridePriority);
+				this.RemoveAnimBuild(animFile, this.wearables[key].buildOverridePriority);
 			}
-			wearables[key].ClearAnims();
-			if (items.Count() <= 0)
+			this.wearables[key].ClearAnims();
+			if (items.Count<ClothingItemResource>() <= 0)
 			{
-				wearables.Remove(key);
+				this.wearables.Remove(key);
 			}
 		}
-		foreach (ClothingItemResource item in items)
+		foreach (ClothingItemResource clothingItem in items)
 		{
-			Internal_ApplyClothingItem(outfitType, item);
+			this.Internal_ApplyClothingItem(outfitType, clothingItem);
 		}
-		ApplyWearable();
-		Equippable suitEquippable = GetSuitEquippable();
+		this.ApplyWearable();
+		Equippable suitEquippable = this.GetSuitEquippable();
 		ClothingOutfitUtility.OutfitType outfitType2;
-		bool flag = (suitEquippable == null && outfitType == ClothingOutfitUtility.OutfitType.Clothing) || (suitEquippable != null && TryGetEquippableClothingType(suitEquippable.def, out outfitType2) && outfitType2 == outfitType);
-		if (!GetComponent<MinionIdentity>().IsNullOrDestroyed() && animController.materialType != KAnimBatchGroup.MaterialType.UI && flag)
+		bool flag = (suitEquippable == null && outfitType == ClothingOutfitUtility.OutfitType.Clothing) || (suitEquippable != null && this.TryGetEquippableClothingType(suitEquippable.def, out outfitType2) && outfitType2 == outfitType);
+		if (!base.GetComponent<MinionIdentity>().IsNullOrDestroyed() && this.animController.materialType != KAnimBatchGroup.MaterialType.UI && flag)
 		{
-			QueueOutfitChangedFX();
+			this.QueueOutfitChangedFX();
 		}
 	}
 
+	// Token: 0x060037B9 RID: 14265 RVA: 0x0021933C File Offset: 0x0021753C
 	private void Internal_ApplyClothingItem(ClothingOutfitUtility.OutfitType outfitType, ClothingItemResource clothingItem)
 	{
-		WearableType wearableType = ConvertOutfitTypeToWearableType(outfitType);
-		if (!customOutfitItems.ContainsKey(outfitType))
+		WearableAccessorizer.WearableType wearableType = this.ConvertOutfitTypeToWearableType(outfitType);
+		if (!this.customOutfitItems.ContainsKey(outfitType))
 		{
-			customOutfitItems.Add(outfitType, new List<ResourceRef<ClothingItemResource>>());
+			this.customOutfitItems.Add(outfitType, new List<ResourceRef<ClothingItemResource>>());
 		}
-		if (!customOutfitItems[outfitType].Exists((ResourceRef<ClothingItemResource> x) => x.Get().IdHash == clothingItem.IdHash))
+		if (!this.customOutfitItems[outfitType].Exists((ResourceRef<ClothingItemResource> x) => x.Get().IdHash == clothingItem.IdHash))
 		{
-			if (wearables.ContainsKey(wearableType))
+			if (this.wearables.ContainsKey(wearableType))
 			{
-				foreach (ResourceRef<ClothingItemResource> item in customOutfitItems[outfitType].FindAll((ResourceRef<ClothingItemResource> x) => x.Get().Category == clothingItem.Category))
+				foreach (ResourceRef<ClothingItemResource> resourceRef in this.customOutfitItems[outfitType].FindAll((ResourceRef<ClothingItemResource> x) => x.Get().Category == clothingItem.Category))
 				{
-					Internal_RemoveClothingItem(outfitType, item.Get());
+					this.Internal_RemoveClothingItem(outfitType, resourceRef.Get());
 				}
 			}
-			customOutfitItems[outfitType].Add(new ResourceRef<ClothingItemResource>(clothingItem));
+			this.customOutfitItems[outfitType].Add(new ResourceRef<ClothingItemResource>(clothingItem));
 		}
 		bool flag;
-		if (GetComponent<MinionIdentity>().IsNullOrDestroyed() || animController.materialType == KAnimBatchGroup.MaterialType.UI)
+		if (base.GetComponent<MinionIdentity>().IsNullOrDestroyed() || this.animController.materialType == KAnimBatchGroup.MaterialType.UI)
 		{
 			flag = true;
 		}
@@ -547,97 +466,271 @@ public class WearableAccessorizer : KMonoBehaviour
 		}
 		else
 		{
-			Equippable suitEquippable = GetSuitEquippable();
-			flag = suitEquippable != null && TryGetEquippableClothingType(suitEquippable.def, out var outfitType2) && outfitType2 == outfitType;
+			Equippable suitEquippable = this.GetSuitEquippable();
+			ClothingOutfitUtility.OutfitType outfitType2;
+			flag = (suitEquippable != null && this.TryGetEquippableClothingType(suitEquippable.def, out outfitType2) && outfitType2 == outfitType);
 		}
 		if (flag)
 		{
-			if (!wearables.ContainsKey(wearableType))
+			if (!this.wearables.ContainsKey(wearableType))
 			{
-				int buildOverridePriority = ((wearableType == WearableType.CustomClothing) ? 4 : 6);
-				wearables[wearableType] = new Wearable(new List<KAnimFile>(), buildOverridePriority);
+				int buildOverridePriority = (wearableType == WearableAccessorizer.WearableType.CustomClothing) ? 4 : 6;
+				this.wearables[wearableType] = new WearableAccessorizer.Wearable(new List<KAnimFile>(), buildOverridePriority);
 			}
-			wearables[wearableType].AddAnim(clothingItem.AnimFile);
+			this.wearables[wearableType].AddAnim(clothingItem.AnimFile);
 		}
 	}
 
+	// Token: 0x060037BA RID: 14266 RVA: 0x002194D4 File Offset: 0x002176D4
 	private void Internal_RemoveClothingItem(ClothingOutfitUtility.OutfitType outfitType, ClothingItemResource clothing_item)
 	{
-		WearableType key = ConvertOutfitTypeToWearableType(outfitType);
-		if (customOutfitItems.ContainsKey(outfitType))
+		WearableAccessorizer.WearableType key = this.ConvertOutfitTypeToWearableType(outfitType);
+		if (this.customOutfitItems.ContainsKey(outfitType))
 		{
-			customOutfitItems[outfitType].RemoveAll((ResourceRef<ClothingItemResource> x) => x.Get().IdHash == clothing_item.IdHash);
+			this.customOutfitItems[outfitType].RemoveAll((ResourceRef<ClothingItemResource> x) => x.Get().IdHash == clothing_item.IdHash);
 		}
-		if (wearables.ContainsKey(key))
+		if (this.wearables.ContainsKey(key))
 		{
-			if (wearables[key].RemoveAnim(clothing_item.AnimFile))
+			if (this.wearables[key].RemoveAnim(clothing_item.AnimFile))
 			{
-				RemoveAnimBuild(clothing_item.AnimFile, wearables[key].buildOverridePriority);
+				this.RemoveAnimBuild(clothing_item.AnimFile, this.wearables[key].buildOverridePriority);
 			}
-			if (wearables[key].BuildAnims.Count <= 0)
+			if (this.wearables[key].BuildAnims.Count <= 0)
 			{
-				wearables.Remove(key);
+				this.wearables.Remove(key);
 			}
 		}
 	}
 
-	private WearableType ConvertOutfitTypeToWearableType(ClothingOutfitUtility.OutfitType outfitType)
+	// Token: 0x060037BB RID: 14267 RVA: 0x000C41FA File Offset: 0x000C23FA
+	private WearableAccessorizer.WearableType ConvertOutfitTypeToWearableType(ClothingOutfitUtility.OutfitType outfitType)
 	{
-		switch (outfitType)
+		if (outfitType == ClothingOutfitUtility.OutfitType.Clothing)
 		{
-		case ClothingOutfitUtility.OutfitType.Clothing:
-			return WearableType.CustomClothing;
-		case ClothingOutfitUtility.OutfitType.AtmoSuit:
-			return WearableType.CustomSuit;
-		default:
-			Debug.LogWarning("Add a wearable type for clothing outfit type " + outfitType);
-			return WearableType.Basic;
+			return WearableAccessorizer.WearableType.CustomClothing;
 		}
+		if (outfitType != ClothingOutfitUtility.OutfitType.AtmoSuit)
+		{
+			global::Debug.LogWarning("Add a wearable type for clothing outfit type " + outfitType.ToString());
+			return WearableAccessorizer.WearableType.Basic;
+		}
+		return WearableAccessorizer.WearableType.CustomSuit;
 	}
 
-	public void RestoreWearables(Dictionary<WearableType, Wearable> stored_wearables, Dictionary<ClothingOutfitUtility.OutfitType, List<ResourceRef<ClothingItemResource>>> clothing)
+	// Token: 0x060037BC RID: 14268 RVA: 0x00219598 File Offset: 0x00217798
+	public void RestoreWearables(Dictionary<WearableAccessorizer.WearableType, WearableAccessorizer.Wearable> stored_wearables, Dictionary<ClothingOutfitUtility.OutfitType, List<ResourceRef<ClothingItemResource>>> clothing)
 	{
 		if (stored_wearables != null)
 		{
-			wearables = stored_wearables;
-			foreach (KeyValuePair<WearableType, Wearable> wearable in wearables)
+			this.wearables = stored_wearables;
+			foreach (KeyValuePair<WearableAccessorizer.WearableType, WearableAccessorizer.Wearable> keyValuePair in this.wearables)
 			{
-				wearable.Value.Deserialize();
+				keyValuePair.Value.Deserialize();
 			}
 		}
 		if (clothing != null)
 		{
-			foreach (KeyValuePair<ClothingOutfitUtility.OutfitType, List<ResourceRef<ClothingItemResource>>> item in clothing)
+			foreach (KeyValuePair<ClothingOutfitUtility.OutfitType, List<ResourceRef<ClothingItemResource>>> keyValuePair2 in clothing)
 			{
-				ApplyClothingItems(item.Key, item.Value.Select((ResourceRef<ClothingItemResource> i) => i.Get()));
+				this.ApplyClothingItems(keyValuePair2.Key, from i in keyValuePair2.Value
+				select i.Get());
 			}
 		}
-		ApplyWearable();
+		this.ApplyWearable();
 	}
 
+	// Token: 0x060037BD RID: 14269 RVA: 0x00219674 File Offset: 0x00217874
 	public bool HasPermitCategoryItem(ClothingOutfitUtility.OutfitType wearable_type, PermitCategory category)
 	{
 		bool result = false;
-		if (customOutfitItems.ContainsKey(wearable_type))
+		if (this.customOutfitItems.ContainsKey(wearable_type))
 		{
-			result = customOutfitItems[wearable_type].Exists((ResourceRef<ClothingItemResource> resource) => resource.Get().Category == category);
+			result = this.customOutfitItems[wearable_type].Exists((ResourceRef<ClothingItemResource> resource) => resource.Get().Category == category);
 		}
 		return result;
 	}
 
+	// Token: 0x060037BE RID: 14270 RVA: 0x000C4226 File Offset: 0x000C2426
 	private void QueueOutfitChangedFX()
 	{
-		waitingForOutfitChangeFX = true;
+		this.waitingForOutfitChangeFX = true;
 	}
 
+	// Token: 0x060037BF RID: 14271 RVA: 0x002196C0 File Offset: 0x002178C0
 	private void Update()
 	{
-		if (waitingForOutfitChangeFX && !LockerNavigator.Instance.gameObject.activeInHierarchy)
+		if (this.waitingForOutfitChangeFX && !LockerNavigator.Instance.gameObject.activeInHierarchy)
 		{
 			Game.Instance.SpawnFX(SpawnFXHashes.MinionOutfitChanged, new Vector3(base.transform.position.x, base.transform.position.y, Grid.GetLayerZ(Grid.SceneLayer.FXFront)), 0f);
-			PopFXManager.Instance.SpawnFX(PopFXManager.Instance.sprite_Plus, "Changed Clothes", base.transform, new Vector3(0f, 0.5f, 0f));
-			KFMOD.PlayOneShot(GlobalAssets.GetSound("SupplyCloset_Dupe_Clothing_Change"), base.transform.position);
-			waitingForOutfitChangeFX = false;
+			PopFXManager.Instance.SpawnFX(PopFXManager.Instance.sprite_Plus, "Changed Clothes", base.transform, new Vector3(0f, 0.5f, 0f), 1.5f, false, false);
+			KFMOD.PlayOneShot(GlobalAssets.GetSound("SupplyCloset_Dupe_Clothing_Change", false), base.transform.position, 1f);
+			this.waitingForOutfitChangeFX = false;
 		}
+	}
+
+	// Token: 0x040025CE RID: 9678
+	[MyCmpReq]
+	private KAnimControllerBase animController;
+
+	// Token: 0x040025CF RID: 9679
+	[Obsolete("Deprecated, use customOufitItems[ClothingOutfitUtility.OutfitType.Clothing]")]
+	[Serialize]
+	private List<ResourceRef<ClothingItemResource>> clothingItems = new List<ResourceRef<ClothingItemResource>>();
+
+	// Token: 0x040025D0 RID: 9680
+	[Serialize]
+	private string joyResponsePermitId;
+
+	// Token: 0x040025D1 RID: 9681
+	[Serialize]
+	private Dictionary<ClothingOutfitUtility.OutfitType, List<ResourceRef<ClothingItemResource>>> customOutfitItems = new Dictionary<ClothingOutfitUtility.OutfitType, List<ResourceRef<ClothingItemResource>>>();
+
+	// Token: 0x040025D2 RID: 9682
+	private bool waitingForOutfitChangeFX;
+
+	// Token: 0x040025D3 RID: 9683
+	[Serialize]
+	private Dictionary<WearableAccessorizer.WearableType, WearableAccessorizer.Wearable> wearables = new Dictionary<WearableAccessorizer.WearableType, WearableAccessorizer.Wearable>();
+
+	// Token: 0x040025D4 RID: 9684
+	private static string torso = "torso";
+
+	// Token: 0x040025D5 RID: 9685
+	private static string cropped = "_cropped";
+
+	// Token: 0x02000B71 RID: 2929
+	public enum WearableType
+	{
+		// Token: 0x040025D7 RID: 9687
+		Basic,
+		// Token: 0x040025D8 RID: 9688
+		CustomClothing,
+		// Token: 0x040025D9 RID: 9689
+		Outfit,
+		// Token: 0x040025DA RID: 9690
+		Suit,
+		// Token: 0x040025DB RID: 9691
+		CustomSuit
+	}
+
+	// Token: 0x02000B72 RID: 2930
+	[SerializationConfig(MemberSerialization.OptIn)]
+	public class Wearable
+	{
+		// Token: 0x17000268 RID: 616
+		// (get) Token: 0x060037C2 RID: 14274 RVA: 0x000C426E File Offset: 0x000C246E
+		public List<KAnimFile> BuildAnims
+		{
+			get
+			{
+				return this.buildAnims;
+			}
+		}
+
+		// Token: 0x17000269 RID: 617
+		// (get) Token: 0x060037C3 RID: 14275 RVA: 0x000C4276 File Offset: 0x000C2476
+		public List<string> AnimNames
+		{
+			get
+			{
+				return this.animNames;
+			}
+		}
+
+		// Token: 0x060037C4 RID: 14276 RVA: 0x00219790 File Offset: 0x00217990
+		public Wearable(List<KAnimFile> buildAnims, int buildOverridePriority)
+		{
+			this.buildAnims = buildAnims;
+			this.animNames = (from animFile in buildAnims
+			select animFile.name).ToList<string>();
+			this.buildOverridePriority = buildOverridePriority;
+		}
+
+		// Token: 0x060037C5 RID: 14277 RVA: 0x000C427E File Offset: 0x000C247E
+		public Wearable(KAnimFile buildAnim, int buildOverridePriority)
+		{
+			this.buildAnims = new List<KAnimFile>
+			{
+				buildAnim
+			};
+			this.animNames = new List<string>
+			{
+				buildAnim.name
+			};
+			this.buildOverridePriority = buildOverridePriority;
+		}
+
+		// Token: 0x060037C6 RID: 14278 RVA: 0x002197E4 File Offset: 0x002179E4
+		public Wearable(List<ResourceRef<ClothingItemResource>> items, int buildOverridePriority)
+		{
+			this.buildAnims = new List<KAnimFile>();
+			this.animNames = new List<string>();
+			this.buildOverridePriority = buildOverridePriority;
+			foreach (ResourceRef<ClothingItemResource> resourceRef in items)
+			{
+				ClothingItemResource clothingItemResource = resourceRef.Get();
+				this.buildAnims.Add(clothingItemResource.AnimFile);
+				this.animNames.Add(clothingItemResource.animFilename);
+			}
+		}
+
+		// Token: 0x060037C7 RID: 14279 RVA: 0x00219878 File Offset: 0x00217A78
+		public void AddCustomItems(List<ResourceRef<ClothingItemResource>> items)
+		{
+			foreach (ResourceRef<ClothingItemResource> resourceRef in items)
+			{
+				ClothingItemResource clothingItemResource = resourceRef.Get();
+				this.buildAnims.Add(clothingItemResource.AnimFile);
+				this.animNames.Add(clothingItemResource.animFilename);
+			}
+		}
+
+		// Token: 0x060037C8 RID: 14280 RVA: 0x002198E8 File Offset: 0x00217AE8
+		public void Deserialize()
+		{
+			if (this.animNames != null)
+			{
+				this.buildAnims = new List<KAnimFile>();
+				for (int i = 0; i < this.animNames.Count; i++)
+				{
+					KAnimFile item = null;
+					if (Assets.TryGetAnim(this.animNames[i], out item))
+					{
+						this.buildAnims.Add(item);
+					}
+				}
+			}
+		}
+
+		// Token: 0x060037C9 RID: 14281 RVA: 0x000C42B6 File Offset: 0x000C24B6
+		public void AddAnim(KAnimFile animFile)
+		{
+			this.buildAnims.Add(animFile);
+			this.animNames.Add(animFile.name);
+		}
+
+		// Token: 0x060037CA RID: 14282 RVA: 0x000C42D5 File Offset: 0x000C24D5
+		public bool RemoveAnim(KAnimFile animFile)
+		{
+			return this.buildAnims.Remove(animFile) | this.animNames.Remove(animFile.name);
+		}
+
+		// Token: 0x060037CB RID: 14283 RVA: 0x000C42F5 File Offset: 0x000C24F5
+		public void ClearAnims()
+		{
+			this.buildAnims.Clear();
+			this.animNames.Clear();
+		}
+
+		// Token: 0x040025DC RID: 9692
+		private List<KAnimFile> buildAnims;
+
+		// Token: 0x040025DD RID: 9693
+		[Serialize]
+		private List<string> animNames;
+
+		// Token: 0x040025DE RID: 9694
+		[Serialize]
+		public int buildOverridePriority;
 	}
 }

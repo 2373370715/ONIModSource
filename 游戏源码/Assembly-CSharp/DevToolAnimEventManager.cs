@@ -1,37 +1,44 @@
+﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using ImGuiNET;
 using STRINGS;
 using UnityEngine;
 
+// Token: 0x02000B96 RID: 2966
 public class DevToolAnimEventManager : DevTool
 {
+	// Token: 0x060038DA RID: 14554 RVA: 0x0021BB38 File Offset: 0x00219D38
 	protected override void RenderTo(DevPanel panel)
 	{
-		(Option<AnimEventManager.DevTools_DebugInfo>, string) animEventManagerDebugInfo = GetAnimEventManagerDebugInfo();
-		var (option, _) = animEventManagerDebugInfo;
-		option.Deconstruct(out var hasValue, out var value);
-		bool num = hasValue;
-		AnimEventManager.DevTools_DebugInfo devTools_DebugInfo = value;
-		string item = animEventManagerDebugInfo.Item2;
-		if (!num)
+		ValueTuple<Option<AnimEventManager.DevTools_DebugInfo>, string> animEventManagerDebugInfo = this.GetAnimEventManagerDebugInfo();
+		Option<AnimEventManager.DevTools_DebugInfo> item = animEventManagerDebugInfo.Item1;
+		bool flag;
+		AnimEventManager.DevTools_DebugInfo devTools_DebugInfo;
+		item.Deconstruct(out flag, out devTools_DebugInfo);
+		bool flag2 = flag;
+		AnimEventManager.DevTools_DebugInfo devTools_DebugInfo2 = devTools_DebugInfo;
+		string item2 = animEventManagerDebugInfo.Item2;
+		if (!flag2)
 		{
-			ImGui.Text(item);
+			ImGui.Text(item2);
 			return;
 		}
 		if (ImGui.CollapsingHeader("World space animations", ImGuiTreeNodeFlags.DefaultOpen))
 		{
-			DrawFor("ID_world_space_anims", devTools_DebugInfo.eventData.GetDataList(), devTools_DebugInfo.animData.GetDataList());
+			this.DrawFor("ID_world_space_anims", devTools_DebugInfo2.eventData.GetDataList(), devTools_DebugInfo2.animData.GetDataList());
 		}
 		if (ImGui.CollapsingHeader("UI space animations", ImGuiTreeNodeFlags.DefaultOpen))
 		{
-			DrawFor("ID_ui_space_anims", devTools_DebugInfo.uiEventData.GetDataList(), devTools_DebugInfo.uiAnimData.GetDataList());
+			this.DrawFor("ID_ui_space_anims", devTools_DebugInfo2.uiEventData.GetDataList(), devTools_DebugInfo2.uiAnimData.GetDataList());
 		}
 		if (ImGui.CollapsingHeader("Raw AnimEventManger", ImGuiTreeNodeFlags.DefaultOpen))
 		{
-			ImGuiEx.DrawObject("Anim Event Manager", devTools_DebugInfo.eventManager);
+			ImGuiEx.DrawObject("Anim Event Manager", devTools_DebugInfo2.eventManager, null);
 		}
 	}
 
+	// Token: 0x060038DB RID: 14555 RVA: 0x0021BBFC File Offset: 0x00219DFC
 	public void DrawFor(string uniqueTableId, List<AnimEventManager.EventPlayerData> eventDataList, List<AnimEventManager.AnimData> animDataList)
 	{
 		if (eventDataList == null)
@@ -46,21 +53,21 @@ public class DevToolAnimEventManager : DevTool
 		}
 		if (eventDataList.Count != animDataList.Count)
 		{
-			ImGui.Text($"Can't draw table: eventData.Count ({eventDataList.Count}) != animData.Count ({animDataList.Count})");
+			ImGui.Text(string.Format("Can't draw table: eventData.Count ({0}) != animData.Count ({1})", eventDataList.Count, animDataList.Count));
 			return;
 		}
 		int count = eventDataList.Count;
 		ImGui.PushID(uniqueTableId);
 		ImGuiStoragePtr stateStorage = ImGui.GetStateStorage();
-		uint iD = ImGui.GetID("ID_should_expand_full_height");
-		bool flag = stateStorage.GetBool(iD);
+		uint id = ImGui.GetID("ID_should_expand_full_height");
+		bool flag = stateStorage.GetBool(id);
 		if (ImGui.Button(flag ? "Unexpand Height" : "Expand Height"))
 		{
 			flag = !flag;
-			stateStorage.SetBool(iD, flag);
+			stateStorage.SetBool(id, flag);
 		}
-		ImGuiTableFlags flags = ImGuiTableFlags.Borders | ImGuiTableFlags.Resizable | ImGuiTableFlags.RowBg | ImGuiTableFlags.SizingFixedFit | ImGuiTableFlags.ScrollY;
-		if (ImGui.BeginTable("ID_table_contents", 4, flags, new Vector2(-1f, flag ? (-1) : 400)))
+		ImGuiTableFlags flags = ImGuiTableFlags.Resizable | ImGuiTableFlags.RowBg | ImGuiTableFlags.BordersInnerH | ImGuiTableFlags.BordersOuterH | ImGuiTableFlags.BordersInnerV | ImGuiTableFlags.BordersOuterV | ImGuiTableFlags.SizingFixedFit | ImGuiTableFlags.ScrollY;
+		if (ImGui.BeginTable("ID_table_contents", 4, flags, new Vector2(-1f, (float)(flag ? -1 : 400))))
 		{
 			ImGui.TableSetupScrollFreeze(4, 1);
 			ImGui.TableSetupColumn("Game Object Name");
@@ -71,9 +78,9 @@ public class DevToolAnimEventManager : DevTool
 			for (int i = 0; i < count; i++)
 			{
 				AnimEventManager.EventPlayerData eventPlayerData = eventDataList[i];
-				_ = animDataList[i];
+				AnimEventManager.AnimData animData = animDataList[i];
 				ImGui.TableNextRow();
-				ImGui.PushID($"ID_row_{i++}");
+				ImGui.PushID(string.Format("ID_row_{0}", i++));
 				ImGui.TableNextColumn();
 				if (ImGuiEx.Button("Focus", DevToolUtil.CanRevealAndFocus(eventPlayerData.controller.gameObject)))
 				{
@@ -95,12 +102,18 @@ public class DevToolAnimEventManager : DevTool
 		ImGui.PopID();
 	}
 
-	public (Option<AnimEventManager.DevTools_DebugInfo> value, string error) GetAnimEventManagerDebugInfo()
+	// Token: 0x060038DC RID: 14556 RVA: 0x000C4C98 File Offset: 0x000C2E98
+	[return: TupleElementNames(new string[]
+	{
+		"value",
+		"error"
+	})]
+	public ValueTuple<Option<AnimEventManager.DevTools_DebugInfo>, string> GetAnimEventManagerDebugInfo()
 	{
 		if (Singleton<AnimEventManager>.Instance == null)
 		{
-			return (value: Option.None, error: "AnimEventManager is null");
+			return new ValueTuple<Option<AnimEventManager.DevTools_DebugInfo>, string>(Option.None, "AnimEventManager is null");
 		}
-		return (value: Option.Some(Singleton<AnimEventManager>.Instance.DevTools_GetDebugInfo()), error: null);
+		return new ValueTuple<Option<AnimEventManager.DevTools_DebugInfo>, string>(Option.Some<AnimEventManager.DevTools_DebugInfo>(Singleton<AnimEventManager>.Instance.DevTools_GetDebugInfo()), null);
 	}
 }

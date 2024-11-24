@@ -1,46 +1,47 @@
+﻿using System;
 using UnityEngine;
 
+// Token: 0x020012DE RID: 4830
 public class FallerComponents : KGameObjectComponentManager<FallerComponent>
 {
-	private const float EPSILON = 0.07f;
-
+	// Token: 0x0600631C RID: 25372 RVA: 0x000E0BE9 File Offset: 0x000DEDE9
 	public HandleVector<int>.Handle Add(GameObject go, Vector2 initial_velocity)
 	{
-		return Add(go, new FallerComponent(go.transform, initial_velocity));
+		return base.Add(go, new FallerComponent(go.transform, initial_velocity));
 	}
 
+	// Token: 0x0600631D RID: 25373 RVA: 0x002B8BD0 File Offset: 0x002B6DD0
 	public override void Remove(GameObject go)
 	{
-		HandleVector<int>.Handle handle = GetHandle(go);
-		OnCleanUpImmediate(handle);
-		CleanupInfo info = new CleanupInfo(go, handle);
+		HandleVector<int>.Handle handle = base.GetHandle(go);
+		this.OnCleanUpImmediate(handle);
+		KComponentManager<FallerComponent>.CleanupInfo info = new KComponentManager<FallerComponent>.CleanupInfo(go, handle);
 		if (!KComponentCleanUp.InCleanUpPhase)
 		{
-			AddToCleanupList(info);
+			base.AddToCleanupList(info);
+			return;
 		}
-		else
-		{
-			InternalRemoveComponent(info);
-		}
+		base.InternalRemoveComponent(info);
 	}
 
+	// Token: 0x0600631E RID: 25374 RVA: 0x002B8C0C File Offset: 0x002B6E0C
 	protected override void OnPrefabInit(HandleVector<int>.Handle h)
 	{
-		FallerComponent new_data = GetData(h);
-		Vector3 position = new_data.transform.GetPosition();
+		FallerComponent data = base.GetData(h);
+		Vector3 position = data.transform.GetPosition();
 		int num = Grid.PosToCell(position);
-		new_data.cellChangedCB = delegate
+		data.cellChangedCB = delegate()
 		{
-			OnSolidChanged(h);
+			FallerComponents.OnSolidChanged(h);
 		};
-		float groundOffset = GravityComponent.GetGroundOffset(new_data.transform.GetComponent<KCollider2D>());
+		float groundOffset = GravityComponent.GetGroundOffset(data.transform.GetComponent<KCollider2D>());
 		int num2 = Grid.PosToCell(new Vector3(position.x, position.y - groundOffset - 0.07f, position.z));
-		bool flag = Grid.IsValidCell(num2) && Grid.Solid[num2] && new_data.initialVelocity.sqrMagnitude == 0f;
+		bool flag = Grid.IsValidCell(num2) && Grid.Solid[num2] && data.initialVelocity.sqrMagnitude == 0f;
 		if ((Grid.IsValidCell(num) && Grid.Solid[num]) || flag)
 		{
-			new_data.solidChangedCB = delegate
+			data.solidChangedCB = delegate(object ev_data)
 			{
-				OnSolidChanged(h);
+				FallerComponents.OnSolidChanged(h);
 			};
 			int height = 2;
 			Vector2I vector2I = Grid.CellToXY(num);
@@ -54,110 +55,114 @@ public class FallerComponents : KGameObjectComponentManager<FallerComponent>
 			{
 				height = 1;
 			}
-			new_data.partitionerEntry = GameScenePartitioner.Instance.Add("Faller", new_data.transform.gameObject, vector2I.x, vector2I.y, 1, height, GameScenePartitioner.Instance.solidChangedLayer, new_data.solidChangedCB);
-			GameComps.Fallers.SetData(h, new_data);
+			data.partitionerEntry = GameScenePartitioner.Instance.Add("Faller", data.transform.gameObject, vector2I.x, vector2I.y, 1, height, GameScenePartitioner.Instance.solidChangedLayer, data.solidChangedCB);
+			GameComps.Fallers.SetData(h, data);
+			return;
 		}
-		else
-		{
-			GameComps.Fallers.SetData(h, new_data);
-			AddGravity(new_data.transform, new_data.initialVelocity);
-		}
+		GameComps.Fallers.SetData(h, data);
+		FallerComponents.AddGravity(data.transform, data.initialVelocity);
 	}
 
+	// Token: 0x0600631F RID: 25375 RVA: 0x002B8DAC File Offset: 0x002B6FAC
 	protected override void OnSpawn(HandleVector<int>.Handle h)
 	{
 		base.OnSpawn(h);
-		FallerComponent fallerComponent = GetData(h);
-		Singleton<CellChangeMonitor>.Instance.RegisterCellChangedHandler(fallerComponent.transform, fallerComponent.cellChangedCB, "FallerComponent.OnSpawn");
+		FallerComponent data = base.GetData(h);
+		Singleton<CellChangeMonitor>.Instance.RegisterCellChangedHandler(data.transform, data.cellChangedCB, "FallerComponent.OnSpawn");
 	}
 
+	// Token: 0x06006320 RID: 25376 RVA: 0x002B8DE4 File Offset: 0x002B6FE4
 	private void OnCleanUpImmediate(HandleVector<int>.Handle h)
 	{
-		FallerComponent new_data = GetData(h);
-		GameScenePartitioner.Instance.Free(ref new_data.partitionerEntry);
-		if (new_data.cellChangedCB != null)
+		FallerComponent data = base.GetData(h);
+		GameScenePartitioner.Instance.Free(ref data.partitionerEntry);
+		if (data.cellChangedCB != null)
 		{
-			Singleton<CellChangeMonitor>.Instance.UnregisterCellChangedHandler(new_data.transformInstanceId, new_data.cellChangedCB);
-			new_data.cellChangedCB = null;
+			Singleton<CellChangeMonitor>.Instance.UnregisterCellChangedHandler(data.transformInstanceId, data.cellChangedCB);
+			data.cellChangedCB = null;
 		}
-		if (GameComps.Gravities.Has(new_data.transform.gameObject))
+		if (GameComps.Gravities.Has(data.transform.gameObject))
 		{
-			GameComps.Gravities.Remove(new_data.transform.gameObject);
+			GameComps.Gravities.Remove(data.transform.gameObject);
 		}
-		SetData(h, new_data);
+		base.SetData(h, data);
 	}
 
+	// Token: 0x06006321 RID: 25377 RVA: 0x002B8E64 File Offset: 0x002B7064
 	private static void AddGravity(Transform transform, Vector2 initial_velocity)
 	{
 		if (!GameComps.Gravities.Has(transform.gameObject))
 		{
-			GameComps.Gravities.Add(transform.gameObject, initial_velocity, delegate
+			GameComps.Gravities.Add(transform.gameObject, initial_velocity, delegate()
 			{
-				OnLanded(transform);
+				FallerComponents.OnLanded(transform);
 			});
 			HandleVector<int>.Handle handle = GameComps.Fallers.GetHandle(transform.gameObject);
-			FallerComponent new_data = GameComps.Fallers.GetData(handle);
-			if (new_data.partitionerEntry.IsValid())
+			FallerComponent data = GameComps.Fallers.GetData(handle);
+			if (data.partitionerEntry.IsValid())
 			{
-				GameScenePartitioner.Instance.Free(ref new_data.partitionerEntry);
-				GameComps.Fallers.SetData(handle, new_data);
+				GameScenePartitioner.Instance.Free(ref data.partitionerEntry);
+				GameComps.Fallers.SetData(handle, data);
 			}
 		}
 	}
 
+	// Token: 0x06006322 RID: 25378 RVA: 0x002B8F08 File Offset: 0x002B7108
 	private static void RemoveGravity(Transform transform)
 	{
-		if (!GameComps.Gravities.Has(transform.gameObject))
+		if (GameComps.Gravities.Has(transform.gameObject))
 		{
-			return;
-		}
-		GameComps.Gravities.Remove(transform.gameObject);
-		HandleVector<int>.Handle h = GameComps.Fallers.GetHandle(transform.gameObject);
-		FallerComponent new_data = GameComps.Fallers.GetData(h);
-		int cell = Grid.CellBelow(Grid.PosToCell(transform.GetPosition()));
-		GameScenePartitioner.Instance.Free(ref new_data.partitionerEntry);
-		if (Grid.IsValidCell(cell))
-		{
-			new_data.solidChangedCB = delegate
+			GameComps.Gravities.Remove(transform.gameObject);
+			HandleVector<int>.Handle h = GameComps.Fallers.GetHandle(transform.gameObject);
+			FallerComponent data = GameComps.Fallers.GetData(h);
+			int cell = Grid.CellBelow(Grid.PosToCell(transform.GetPosition()));
+			GameScenePartitioner.Instance.Free(ref data.partitionerEntry);
+			if (Grid.IsValidCell(cell))
 			{
-				OnSolidChanged(h);
-			};
-			new_data.partitionerEntry = GameScenePartitioner.Instance.Add("Faller", transform.gameObject, cell, GameScenePartitioner.Instance.solidChangedLayer, new_data.solidChangedCB);
+				data.solidChangedCB = delegate(object ev_data)
+				{
+					FallerComponents.OnSolidChanged(h);
+				};
+				data.partitionerEntry = GameScenePartitioner.Instance.Add("Faller", transform.gameObject, cell, GameScenePartitioner.Instance.solidChangedLayer, data.solidChangedCB);
+			}
+			GameComps.Fallers.SetData(h, data);
 		}
-		GameComps.Fallers.SetData(h, new_data);
 	}
 
+	// Token: 0x06006323 RID: 25379 RVA: 0x000E0BFE File Offset: 0x000DEDFE
 	private static void OnLanded(Transform transform)
 	{
-		RemoveGravity(transform);
+		FallerComponents.RemoveGravity(transform);
 	}
 
+	// Token: 0x06006324 RID: 25380 RVA: 0x002B8FE4 File Offset: 0x002B71E4
 	private static void OnSolidChanged(HandleVector<int>.Handle handle)
 	{
-		FallerComponent fallerComponent = GameComps.Fallers.GetData(handle);
-		if (fallerComponent.transform == null)
+		FallerComponent data = GameComps.Fallers.GetData(handle);
+		if (data.transform == null)
 		{
 			return;
 		}
-		Vector3 position = fallerComponent.transform.GetPosition();
-		position.y = position.y - fallerComponent.offset - 0.1f;
+		Vector3 position = data.transform.GetPosition();
+		position.y = position.y - data.offset - 0.1f;
 		int num = Grid.PosToCell(position);
 		if (!Grid.IsValidCell(num))
 		{
 			return;
 		}
 		bool flag = !Grid.Solid[num];
-		if (flag != fallerComponent.isFalling)
+		if (flag != data.isFalling)
 		{
-			fallerComponent.isFalling = flag;
+			data.isFalling = flag;
 			if (flag)
 			{
-				AddGravity(fallerComponent.transform, Vector2.zero);
+				FallerComponents.AddGravity(data.transform, Vector2.zero);
+				return;
 			}
-			else
-			{
-				RemoveGravity(fallerComponent.transform);
-			}
+			FallerComponents.RemoveGravity(data.transform);
 		}
 	}
+
+	// Token: 0x040046BE RID: 18110
+	private const float EPSILON = 0.07f;
 }

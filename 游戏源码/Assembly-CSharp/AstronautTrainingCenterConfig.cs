@@ -1,25 +1,38 @@
+﻿using System;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x02000025 RID: 37
 public class AstronautTrainingCenterConfig : IBuildingConfig
 {
-	public const string ID = "AstronautTrainingCenter";
-
+	// Token: 0x06000095 RID: 149 RVA: 0x0014068C File Offset: 0x0013E88C
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef("AstronautTrainingCenter", 5, 5, "centrifuge_kanim", 30, 30f, BUILDINGS.CONSTRUCTION_MASS_KG.TIER4, MATERIALS.ALL_METALS, 1600f, BuildLocationRule.OnFloor, noise: NOISE_POLLUTION.NOISY.TIER1, decor: BUILDINGS.DECOR.NONE);
-		obj.RequiresPowerInput = true;
-		obj.EnergyConsumptionWhenActive = 480f;
-		obj.ExhaustKilowattsWhenActive = 0.5f;
-		obj.SelfHeatKilowattsWhenActive = 4f;
-		obj.PowerInputOffset = new CellOffset(-2, 0);
-		obj.ViewMode = OverlayModes.Power.ID;
-		obj.AudioCategory = "Metal";
-		obj.AudioSize = "large";
-		obj.Deprecated = true;
-		return obj;
+		string id = "AstronautTrainingCenter";
+		int width = 5;
+		int height = 5;
+		string anim = "centrifuge_kanim";
+		int hitpoints = 30;
+		float construction_time = 30f;
+		float[] tier = BUILDINGS.CONSTRUCTION_MASS_KG.TIER4;
+		string[] all_METALS = MATERIALS.ALL_METALS;
+		float melting_point = 1600f;
+		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
+		EffectorValues tier2 = NOISE_POLLUTION.NOISY.TIER1;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, all_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, tier2, 0.2f);
+		buildingDef.RequiresPowerInput = true;
+		buildingDef.EnergyConsumptionWhenActive = 480f;
+		buildingDef.ExhaustKilowattsWhenActive = 0.5f;
+		buildingDef.SelfHeatKilowattsWhenActive = 4f;
+		buildingDef.PowerInputOffset = new CellOffset(-2, 0);
+		buildingDef.ViewMode = OverlayModes.Power.ID;
+		buildingDef.AudioCategory = "Metal";
+		buildingDef.AudioSize = "large";
+		buildingDef.Deprecated = true;
+		return buildingDef;
 	}
 
+	// Token: 0x06000096 RID: 150 RVA: 0x00140730 File Offset: 0x0013E930
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
@@ -28,11 +41,18 @@ public class AstronautTrainingCenterConfig : IBuildingConfig
 		astronautTrainingCenter.workTime = float.PositiveInfinity;
 		astronautTrainingCenter.requiredSkillPerk = Db.Get().SkillPerks.CanTrainToBeAstronaut.Id;
 		astronautTrainingCenter.daysToMasterRole = 10f;
-		astronautTrainingCenter.overrideAnims = new KAnimFile[1] { Assets.GetAnim("anim_interacts_centrifuge_kanim") };
+		astronautTrainingCenter.overrideAnims = new KAnimFile[]
+		{
+			Assets.GetAnim("anim_interacts_centrifuge_kanim")
+		};
 		astronautTrainingCenter.workLayer = Grid.SceneLayer.BuildingFront;
 	}
 
+	// Token: 0x06000097 RID: 151 RVA: 0x000A5E40 File Offset: 0x000A4040
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
+
+	// Token: 0x0400006E RID: 110
+	public const string ID = "AstronautTrainingCenter";
 }

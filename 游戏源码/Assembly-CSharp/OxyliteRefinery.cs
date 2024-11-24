@@ -1,16 +1,43 @@
+﻿using System;
 using KSerialization;
 using UnityEngine;
 
+// Token: 0x02000F05 RID: 3845
 [SerializationConfig(MemberSerialization.OptIn)]
 public class OxyliteRefinery : StateMachineComponent<OxyliteRefinery.StatesInstance>
 {
-	public class StatesInstance : GameStateMachine<States, StatesInstance, OxyliteRefinery, object>.GameInstance
+	// Token: 0x06004D97 RID: 19863 RVA: 0x000D2632 File Offset: 0x000D0832
+	protected override void OnSpawn()
 	{
-		public StatesInstance(OxyliteRefinery smi)
-			: base(smi)
+		base.smi.StartSM();
+	}
+
+	// Token: 0x040035E4 RID: 13796
+	[MyCmpAdd]
+	private Storage storage;
+
+	// Token: 0x040035E5 RID: 13797
+	[MyCmpReq]
+	private Operational operational;
+
+	// Token: 0x040035E6 RID: 13798
+	public Tag emitTag;
+
+	// Token: 0x040035E7 RID: 13799
+	public float emitMass;
+
+	// Token: 0x040035E8 RID: 13800
+	public Vector3 dropOffset;
+
+	// Token: 0x02000F06 RID: 3846
+	public class StatesInstance : GameStateMachine<OxyliteRefinery.States, OxyliteRefinery.StatesInstance, OxyliteRefinery, object>.GameInstance
+	{
+		// Token: 0x06004D99 RID: 19865 RVA: 0x000D2647 File Offset: 0x000D0847
+		public StatesInstance(OxyliteRefinery smi) : base(smi)
 		{
 		}
 
+		// Token: 0x06004D9A RID: 19866 RVA: 0x002656D4 File Offset: 0x002638D4
 		public void TryEmit()
 		{
 			Storage storage = base.smi.master.storage;
@@ -20,53 +47,40 @@ public class OxyliteRefinery : StateMachineComponent<OxyliteRefinery.StatesInsta
 				Vector3 position = base.transform.GetPosition() + base.master.dropOffset;
 				position.z = Grid.GetLayerZ(Grid.SceneLayer.Ore);
 				gameObject.transform.SetPosition(position);
-				storage.Drop(gameObject);
+				storage.Drop(gameObject, true);
 			}
 		}
 	}
 
-	public class States : GameStateMachine<States, StatesInstance, OxyliteRefinery>
+	// Token: 0x02000F07 RID: 3847
+	public class States : GameStateMachine<OxyliteRefinery.States, OxyliteRefinery.StatesInstance, OxyliteRefinery>
 	{
-		public State disabled;
-
-		public State waiting;
-
-		public State converting;
-
-		public override void InitializeStates(out BaseState default_state)
+		// Token: 0x06004D9B RID: 19867 RVA: 0x0026576C File Offset: 0x0026396C
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
-			default_state = disabled;
-			root.EventTransition(GameHashes.OperationalChanged, disabled, (StatesInstance smi) => !smi.master.operational.IsOperational);
-			disabled.EventTransition(GameHashes.OperationalChanged, waiting, (StatesInstance smi) => smi.master.operational.IsOperational);
-			waiting.EventTransition(GameHashes.OnStorageChange, converting, (StatesInstance smi) => smi.master.GetComponent<ElementConverter>().HasEnoughMassToStartConverting());
-			converting.Enter(delegate(StatesInstance smi)
+			default_state = this.disabled;
+			this.root.EventTransition(GameHashes.OperationalChanged, this.disabled, (OxyliteRefinery.StatesInstance smi) => !smi.master.operational.IsOperational);
+			this.disabled.EventTransition(GameHashes.OperationalChanged, this.waiting, (OxyliteRefinery.StatesInstance smi) => smi.master.operational.IsOperational);
+			this.waiting.EventTransition(GameHashes.OnStorageChange, this.converting, (OxyliteRefinery.StatesInstance smi) => smi.master.GetComponent<ElementConverter>().HasEnoughMassToStartConverting(false));
+			this.converting.Enter(delegate(OxyliteRefinery.StatesInstance smi)
 			{
-				smi.master.operational.SetActive(value: true);
-			}).Exit(delegate(StatesInstance smi)
+				smi.master.operational.SetActive(true, false);
+			}).Exit(delegate(OxyliteRefinery.StatesInstance smi)
 			{
-				smi.master.operational.SetActive(value: false);
-			}).Transition(waiting, (StatesInstance smi) => !smi.master.GetComponent<ElementConverter>().CanConvertAtAll())
-				.EventHandler(GameHashes.OnStorageChange, delegate(StatesInstance smi)
-				{
-					smi.TryEmit();
-				});
+				smi.master.operational.SetActive(false, false);
+			}).Transition(this.waiting, (OxyliteRefinery.StatesInstance smi) => !smi.master.GetComponent<ElementConverter>().CanConvertAtAll(), UpdateRate.SIM_200ms).EventHandler(GameHashes.OnStorageChange, delegate(OxyliteRefinery.StatesInstance smi)
+			{
+				smi.TryEmit();
+			});
 		}
-	}
 
-	[MyCmpAdd]
-	private Storage storage;
+		// Token: 0x040035E9 RID: 13801
+		public GameStateMachine<OxyliteRefinery.States, OxyliteRefinery.StatesInstance, OxyliteRefinery, object>.State disabled;
 
-	[MyCmpReq]
-	private Operational operational;
+		// Token: 0x040035EA RID: 13802
+		public GameStateMachine<OxyliteRefinery.States, OxyliteRefinery.StatesInstance, OxyliteRefinery, object>.State waiting;
 
-	public Tag emitTag;
-
-	public float emitMass;
-
-	public Vector3 dropOffset;
-
-	protected override void OnSpawn()
-	{
-		base.smi.StartSM();
+		// Token: 0x040035EB RID: 13803
+		public GameStateMachine<OxyliteRefinery.States, OxyliteRefinery.StatesInstance, OxyliteRefinery, object>.State converting;
 	}
 }

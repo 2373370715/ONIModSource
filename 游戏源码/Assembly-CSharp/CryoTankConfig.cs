@@ -1,22 +1,30 @@
+﻿using System;
 using STRINGS;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x02000572 RID: 1394
 public class CryoTankConfig : IEntityConfig
 {
-	public const string ID = "CryoTank";
-
+	// Token: 0x060018AC RID: 6316 RVA: 0x000A6566 File Offset: 0x000A4766
 	public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
 	}
 
+	// Token: 0x060018AD RID: 6317 RVA: 0x001A0610 File Offset: 0x0019E810
 	public GameObject CreatePrefab()
 	{
-		GameObject gameObject = EntityTemplates.CreatePlacedEntity("CryoTank", STRINGS.BUILDINGS.PREFABS.CRYOTANK.NAME, STRINGS.BUILDINGS.PREFABS.CRYOTANK.DESC, 100f, decor: TUNING.BUILDINGS.DECOR.BONUS.TIER0, noise: NOISE_POLLUTION.NOISY.TIER0, anim: Assets.GetAnim("cryo_chamber_kanim"), initialAnim: "off", sceneLayer: Grid.SceneLayer.Building, width: 2, height: 3);
+		string id = "CryoTank";
+		string name = STRINGS.BUILDINGS.PREFABS.CRYOTANK.NAME;
+		string desc = STRINGS.BUILDINGS.PREFABS.CRYOTANK.DESC;
+		float mass = 100f;
+		EffectorValues tier = TUNING.BUILDINGS.DECOR.BONUS.TIER0;
+		EffectorValues tier2 = NOISE_POLLUTION.NOISY.TIER0;
+		GameObject gameObject = EntityTemplates.CreatePlacedEntity(id, name, desc, mass, Assets.GetAnim("cryo_chamber_kanim"), "off", Grid.SceneLayer.Building, 2, 3, tier, tier2, SimHashes.Creature, null, 293f);
 		gameObject.GetComponent<KAnimControllerBase>().SetFGLayer(Grid.SceneLayer.BuildingFront);
 		PrimaryElement component = gameObject.GetComponent<PrimaryElement>();
-		component.SetElement(SimHashes.Unobtanium);
+		component.SetElement(SimHashes.Unobtanium, true);
 		component.Temperature = 294.15f;
 		Workable workable = gameObject.AddOrGet<Workable>();
 		workable.synchronizeAnims = false;
@@ -26,15 +34,23 @@ public class CryoTankConfig : IEntityConfig
 		cryoTank.dropOffset = new CellOffset(1, 0);
 		LoreBearerUtil.AddLoreTo(gameObject, LoreBearerUtil.UnlockSpecificEntry("cryotank_warning", UI.USERMENUACTIONS.READLORE.SEARCH_CRYO_TANK));
 		gameObject.AddOrGet<Demolishable>().allowDemolition = false;
-		gameObject.AddOrGet<OccupyArea>().objectLayers = new ObjectLayer[1] { ObjectLayer.Building };
+		gameObject.AddOrGet<OccupyArea>().objectLayers = new ObjectLayer[]
+		{
+			ObjectLayer.Building
+		};
 		return gameObject;
 	}
 
+	// Token: 0x060018AE RID: 6318 RVA: 0x000A5E40 File Offset: 0x000A4040
 	public void OnPrefabInit(GameObject inst)
 	{
 	}
 
+	// Token: 0x060018AF RID: 6319 RVA: 0x000A5E40 File Offset: 0x000A4040
 	public void OnSpawn(GameObject inst)
 	{
 	}
+
+	// Token: 0x04000FF7 RID: 4087
+	public const string ID = "CryoTank";
 }

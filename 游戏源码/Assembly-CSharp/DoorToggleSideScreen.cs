@@ -1,154 +1,135 @@
+﻿using System;
 using System.Collections.Generic;
 using STRINGS;
 using UnityEngine;
 
+// Token: 0x02001F60 RID: 8032
 public class DoorToggleSideScreen : SideScreenContent
 {
-	private struct DoorButtonInfo
-	{
-		public KToggle button;
-
-		public Door.ControlState state;
-
-		public string currentString;
-
-		public string pendingString;
-	}
-
-	[SerializeField]
-	private KToggle openButton;
-
-	[SerializeField]
-	private KToggle autoButton;
-
-	[SerializeField]
-	private KToggle closeButton;
-
-	[SerializeField]
-	private LocText description;
-
-	private Door target;
-
-	private AccessControl accessTarget;
-
-	private List<DoorButtonInfo> buttonList = new List<DoorButtonInfo>();
-
+	// Token: 0x0600A998 RID: 43416 RVA: 0x0010E2D6 File Offset: 0x0010C4D6
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		InitButtons();
+		this.InitButtons();
 	}
 
+	// Token: 0x0600A999 RID: 43417 RVA: 0x00401BA8 File Offset: 0x003FFDA8
 	private void InitButtons()
 	{
-		buttonList.Add(new DoorButtonInfo
+		this.buttonList.Add(new DoorToggleSideScreen.DoorButtonInfo
 		{
-			button = openButton,
+			button = this.openButton,
 			state = Door.ControlState.Opened,
 			currentString = UI.UISIDESCREENS.DOOR_TOGGLE_SIDE_SCREEN.OPEN,
 			pendingString = UI.UISIDESCREENS.DOOR_TOGGLE_SIDE_SCREEN.OPEN_PENDING
 		});
-		buttonList.Add(new DoorButtonInfo
+		this.buttonList.Add(new DoorToggleSideScreen.DoorButtonInfo
 		{
-			button = autoButton,
+			button = this.autoButton,
 			state = Door.ControlState.Auto,
 			currentString = UI.UISIDESCREENS.DOOR_TOGGLE_SIDE_SCREEN.AUTO,
 			pendingString = UI.UISIDESCREENS.DOOR_TOGGLE_SIDE_SCREEN.AUTO_PENDING
 		});
-		buttonList.Add(new DoorButtonInfo
+		this.buttonList.Add(new DoorToggleSideScreen.DoorButtonInfo
 		{
-			button = closeButton,
+			button = this.closeButton,
 			state = Door.ControlState.Locked,
 			currentString = UI.UISIDESCREENS.DOOR_TOGGLE_SIDE_SCREEN.CLOSE,
 			pendingString = UI.UISIDESCREENS.DOOR_TOGGLE_SIDE_SCREEN.CLOSE_PENDING
 		});
-		foreach (DoorButtonInfo info in buttonList)
+		using (List<DoorToggleSideScreen.DoorButtonInfo>.Enumerator enumerator = this.buttonList.GetEnumerator())
 		{
-			info.button.onClick += delegate
+			while (enumerator.MoveNext())
 			{
-				target.QueueStateChange(info.state);
-				Refresh();
-			};
+				DoorToggleSideScreen.DoorButtonInfo info = enumerator.Current;
+				info.button.onClick += delegate()
+				{
+					this.target.QueueStateChange(info.state);
+					this.Refresh();
+				};
+			}
 		}
 	}
 
+	// Token: 0x0600A99A RID: 43418 RVA: 0x0010E2E4 File Offset: 0x0010C4E4
 	public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetComponent<Door>() != null;
 	}
 
+	// Token: 0x0600A99B RID: 43419 RVA: 0x00401D04 File Offset: 0x003FFF04
 	public override void SetTarget(GameObject target)
 	{
 		if (this.target != null)
 		{
-			ClearTarget();
+			this.ClearTarget();
 		}
 		base.SetTarget(target);
 		this.target = target.GetComponent<Door>();
-		accessTarget = target.GetComponent<AccessControl>();
-		if (!(this.target == null))
+		this.accessTarget = target.GetComponent<AccessControl>();
+		if (this.target == null)
 		{
-			target.Subscribe(1734268753, OnDoorStateChanged);
-			target.Subscribe(-1525636549, OnAccessControlChanged);
-			Refresh();
-			base.gameObject.SetActive(value: true);
+			return;
 		}
+		target.Subscribe(1734268753, new Action<object>(this.OnDoorStateChanged));
+		target.Subscribe(-1525636549, new Action<object>(this.OnAccessControlChanged));
+		this.Refresh();
+		base.gameObject.SetActive(true);
 	}
 
+	// Token: 0x0600A99C RID: 43420 RVA: 0x00401D98 File Offset: 0x003FFF98
 	public override void ClearTarget()
 	{
-		if (target != null)
+		if (this.target != null)
 		{
-			target.Unsubscribe(1734268753, OnDoorStateChanged);
-			target.Unsubscribe(-1525636549, OnAccessControlChanged);
+			this.target.Unsubscribe(1734268753, new Action<object>(this.OnDoorStateChanged));
+			this.target.Unsubscribe(-1525636549, new Action<object>(this.OnAccessControlChanged));
 		}
-		target = null;
+		this.target = null;
 	}
 
+	// Token: 0x0600A99D RID: 43421 RVA: 0x00401DF4 File Offset: 0x003FFFF4
 	private void Refresh()
 	{
 		string text = null;
 		string text2 = null;
-		if (buttonList == null || buttonList.Count == 0)
+		if (this.buttonList == null || this.buttonList.Count == 0)
 		{
-			InitButtons();
+			this.InitButtons();
 		}
-		foreach (DoorButtonInfo button in buttonList)
+		foreach (DoorToggleSideScreen.DoorButtonInfo doorButtonInfo in this.buttonList)
 		{
-			if (target.CurrentState == button.state && target.RequestedState == button.state)
+			if (this.target.CurrentState == doorButtonInfo.state && this.target.RequestedState == doorButtonInfo.state)
 			{
-				button.button.isOn = true;
-				text = button.currentString;
-				ImageToggleState[] componentsInChildren = button.button.GetComponentsInChildren<ImageToggleState>();
-				foreach (ImageToggleState obj in componentsInChildren)
+				doorButtonInfo.button.isOn = true;
+				text = doorButtonInfo.currentString;
+				foreach (ImageToggleState imageToggleState in doorButtonInfo.button.GetComponentsInChildren<ImageToggleState>())
 				{
-					obj.SetActive();
-					obj.SetActive();
+					imageToggleState.SetActive();
+					imageToggleState.SetActive();
 				}
-				button.button.GetComponent<ImageToggleStateThrobber>().enabled = false;
+				doorButtonInfo.button.GetComponent<ImageToggleStateThrobber>().enabled = false;
 			}
-			else if (target.RequestedState == button.state)
+			else if (this.target.RequestedState == doorButtonInfo.state)
 			{
-				button.button.isOn = true;
-				text2 = button.pendingString;
-				ImageToggleState[] componentsInChildren = button.button.GetComponentsInChildren<ImageToggleState>();
-				foreach (ImageToggleState obj2 in componentsInChildren)
+				doorButtonInfo.button.isOn = true;
+				text2 = doorButtonInfo.pendingString;
+				foreach (ImageToggleState imageToggleState2 in doorButtonInfo.button.GetComponentsInChildren<ImageToggleState>())
 				{
-					obj2.SetActive();
-					obj2.SetActive();
+					imageToggleState2.SetActive();
+					imageToggleState2.SetActive();
 				}
-				button.button.GetComponent<ImageToggleStateThrobber>().enabled = true;
+				doorButtonInfo.button.GetComponent<ImageToggleStateThrobber>().enabled = true;
 			}
 			else
 			{
-				button.button.isOn = false;
-				ImageToggleState[] componentsInChildren = button.button.GetComponentsInChildren<ImageToggleState>();
-				foreach (ImageToggleState obj3 in componentsInChildren)
+				doorButtonInfo.button.isOn = false;
+				foreach (ImageToggleState imageToggleState3 in doorButtonInfo.button.GetComponentsInChildren<ImageToggleState>())
 				{
-					obj3.SetInactive();
-					obj3.SetInactive();
+					imageToggleState3.SetInactive();
+					imageToggleState3.SetInactive();
 				}
-				button.button.GetComponent<ImageToggleStateThrobber>().enabled = false;
+				doorButtonInfo.button.GetComponent<ImageToggleStateThrobber>().enabled = false;
 			}
 		}
 		string text3 = text;
@@ -156,38 +137,84 @@ public class DoorToggleSideScreen : SideScreenContent
 		{
 			text3 = string.Format(UI.UISIDESCREENS.DOOR_TOGGLE_SIDE_SCREEN.PENDING_FORMAT, text3, text2);
 		}
-		if (accessTarget != null && !accessTarget.Online)
+		if (this.accessTarget != null && !this.accessTarget.Online)
 		{
 			text3 = string.Format(UI.UISIDESCREENS.DOOR_TOGGLE_SIDE_SCREEN.ACCESS_FORMAT, text3, UI.UISIDESCREENS.DOOR_TOGGLE_SIDE_SCREEN.ACCESS_OFFLINE);
 		}
-		if (target.building.Def.PrefabID == POIDoorInternalConfig.ID)
+		if (this.target.building.Def.PrefabID == POIDoorInternalConfig.ID)
 		{
 			text3 = UI.UISIDESCREENS.DOOR_TOGGLE_SIDE_SCREEN.POI_INTERNAL;
-			foreach (DoorButtonInfo button2 in buttonList)
+			using (List<DoorToggleSideScreen.DoorButtonInfo>.Enumerator enumerator = this.buttonList.GetEnumerator())
 			{
-				button2.button.gameObject.SetActive(value: false);
+				while (enumerator.MoveNext())
+				{
+					DoorToggleSideScreen.DoorButtonInfo doorButtonInfo2 = enumerator.Current;
+					doorButtonInfo2.button.gameObject.SetActive(false);
+				}
+				goto IL_2A1;
 			}
 		}
-		else
+		foreach (DoorToggleSideScreen.DoorButtonInfo doorButtonInfo3 in this.buttonList)
 		{
-			foreach (DoorButtonInfo button3 in buttonList)
-			{
-				bool active = button3.state != 0 || target.allowAutoControl;
-				button3.button.gameObject.SetActive(active);
-			}
+			bool active = doorButtonInfo3.state != Door.ControlState.Auto || this.target.allowAutoControl;
+			doorButtonInfo3.button.gameObject.SetActive(active);
 		}
-		description.text = text3;
-		description.gameObject.SetActive(!string.IsNullOrEmpty(text3));
-		ContentContainer.SetActive(!target.isSealed);
+		IL_2A1:
+		this.description.text = text3;
+		this.description.gameObject.SetActive(!string.IsNullOrEmpty(text3));
+		this.ContentContainer.SetActive(!this.target.isSealed);
 	}
 
+	// Token: 0x0600A99E RID: 43422 RVA: 0x0010E2F2 File Offset: 0x0010C4F2
 	private void OnDoorStateChanged(object data)
 	{
-		Refresh();
+		this.Refresh();
 	}
 
+	// Token: 0x0600A99F RID: 43423 RVA: 0x0010E2F2 File Offset: 0x0010C4F2
 	private void OnAccessControlChanged(object data)
 	{
-		Refresh();
+		this.Refresh();
+	}
+
+	// Token: 0x04008559 RID: 34137
+	[SerializeField]
+	private KToggle openButton;
+
+	// Token: 0x0400855A RID: 34138
+	[SerializeField]
+	private KToggle autoButton;
+
+	// Token: 0x0400855B RID: 34139
+	[SerializeField]
+	private KToggle closeButton;
+
+	// Token: 0x0400855C RID: 34140
+	[SerializeField]
+	private LocText description;
+
+	// Token: 0x0400855D RID: 34141
+	private Door target;
+
+	// Token: 0x0400855E RID: 34142
+	private AccessControl accessTarget;
+
+	// Token: 0x0400855F RID: 34143
+	private List<DoorToggleSideScreen.DoorButtonInfo> buttonList = new List<DoorToggleSideScreen.DoorButtonInfo>();
+
+	// Token: 0x02001F61 RID: 8033
+	private struct DoorButtonInfo
+	{
+		// Token: 0x04008560 RID: 34144
+		public KToggle button;
+
+		// Token: 0x04008561 RID: 34145
+		public Door.ControlState state;
+
+		// Token: 0x04008562 RID: 34146
+		public string currentString;
+
+		// Token: 0x04008563 RID: 34147
+		public string pendingString;
 	}
 }

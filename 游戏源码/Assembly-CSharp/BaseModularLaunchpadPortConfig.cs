@@ -1,14 +1,22 @@
+﻿using System;
 using System.Collections.Generic;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x0200002B RID: 43
 public class BaseModularLaunchpadPortConfig
 {
-	public static Tag LinkTag = new Tag("ModularLaunchpadPort");
-
+	// Token: 0x060000B1 RID: 177 RVA: 0x00140DC4 File Offset: 0x0013EFC4
 	public static BuildingDef CreateBaseLaunchpadPort(string id, string anim, ConduitType conduitType, bool isLoader, int width = 2, int height = 3)
 	{
-		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, 1000, 60f, BUILDINGS.CONSTRUCTION_MASS_KG.TIER4, MATERIALS.REFINED_METALS, 9999f, BuildLocationRule.OnFloor, noise: NOISE_POLLUTION.NOISY.TIER2, decor: BUILDINGS.DECOR.NONE);
+		int hitpoints = 1000;
+		float construction_time = 60f;
+		float[] tier = BUILDINGS.CONSTRUCTION_MASS_KG.TIER4;
+		string[] refined_METALS = MATERIALS.REFINED_METALS;
+		float melting_point = 9999f;
+		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
+		EffectorValues tier2 = NOISE_POLLUTION.NOISY.TIER2;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, refined_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, tier2, 0.2f);
 		buildingDef.SceneLayer = Grid.SceneLayer.BuildingBack;
 		buildingDef.OverheatTemperature = 2273.15f;
 		buildingDef.Floodable = false;
@@ -45,14 +53,15 @@ public class BaseModularLaunchpadPortConfig
 		return buildingDef;
 	}
 
+	// Token: 0x060000B2 RID: 178 RVA: 0x00140EDC File Offset: 0x0013F0DC
 	public static void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag, ConduitType conduitType, float storageSize, bool isLoader)
 	{
 		go.AddOrGet<LoopingSounds>();
 		KPrefabID component = go.GetComponent<KPrefabID>();
-		component.AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery);
-		component.AddTag(LinkTag);
-		component.AddTag(GameTags.ModularConduitPort);
-		component.AddTag(GameTags.NotRocketInteriorBuilding);
+		component.AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
+		component.AddTag(BaseModularLaunchpadPortConfig.LinkTag, false);
+		component.AddTag(GameTags.ModularConduitPort, false);
+		component.AddTag(GameTags.NotRocketInteriorBuilding, false);
 		go.AddOrGetDef<ModularConduitPortController.Def>().mode = (isLoader ? ModularConduitPortController.Mode.Load : ModularConduitPortController.Mode.Unload);
 		if (!isLoader)
 		{
@@ -65,17 +74,17 @@ public class BaseModularLaunchpadPortConfig
 				Storage.StoredItemModifier.Seal,
 				Storage.StoredItemModifier.Insulate
 			});
-			switch (conduitType)
+			if (conduitType == ConduitType.Gas)
 			{
-			case ConduitType.Gas:
 				storage.storageFilters = STORAGEFILTERS.GASES;
-				break;
-			case ConduitType.Liquid:
+			}
+			else if (conduitType == ConduitType.Liquid)
+			{
 				storage.storageFilters = STORAGEFILTERS.LIQUIDS;
-				break;
-			default:
+			}
+			else
+			{
 				storage.storageFilters = STORAGEFILTERS.STORAGE_LOCKERS_STANDARD;
-				break;
 			}
 			TreeFilterable treeFilterable = go.AddOrGet<TreeFilterable>();
 			treeFilterable.dropIncorrectOnFilterChange = false;
@@ -123,12 +132,16 @@ public class BaseModularLaunchpadPortConfig
 		}
 		ChainedBuilding.Def def = go.AddOrGetDef<ChainedBuilding.Def>();
 		def.headBuildingTag = "LaunchPad".ToTag();
-		def.linkBuildingTag = LinkTag;
+		def.linkBuildingTag = BaseModularLaunchpadPortConfig.LinkTag;
 		def.objectLayer = ObjectLayer.Building;
 		go.AddOrGet<LogicOperationalController>();
 	}
 
+	// Token: 0x060000B3 RID: 179 RVA: 0x000A5E40 File Offset: 0x000A4040
 	public static void DoPostConfigureComplete(GameObject go, bool isLoader)
 	{
 	}
+
+	// Token: 0x04000080 RID: 128
+	public static Tag LinkTag = new Tag("ModularLaunchpadPort");
 }

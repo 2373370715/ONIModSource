@@ -1,67 +1,74 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
+// Token: 0x02000D24 RID: 3364
 public class DevAutoPlumber
 {
-	private enum PortSelection
-	{
-		UtilityInput,
-		UtilityOutput,
-		PowerInput
-	}
-
+	// Token: 0x060041C9 RID: 16841 RVA: 0x000CA939 File Offset: 0x000C8B39
 	public static void AutoPlumbBuilding(Building building)
 	{
-		DoElectricalPlumbing(building);
-		DoLiquidAndGasPlumbing(building);
-		SetupSolidOreDelivery(building);
+		DevAutoPlumber.DoElectricalPlumbing(building);
+		DevAutoPlumber.DoLiquidAndGasPlumbing(building);
+		DevAutoPlumber.SetupSolidOreDelivery(building);
 	}
 
+	// Token: 0x060041CA RID: 16842 RVA: 0x0023ED70 File Offset: 0x0023CF70
 	public static void DoElectricalPlumbing(Building building)
 	{
-		if (building.Def.RequiresPowerInput)
+		if (!building.Def.RequiresPowerInput)
 		{
-			int cell = Grid.OffsetCell(Grid.PosToCell(building), building.Def.PowerInputOffset);
-			GameObject gameObject = Grid.Objects[cell, 26];
-			if (gameObject != null)
-			{
-				gameObject.Trigger(-790448070);
-			}
-			PlaceSourceAndUtilityConduit(building, Assets.GetBuildingDef("DevGenerator"), Assets.GetBuildingDef("WireRefined"), Game.Instance.electricalConduitSystem, new int[2] { 26, 29 }, PortSelection.PowerInput);
+			return;
 		}
+		int cell = Grid.OffsetCell(Grid.PosToCell(building), building.Def.PowerInputOffset);
+		GameObject gameObject = Grid.Objects[cell, 26];
+		if (gameObject != null)
+		{
+			gameObject.Trigger(-790448070, null);
+		}
+		DevAutoPlumber.PlaceSourceAndUtilityConduit(building, Assets.GetBuildingDef("DevGenerator"), Assets.GetBuildingDef("WireRefined"), Game.Instance.electricalConduitSystem, new int[]
+		{
+			26,
+			29
+		}, DevAutoPlumber.PortSelection.PowerInput);
 	}
 
+	// Token: 0x060041CB RID: 16843 RVA: 0x000CA94D File Offset: 0x000C8B4D
 	public static void DoLiquidAndGasPlumbing(Building building)
 	{
-		SetupPlumbingInput(building);
-		SetupPlumbingOutput(building);
+		DevAutoPlumber.SetupPlumbingInput(building);
+		DevAutoPlumber.SetupPlumbingOutput(building);
 	}
 
+	// Token: 0x060041CC RID: 16844 RVA: 0x0023EDFC File Offset: 0x0023CFFC
 	public static void SetupSolidOreDelivery(Building building)
 	{
 		ManualDeliveryKG component = building.GetComponent<ManualDeliveryKG>();
 		if (component != null)
 		{
-			_ = TrySpawnElementOreFromTag(component.RequestedItemTag, Grid.PosToCell(building), component.Capacity) == null;
+			DevAutoPlumber.TrySpawnElementOreFromTag(component.RequestedItemTag, Grid.PosToCell(building), component.Capacity) == null;
 			return;
 		}
-		foreach (ComplexRecipe recipe in ComplexRecipeManager.Get().recipes)
+		foreach (ComplexRecipe complexRecipe in ComplexRecipeManager.Get().recipes)
 		{
-			foreach (Tag fabricator in recipe.fabricators)
+			using (List<Tag>.Enumerator enumerator2 = complexRecipe.fabricators.GetEnumerator())
 			{
-				if (fabricator == building.Def.PrefabID)
+				while (enumerator2.MoveNext())
 				{
-					ComplexRecipe.RecipeElement[] ingredients = recipe.ingredients;
-					foreach (ComplexRecipe.RecipeElement recipeElement in ingredients)
+					if (enumerator2.Current == building.Def.PrefabID)
 					{
-						_ = TrySpawnElementOreFromTag(recipeElement.material, Grid.PosToCell(building), recipeElement.amount * 10f) == null;
+						foreach (ComplexRecipe.RecipeElement recipeElement in complexRecipe.ingredients)
+						{
+							DevAutoPlumber.TrySpawnElementOreFromTag(recipeElement.material, Grid.PosToCell(building), recipeElement.amount * 10f) == null;
+						}
 					}
 				}
 			}
 		}
 	}
 
+	// Token: 0x060041CD RID: 16845 RVA: 0x0023EF1C File Offset: 0x0023D11C
 	private static GameObject TrySpawnElementOreFromTag(Tag t, int cell, float amount)
 	{
 		Element element = ElementLoader.GetElement(t);
@@ -69,74 +76,103 @@ public class DevAutoPlumber
 		{
 			element = ElementLoader.elements.Find((Element match) => match.HasTag(t));
 		}
-		return element?.substance.SpawnResource(Grid.CellToPos(cell), amount, element.defaultValues.temperature, byte.MaxValue, 0);
+		if (element != null)
+		{
+			return element.substance.SpawnResource(Grid.CellToPos(cell), amount, element.defaultValues.temperature, byte.MaxValue, 0, false, false, false);
+		}
+		return null;
 	}
 
+	// Token: 0x060041CE RID: 16846 RVA: 0x0023EF88 File Offset: 0x0023D188
 	private static void SetupPlumbingInput(Building building)
 	{
 		ConduitConsumer component = building.GetComponent<ConduitConsumer>();
-		if (!(component == null))
+		if (component == null)
 		{
-			BuildingDef sourceDef = null;
-			BuildingDef conduitDef = null;
-			int[] conduitTypeLayers = null;
-			UtilityNetworkManager<FlowUtilityNetwork, Vent> utlityNetworkManager = null;
-			switch (component.ConduitType)
+			return;
+		}
+		BuildingDef sourceDef = null;
+		BuildingDef conduitDef = null;
+		int[] conduitTypeLayers = null;
+		UtilityNetworkManager<FlowUtilityNetwork, Vent> utlityNetworkManager = null;
+		ConduitType conduitType = component.ConduitType;
+		if (conduitType != ConduitType.Gas)
+		{
+			if (conduitType == ConduitType.Liquid)
 			{
-			case ConduitType.Liquid:
 				conduitDef = Assets.GetBuildingDef("InsulatedLiquidConduit");
 				sourceDef = Assets.GetBuildingDef("DevPumpLiquid");
 				utlityNetworkManager = Game.Instance.liquidConduitSystem;
-				conduitTypeLayers = new int[2] { 16, 19 };
-				break;
-			case ConduitType.Gas:
-				conduitDef = Assets.GetBuildingDef("InsulatedGasConduit");
-				sourceDef = Assets.GetBuildingDef("DevPumpGas");
-				utlityNetworkManager = Game.Instance.gasConduitSystem;
-				conduitTypeLayers = new int[2] { 12, 15 };
-				break;
-			}
-			GameObject gameObject = PlaceSourceAndUtilityConduit(building, sourceDef, conduitDef, utlityNetworkManager, conduitTypeLayers, PortSelection.UtilityInput);
-			Element element = GuessMostRelevantElementForPump(building);
-			if (element != null)
-			{
-				gameObject.GetComponent<DevPump>().SelectedTag = element.tag;
-			}
-			else
-			{
-				gameObject.GetComponent<DevPump>().SelectedTag = ElementLoader.FindElementByHash(SimHashes.Vacuum).tag;
+				conduitTypeLayers = new int[]
+				{
+					16,
+					19
+				};
 			}
 		}
+		else
+		{
+			conduitDef = Assets.GetBuildingDef("InsulatedGasConduit");
+			sourceDef = Assets.GetBuildingDef("DevPumpGas");
+			utlityNetworkManager = Game.Instance.gasConduitSystem;
+			conduitTypeLayers = new int[]
+			{
+				12,
+				15
+			};
+		}
+		GameObject gameObject = DevAutoPlumber.PlaceSourceAndUtilityConduit(building, sourceDef, conduitDef, utlityNetworkManager, conduitTypeLayers, DevAutoPlumber.PortSelection.UtilityInput);
+		Element element = DevAutoPlumber.GuessMostRelevantElementForPump(building);
+		if (element != null)
+		{
+			gameObject.GetComponent<DevPump>().SelectedTag = element.tag;
+			return;
+		}
+		gameObject.GetComponent<DevPump>().SelectedTag = ElementLoader.FindElementByHash(SimHashes.Vacuum).tag;
 	}
 
+	// Token: 0x060041CF RID: 16847 RVA: 0x0023F074 File Offset: 0x0023D274
 	private static void SetupPlumbingOutput(Building building)
 	{
 		ConduitDispenser component = building.GetComponent<ConduitDispenser>();
-		if (!(component == null))
+		if (component == null)
 		{
-			BuildingDef sourceDef = null;
-			BuildingDef conduitDef = null;
-			int[] conduitTypeLayers = null;
-			UtilityNetworkManager<FlowUtilityNetwork, Vent> utlityNetworkManager = null;
-			switch (component.ConduitType)
+			return;
+		}
+		BuildingDef sourceDef = null;
+		BuildingDef conduitDef = null;
+		int[] conduitTypeLayers = null;
+		UtilityNetworkManager<FlowUtilityNetwork, Vent> utlityNetworkManager = null;
+		ConduitType conduitType = component.ConduitType;
+		if (conduitType != ConduitType.Gas)
+		{
+			if (conduitType == ConduitType.Liquid)
 			{
-			case ConduitType.Liquid:
 				conduitDef = Assets.GetBuildingDef("InsulatedLiquidConduit");
 				sourceDef = Assets.GetBuildingDef("LiquidVent");
 				utlityNetworkManager = Game.Instance.liquidConduitSystem;
-				conduitTypeLayers = new int[2] { 16, 19 };
-				break;
-			case ConduitType.Gas:
-				conduitDef = Assets.GetBuildingDef("InsulatedGasConduit");
-				sourceDef = Assets.GetBuildingDef("GasVent");
-				utlityNetworkManager = Game.Instance.gasConduitSystem;
-				conduitTypeLayers = new int[2] { 12, 15 };
-				break;
+				conduitTypeLayers = new int[]
+				{
+					16,
+					19
+				};
 			}
-			PlaceSourceAndUtilityConduit(building, sourceDef, conduitDef, utlityNetworkManager, conduitTypeLayers, PortSelection.UtilityOutput);
 		}
+		else
+		{
+			conduitDef = Assets.GetBuildingDef("InsulatedGasConduit");
+			sourceDef = Assets.GetBuildingDef("GasVent");
+			utlityNetworkManager = Game.Instance.gasConduitSystem;
+			conduitTypeLayers = new int[]
+			{
+				12,
+				15
+			};
+		}
+		DevAutoPlumber.PlaceSourceAndUtilityConduit(building, sourceDef, conduitDef, utlityNetworkManager, conduitTypeLayers, DevAutoPlumber.PortSelection.UtilityOutput);
 	}
 
+	// Token: 0x060041D0 RID: 16848 RVA: 0x0023F124 File Offset: 0x0023D324
 	private static Element GuessMostRelevantElementForPump(Building destinationBuilding)
 	{
 		ConduitConsumer consumer = destinationBuilding.GetComponent<ConduitConsumer>();
@@ -186,49 +222,50 @@ public class DevAutoPlumber
 					return false;
 				}
 			}
-			if ((consumer.ConduitType == ConduitType.Liquid && !match.IsLiquid) || (consumer.ConduitType == ConduitType.Gas && !match.IsGas))
-			{
-				return false;
-			}
-			return (match.HasTag(targetTag) || !(targetTag != GameTags.Any)) ? true : false;
+			return (consumer.ConduitType != ConduitType.Liquid || match.IsLiquid) && (consumer.ConduitType != ConduitType.Gas || match.IsGas) && (match.HasTag(targetTag) || !(targetTag != GameTags.Any));
 		});
 	}
 
-	private static GameObject PlaceSourceAndUtilityConduit(Building destinationBuilding, BuildingDef sourceDef, BuildingDef conduitDef, IUtilityNetworkMgr utlityNetworkManager, int[] conduitTypeLayers, PortSelection portSelection)
+	// Token: 0x060041D1 RID: 16849 RVA: 0x0023F190 File Offset: 0x0023D390
+	private static GameObject PlaceSourceAndUtilityConduit(Building destinationBuilding, BuildingDef sourceDef, BuildingDef conduitDef, IUtilityNetworkMgr utlityNetworkManager, int[] conduitTypeLayers, DevAutoPlumber.PortSelection portSelection)
 	{
 		Building building = null;
 		List<int> list = new List<int>();
-		int cell = FindClearPlacementLocation(Grid.PosToCell(destinationBuilding), new List<int>(conduitTypeLayers) { 1 }.ToArray(), list);
+		int cell = DevAutoPlumber.FindClearPlacementLocation(Grid.PosToCell(destinationBuilding), new List<int>(conduitTypeLayers)
+		{
+			1
+		}.ToArray(), list);
 		bool flag = false;
 		int num = 10;
 		while (!flag)
 		{
 			num--;
-			building = PlaceConduitSourceBuilding(cell, sourceDef);
+			building = DevAutoPlumber.PlaceConduitSourceBuilding(cell, sourceDef);
 			if (building == null)
 			{
 				return null;
 			}
-			List<int> list2 = GenerateClearConduitPath(building, destinationBuilding, conduitTypeLayers, portSelection);
+			List<int> list2 = DevAutoPlumber.GenerateClearConduitPath(building, destinationBuilding, conduitTypeLayers, portSelection);
 			if (list2 == null)
 			{
 				list.Add(Grid.PosToCell(building));
-				building.Trigger(-790448070);
+				building.Trigger(-790448070, null);
 			}
 			else
 			{
 				flag = true;
-				BuildConduits(list2, conduitDef, utlityNetworkManager);
+				DevAutoPlumber.BuildConduits(list2, conduitDef, utlityNetworkManager);
 			}
 		}
 		return building.gameObject;
 	}
 
+	// Token: 0x060041D2 RID: 16850 RVA: 0x0023F22C File Offset: 0x0023D42C
 	private static int FindClearPlacementLocation(int nearStartingCell, int[] placementBlockingObjectLayers, List<int> rejectLocations)
 	{
 		Func<int, object, bool> fn = delegate(int test, object unusedData)
 		{
-			int[] array = new int[6]
+			foreach (int num in new int[]
 			{
 				test,
 				Grid.OffsetCell(test, 1, 0),
@@ -236,8 +273,7 @@ public class DevAutoPlumber
 				Grid.OffsetCell(test, 0, -1),
 				Grid.OffsetCell(test, 0, 1),
 				Grid.OffsetCell(test, 1, 1)
-			};
-			foreach (int num in array)
+			})
 			{
 				if (!Grid.IsValidCell(num))
 				{
@@ -251,8 +287,7 @@ public class DevAutoPlumber
 				{
 					return false;
 				}
-				int[] array2 = placementBlockingObjectLayers;
-				foreach (int num2 in array2)
+				foreach (int num2 in placementBlockingObjectLayers)
 				{
 					if (Grid.ObjectLayers[num2].ContainsKey(num))
 					{
@@ -267,10 +302,11 @@ public class DevAutoPlumber
 			return true;
 		};
 		int max_depth = 20;
-		return GameUtil.FloodFillFind(fn, null, nearStartingCell, max_depth, stop_at_solid: false, stop_at_liquid: false);
+		return GameUtil.FloodFillFind<object>(fn, null, nearStartingCell, max_depth, false, false);
 	}
 
-	private static List<int> GenerateClearConduitPath(Building sourceBuilding, Building destinationBuilding, int[] conduitTypeLayers, PortSelection portSelection)
+	// Token: 0x060041D3 RID: 16851 RVA: 0x0023F264 File Offset: 0x0023D464
+	private static List<int> GenerateClearConduitPath(Building sourceBuilding, Building destinationBuilding, int[] conduitTypeLayers, DevAutoPlumber.PortSelection portSelection)
 	{
 		new List<int>();
 		if (sourceBuilding == null)
@@ -281,126 +317,155 @@ public class DevAutoPlumber
 		int conduitEnd = -1;
 		switch (portSelection)
 		{
-		case PortSelection.UtilityInput:
+		case DevAutoPlumber.PortSelection.UtilityInput:
 			conduitStart = Grid.OffsetCell(Grid.PosToCell(sourceBuilding), sourceBuilding.Def.UtilityOutputOffset);
 			conduitEnd = Grid.OffsetCell(Grid.PosToCell(destinationBuilding), destinationBuilding.Def.UtilityInputOffset);
 			break;
-		case PortSelection.UtilityOutput:
+		case DevAutoPlumber.PortSelection.UtilityOutput:
 			conduitStart = Grid.OffsetCell(Grid.PosToCell(destinationBuilding), destinationBuilding.Def.UtilityOutputOffset);
 			conduitEnd = Grid.OffsetCell(Grid.PosToCell(sourceBuilding), sourceBuilding.Def.UtilityInputOffset);
 			break;
-		case PortSelection.PowerInput:
+		case DevAutoPlumber.PortSelection.PowerInput:
 			conduitStart = Grid.OffsetCell(Grid.PosToCell(sourceBuilding), sourceBuilding.Def.PowerOutputOffset);
 			conduitEnd = Grid.OffsetCell(Grid.PosToCell(destinationBuilding), destinationBuilding.Def.PowerInputOffset);
 			break;
 		}
-		return GetGridPath(conduitStart, conduitEnd, delegate(int cell)
+		return DevAutoPlumber.GetGridPath(conduitStart, conduitEnd, delegate(int cell)
 		{
 			if (!Grid.IsValidCell(cell))
 			{
 				return false;
 			}
-			int[] array = conduitTypeLayers;
-			foreach (int layer in array)
+			foreach (int layer in conduitTypeLayers)
 			{
-				GameObject gameObject = Grid.Objects[cell, layer];
-				bool flag = gameObject == sourceBuilding.gameObject || gameObject == destinationBuilding.gameObject;
+				GameObject x = Grid.Objects[cell, layer];
+				bool flag = x == sourceBuilding.gameObject || x == destinationBuilding.gameObject;
 				bool flag2 = cell == conduitEnd || cell == conduitStart;
-				if (gameObject != null && (!flag || (flag && !flag2)))
+				if (x != null && (!flag || (flag && !flag2)))
 				{
 					return false;
 				}
 			}
 			return true;
-		});
+		}, 20);
 	}
 
+	// Token: 0x060041D4 RID: 16852 RVA: 0x0023F3D4 File Offset: 0x0023D5D4
 	private static Building PlaceConduitSourceBuilding(int cell, BuildingDef def)
 	{
-		List<Tag> selected_elements = new List<Tag> { SimHashes.Cuprite.CreateTag() };
-		return def.Build(cell, Orientation.Neutral, null, selected_elements, 273.15f, playsound: true, GameClock.Instance.GetTime()).GetComponent<Building>();
+		List<Tag> selected_elements = new List<Tag>
+		{
+			SimHashes.Cuprite.CreateTag()
+		};
+		return def.Build(cell, Orientation.Neutral, null, selected_elements, 273.15f, true, GameClock.Instance.GetTime()).GetComponent<Building>();
 	}
 
+	// Token: 0x060041D5 RID: 16853 RVA: 0x0023F418 File Offset: 0x0023D618
 	private static void BuildConduits(List<int> path, BuildingDef conduitDef, object utilityNetwork)
 	{
-		List<Tag> selected_elements = new List<Tag> { SimHashes.Cuprite.CreateTag() };
+		List<Tag> selected_elements = new List<Tag>
+		{
+			SimHashes.Cuprite.CreateTag()
+		};
 		List<GameObject> list = new List<GameObject>();
 		for (int i = 0; i < path.Count; i++)
 		{
-			list.Add(conduitDef.Build(path[i], Orientation.Neutral, null, selected_elements, 273.15f, playsound: true, GameClock.Instance.GetTime()));
+			list.Add(conduitDef.Build(path[i], Orientation.Neutral, null, selected_elements, 273.15f, true, GameClock.Instance.GetTime()));
 		}
-		if (list.Count >= 2)
+		if (list.Count < 2)
 		{
-			IUtilityNetworkMgr utilityNetworkMgr = (IUtilityNetworkMgr)utilityNetwork;
-			for (int j = 1; j < list.Count; j++)
+			return;
+		}
+		IUtilityNetworkMgr utilityNetworkMgr = (IUtilityNetworkMgr)utilityNetwork;
+		for (int j = 1; j < list.Count; j++)
+		{
+			UtilityConnections utilityConnections = UtilityConnectionsExtensions.DirectionFromToCell(Grid.PosToCell(list[j - 1]), Grid.PosToCell(list[j]));
+			utilityNetworkMgr.AddConnection(utilityConnections, Grid.PosToCell(list[j - 1]), true);
+			utilityNetworkMgr.AddConnection(utilityConnections.InverseDirection(), Grid.PosToCell(list[j]), true);
+			IUtilityItem component = list[j].GetComponent<KAnimGraphTileVisualizer>();
+			if (component != null)
 			{
-				UtilityConnections utilityConnections = UtilityConnectionsExtensions.DirectionFromToCell(Grid.PosToCell(list[j - 1]), Grid.PosToCell(list[j]));
-				utilityNetworkMgr.AddConnection(utilityConnections, Grid.PosToCell(list[j - 1]), is_physical_building: true);
-				utilityNetworkMgr.AddConnection(utilityConnections.InverseDirection(), Grid.PosToCell(list[j]), is_physical_building: true);
-				((IUtilityItem)list[j].GetComponent<KAnimGraphTileVisualizer>())?.UpdateConnections(utilityNetworkMgr.GetConnections(Grid.PosToCell(list[j]), is_physical_building: true));
+				component.UpdateConnections(utilityNetworkMgr.GetConnections(Grid.PosToCell(list[j]), true));
 			}
 		}
 	}
 
+	// Token: 0x060041D6 RID: 16854 RVA: 0x0023F528 File Offset: 0x0023D728
 	private static List<int> GetGridPath(int startCell, int endCell, Func<int, bool> testFunction, int maxDepth = 20)
 	{
+		DevAutoPlumber.<>c__DisplayClass14_0 CS$<>8__locals1;
+		CS$<>8__locals1.testFunction = testFunction;
+		CS$<>8__locals1.endCell = endCell;
 		List<int> list = new List<int>();
-		List<int> frontier = new List<int>();
-		List<int> touched = new List<int>();
-		Dictionary<int, int> crumbs = new Dictionary<int, int>();
-		frontier.Add(startCell);
-		List<int> newFrontier = new List<int>();
+		CS$<>8__locals1.frontier = new List<int>();
+		CS$<>8__locals1.touched = new List<int>();
+		CS$<>8__locals1.crumbs = new Dictionary<int, int>();
+		CS$<>8__locals1.frontier.Add(startCell);
+		CS$<>8__locals1.newFrontier = new List<int>();
 		int num = 0;
-		while (!touched.Contains(endCell))
+		while (!CS$<>8__locals1.touched.Contains(CS$<>8__locals1.endCell))
 		{
 			num++;
-			if (num > maxDepth || frontier.Count == 0)
+			if (num > maxDepth || CS$<>8__locals1.frontier.Count == 0)
 			{
 				break;
 			}
-			foreach (int item in frontier)
+			foreach (int fromCell in CS$<>8__locals1.frontier)
 			{
-				_ExpandFrontier(item);
+				DevAutoPlumber.<GetGridPath>g___ExpandFrontier|14_0(fromCell, ref CS$<>8__locals1);
 			}
-			frontier.Clear();
-			foreach (int item2 in newFrontier)
+			CS$<>8__locals1.frontier.Clear();
+			foreach (int item in CS$<>8__locals1.newFrontier)
 			{
-				frontier.Add(item2);
+				CS$<>8__locals1.frontier.Add(item);
 			}
-			newFrontier.Clear();
+			CS$<>8__locals1.newFrontier.Clear();
 		}
-		int num2 = endCell;
+		int num2 = CS$<>8__locals1.endCell;
 		list.Add(num2);
-		while (crumbs.ContainsKey(num2))
+		while (CS$<>8__locals1.crumbs.ContainsKey(num2))
 		{
-			num2 = crumbs[num2];
+			num2 = CS$<>8__locals1.crumbs[num2];
 			list.Add(num2);
 		}
 		list.Reverse();
 		return list;
-		void _ExpandFrontier(int fromCell)
+	}
+
+	// Token: 0x060041D8 RID: 16856 RVA: 0x0023F6A0 File Offset: 0x0023D8A0
+	[CompilerGenerated]
+	internal static void <GetGridPath>g___ExpandFrontier|14_0(int fromCell, ref DevAutoPlumber.<>c__DisplayClass14_0 A_1)
+	{
+		foreach (int num in new int[]
 		{
-			int[] array = new int[4]
+			Grid.CellAbove(fromCell),
+			Grid.CellBelow(fromCell),
+			Grid.CellLeft(fromCell),
+			Grid.CellRight(fromCell)
+		})
+		{
+			if (!A_1.newFrontier.Contains(num) && !A_1.frontier.Contains(num) && !A_1.touched.Contains(num) && A_1.testFunction(num))
 			{
-				Grid.CellAbove(fromCell),
-				Grid.CellBelow(fromCell),
-				Grid.CellLeft(fromCell),
-				Grid.CellRight(fromCell)
-			};
-			foreach (int num3 in array)
-			{
-				if (!newFrontier.Contains(num3) && !frontier.Contains(num3) && !touched.Contains(num3) && testFunction(num3))
-				{
-					newFrontier.Add(num3);
-					crumbs.Add(num3, fromCell);
-				}
-				touched.Add(num3);
-				if (num3 == endCell)
-				{
-					break;
-				}
+				A_1.newFrontier.Add(num);
+				A_1.crumbs.Add(num, fromCell);
 			}
-			touched.Add(fromCell);
+			A_1.touched.Add(num);
+			if (num == A_1.endCell)
+			{
+				break;
+			}
 		}
+		A_1.touched.Add(fromCell);
+	}
+
+	// Token: 0x02000D25 RID: 3365
+	private enum PortSelection
+	{
+		// Token: 0x04002CDC RID: 11484
+		UtilityInput,
+		// Token: 0x04002CDD RID: 11485
+		UtilityOutput,
+		// Token: 0x04002CDE RID: 11486
+		PowerInput
 	}
 }

@@ -1,24 +1,29 @@
+﻿using System;
 using STRINGS;
 
-namespace Database;
-
-public class BuildALaunchPad : ColonyAchievementRequirement
+namespace Database
 {
-	public override string GetProgress(bool complete)
+	// Token: 0x020021B2 RID: 8626
+	public class BuildALaunchPad : ColonyAchievementRequirement
 	{
-		return COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.BUILD_A_LAUNCHPAD;
-	}
-
-	public override bool Success()
-	{
-		foreach (LaunchPad item in Components.LaunchPads.Items)
+		// Token: 0x0600B728 RID: 46888 RVA: 0x00115F73 File Offset: 0x00114173
+		public override string GetProgress(bool complete)
 		{
-			WorldContainer myWorld = item.GetMyWorld();
-			if (!myWorld.IsStartWorld && Components.WarpReceivers.GetWorldItems(myWorld.id).Count == 0)
-			{
-				return true;
-			}
+			return COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.BUILD_A_LAUNCHPAD;
 		}
-		return false;
+
+		// Token: 0x0600B729 RID: 46889 RVA: 0x0045BEE0 File Offset: 0x0045A0E0
+		public override bool Success()
+		{
+			foreach (LaunchPad component in Components.LaunchPads.Items)
+			{
+				WorldContainer myWorld = component.GetMyWorld();
+				if (!myWorld.IsStartWorld && Components.WarpReceivers.GetWorldItems(myWorld.id, false).Count == 0)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
 	}
 }

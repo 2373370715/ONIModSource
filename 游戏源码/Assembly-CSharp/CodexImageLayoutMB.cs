@@ -1,31 +1,37 @@
+﻿using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+// Token: 0x02001C3E RID: 7230
 public class CodexImageLayoutMB : UIBehaviour
 {
-	public RectTransform rectTransform;
-
-	public LayoutElement layoutElement;
-
-	public Image image;
-
+	// Token: 0x060096B5 RID: 38581 RVA: 0x003A822C File Offset: 0x003A642C
 	protected override void OnRectTransformDimensionsChange()
 	{
 		base.OnRectTransformDimensionsChange();
-		if (image.preserveAspect && image.sprite != null && (bool)image.sprite)
+		if (this.image.preserveAspect && this.image.sprite != null && this.image.sprite)
 		{
-			float num = image.sprite.rect.height / image.sprite.rect.width;
-			layoutElement.preferredHeight = num * rectTransform.sizeDelta.x;
-			layoutElement.minHeight = layoutElement.preferredHeight;
+			float num = this.image.sprite.rect.height / this.image.sprite.rect.width;
+			this.layoutElement.preferredHeight = num * this.rectTransform.sizeDelta.x;
+			this.layoutElement.minHeight = this.layoutElement.preferredHeight;
 			return;
 		}
-		layoutElement.preferredHeight = -1f;
-		layoutElement.preferredWidth = -1f;
-		layoutElement.minHeight = -1f;
-		layoutElement.minWidth = -1f;
-		layoutElement.flexibleHeight = -1f;
-		layoutElement.flexibleWidth = -1f;
-		layoutElement.ignoreLayout = false;
+		this.layoutElement.preferredHeight = -1f;
+		this.layoutElement.preferredWidth = -1f;
+		this.layoutElement.minHeight = -1f;
+		this.layoutElement.minWidth = -1f;
+		this.layoutElement.flexibleHeight = -1f;
+		this.layoutElement.flexibleWidth = -1f;
+		this.layoutElement.ignoreLayout = false;
 	}
+
+	// Token: 0x040074DF RID: 29919
+	public RectTransform rectTransform;
+
+	// Token: 0x040074E0 RID: 29920
+	public LayoutElement layoutElement;
+
+	// Token: 0x040074E1 RID: 29921
+	public Image image;
 }

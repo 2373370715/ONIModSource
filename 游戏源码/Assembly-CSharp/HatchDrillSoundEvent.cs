@@ -1,27 +1,31 @@
+﻿using System;
 using FMOD.Studio;
 using UnityEngine;
 
+// Token: 0x02000913 RID: 2323
 public class HatchDrillSoundEvent : SoundEvent
 {
-	public HatchDrillSoundEvent(string file_name, string sound_name, int frame, float min_interval)
-		: base(file_name, sound_name, frame, do_load: true, is_looping: true, min_interval, is_dynamic: false)
+	// Token: 0x06002944 RID: 10564 RVA: 0x000BAD3E File Offset: 0x000B8F3E
+	public HatchDrillSoundEvent(string file_name, string sound_name, int frame, float min_interval) : base(file_name, sound_name, frame, true, true, min_interval, false)
 	{
 	}
 
+	// Token: 0x06002945 RID: 10565 RVA: 0x001D58D4 File Offset: 0x001D3AD4
 	public override void PlaySound(AnimEventManager.EventPlayerData behaviour)
 	{
-		Vector3 vector = behaviour.GetComponent<Transform>().GetPosition();
+		Vector3 vector = behaviour.position;
 		vector.z = 0f;
 		if (SoundEvent.ObjectIsSelectedAndVisible(behaviour.controller.gameObject))
 		{
 			vector = SoundEvent.AudioHighlightListenerPosition(vector);
 		}
-		float value = GetAudioCategory(Grid.CellBelow(Grid.PosToCell(vector)));
-		EventInstance instance = SoundEvent.BeginOneShot(base.sound, vector);
-		instance.setParameterByName("material_ID", value);
+		float value = (float)HatchDrillSoundEvent.GetAudioCategory(Grid.CellBelow(Grid.PosToCell(vector)));
+		EventInstance instance = SoundEvent.BeginOneShot(base.sound, vector, 1f, false);
+		instance.setParameterByName("material_ID", value, false);
 		SoundEvent.EndOneShot(instance);
 	}
 
+	// Token: 0x06002946 RID: 10566 RVA: 0x001D594C File Offset: 0x001D3B4C
 	private static int GetAudioCategory(int cell)
 	{
 		if (!Grid.IsValidCell(cell))

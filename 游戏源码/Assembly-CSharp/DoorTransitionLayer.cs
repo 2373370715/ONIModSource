@@ -1,20 +1,21 @@
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Token: 0x02000B56 RID: 2902
 public class DoorTransitionLayer : TransitionDriver.InterruptOverrideLayer
 {
-	private List<INavDoor> doors = new List<INavDoor>();
-
-	public DoorTransitionLayer(Navigator navigator)
-		: base(navigator)
+	// Token: 0x06003703 RID: 14083 RVA: 0x000C3B4A File Offset: 0x000C1D4A
+	public DoorTransitionLayer(Navigator navigator) : base(navigator)
 	{
 	}
 
+	// Token: 0x06003704 RID: 14084 RVA: 0x002157FC File Offset: 0x002139FC
 	private bool AreAllDoorsOpen()
 	{
-		foreach (INavDoor door in doors)
+		foreach (INavDoor navDoor in this.doors)
 		{
-			if (door != null && !door.IsOpen())
+			if (navDoor != null && !navDoor.IsOpen())
 			{
 				return false;
 			}
@@ -22,76 +23,77 @@ public class DoorTransitionLayer : TransitionDriver.InterruptOverrideLayer
 		return true;
 	}
 
+	// Token: 0x06003705 RID: 14085 RVA: 0x000C3B5E File Offset: 0x000C1D5E
 	protected override bool IsOverrideComplete()
 	{
-		if (base.IsOverrideComplete())
-		{
-			return AreAllDoorsOpen();
-		}
-		return false;
+		return base.IsOverrideComplete() && this.AreAllDoorsOpen();
 	}
 
+	// Token: 0x06003706 RID: 14086 RVA: 0x0021585C File Offset: 0x00213A5C
 	public override void BeginTransition(Navigator navigator, Navigator.ActiveTransition transition)
 	{
-		if (doors.Count > 0)
+		if (this.doors.Count > 0)
 		{
 			return;
 		}
 		int cell = Grid.PosToCell(navigator);
 		int cell2 = Grid.OffsetCell(cell, transition.x, transition.y);
-		AddDoor(cell2);
+		this.AddDoor(cell2);
 		if (navigator.CurrentNavType != NavType.Tube)
 		{
-			AddDoor(Grid.CellAbove(cell2));
+			this.AddDoor(Grid.CellAbove(cell2));
 		}
 		for (int i = 0; i < transition.navGridTransition.voidOffsets.Length; i++)
 		{
 			int cell3 = Grid.OffsetCell(cell, transition.navGridTransition.voidOffsets[i]);
-			AddDoor(cell3);
+			this.AddDoor(cell3);
 		}
-		if (doors.Count == 0)
+		if (this.doors.Count == 0)
 		{
 			return;
 		}
-		if (!AreAllDoorsOpen())
+		if (!this.AreAllDoorsOpen())
 		{
 			base.BeginTransition(navigator, transition);
 			transition.anim = navigator.NavGrid.GetIdleAnim(navigator.CurrentNavType);
-			transition.start = originalTransition.start;
-			transition.end = originalTransition.start;
+			transition.start = this.originalTransition.start;
+			transition.end = this.originalTransition.start;
 		}
-		foreach (INavDoor door in doors)
+		foreach (INavDoor navDoor in this.doors)
 		{
-			door.Open();
+			navDoor.Open();
 		}
 	}
 
+	// Token: 0x06003707 RID: 14087 RVA: 0x00215980 File Offset: 0x00213B80
 	public override void EndTransition(Navigator navigator, Navigator.ActiveTransition transition)
 	{
 		base.EndTransition(navigator, transition);
-		if (doors.Count == 0)
+		if (this.doors.Count == 0)
 		{
 			return;
 		}
-		foreach (INavDoor door in doors)
+		foreach (INavDoor navDoor in this.doors)
 		{
-			if (!door.IsNullOrDestroyed())
+			if (!navDoor.IsNullOrDestroyed())
 			{
-				door.Close();
+				navDoor.Close();
 			}
 		}
-		doors.Clear();
+		this.doors.Clear();
 	}
 
+	// Token: 0x06003708 RID: 14088 RVA: 0x002159FC File Offset: 0x00213BFC
 	private void AddDoor(int cell)
 	{
-		INavDoor door = GetDoor(cell);
-		if (!door.IsNullOrDestroyed() && !doors.Contains(door))
+		INavDoor door = this.GetDoor(cell);
+		if (!door.IsNullOrDestroyed() && !this.doors.Contains(door))
 		{
-			doors.Add(door);
+			this.doors.Add(door);
 		}
 	}
 
+	// Token: 0x06003709 RID: 14089 RVA: 0x00215A34 File Offset: 0x00213C34
 	private INavDoor GetDoor(int cell)
 	{
 		if (!Grid.HasDoor[cell])
@@ -113,4 +115,7 @@ public class DoorTransitionLayer : TransitionDriver.InterruptOverrideLayer
 		}
 		return null;
 	}
+
+	// Token: 0x04002546 RID: 9542
+	private List<INavDoor> doors = new List<INavDoor>();
 }

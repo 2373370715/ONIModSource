@@ -1,39 +1,48 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
+// Token: 0x02001991 RID: 6545
 public class RocketProcessConditionDisplayTarget : KMonoBehaviour, IProcessConditionSet, ISim1000ms
 {
-	private CraftModuleInterface craftModuleInterface;
-
-	private Guid statusHandle = Guid.Empty;
-
+	// Token: 0x06008872 RID: 34930 RVA: 0x000F9401 File Offset: 0x000F7601
 	public List<ProcessCondition> GetConditionSet(ProcessCondition.ProcessConditionType conditionType)
 	{
-		if (craftModuleInterface == null)
+		if (this.craftModuleInterface == null)
 		{
-			craftModuleInterface = GetComponent<RocketModuleCluster>().CraftInterface;
+			this.craftModuleInterface = base.GetComponent<RocketModuleCluster>().CraftInterface;
 		}
-		return craftModuleInterface.GetConditionSet(conditionType);
+		return this.craftModuleInterface.GetConditionSet(conditionType);
 	}
 
+	// Token: 0x06008873 RID: 34931 RVA: 0x00353DB0 File Offset: 0x00351FB0
 	public void Sim1000ms(float dt)
 	{
 		bool flag = false;
-		foreach (ProcessCondition item in GetConditionSet(ProcessCondition.ProcessConditionType.All))
+		using (List<ProcessCondition>.Enumerator enumerator = this.GetConditionSet(ProcessCondition.ProcessConditionType.All).GetEnumerator())
 		{
-			if (item.EvaluateCondition() == ProcessCondition.Status.Failure)
+			while (enumerator.MoveNext())
 			{
-				flag = true;
-				if (statusHandle == Guid.Empty)
+				if (enumerator.Current.EvaluateCondition() == ProcessCondition.Status.Failure)
 				{
-					statusHandle = GetComponent<KSelectable>().AddStatusItem(Db.Get().BuildingStatusItems.RocketChecklistIncomplete);
+					flag = true;
+					if (this.statusHandle == Guid.Empty)
+					{
+						this.statusHandle = base.GetComponent<KSelectable>().AddStatusItem(Db.Get().BuildingStatusItems.RocketChecklistIncomplete, null);
+						break;
+					}
+					break;
 				}
-				break;
 			}
 		}
-		if (!flag && statusHandle != Guid.Empty)
+		if (!flag && this.statusHandle != Guid.Empty)
 		{
-			GetComponent<KSelectable>().RemoveStatusItem(statusHandle);
+			base.GetComponent<KSelectable>().RemoveStatusItem(this.statusHandle, false);
 		}
 	}
+
+	// Token: 0x040066AA RID: 26282
+	private CraftModuleInterface craftModuleInterface;
+
+	// Token: 0x040066AB RID: 26283
+	private Guid statusHandle = Guid.Empty;
 }

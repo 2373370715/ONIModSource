@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Klei;
 using Klei.AI;
@@ -7,184 +7,72 @@ using STRINGS;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x02000B78 RID: 2936
 [SerializationConfig(MemberSerialization.OptIn)]
 [AddComponentMenu("KMonoBehaviour/scripts/Workable")]
 public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 {
-	public enum WorkableEvent
-	{
-		WorkStarted,
-		WorkCompleted,
-		WorkStopped
-	}
+	// Token: 0x1700026A RID: 618
+	// (get) Token: 0x060037DC RID: 14300 RVA: 0x000C4404 File Offset: 0x000C2604
+	// (set) Token: 0x060037DD RID: 14301 RVA: 0x000C440C File Offset: 0x000C260C
+	public WorkerBase worker { get; protected set; }
 
-	public struct AnimInfo
-	{
-		public KAnimFile[] overrideAnims;
-
-		public StateMachine.Instance smi;
-	}
-
-	public float workTime;
-
-	protected bool showProgressBar = true;
-
-	public bool alwaysShowProgressBar;
-
-	protected bool lightEfficiencyBonus = true;
-
-	protected Guid lightEfficiencyBonusStatusItemHandle;
-
-	public bool currentlyLit;
-
-	public Tag laboratoryEfficiencyBonusTagRequired = RoomConstraints.ConstraintTags.ScienceBuilding;
-
-	private bool useLaboratoryEfficiencyBonus;
-
-	protected Guid laboratoryEfficiencyBonusStatusItemHandle;
-
-	private bool currentlyInLaboratory;
-
-	protected StatusItem workerStatusItem;
-
-	protected StatusItem workingStatusItem;
-
-	protected Guid workStatusItemHandle;
-
-	protected OffsetTracker offsetTracker;
-
-	[SerializeField]
-	protected string attributeConverterId;
-
-	protected AttributeConverter attributeConverter;
-
-	protected float minimumAttributeMultiplier = 0.5f;
-
-	public bool resetProgressOnStop;
-
-	protected bool shouldTransferDiseaseWithWorker = true;
-
-	[SerializeField]
-	protected float attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.PART_DAY_EXPERIENCE;
-
-	[SerializeField]
-	protected string skillExperienceSkillGroup;
-
-	[SerializeField]
-	protected float skillExperienceMultiplier = SKILLS.PART_DAY_EXPERIENCE;
-
-	public bool triggerWorkReactions = true;
-
-	public ReportManager.ReportType reportType = ReportManager.ReportType.WorkTime;
-
-	[SerializeField]
-	[Tooltip("What layer does the dupe switch to when interacting with the building")]
-	public Grid.SceneLayer workLayer = Grid.SceneLayer.Move;
-
-	[SerializeField]
-	[Serialize]
-	protected float workTimeRemaining = float.PositiveInfinity;
-
-	[SerializeField]
-	public KAnimFile[] overrideAnims;
-
-	[SerializeField]
-	protected HashedString multitoolContext;
-
-	[SerializeField]
-	protected Tag multitoolHitEffectTag;
-
-	[SerializeField]
-	[Tooltip("Whether to user the KAnimSynchronizer or not")]
-	public bool synchronizeAnims = true;
-
-	[SerializeField]
-	[Tooltip("Whether to display number of uses in the details panel")]
-	public bool trackUses;
-
-	[Serialize]
-	protected int numberOfUses;
-
-	public Action<Workable, WorkableEvent> OnWorkableEventCB;
-
-	protected int skillsUpdateHandle = -1;
-
-	private int minionUpdateHandle = -1;
-
-	public string requiredSkillPerk;
-
-	[SerializeField]
-	protected bool shouldShowSkillPerkStatusItem = true;
-
-	[SerializeField]
-	public bool requireMinionToWork;
-
-	protected StatusItem readyForSkillWorkStatusItem;
-
-	public HashedString[] workAnims = new HashedString[2] { "working_pre", "working_loop" };
-
-	public HashedString[] workingPstComplete = new HashedString[1] { "working_pst" };
-
-	public HashedString[] workingPstFailed = new HashedString[1] { "working_pst" };
-
-	public KAnim.PlayMode workAnimPlayMode;
-
-	public bool faceTargetWhenWorking;
-
-	private static readonly EventSystem.IntraObjectHandler<Workable> OnUpdateRoomDelegate = new EventSystem.IntraObjectHandler<Workable>(delegate(Workable component, object data)
-	{
-		component.OnUpdateRoom(data);
-	});
-
-	protected ProgressBar progressBar;
-
-	public Worker worker { get; protected set; }
-
+	// Token: 0x1700026B RID: 619
+	// (get) Token: 0x060037DE RID: 14302 RVA: 0x000C4415 File Offset: 0x000C2615
+	// (set) Token: 0x060037DF RID: 14303 RVA: 0x000C441D File Offset: 0x000C261D
 	public float WorkTimeRemaining
 	{
 		get
 		{
-			return workTimeRemaining;
+			return this.workTimeRemaining;
 		}
 		set
 		{
-			workTimeRemaining = value;
+			this.workTimeRemaining = value;
 		}
 	}
 
+	// Token: 0x1700026C RID: 620
+	// (get) Token: 0x060037E0 RID: 14304 RVA: 0x000C4426 File Offset: 0x000C2626
+	// (set) Token: 0x060037E1 RID: 14305 RVA: 0x000C442E File Offset: 0x000C262E
 	public bool preferUnreservedCell { get; set; }
 
+	// Token: 0x060037E2 RID: 14306 RVA: 0x000C4437 File Offset: 0x000C2637
 	public virtual float GetWorkTime()
 	{
-		return workTime;
+		return this.workTime;
 	}
 
-	public Worker GetWorker()
+	// Token: 0x060037E3 RID: 14307 RVA: 0x000C443F File Offset: 0x000C263F
+	public WorkerBase GetWorker()
 	{
-		return worker;
+		return this.worker;
 	}
 
+	// Token: 0x060037E4 RID: 14308 RVA: 0x000C4447 File Offset: 0x000C2647
 	public virtual float GetPercentComplete()
 	{
-		if (!(workTimeRemaining <= workTime))
+		if (this.workTimeRemaining > this.workTime)
 		{
 			return -1f;
 		}
-		return 1f - workTimeRemaining / workTime;
+		return 1f - this.workTimeRemaining / this.workTime;
 	}
 
+	// Token: 0x060037E5 RID: 14309 RVA: 0x000C4470 File Offset: 0x000C2670
 	public void ConfigureMultitoolContext(HashedString context, Tag hitEffectTag)
 	{
-		multitoolContext = context;
-		multitoolHitEffectTag = hitEffectTag;
+		this.multitoolContext = context;
+		this.multitoolHitEffectTag = hitEffectTag;
 	}
 
-	public virtual AnimInfo GetAnim(Worker worker)
+	// Token: 0x060037E6 RID: 14310 RVA: 0x00219948 File Offset: 0x00217B48
+	public virtual Workable.AnimInfo GetAnim(WorkerBase worker)
 	{
-		AnimInfo result = default(AnimInfo);
-		if (overrideAnims != null && overrideAnims.Length != 0)
+		Workable.AnimInfo result = default(Workable.AnimInfo);
+		if (this.overrideAnims != null && this.overrideAnims.Length != 0)
 		{
-			BuildingFacade buildingFacade = GetBuildingFacade();
+			BuildingFacade buildingFacade = this.GetBuildingFacade();
 			bool flag = false;
 			if (buildingFacade != null && !buildingFacade.IsOriginal)
 			{
@@ -192,265 +80,280 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 			}
 			if (!flag)
 			{
-				result.overrideAnims = overrideAnims;
+				result.overrideAnims = this.overrideAnims;
 			}
 		}
-		if (multitoolContext.IsValid && multitoolHitEffectTag.IsValid)
+		if (this.multitoolContext.IsValid && this.multitoolHitEffectTag.IsValid)
 		{
-			result.smi = new MultitoolController.Instance(this, worker, multitoolContext, Assets.GetPrefab(multitoolHitEffectTag));
+			result.smi = new MultitoolController.Instance(this, worker, this.multitoolContext, Assets.GetPrefab(this.multitoolHitEffectTag));
 		}
 		return result;
 	}
 
-	public virtual HashedString[] GetWorkAnims(Worker worker)
+	// Token: 0x060037E7 RID: 14311 RVA: 0x000C4480 File Offset: 0x000C2680
+	public virtual HashedString[] GetWorkAnims(WorkerBase worker)
 	{
-		return workAnims;
+		return this.workAnims;
 	}
 
+	// Token: 0x060037E8 RID: 14312 RVA: 0x000C4488 File Offset: 0x000C2688
 	public virtual KAnim.PlayMode GetWorkAnimPlayMode()
 	{
-		return workAnimPlayMode;
+		return this.workAnimPlayMode;
 	}
 
-	public virtual HashedString[] GetWorkPstAnims(Worker worker, bool successfully_completed)
+	// Token: 0x060037E9 RID: 14313 RVA: 0x000C4490 File Offset: 0x000C2690
+	public virtual HashedString[] GetWorkPstAnims(WorkerBase worker, bool successfully_completed)
 	{
 		if (successfully_completed)
 		{
-			return workingPstComplete;
+			return this.workingPstComplete;
 		}
-		return workingPstFailed;
+		return this.workingPstFailed;
 	}
 
+	// Token: 0x060037EA RID: 14314 RVA: 0x000C44A2 File Offset: 0x000C26A2
 	public virtual Vector3 GetWorkOffset()
 	{
 		return Vector3.zero;
 	}
 
+	// Token: 0x060037EB RID: 14315 RVA: 0x002199EC File Offset: 0x00217BEC
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		workerStatusItem = Db.Get().MiscStatusItems.Using;
-		workingStatusItem = Db.Get().MiscStatusItems.Operating;
-		readyForSkillWorkStatusItem = Db.Get().BuildingStatusItems.RequiresSkillPerk;
-		workTime = GetWorkTime();
-		workTimeRemaining = Mathf.Min(workTimeRemaining, workTime);
+		this.workerStatusItem = Db.Get().MiscStatusItems.Using;
+		this.workingStatusItem = Db.Get().MiscStatusItems.Operating;
+		this.readyForSkillWorkStatusItem = Db.Get().BuildingStatusItems.RequiresSkillPerk;
+		this.workTime = this.GetWorkTime();
+		this.workTimeRemaining = Mathf.Min(this.workTimeRemaining, this.workTime);
 	}
 
+	// Token: 0x060037EC RID: 14316 RVA: 0x00219A64 File Offset: 0x00217C64
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		if (shouldShowSkillPerkStatusItem && !string.IsNullOrEmpty(requiredSkillPerk))
+		if (this.shouldShowSkillPerkStatusItem && !string.IsNullOrEmpty(this.requiredSkillPerk))
 		{
-			if (skillsUpdateHandle != -1)
+			if (this.skillsUpdateHandle != -1)
 			{
-				Game.Instance.Unsubscribe(skillsUpdateHandle);
+				Game.Instance.Unsubscribe(this.skillsUpdateHandle);
 			}
-			skillsUpdateHandle = Game.Instance.Subscribe(-1523247426, UpdateStatusItem);
+			this.skillsUpdateHandle = Game.Instance.Subscribe(-1523247426, new Action<object>(this.UpdateStatusItem));
 		}
-		if (requireMinionToWork && minionUpdateHandle != -1)
+		if (this.requireMinionToWork && this.minionUpdateHandle != -1)
 		{
-			Game.Instance.Unsubscribe(minionUpdateHandle);
+			Game.Instance.Unsubscribe(this.minionUpdateHandle);
 		}
-		minionUpdateHandle = Game.Instance.Subscribe(586301400, UpdateStatusItem);
-		GetComponent<KPrefabID>().AddTag(GameTags.HasChores);
-		if (base.gameObject.HasTag(laboratoryEfficiencyBonusTagRequired))
+		this.minionUpdateHandle = Game.Instance.Subscribe(586301400, new Action<object>(this.UpdateStatusItem));
+		base.GetComponent<KPrefabID>().AddTag(GameTags.HasChores, false);
+		if (base.gameObject.HasTag(this.laboratoryEfficiencyBonusTagRequired))
 		{
-			useLaboratoryEfficiencyBonus = true;
-			Subscribe(144050788, OnUpdateRoomDelegate);
+			this.useLaboratoryEfficiencyBonus = true;
+			base.Subscribe<Workable>(144050788, Workable.OnUpdateRoomDelegate);
 		}
-		ShowProgressBar(alwaysShowProgressBar && workTimeRemaining < GetWorkTime());
-		UpdateStatusItem();
+		this.ShowProgressBar(this.alwaysShowProgressBar && this.workTimeRemaining < this.GetWorkTime());
+		this.UpdateStatusItem(null);
 	}
 
+	// Token: 0x060037ED RID: 14317 RVA: 0x00219B6C File Offset: 0x00217D6C
 	private void RefreshRoom()
 	{
 		CavityInfo cavityForCell = Game.Instance.roomProber.GetCavityForCell(Grid.PosToCell(base.gameObject));
 		if (cavityForCell != null && cavityForCell.room != null)
 		{
-			OnUpdateRoom(cavityForCell.room);
+			this.OnUpdateRoom(cavityForCell.room);
+			return;
 		}
-		else
-		{
-			OnUpdateRoom(null);
-		}
+		this.OnUpdateRoom(null);
 	}
 
+	// Token: 0x060037EE RID: 14318 RVA: 0x00219BB4 File Offset: 0x00217DB4
 	private void OnUpdateRoom(object data)
 	{
-		if (worker == null)
+		if (this.worker == null)
 		{
 			return;
 		}
 		Room room = (Room)data;
 		if (room != null && room.roomType == Db.Get().RoomTypes.Laboratory)
 		{
-			currentlyInLaboratory = true;
-			if (laboratoryEfficiencyBonusStatusItemHandle == Guid.Empty)
+			this.currentlyInLaboratory = true;
+			if (this.laboratoryEfficiencyBonusStatusItemHandle == Guid.Empty)
 			{
-				laboratoryEfficiencyBonusStatusItemHandle = worker.GetComponent<KSelectable>().AddStatusItem(Db.Get().DuplicantStatusItems.LaboratoryWorkEfficiencyBonus, this);
+				this.laboratoryEfficiencyBonusStatusItemHandle = this.worker.OfferStatusItem(Db.Get().DuplicantStatusItems.LaboratoryWorkEfficiencyBonus, this);
+				return;
 			}
 		}
 		else
 		{
-			currentlyInLaboratory = false;
-			if (laboratoryEfficiencyBonusStatusItemHandle != Guid.Empty)
+			this.currentlyInLaboratory = false;
+			if (this.laboratoryEfficiencyBonusStatusItemHandle != Guid.Empty)
 			{
-				laboratoryEfficiencyBonusStatusItemHandle = worker.GetComponent<KSelectable>().RemoveStatusItem(laboratoryEfficiencyBonusStatusItemHandle);
+				this.worker.RevokeStatusItem(this.laboratoryEfficiencyBonusStatusItemHandle);
+				this.laboratoryEfficiencyBonusStatusItemHandle = Guid.Empty;
 			}
 		}
 	}
 
+	// Token: 0x060037EF RID: 14319 RVA: 0x00219C64 File Offset: 0x00217E64
 	protected virtual void UpdateStatusItem(object data = null)
 	{
-		KSelectable component = GetComponent<KSelectable>();
+		KSelectable component = base.GetComponent<KSelectable>();
 		if (component == null)
 		{
 			return;
 		}
-		component.RemoveStatusItem(workStatusItemHandle);
-		if (worker == null)
+		component.RemoveStatusItem(this.workStatusItemHandle, false);
+		if (this.worker == null)
 		{
-			if (requireMinionToWork && Components.LiveMinionIdentities.GetWorldItems(this.GetMyWorldId()).Count == 0)
+			if (this.requireMinionToWork && Components.LiveMinionIdentities.GetWorldItems(this.GetMyWorldId(), false).Count == 0)
 			{
-				workStatusItemHandle = component.AddStatusItem(Db.Get().BuildingStatusItems.WorkRequiresMinion);
+				this.workStatusItemHandle = component.AddStatusItem(Db.Get().BuildingStatusItems.WorkRequiresMinion, null);
+				return;
 			}
-			else if (shouldShowSkillPerkStatusItem && !string.IsNullOrEmpty(requiredSkillPerk))
+			if (this.shouldShowSkillPerkStatusItem && !string.IsNullOrEmpty(this.requiredSkillPerk))
 			{
-				if (!MinionResume.AnyMinionHasPerk(requiredSkillPerk, this.GetMyWorldId()))
+				if (!MinionResume.AnyMinionHasPerk(this.requiredSkillPerk, this.GetMyWorldId()))
 				{
-					StatusItem status_item = (DlcManager.FeatureClusterSpaceEnabled() ? Db.Get().BuildingStatusItems.ClusterColonyLacksRequiredSkillPerk : Db.Get().BuildingStatusItems.ColonyLacksRequiredSkillPerk);
-					workStatusItemHandle = component.AddStatusItem(status_item, requiredSkillPerk);
+					StatusItem status_item = DlcManager.FeatureClusterSpaceEnabled() ? Db.Get().BuildingStatusItems.ClusterColonyLacksRequiredSkillPerk : Db.Get().BuildingStatusItems.ColonyLacksRequiredSkillPerk;
+					this.workStatusItemHandle = component.AddStatusItem(status_item, this.requiredSkillPerk);
+					return;
 				}
-				else
-				{
-					workStatusItemHandle = component.AddStatusItem(readyForSkillWorkStatusItem, requiredSkillPerk);
-				}
+				this.workStatusItemHandle = component.AddStatusItem(this.readyForSkillWorkStatusItem, this.requiredSkillPerk);
+				return;
 			}
 		}
-		else if (workingStatusItem != null)
+		else if (this.workingStatusItem != null)
 		{
-			workStatusItemHandle = component.AddStatusItem(workingStatusItem, this);
+			this.workStatusItemHandle = component.AddStatusItem(this.workingStatusItem, this);
 		}
 	}
 
+	// Token: 0x060037F0 RID: 14320 RVA: 0x000C44A9 File Offset: 0x000C26A9
 	protected override void OnLoadLevel()
 	{
-		overrideAnims = null;
+		this.overrideAnims = null;
 		base.OnLoadLevel();
 	}
 
+	// Token: 0x060037F1 RID: 14321 RVA: 0x000BCAC8 File Offset: 0x000BACC8
 	public virtual int GetCell()
 	{
 		return Grid.PosToCell(this);
 	}
 
-	public void StartWork(Worker worker_to_start)
+	// Token: 0x060037F2 RID: 14322 RVA: 0x00219D7C File Offset: 0x00217F7C
+	public void StartWork(WorkerBase worker_to_start)
 	{
-		Debug.Assert(worker_to_start != null, "How did we get a null worker?");
-		worker = worker_to_start;
-		UpdateStatusItem();
-		if (showProgressBar)
+		global::Debug.Assert(worker_to_start != null, "How did we get a null worker?");
+		this.worker = worker_to_start;
+		this.UpdateStatusItem(null);
+		if (this.showProgressBar)
 		{
-			ShowProgressBar(show: true);
+			this.ShowProgressBar(true);
 		}
-		if (useLaboratoryEfficiencyBonus)
+		if (this.useLaboratoryEfficiencyBonus)
 		{
-			RefreshRoom();
+			this.RefreshRoom();
 		}
-		OnStartWork(worker);
-		if (worker != null)
+		this.OnStartWork(this.worker);
+		if (this.worker != null)
 		{
-			string conversationTopic = GetConversationTopic();
+			string conversationTopic = this.GetConversationTopic();
 			if (conversationTopic != null)
 			{
-				worker.Trigger(937885943, conversationTopic);
+				this.worker.Trigger(937885943, conversationTopic);
 			}
 		}
-		if (OnWorkableEventCB != null)
+		if (this.OnWorkableEventCB != null)
 		{
-			OnWorkableEventCB(this, WorkableEvent.WorkStarted);
+			this.OnWorkableEventCB(this, Workable.WorkableEvent.WorkStarted);
 		}
-		numberOfUses++;
-		if (worker != null)
+		this.numberOfUses++;
+		if (this.worker != null)
 		{
-			if (base.gameObject.GetComponent<KSelectable>() != null && base.gameObject.GetComponent<KSelectable>().IsSelected && worker.gameObject.GetComponent<LoopingSounds>() != null)
+			if (base.gameObject.GetComponent<KSelectable>() != null && base.gameObject.GetComponent<KSelectable>().IsSelected && this.worker.gameObject.GetComponent<LoopingSounds>() != null)
 			{
-				worker.gameObject.GetComponent<LoopingSounds>().UpdateObjectSelection(selected: true);
+				this.worker.gameObject.GetComponent<LoopingSounds>().UpdateObjectSelection(true);
 			}
-			else if (worker.gameObject.GetComponent<KSelectable>() != null && worker.gameObject.GetComponent<KSelectable>().IsSelected && base.gameObject.GetComponent<LoopingSounds>() != null)
+			else if (this.worker.gameObject.GetComponent<KSelectable>() != null && this.worker.gameObject.GetComponent<KSelectable>().IsSelected && base.gameObject.GetComponent<LoopingSounds>() != null)
 			{
-				base.gameObject.GetComponent<LoopingSounds>().UpdateObjectSelection(selected: true);
+				base.gameObject.GetComponent<LoopingSounds>().UpdateObjectSelection(true);
 			}
 		}
 		base.gameObject.Trigger(853695848, this);
 	}
 
-	public bool WorkTick(Worker worker, float dt)
+	// Token: 0x060037F3 RID: 14323 RVA: 0x00219EE8 File Offset: 0x002180E8
+	public bool WorkTick(WorkerBase worker, float dt)
 	{
 		bool flag = false;
 		if (dt > 0f)
 		{
-			workTimeRemaining -= dt;
-			flag = OnWorkTick(worker, dt);
+			this.workTimeRemaining -= dt;
+			flag = this.OnWorkTick(worker, dt);
 		}
-		if (!flag)
-		{
-			return workTimeRemaining < 0f;
-		}
-		return true;
+		return flag || this.workTimeRemaining < 0f;
 	}
 
-	public virtual float GetEfficiencyMultiplier(Worker worker)
+	// Token: 0x060037F4 RID: 14324 RVA: 0x00219F28 File Offset: 0x00218128
+	public virtual float GetEfficiencyMultiplier(WorkerBase worker)
 	{
 		float num = 1f;
-		if (attributeConverter != null)
+		if (this.attributeConverter != null)
 		{
-			AttributeConverterInstance converter = worker.GetComponent<AttributeConverters>().GetConverter(attributeConverter.Id);
-			num += converter.Evaluate();
+			AttributeConverterInstance attributeConverterInstance = worker.GetAttributeConverter(this.attributeConverter.Id);
+			if (attributeConverterInstance != null)
+			{
+				num += attributeConverterInstance.Evaluate();
+			}
 		}
-		if (lightEfficiencyBonus)
+		if (this.lightEfficiencyBonus)
 		{
 			int num2 = Grid.PosToCell(worker.gameObject);
 			if (Grid.IsValidCell(num2))
 			{
-				if (Grid.LightIntensity[num2] > 0)
+				if (Grid.LightIntensity[num2] > DUPLICANTSTATS.STANDARD.Light.NO_LIGHT)
 				{
-					currentlyLit = true;
-					num += 0.15f;
-					if (lightEfficiencyBonusStatusItemHandle == Guid.Empty)
+					this.currentlyLit = true;
+					num += DUPLICANTSTATS.STANDARD.Light.LIGHT_WORK_EFFICIENCY_BONUS;
+					if (this.lightEfficiencyBonusStatusItemHandle == Guid.Empty)
 					{
-						lightEfficiencyBonusStatusItemHandle = worker.GetComponent<KSelectable>().AddStatusItem(Db.Get().DuplicantStatusItems.LightWorkEfficiencyBonus, this);
+						this.lightEfficiencyBonusStatusItemHandle = worker.OfferStatusItem(Db.Get().DuplicantStatusItems.LightWorkEfficiencyBonus, this);
 					}
 				}
 				else
 				{
-					currentlyLit = false;
-					if (lightEfficiencyBonusStatusItemHandle != Guid.Empty)
+					this.currentlyLit = false;
+					if (this.lightEfficiencyBonusStatusItemHandle != Guid.Empty)
 					{
-						worker.GetComponent<KSelectable>().RemoveStatusItem(lightEfficiencyBonusStatusItemHandle);
+						worker.RevokeStatusItem(this.lightEfficiencyBonusStatusItemHandle);
 					}
 				}
 			}
 		}
-		if (useLaboratoryEfficiencyBonus && currentlyInLaboratory)
+		if (this.useLaboratoryEfficiencyBonus && this.currentlyInLaboratory)
 		{
 			num += 0.1f;
 		}
-		return Mathf.Max(num, minimumAttributeMultiplier);
+		return Mathf.Max(num, this.minimumAttributeMultiplier);
 	}
 
+	// Token: 0x060037F5 RID: 14325 RVA: 0x000C44B8 File Offset: 0x000C26B8
 	public virtual Klei.AI.Attribute GetWorkAttribute()
 	{
-		if (attributeConverter != null)
+		if (this.attributeConverter != null)
 		{
-			return attributeConverter.attribute;
+			return this.attributeConverter.attribute;
 		}
 		return null;
 	}
 
+	// Token: 0x060037F6 RID: 14326 RVA: 0x0021A034 File Offset: 0x00218234
 	public virtual string GetConversationTopic()
 	{
-		KPrefabID component = GetComponent<KPrefabID>();
+		KPrefabID component = base.GetComponent<KPrefabID>();
 		if (!component.HasTag(GameTags.NotConversationTopic))
 		{
 			return component.PrefabTag.Name;
@@ -458,239 +361,282 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 		return null;
 	}
 
+	// Token: 0x060037F7 RID: 14327 RVA: 0x000BD956 File Offset: 0x000BBB56
 	public float GetAttributeExperienceMultiplier()
 	{
-		return attributeExperienceMultiplier;
+		return this.attributeExperienceMultiplier;
 	}
 
+	// Token: 0x060037F8 RID: 14328 RVA: 0x000C44CF File Offset: 0x000C26CF
 	public string GetSkillExperienceSkillGroup()
 	{
-		return skillExperienceSkillGroup;
+		return this.skillExperienceSkillGroup;
 	}
 
+	// Token: 0x060037F9 RID: 14329 RVA: 0x000C44D7 File Offset: 0x000C26D7
 	public float GetSkillExperienceMultiplier()
 	{
-		return skillExperienceMultiplier;
+		return this.skillExperienceMultiplier;
 	}
 
-	protected virtual bool OnWorkTick(Worker worker, float dt)
+	// Token: 0x060037FA RID: 14330 RVA: 0x000AD2F7 File Offset: 0x000AB4F7
+	protected virtual bool OnWorkTick(WorkerBase worker, float dt)
 	{
 		return false;
 	}
 
-	public void StopWork(Worker workerToStop, bool aborted)
+	// Token: 0x060037FB RID: 14331 RVA: 0x0021A064 File Offset: 0x00218264
+	public void StopWork(WorkerBase workerToStop, bool aborted)
 	{
-		if (worker == workerToStop && aborted)
+		if (this.worker == workerToStop && aborted)
 		{
-			OnAbortWork(workerToStop);
+			this.OnAbortWork(workerToStop);
 		}
-		if (shouldTransferDiseaseWithWorker)
+		if (this.shouldTransferDiseaseWithWorker)
 		{
-			TransferDiseaseWithWorker(workerToStop);
+			this.TransferDiseaseWithWorker(workerToStop);
 		}
-		if (OnWorkableEventCB != null)
+		if (this.OnWorkableEventCB != null)
 		{
-			OnWorkableEventCB(this, WorkableEvent.WorkStopped);
+			this.OnWorkableEventCB(this, Workable.WorkableEvent.WorkStopped);
 		}
-		OnStopWork(workerToStop);
-		if (resetProgressOnStop)
+		this.OnStopWork(workerToStop);
+		if (this.resetProgressOnStop)
 		{
-			workTimeRemaining = GetWorkTime();
+			this.workTimeRemaining = this.GetWorkTime();
 		}
-		ShowProgressBar(alwaysShowProgressBar && workTimeRemaining < GetWorkTime());
-		if (lightEfficiencyBonusStatusItemHandle != Guid.Empty)
+		this.ShowProgressBar(this.alwaysShowProgressBar && this.workTimeRemaining < this.GetWorkTime());
+		if (this.lightEfficiencyBonusStatusItemHandle != Guid.Empty)
 		{
-			lightEfficiencyBonusStatusItemHandle = workerToStop.GetComponent<KSelectable>().RemoveStatusItem(lightEfficiencyBonusStatusItemHandle);
+			workerToStop.RevokeStatusItem(this.lightEfficiencyBonusStatusItemHandle);
+			this.lightEfficiencyBonusStatusItemHandle = Guid.Empty;
 		}
-		if (laboratoryEfficiencyBonusStatusItemHandle != Guid.Empty)
+		if (this.laboratoryEfficiencyBonusStatusItemHandle != Guid.Empty)
 		{
-			laboratoryEfficiencyBonusStatusItemHandle = worker.GetComponent<KSelectable>().RemoveStatusItem(Db.Get().DuplicantStatusItems.LaboratoryWorkEfficiencyBonus);
+			this.worker.RevokeStatusItem(this.laboratoryEfficiencyBonusStatusItemHandle);
+			this.laboratoryEfficiencyBonusStatusItemHandle = Guid.Empty;
 		}
 		if (base.gameObject.GetComponent<KSelectable>() != null && !base.gameObject.GetComponent<KSelectable>().IsSelected && base.gameObject.GetComponent<LoopingSounds>() != null)
 		{
-			base.gameObject.GetComponent<LoopingSounds>().UpdateObjectSelection(selected: false);
+			base.gameObject.GetComponent<LoopingSounds>().UpdateObjectSelection(false);
 		}
 		else if (workerToStop.gameObject.GetComponent<KSelectable>() != null && !workerToStop.gameObject.GetComponent<KSelectable>().IsSelected && workerToStop.gameObject.GetComponent<LoopingSounds>() != null)
 		{
-			workerToStop.gameObject.GetComponent<LoopingSounds>().UpdateObjectSelection(selected: false);
+			workerToStop.gameObject.GetComponent<LoopingSounds>().UpdateObjectSelection(false);
 		}
-		worker = null;
+		this.worker = null;
 		base.gameObject.Trigger(679550494, this);
-		UpdateStatusItem();
+		this.UpdateStatusItem(null);
 	}
 
+	// Token: 0x060037FC RID: 14332 RVA: 0x000BD934 File Offset: 0x000BBB34
 	public virtual StatusItem GetWorkerStatusItem()
 	{
-		return workerStatusItem;
+		return this.workerStatusItem;
 	}
 
+	// Token: 0x060037FD RID: 14333 RVA: 0x000BD93C File Offset: 0x000BBB3C
 	public void SetWorkerStatusItem(StatusItem item)
 	{
-		workerStatusItem = item;
+		this.workerStatusItem = item;
 	}
 
-	public void CompleteWork(Worker worker)
+	// Token: 0x060037FE RID: 14334 RVA: 0x0021A1F0 File Offset: 0x002183F0
+	public void CompleteWork(WorkerBase worker)
 	{
-		if (shouldTransferDiseaseWithWorker)
+		if (this.shouldTransferDiseaseWithWorker)
 		{
-			TransferDiseaseWithWorker(worker);
+			this.TransferDiseaseWithWorker(worker);
 		}
-		OnCompleteWork(worker);
-		if (OnWorkableEventCB != null)
+		this.OnCompleteWork(worker);
+		if (this.OnWorkableEventCB != null)
 		{
-			OnWorkableEventCB(this, WorkableEvent.WorkCompleted);
+			this.OnWorkableEventCB(this, Workable.WorkableEvent.WorkCompleted);
 		}
-		workTimeRemaining = GetWorkTime();
-		ShowProgressBar(show: false);
+		this.workTimeRemaining = this.GetWorkTime();
+		this.ShowProgressBar(false);
 		base.gameObject.Trigger(-2011693419, this);
 	}
 
+	// Token: 0x060037FF RID: 14335 RVA: 0x000C44DF File Offset: 0x000C26DF
 	public void SetReportType(ReportManager.ReportType report_type)
 	{
-		reportType = report_type;
+		this.reportType = report_type;
 	}
 
+	// Token: 0x06003800 RID: 14336 RVA: 0x000C44E8 File Offset: 0x000C26E8
 	public ReportManager.ReportType GetReportType()
 	{
-		return reportType;
+		return this.reportType;
 	}
 
-	protected virtual void OnStartWork(Worker worker)
+	// Token: 0x06003801 RID: 14337 RVA: 0x000A5E40 File Offset: 0x000A4040
+	protected virtual void OnStartWork(WorkerBase worker)
 	{
 	}
 
-	protected virtual void OnStopWork(Worker worker)
+	// Token: 0x06003802 RID: 14338 RVA: 0x000A5E40 File Offset: 0x000A4040
+	protected virtual void OnStopWork(WorkerBase worker)
 	{
 	}
 
-	protected virtual void OnCompleteWork(Worker worker)
+	// Token: 0x06003803 RID: 14339 RVA: 0x000A5E40 File Offset: 0x000A4040
+	protected virtual void OnCompleteWork(WorkerBase worker)
 	{
 	}
 
-	protected virtual void OnAbortWork(Worker worker)
+	// Token: 0x06003804 RID: 14340 RVA: 0x000A5E40 File Offset: 0x000A4040
+	protected virtual void OnAbortWork(WorkerBase worker)
 	{
 	}
 
-	public virtual void OnPendingCompleteWork(Worker worker)
+	// Token: 0x06003805 RID: 14341 RVA: 0x000A5E40 File Offset: 0x000A4040
+	public virtual void OnPendingCompleteWork(WorkerBase worker)
 	{
 	}
 
+	// Token: 0x06003806 RID: 14342 RVA: 0x000C44F0 File Offset: 0x000C26F0
 	public void SetOffsets(CellOffset[] offsets)
 	{
-		if (offsetTracker != null)
+		if (this.offsetTracker != null)
 		{
-			offsetTracker.Clear();
+			this.offsetTracker.Clear();
 		}
-		offsetTracker = new StandardOffsetTracker(offsets);
+		this.offsetTracker = new StandardOffsetTracker(offsets);
 	}
 
+	// Token: 0x06003807 RID: 14343 RVA: 0x000C4511 File Offset: 0x000C2711
 	public void SetOffsetTable(CellOffset[][] offset_table)
 	{
-		if (offsetTracker != null)
+		if (this.offsetTracker != null)
 		{
-			offsetTracker.Clear();
+			this.offsetTracker.Clear();
 		}
-		offsetTracker = new OffsetTableTracker(offset_table, this);
+		this.offsetTracker = new OffsetTableTracker(offset_table, this);
 	}
 
+	// Token: 0x06003808 RID: 14344 RVA: 0x000C4533 File Offset: 0x000C2733
 	public virtual CellOffset[] GetOffsets(int cell)
 	{
-		if (offsetTracker == null)
+		if (this.offsetTracker == null)
 		{
-			offsetTracker = new StandardOffsetTracker(new CellOffset[1]);
+			this.offsetTracker = new StandardOffsetTracker(new CellOffset[1]);
 		}
-		return offsetTracker.GetOffsets(cell);
+		return this.offsetTracker.GetOffsets(cell);
 	}
 
+	// Token: 0x06003809 RID: 14345 RVA: 0x000C455A File Offset: 0x000C275A
+	public virtual bool ValidateOffsets(int cell)
+	{
+		if (this.offsetTracker == null)
+		{
+			this.offsetTracker = new StandardOffsetTracker(new CellOffset[1]);
+		}
+		return this.offsetTracker.ValidateOffsets(cell);
+	}
+
+	// Token: 0x0600380A RID: 14346 RVA: 0x000C4581 File Offset: 0x000C2781
 	public CellOffset[] GetOffsets()
 	{
-		return GetOffsets(Grid.PosToCell(this));
+		return this.GetOffsets(Grid.PosToCell(this));
 	}
 
+	// Token: 0x0600380B RID: 14347 RVA: 0x000C458F File Offset: 0x000C278F
 	public void SetWorkTime(float work_time)
 	{
-		workTime = work_time;
-		workTimeRemaining = work_time;
+		this.workTime = work_time;
+		this.workTimeRemaining = work_time;
 	}
 
+	// Token: 0x0600380C RID: 14348 RVA: 0x000C459F File Offset: 0x000C279F
 	public bool ShouldFaceTargetWhenWorking()
 	{
-		return faceTargetWhenWorking;
+		return this.faceTargetWhenWorking;
 	}
 
+	// Token: 0x0600380D RID: 14349 RVA: 0x000C19AF File Offset: 0x000BFBAF
 	public virtual Vector3 GetFacingTarget()
 	{
 		return base.transform.GetPosition();
 	}
 
+	// Token: 0x0600380E RID: 14350 RVA: 0x0021A24C File Offset: 0x0021844C
 	public void ShowProgressBar(bool show)
 	{
 		if (show)
 		{
-			if (progressBar == null)
+			if (this.progressBar == null)
 			{
-				progressBar = ProgressBar.CreateProgressBar(base.gameObject, GetPercentComplete);
+				this.progressBar = ProgressBar.CreateProgressBar(base.gameObject, new Func<float>(this.GetPercentComplete));
 			}
-			progressBar.SetVisibility(visible: true);
+			this.progressBar.SetVisibility(true);
+			return;
 		}
-		else if (progressBar != null)
+		if (this.progressBar != null)
 		{
-			progressBar.gameObject.DeleteObject();
-			progressBar = null;
+			this.progressBar.gameObject.DeleteObject();
+			this.progressBar = null;
 		}
 	}
 
+	// Token: 0x0600380F RID: 14351 RVA: 0x0021A2BC File Offset: 0x002184BC
 	protected override void OnCleanUp()
 	{
-		ShowProgressBar(show: false);
-		if (offsetTracker != null)
+		this.ShowProgressBar(false);
+		if (this.offsetTracker != null)
 		{
-			offsetTracker.Clear();
+			this.offsetTracker.Clear();
 		}
-		if (skillsUpdateHandle != -1)
+		if (this.skillsUpdateHandle != -1)
 		{
-			Game.Instance.Unsubscribe(skillsUpdateHandle);
+			Game.Instance.Unsubscribe(this.skillsUpdateHandle);
 		}
-		if (minionUpdateHandle != -1)
+		if (this.minionUpdateHandle != -1)
 		{
-			Game.Instance.Unsubscribe(minionUpdateHandle);
+			Game.Instance.Unsubscribe(this.minionUpdateHandle);
 		}
 		base.OnCleanUp();
-		OnWorkableEventCB = null;
+		this.OnWorkableEventCB = null;
 	}
 
+	// Token: 0x06003810 RID: 14352 RVA: 0x0021A324 File Offset: 0x00218524
 	public virtual Vector3 GetTargetPoint()
 	{
-		Vector3 result = base.transform.GetPosition();
-		float y = result.y + 0.65f;
-		KBoxCollider2D component = GetComponent<KBoxCollider2D>();
+		Vector3 vector = base.transform.GetPosition();
+		float y = vector.y + 0.65f;
+		KBoxCollider2D component = base.GetComponent<KBoxCollider2D>();
 		if (component != null)
 		{
-			result = component.bounds.center;
+			vector = component.bounds.center;
 		}
-		result.y = y;
-		result.z = 0f;
-		return result;
+		vector.y = y;
+		vector.z = 0f;
+		return vector;
 	}
 
+	// Token: 0x06003811 RID: 14353 RVA: 0x000C45A7 File Offset: 0x000C27A7
 	public int GetNavigationCost(Navigator navigator, int cell)
 	{
-		return navigator.GetNavigationCost(cell, GetOffsets(cell));
+		return navigator.GetNavigationCost(cell, this.GetOffsets(cell));
 	}
 
+	// Token: 0x06003812 RID: 14354 RVA: 0x000C45B7 File Offset: 0x000C27B7
 	public int GetNavigationCost(Navigator navigator)
 	{
-		return GetNavigationCost(navigator, Grid.PosToCell(this));
+		return this.GetNavigationCost(navigator, Grid.PosToCell(this));
 	}
 
-	private void TransferDiseaseWithWorker(Worker worker)
+	// Token: 0x06003813 RID: 14355 RVA: 0x000C45C6 File Offset: 0x000C27C6
+	private void TransferDiseaseWithWorker(WorkerBase worker)
 	{
-		if (!(this == null) && !(worker == null))
+		if (this == null || worker == null)
 		{
-			TransferDiseaseWithWorker(base.gameObject, worker.gameObject);
+			return;
 		}
+		Workable.TransferDiseaseWithWorker(base.gameObject, worker.gameObject);
 	}
 
+	// Token: 0x06003814 RID: 14356 RVA: 0x0021A380 File Offset: 0x00218580
 	public static void TransferDiseaseWithWorker(GameObject workable, GameObject worker)
 	{
 		if (workable == null || worker == null)
@@ -703,81 +649,278 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 			return;
 		}
 		PrimaryElement component2 = worker.GetComponent<PrimaryElement>();
-		if (!(component2 == null))
+		if (component2 == null)
 		{
-			SimUtil.DiseaseInfo invalid = SimUtil.DiseaseInfo.Invalid;
-			invalid.idx = component2.DiseaseIdx;
-			invalid.count = (int)((float)component2.DiseaseCount * 0.33f);
-			SimUtil.DiseaseInfo invalid2 = SimUtil.DiseaseInfo.Invalid;
-			invalid2.idx = component.DiseaseIdx;
-			invalid2.count = (int)((float)component.DiseaseCount * 0.33f);
-			component2.ModifyDiseaseCount(-invalid.count, "Workable.TransferDiseaseWithWorker");
-			component.ModifyDiseaseCount(-invalid2.count, "Workable.TransferDiseaseWithWorker");
-			if (invalid.count > 0)
-			{
-				component.AddDisease(invalid.idx, invalid.count, "Workable.TransferDiseaseWithWorker");
-			}
-			if (invalid2.count > 0)
-			{
-				component2.AddDisease(invalid2.idx, invalid2.count, "Workable.TransferDiseaseWithWorker");
-			}
+			return;
+		}
+		SimUtil.DiseaseInfo invalid = SimUtil.DiseaseInfo.Invalid;
+		invalid.idx = component2.DiseaseIdx;
+		invalid.count = (int)((float)component2.DiseaseCount * 0.33f);
+		SimUtil.DiseaseInfo invalid2 = SimUtil.DiseaseInfo.Invalid;
+		invalid2.idx = component.DiseaseIdx;
+		invalid2.count = (int)((float)component.DiseaseCount * 0.33f);
+		component2.ModifyDiseaseCount(-invalid.count, "Workable.TransferDiseaseWithWorker");
+		component.ModifyDiseaseCount(-invalid2.count, "Workable.TransferDiseaseWithWorker");
+		if (invalid.count > 0)
+		{
+			component.AddDisease(invalid.idx, invalid.count, "Workable.TransferDiseaseWithWorker");
+		}
+		if (invalid2.count > 0)
+		{
+			component2.AddDisease(invalid2.idx, invalid2.count, "Workable.TransferDiseaseWithWorker");
 		}
 	}
 
+	// Token: 0x06003815 RID: 14357 RVA: 0x0021A478 File Offset: 0x00218678
 	public void SetShouldShowSkillPerkStatusItem(bool shouldItBeShown)
 	{
-		shouldShowSkillPerkStatusItem = shouldItBeShown;
-		if (skillsUpdateHandle != -1)
+		this.shouldShowSkillPerkStatusItem = shouldItBeShown;
+		if (this.skillsUpdateHandle != -1)
 		{
-			Game.Instance.Unsubscribe(skillsUpdateHandle);
-			skillsUpdateHandle = -1;
+			Game.Instance.Unsubscribe(this.skillsUpdateHandle);
+			this.skillsUpdateHandle = -1;
 		}
-		if (shouldShowSkillPerkStatusItem && !string.IsNullOrEmpty(requiredSkillPerk))
+		if (this.shouldShowSkillPerkStatusItem && !string.IsNullOrEmpty(this.requiredSkillPerk))
 		{
-			skillsUpdateHandle = Game.Instance.Subscribe(-1523247426, UpdateStatusItem);
+			this.skillsUpdateHandle = Game.Instance.Subscribe(-1523247426, new Action<object>(this.UpdateStatusItem));
 		}
-		UpdateStatusItem();
+		this.UpdateStatusItem(null);
 	}
 
-	public virtual bool InstantlyFinish(Worker worker)
+	// Token: 0x06003816 RID: 14358 RVA: 0x0021A4EC File Offset: 0x002186EC
+	public virtual bool InstantlyFinish(WorkerBase worker)
 	{
-		float num = worker.workable.WorkTimeRemaining;
+		float num = worker.GetWorkable().WorkTimeRemaining;
 		if (!float.IsInfinity(num))
 		{
 			worker.Work(num);
 			return true;
 		}
-		DebugUtil.DevAssert(test: false, ToString() + " was asked to instantly finish but it has infinite work time! Override InstantlyFinish in your workable!");
+		DebugUtil.DevAssert(false, this.ToString() + " was asked to instantly finish but it has infinite work time! Override InstantlyFinish in your workable!", null);
 		return false;
 	}
 
+	// Token: 0x06003817 RID: 14359 RVA: 0x0021A530 File Offset: 0x00218730
 	public virtual List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
-		if (trackUses)
+		if (this.trackUses)
 		{
-			Descriptor item = new Descriptor(string.Format(BUILDING.DETAILS.USE_COUNT, numberOfUses), string.Format(BUILDING.DETAILS.USE_COUNT_TOOLTIP, numberOfUses), Descriptor.DescriptorType.Detail);
+			Descriptor item = new Descriptor(string.Format(BUILDING.DETAILS.USE_COUNT, this.numberOfUses), string.Format(BUILDING.DETAILS.USE_COUNT_TOOLTIP, this.numberOfUses), Descriptor.DescriptorType.Detail, false);
 			list.Add(item);
 		}
 		return list;
 	}
 
+	// Token: 0x06003818 RID: 14360 RVA: 0x000C45EC File Offset: 0x000C27EC
 	public virtual BuildingFacade GetBuildingFacade()
 	{
-		return GetComponent<BuildingFacade>();
+		return base.GetComponent<BuildingFacade>();
 	}
 
+	// Token: 0x06003819 RID: 14361 RVA: 0x000C45F4 File Offset: 0x000C27F4
 	public virtual KAnimControllerBase GetAnimController()
 	{
-		return GetComponent<KAnimControllerBase>();
+		return base.GetComponent<KAnimControllerBase>();
 	}
 
+	// Token: 0x0600381A RID: 14362 RVA: 0x000C45FC File Offset: 0x000C27FC
 	[ContextMenu("Refresh Reachability")]
 	public void RefreshReachability()
 	{
-		if (offsetTracker != null)
+		if (this.offsetTracker != null)
 		{
-			offsetTracker.ForceRefresh();
+			this.offsetTracker.ForceRefresh();
 		}
+	}
+
+	// Token: 0x040025EB RID: 9707
+	public float workTime;
+
+	// Token: 0x040025EC RID: 9708
+	protected bool showProgressBar = true;
+
+	// Token: 0x040025ED RID: 9709
+	public bool alwaysShowProgressBar;
+
+	// Token: 0x040025EE RID: 9710
+	protected bool lightEfficiencyBonus = true;
+
+	// Token: 0x040025EF RID: 9711
+	protected Guid lightEfficiencyBonusStatusItemHandle;
+
+	// Token: 0x040025F0 RID: 9712
+	public bool currentlyLit;
+
+	// Token: 0x040025F1 RID: 9713
+	public Tag laboratoryEfficiencyBonusTagRequired = RoomConstraints.ConstraintTags.ScienceBuilding;
+
+	// Token: 0x040025F2 RID: 9714
+	private bool useLaboratoryEfficiencyBonus;
+
+	// Token: 0x040025F3 RID: 9715
+	protected Guid laboratoryEfficiencyBonusStatusItemHandle;
+
+	// Token: 0x040025F4 RID: 9716
+	private bool currentlyInLaboratory;
+
+	// Token: 0x040025F5 RID: 9717
+	protected StatusItem workerStatusItem;
+
+	// Token: 0x040025F6 RID: 9718
+	protected StatusItem workingStatusItem;
+
+	// Token: 0x040025F7 RID: 9719
+	protected Guid workStatusItemHandle;
+
+	// Token: 0x040025F8 RID: 9720
+	protected OffsetTracker offsetTracker;
+
+	// Token: 0x040025F9 RID: 9721
+	[SerializeField]
+	protected string attributeConverterId;
+
+	// Token: 0x040025FA RID: 9722
+	protected AttributeConverter attributeConverter;
+
+	// Token: 0x040025FB RID: 9723
+	protected float minimumAttributeMultiplier = 0.5f;
+
+	// Token: 0x040025FC RID: 9724
+	public bool resetProgressOnStop;
+
+	// Token: 0x040025FD RID: 9725
+	protected bool shouldTransferDiseaseWithWorker = true;
+
+	// Token: 0x040025FE RID: 9726
+	[SerializeField]
+	protected float attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.PART_DAY_EXPERIENCE;
+
+	// Token: 0x040025FF RID: 9727
+	[SerializeField]
+	protected string skillExperienceSkillGroup;
+
+	// Token: 0x04002600 RID: 9728
+	[SerializeField]
+	protected float skillExperienceMultiplier = SKILLS.PART_DAY_EXPERIENCE;
+
+	// Token: 0x04002601 RID: 9729
+	public bool triggerWorkReactions = true;
+
+	// Token: 0x04002602 RID: 9730
+	public ReportManager.ReportType reportType = ReportManager.ReportType.WorkTime;
+
+	// Token: 0x04002603 RID: 9731
+	[SerializeField]
+	[Tooltip("What layer does the dupe switch to when interacting with the building")]
+	public Grid.SceneLayer workLayer = Grid.SceneLayer.Move;
+
+	// Token: 0x04002604 RID: 9732
+	[SerializeField]
+	[Serialize]
+	protected float workTimeRemaining = float.PositiveInfinity;
+
+	// Token: 0x04002605 RID: 9733
+	[SerializeField]
+	public KAnimFile[] overrideAnims;
+
+	// Token: 0x04002606 RID: 9734
+	[SerializeField]
+	protected HashedString multitoolContext;
+
+	// Token: 0x04002607 RID: 9735
+	[SerializeField]
+	protected Tag multitoolHitEffectTag;
+
+	// Token: 0x04002608 RID: 9736
+	[SerializeField]
+	[Tooltip("Whether to user the KAnimSynchronizer or not")]
+	public bool synchronizeAnims = true;
+
+	// Token: 0x04002609 RID: 9737
+	[SerializeField]
+	[Tooltip("Whether to display number of uses in the details panel")]
+	public bool trackUses;
+
+	// Token: 0x0400260A RID: 9738
+	[Serialize]
+	protected int numberOfUses;
+
+	// Token: 0x0400260B RID: 9739
+	public Action<Workable, Workable.WorkableEvent> OnWorkableEventCB;
+
+	// Token: 0x0400260C RID: 9740
+	protected int skillsUpdateHandle = -1;
+
+	// Token: 0x0400260D RID: 9741
+	private int minionUpdateHandle = -1;
+
+	// Token: 0x0400260E RID: 9742
+	public string requiredSkillPerk;
+
+	// Token: 0x0400260F RID: 9743
+	[SerializeField]
+	protected bool shouldShowSkillPerkStatusItem = true;
+
+	// Token: 0x04002610 RID: 9744
+	[SerializeField]
+	public bool requireMinionToWork;
+
+	// Token: 0x04002611 RID: 9745
+	protected StatusItem readyForSkillWorkStatusItem;
+
+	// Token: 0x04002612 RID: 9746
+	public HashedString[] workAnims = new HashedString[]
+	{
+		"working_pre",
+		"working_loop"
+	};
+
+	// Token: 0x04002613 RID: 9747
+	public HashedString[] workingPstComplete = new HashedString[]
+	{
+		"working_pst"
+	};
+
+	// Token: 0x04002614 RID: 9748
+	public HashedString[] workingPstFailed = new HashedString[]
+	{
+		"working_pst"
+	};
+
+	// Token: 0x04002615 RID: 9749
+	public KAnim.PlayMode workAnimPlayMode;
+
+	// Token: 0x04002616 RID: 9750
+	public bool faceTargetWhenWorking;
+
+	// Token: 0x04002617 RID: 9751
+	private static readonly EventSystem.IntraObjectHandler<Workable> OnUpdateRoomDelegate = new EventSystem.IntraObjectHandler<Workable>(delegate(Workable component, object data)
+	{
+		component.OnUpdateRoom(data);
+	});
+
+	// Token: 0x04002618 RID: 9752
+	protected ProgressBar progressBar;
+
+	// Token: 0x02000B79 RID: 2937
+	public enum WorkableEvent
+	{
+		// Token: 0x0400261A RID: 9754
+		WorkStarted,
+		// Token: 0x0400261B RID: 9755
+		WorkCompleted,
+		// Token: 0x0400261C RID: 9756
+		WorkStopped
+	}
+
+	// Token: 0x02000B7A RID: 2938
+	public struct AnimInfo
+	{
+		// Token: 0x0400261D RID: 9757
+		public KAnimFile[] overrideAnims;
+
+		// Token: 0x0400261E RID: 9758
+		public StateMachine.Instance smi;
 	}
 }

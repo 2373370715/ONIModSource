@@ -1,63 +1,76 @@
+﻿using System;
 using Klei.AI;
 using UnityEngine;
 
+// Token: 0x02001D9E RID: 7582
 public class CrewRationsEntry : CrewListEntry
 {
-	public KButton incRationPerDayButton;
-
-	public KButton decRationPerDayButton;
-
-	public LocText rationPerDayText;
-
-	public LocText rationsEatenToday;
-
-	public LocText currentCaloriesText;
-
-	public LocText currentStressText;
-
-	public LocText currentHealthText;
-
-	public ValueTrendImageToggle stressTrendImage;
-
-	private RationMonitor.Instance rationMonitor;
-
+	// Token: 0x06009E8A RID: 40586 RVA: 0x00107401 File Offset: 0x00105601
 	public override void Populate(MinionIdentity _identity)
 	{
 		base.Populate(_identity);
-		rationMonitor = _identity.GetSMI<RationMonitor.Instance>();
-		Refresh();
+		this.rationMonitor = _identity.GetSMI<RationMonitor.Instance>();
+		this.Refresh();
 	}
 
+	// Token: 0x06009E8B RID: 40587 RVA: 0x003CC234 File Offset: 0x003CA434
 	public override void Refresh()
 	{
 		base.Refresh();
-		rationsEatenToday.text = GameUtil.GetFormattedCalories(rationMonitor.GetRationsAteToday());
-		if (identity == null)
+		this.rationsEatenToday.text = GameUtil.GetFormattedCalories(this.rationMonitor.GetRationsAteToday(), GameUtil.TimeSlice.None, true);
+		if (this.identity == null)
 		{
 			return;
 		}
-		foreach (AmountInstance amount in identity.GetAmounts())
+		foreach (AmountInstance amountInstance in this.identity.GetAmounts())
 		{
-			float min = amount.GetMin();
-			float max = amount.GetMax();
+			float min = amountInstance.GetMin();
+			float max = amountInstance.GetMax();
 			float num = max - min;
-			string text = Mathf.RoundToInt((num - (max - amount.value)) / num * 100f).ToString();
-			if (amount.amount == Db.Get().Amounts.Stress)
+			string str = Mathf.RoundToInt((num - (max - amountInstance.value)) / num * 100f).ToString();
+			if (amountInstance.amount == Db.Get().Amounts.Stress)
 			{
-				currentStressText.text = amount.GetValueString();
-				currentStressText.GetComponent<ToolTip>().toolTip = amount.GetTooltip();
-				stressTrendImage.SetValue(amount);
+				this.currentStressText.text = amountInstance.GetValueString();
+				this.currentStressText.GetComponent<ToolTip>().toolTip = amountInstance.GetTooltip();
+				this.stressTrendImage.SetValue(amountInstance);
 			}
-			else if (amount.amount == Db.Get().Amounts.Calories)
+			else if (amountInstance.amount == Db.Get().Amounts.Calories)
 			{
-				currentCaloriesText.text = text + "%";
-				currentCaloriesText.GetComponent<ToolTip>().toolTip = amount.GetTooltip();
+				this.currentCaloriesText.text = str + "%";
+				this.currentCaloriesText.GetComponent<ToolTip>().toolTip = amountInstance.GetTooltip();
 			}
-			else if (amount.amount == Db.Get().Amounts.HitPoints)
+			else if (amountInstance.amount == Db.Get().Amounts.HitPoints)
 			{
-				currentHealthText.text = text + "%";
-				currentHealthText.GetComponent<ToolTip>().toolTip = amount.GetTooltip();
+				this.currentHealthText.text = str + "%";
+				this.currentHealthText.GetComponent<ToolTip>().toolTip = amountInstance.GetTooltip();
 			}
 		}
 	}
+
+	// Token: 0x04007C49 RID: 31817
+	public KButton incRationPerDayButton;
+
+	// Token: 0x04007C4A RID: 31818
+	public KButton decRationPerDayButton;
+
+	// Token: 0x04007C4B RID: 31819
+	public LocText rationPerDayText;
+
+	// Token: 0x04007C4C RID: 31820
+	public LocText rationsEatenToday;
+
+	// Token: 0x04007C4D RID: 31821
+	public LocText currentCaloriesText;
+
+	// Token: 0x04007C4E RID: 31822
+	public LocText currentStressText;
+
+	// Token: 0x04007C4F RID: 31823
+	public LocText currentHealthText;
+
+	// Token: 0x04007C50 RID: 31824
+	public ValueTrendImageToggle stressTrendImage;
+
+	// Token: 0x04007C51 RID: 31825
+	private RationMonitor.Instance rationMonitor;
 }

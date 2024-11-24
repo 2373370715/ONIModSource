@@ -1,31 +1,26 @@
+﻿using System;
 using System.Collections.Generic;
 using Klei.AI;
 using UnityEngine;
 
+// Token: 0x020000FC RID: 252
 public static class BaseRoverConfig
 {
-	public struct LaserEffect
-	{
-		public string id;
-
-		public string animFile;
-
-		public string anim;
-
-		public HashedString context;
-	}
-
+	// Token: 0x060003F0 RID: 1008 RVA: 0x00153870 File Offset: 0x00151A70
 	public static GameObject BaseRover(string id, string name, Tag model, string desc, string anim_file, float mass, float width, float height, float carryingAmount, float digging, float construction, float athletics, float hitPoints, float batteryCapacity, float batteryDepletionRate, Amount batteryType, bool deleteOnDeath)
 	{
-		GameObject gameObject = EntityTemplates.CreateBasicEntity(id, name, desc, mass, unitMass: true, Assets.GetAnim(anim_file), "idle_loop", Grid.SceneLayer.Creatures, SimHashes.Creature, new List<Tag> { GameTags.Experimental });
+		GameObject gameObject = EntityTemplates.CreateBasicEntity(id, name, desc, mass, true, Assets.GetAnim(anim_file), "idle_loop", Grid.SceneLayer.Creatures, SimHashes.Creature, new List<Tag>
+		{
+			GameTags.Experimental
+		}, 293f);
 		string text = id + "BaseTrait";
 		KBatchedAnimController component = gameObject.GetComponent<KBatchedAnimController>();
 		component.isMovable = true;
 		gameObject.AddOrGet<Modifiers>();
 		gameObject.AddOrGet<LoopingSounds>();
-		KBoxCollider2D kBoxCollider2D = gameObject.AddOrGet<KBoxCollider2D>();
-		kBoxCollider2D.size = new Vector2(width, height);
-		kBoxCollider2D.offset = new Vector2f(0f, height / 2f);
+		KBoxCollider2D kboxCollider2D = gameObject.AddOrGet<KBoxCollider2D>();
+		kboxCollider2D.size = new Vector2(width, height);
+		kboxCollider2D.offset = new Vector2f(0f, height / 2f);
 		Modifiers component2 = gameObject.GetComponent<Modifiers>();
 		component2.initialAmounts.Add(Db.Get().Amounts.HitPoints.Id);
 		component2.initialAmounts.Add(batteryType.Id);
@@ -34,7 +29,7 @@ public static class BaseRoverConfig
 		component2.initialAttributes.Add(Db.Get().Attributes.CarryAmount.Id);
 		component2.initialAttributes.Add(Db.Get().Attributes.Machinery.Id);
 		component2.initialAttributes.Add(Db.Get().Attributes.Athletics.Id);
-		ChoreGroup[] disabled_chore_groups = new ChoreGroup[12]
+		ChoreGroup[] disabled_chore_groups = new ChoreGroup[]
 		{
 			Db.Get().ChoreGroups.Basekeeping,
 			Db.Get().ChoreGroups.Cook,
@@ -50,31 +45,31 @@ public static class BaseRoverConfig
 			Db.Get().ChoreGroups.Toggle
 		};
 		gameObject.AddOrGet<Traits>();
-		Trait trait = Db.Get().CreateTrait(text, name, name, null, should_save: false, disabled_chore_groups, positive_trait: true, is_valid_starter_trait: true);
-		trait.Add(new AttributeModifier(Db.Get().Attributes.CarryAmount.Id, carryingAmount, name));
-		trait.Add(new AttributeModifier(Db.Get().Attributes.Digging.Id, digging, name));
-		trait.Add(new AttributeModifier(Db.Get().Attributes.Construction.Id, construction, name));
-		trait.Add(new AttributeModifier(Db.Get().Attributes.Athletics.Id, athletics, name));
-		trait.Add(new AttributeModifier(Db.Get().Amounts.HitPoints.maxAttribute.Id, hitPoints, name));
-		trait.Add(new AttributeModifier(batteryType.maxAttribute.Id, batteryCapacity, name));
-		trait.Add(new AttributeModifier(batteryType.deltaAttribute.Id, 0f - batteryDepletionRate, name));
+		Trait trait = Db.Get().CreateTrait(text, name, name, null, false, disabled_chore_groups, true, true);
+		trait.Add(new AttributeModifier(Db.Get().Attributes.CarryAmount.Id, carryingAmount, name, false, false, true));
+		trait.Add(new AttributeModifier(Db.Get().Attributes.Digging.Id, digging, name, false, false, true));
+		trait.Add(new AttributeModifier(Db.Get().Attributes.Construction.Id, construction, name, false, false, true));
+		trait.Add(new AttributeModifier(Db.Get().Attributes.Athletics.Id, athletics, name, false, false, true));
+		trait.Add(new AttributeModifier(Db.Get().Amounts.HitPoints.maxAttribute.Id, hitPoints, name, false, false, true));
+		trait.Add(new AttributeModifier(batteryType.maxAttribute.Id, batteryCapacity, name, false, false, true));
+		trait.Add(new AttributeModifier(batteryType.deltaAttribute.Id, -batteryDepletionRate, name, false, false, true));
 		component2.initialTraits.Add(text);
 		gameObject.AddOrGet<AttributeConverters>();
 		GridVisibility gridVisibility = gameObject.AddOrGet<GridVisibility>();
 		gridVisibility.radius = 30;
 		gridVisibility.innerRadius = 20f;
-		gameObject.AddOrGet<Worker>();
+		gameObject.AddOrGet<StandardWorker>();
 		gameObject.AddOrGet<Effects>();
 		gameObject.AddOrGet<Traits>();
 		gameObject.AddOrGet<AnimEventHandler>();
 		gameObject.AddOrGet<Health>();
 		MoverLayerOccupier moverLayerOccupier = gameObject.AddOrGet<MoverLayerOccupier>();
-		moverLayerOccupier.objectLayers = new ObjectLayer[2]
+		moverLayerOccupier.objectLayers = new ObjectLayer[]
 		{
 			ObjectLayer.Rover,
 			ObjectLayer.Mover
 		};
-		moverLayerOccupier.cellOffsets = new CellOffset[2]
+		moverLayerOccupier.cellOffsets = new CellOffset[]
 		{
 			CellOffset.none,
 			new CellOffset(0, 1)
@@ -97,13 +92,12 @@ public static class BaseRoverConfig
 		deconstructable.audioSize = "medium";
 		deconstructable.looseEntityDeconstructable = true;
 		gameObject.AddOrGetDef<RobotAi.Def>().DeleteOnDead = deleteOnDeath;
-		ChoreTable.Builder chore_table = new ChoreTable.Builder().Add(new RobotDeathStates.Def(), condition: true, Db.Get().ChoreTypes.Die.priority).Add(new FallStates.Def()).Add(new DebugGoToStates.Def())
-			.Add(new IdleStates.Def(), condition: true, Db.Get().ChoreTypes.Idle.priority);
+		ChoreTable.Builder chore_table = new ChoreTable.Builder().Add(new RobotDeathStates.Def(), true, Db.Get().ChoreTypes.Die.priority).Add(new FallStates.Def(), true, -1).Add(new DebugGoToStates.Def(), true, -1).Add(new IdleStates.Def(), true, Db.Get().ChoreTypes.Idle.priority);
 		EntityTemplates.AddCreatureBrain(gameObject, chore_table, model, null);
-		KPrefabID kPrefabID = gameObject.AddOrGet<KPrefabID>();
-		kPrefabID.RemoveTag(GameTags.CreatureBrain);
-		kPrefabID.AddTag(GameTags.DupeBrain);
-		kPrefabID.AddTag(GameTags.Robot);
+		KPrefabID kprefabID = gameObject.AddOrGet<KPrefabID>();
+		kprefabID.RemoveTag(GameTags.CreatureBrain);
+		kprefabID.AddTag(GameTags.DupeBrain, false);
+		kprefabID.AddTag(GameTags.Robot, false);
 		Navigator navigator = gameObject.AddOrGet<Navigator>();
 		string navGridName = "RobotNavGrid";
 		navigator.NavGridName = navGridName;
@@ -113,117 +107,119 @@ public static class BaseRoverConfig
 		navigator.sceneLayer = Grid.SceneLayer.Creatures;
 		gameObject.AddOrGet<Sensors>();
 		gameObject.AddOrGet<Pickupable>().SetWorkTime(5f);
+		gameObject.AddOrGet<Clearable>().isClearable = false;
 		gameObject.AddOrGet<SnapOn>();
-		component.SetSymbolVisiblity("snapto_pivot", is_visible: false);
-		component.SetSymbolVisiblity("snapto_radar", is_visible: false);
+		component.SetSymbolVisiblity("snapto_pivot", false);
+		component.SetSymbolVisiblity("snapto_radar", false);
 		SymbolOverrideControllerUtil.AddToPrefab(gameObject);
-		SetupLaserEffects(gameObject);
+		BaseRoverConfig.SetupLaserEffects(gameObject);
 		return gameObject;
 	}
 
+	// Token: 0x060003F1 RID: 1009 RVA: 0x00153E0C File Offset: 0x0015200C
 	private static void SetupLaserEffects(GameObject prefab)
 	{
 		GameObject gameObject = new GameObject("LaserEffect");
 		gameObject.transform.parent = prefab.transform;
-		KBatchedAnimEventToggler kBatchedAnimEventToggler = gameObject.AddComponent<KBatchedAnimEventToggler>();
-		kBatchedAnimEventToggler.eventSource = prefab;
-		kBatchedAnimEventToggler.enableEvent = "LaserOn";
-		kBatchedAnimEventToggler.disableEvent = "LaserOff";
-		kBatchedAnimEventToggler.entries = new List<KBatchedAnimEventToggler.Entry>();
-		LaserEffect[] obj = new LaserEffect[14]
+		KBatchedAnimEventToggler kbatchedAnimEventToggler = gameObject.AddComponent<KBatchedAnimEventToggler>();
+		kbatchedAnimEventToggler.eventSource = prefab;
+		kbatchedAnimEventToggler.enableEvent = "LaserOn";
+		kbatchedAnimEventToggler.disableEvent = "LaserOff";
+		kbatchedAnimEventToggler.entries = new List<KBatchedAnimEventToggler.Entry>();
+		BaseRoverConfig.LaserEffect[] array = new BaseRoverConfig.LaserEffect[]
 		{
-			new LaserEffect
+			new BaseRoverConfig.LaserEffect
 			{
 				id = "DigEffect",
 				animFile = "laser_kanim",
 				anim = "idle",
 				context = "dig"
 			},
-			new LaserEffect
+			new BaseRoverConfig.LaserEffect
 			{
 				id = "BuildEffect",
 				animFile = "construct_beam_kanim",
 				anim = "loop",
 				context = "build"
 			},
-			new LaserEffect
+			new BaseRoverConfig.LaserEffect
 			{
 				id = "FetchLiquidEffect",
 				animFile = "hose_fx_kanim",
 				anim = "loop",
 				context = "fetchliquid"
 			},
-			new LaserEffect
+			new BaseRoverConfig.LaserEffect
 			{
 				id = "PaintEffect",
 				animFile = "paint_beam_kanim",
 				anim = "loop",
 				context = "paint"
 			},
-			new LaserEffect
+			new BaseRoverConfig.LaserEffect
 			{
 				id = "HarvestEffect",
 				animFile = "plant_harvest_beam_kanim",
 				anim = "loop",
 				context = "harvest"
 			},
-			new LaserEffect
+			new BaseRoverConfig.LaserEffect
 			{
 				id = "CaptureEffect",
 				animFile = "net_gun_fx_kanim",
 				anim = "loop",
 				context = "capture"
 			},
-			new LaserEffect
+			new BaseRoverConfig.LaserEffect
 			{
 				id = "AttackEffect",
 				animFile = "attack_beam_fx_kanim",
 				anim = "loop",
 				context = "attack"
 			},
-			new LaserEffect
+			new BaseRoverConfig.LaserEffect
 			{
 				id = "PickupEffect",
 				animFile = "vacuum_fx_kanim",
 				anim = "loop",
 				context = "pickup"
 			},
-			new LaserEffect
+			new BaseRoverConfig.LaserEffect
 			{
 				id = "StoreEffect",
 				animFile = "vacuum_reverse_fx_kanim",
 				anim = "loop",
 				context = "store"
 			},
-			new LaserEffect
+			new BaseRoverConfig.LaserEffect
 			{
 				id = "DisinfectEffect",
 				animFile = "plant_spray_beam_kanim",
 				anim = "loop",
 				context = "disinfect"
 			},
-			new LaserEffect
+			new BaseRoverConfig.LaserEffect
 			{
 				id = "TendEffect",
 				animFile = "plant_tending_beam_fx_kanim",
 				anim = "loop",
 				context = "tend"
 			},
-			new LaserEffect
+			new BaseRoverConfig.LaserEffect
 			{
 				id = "PowerTinkerEffect",
 				animFile = "electrician_beam_fx_kanim",
 				anim = "idle",
 				context = "powertinker"
 			},
-			new LaserEffect
+			new BaseRoverConfig.LaserEffect
 			{
 				id = "SpecialistDigEffect",
 				animFile = "senior_miner_beam_fx_kanim",
 				anim = "idle",
 				context = "specialistdig"
 			},
-			new LaserEffect
+			new BaseRoverConfig.LaserEffect
 			{
 				id = "DemolishEffect",
 				animFile = "poi_demolish_fx_kanim",
@@ -232,30 +228,33 @@ public static class BaseRoverConfig
 			}
 		};
 		KBatchedAnimController component = prefab.GetComponent<KBatchedAnimController>();
-		LaserEffect[] array = obj;
-		for (int i = 0; i < array.Length; i++)
+		foreach (BaseRoverConfig.LaserEffect laserEffect in array)
 		{
-			LaserEffect laserEffect = array[i];
 			GameObject gameObject2 = new GameObject(laserEffect.id);
 			gameObject2.transform.parent = gameObject.transform;
 			gameObject2.AddOrGet<KPrefabID>().PrefabTag = new Tag(laserEffect.id);
-			KBatchedAnimTracker kBatchedAnimTracker = gameObject2.AddOrGet<KBatchedAnimTracker>();
-			kBatchedAnimTracker.controller = component;
-			kBatchedAnimTracker.symbol = new HashedString("snapto_radar");
-			kBatchedAnimTracker.offset = new Vector3(40f, 0f, 0f);
-			kBatchedAnimTracker.useTargetPoint = true;
-			KBatchedAnimController kBatchedAnimController = gameObject2.AddOrGet<KBatchedAnimController>();
-			kBatchedAnimController.AnimFiles = new KAnimFile[1] { Assets.GetAnim(laserEffect.animFile) };
-			KBatchedAnimEventToggler.Entry entry = default(KBatchedAnimEventToggler.Entry);
-			entry.anim = laserEffect.anim;
-			entry.context = laserEffect.context;
-			entry.controller = kBatchedAnimController;
-			KBatchedAnimEventToggler.Entry item = entry;
-			kBatchedAnimEventToggler.entries.Add(item);
+			KBatchedAnimTracker kbatchedAnimTracker = gameObject2.AddOrGet<KBatchedAnimTracker>();
+			kbatchedAnimTracker.controller = component;
+			kbatchedAnimTracker.symbol = new HashedString("snapto_radar");
+			kbatchedAnimTracker.offset = new Vector3(40f, 0f, 0f);
+			kbatchedAnimTracker.useTargetPoint = true;
+			KBatchedAnimController kbatchedAnimController = gameObject2.AddOrGet<KBatchedAnimController>();
+			kbatchedAnimController.AnimFiles = new KAnimFile[]
+			{
+				Assets.GetAnim(laserEffect.animFile)
+			};
+			KBatchedAnimEventToggler.Entry item = new KBatchedAnimEventToggler.Entry
+			{
+				anim = laserEffect.anim,
+				context = laserEffect.context,
+				controller = kbatchedAnimController
+			};
+			kbatchedAnimEventToggler.entries.Add(item);
 			gameObject2.AddOrGet<LoopingSounds>();
 		}
 	}
 
+	// Token: 0x060003F2 RID: 1010 RVA: 0x0015434C File Offset: 0x0015254C
 	public static void OnPrefabInit(GameObject inst, Amount batteryType)
 	{
 		ChoreConsumer component = inst.GetComponent<ChoreConsumer>();
@@ -267,6 +266,7 @@ public static class BaseRoverConfig
 		amountInstance.value = amountInstance.GetMax();
 	}
 
+	// Token: 0x060003F3 RID: 1011 RVA: 0x00154388 File Offset: 0x00152588
 	public static void OnSpawn(GameObject inst)
 	{
 		Sensors component = inst.GetComponent<Sensors>();
@@ -284,5 +284,21 @@ public static class BaseRoverConfig
 		{
 			component3.SetGroupProber(MinionGroupProber.Get());
 		}
+	}
+
+	// Token: 0x020000FD RID: 253
+	public struct LaserEffect
+	{
+		// Token: 0x040002C6 RID: 710
+		public string id;
+
+		// Token: 0x040002C7 RID: 711
+		public string animFile;
+
+		// Token: 0x040002C8 RID: 712
+		public string anim;
+
+		// Token: 0x040002C9 RID: 713
+		public HashedString context;
 	}
 }

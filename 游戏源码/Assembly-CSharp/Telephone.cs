@@ -1,120 +1,169 @@
+﻿using System;
 using System.Collections.Generic;
 using Klei.AI;
 using STRINGS;
 using UnityEngine;
 
+// Token: 0x020019DB RID: 6619
 public class Telephone : StateMachineComponent<Telephone.StatesInstance>, IGameObjectEffectDescriptor
 {
-	public class States : GameStateMachine<States, StatesInstance, Telephone>
+	// Token: 0x060089E4 RID: 35300 RVA: 0x003588C8 File Offset: 0x00356AC8
+	protected override void OnSpawn()
 	{
-		public class ReadyStates : State
+		base.OnSpawn();
+		base.smi.StartSM();
+		Components.Telephones.Add(this);
+		GameScheduler.Instance.Schedule("Scheduling Tutorial", 2f, delegate(object obj)
 		{
-			public class CallingStates : State
-			{
-				public State dial;
+			Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_Schedule, true);
+		}, null, null);
+	}
 
-				public State animHack;
+	// Token: 0x060089E5 RID: 35301 RVA: 0x000FA57D File Offset: 0x000F877D
+	protected override void OnCleanUp()
+	{
+		Components.Telephones.Remove(this);
+		base.OnCleanUp();
+	}
 
-				public State pre;
-
-				public State wait;
-			}
-
-			public class TalkingStates : State
-			{
-				public State babbling;
-
-				public State chatting;
-			}
-
-			public State idle;
-
-			public State ringing;
-
-			public State answer;
-
-			public State speaker;
-
-			public State hangup;
-
-			public CallingStates calling;
-
-			public TalkingStates talking;
+	// Token: 0x060089E6 RID: 35302 RVA: 0x00358928 File Offset: 0x00356B28
+	public void AddModifierDescriptions(List<Descriptor> descs, string effect_id)
+	{
+		Effect effect = Db.Get().effects.Get(effect_id);
+		string text;
+		string text2;
+		if (effect.Id == this.babbleEffect)
+		{
+			text = BUILDINGS.PREFABS.TELEPHONE.EFFECT_BABBLE;
+			text2 = BUILDINGS.PREFABS.TELEPHONE.EFFECT_BABBLE_TOOLTIP;
 		}
-
-		private State unoperational;
-
-		private ReadyStates ready;
-
-		private static StatusItem partyLine;
-
-		private static StatusItem babbling;
-
-		public override void InitializeStates(out BaseState default_state)
+		else if (effect.Id == this.chatEffect)
 		{
-			CreateStatusItems();
-			default_state = unoperational;
-			unoperational.PlayAnim("off").TagTransition(GameTags.Operational, ready);
-			ready.TagTransition(GameTags.Operational, unoperational, on_remove: true).DefaultState(ready.idle).ToggleRecurringChore(CreateChore)
-				.Enter(delegate(StatesInstance smi)
+			text = BUILDINGS.PREFABS.TELEPHONE.EFFECT_CHAT;
+			text2 = BUILDINGS.PREFABS.TELEPHONE.EFFECT_CHAT_TOOLTIP;
+		}
+		else
+		{
+			text = BUILDINGS.PREFABS.TELEPHONE.EFFECT_LONG_DISTANCE;
+			text2 = BUILDINGS.PREFABS.TELEPHONE.EFFECT_LONG_DISTANCE_TOOLTIP;
+		}
+		foreach (AttributeModifier attributeModifier in effect.SelfModifiers)
+		{
+			Descriptor item = new Descriptor(text.Replace("{attrib}", Strings.Get("STRINGS.DUPLICANTS.ATTRIBUTES." + attributeModifier.AttributeId.ToUpper() + ".NAME")).Replace("{amount}", attributeModifier.GetFormattedString()), text2.Replace("{attrib}", Strings.Get("STRINGS.DUPLICANTS.ATTRIBUTES." + attributeModifier.AttributeId.ToUpper() + ".NAME")).Replace("{amount}", attributeModifier.GetFormattedString()), Descriptor.DescriptorType.Effect, false);
+			item.IncreaseIndent();
+			descs.Add(item);
+		}
+	}
+
+	// Token: 0x060089E7 RID: 35303 RVA: 0x00358A94 File Offset: 0x00356C94
+	List<Descriptor> IGameObjectEffectDescriptor.GetDescriptors(GameObject go)
+	{
+		List<Descriptor> list = new List<Descriptor>();
+		Descriptor item = default(Descriptor);
+		item.SetupDescriptor(UI.BUILDINGEFFECTS.RECREATION, UI.BUILDINGEFFECTS.TOOLTIPS.RECREATION, Descriptor.DescriptorType.Effect);
+		list.Add(item);
+		this.AddModifierDescriptions(list, this.babbleEffect);
+		this.AddModifierDescriptions(list, this.chatEffect);
+		this.AddModifierDescriptions(list, this.longDistanceEffect);
+		return list;
+	}
+
+	// Token: 0x060089E8 RID: 35304 RVA: 0x000FA590 File Offset: 0x000F8790
+	public void HangUp()
+	{
+		this.isInUse = false;
+		this.wasAnswered = false;
+		this.RemoveTag(GameTags.LongDistanceCall);
+	}
+
+	// Token: 0x040067BA RID: 26554
+	public string babbleEffect;
+
+	// Token: 0x040067BB RID: 26555
+	public string chatEffect;
+
+	// Token: 0x040067BC RID: 26556
+	public string longDistanceEffect;
+
+	// Token: 0x040067BD RID: 26557
+	public string trackingEffect;
+
+	// Token: 0x040067BE RID: 26558
+	public bool isInUse;
+
+	// Token: 0x040067BF RID: 26559
+	public bool wasAnswered;
+
+	// Token: 0x020019DC RID: 6620
+	public class States : GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone>
+	{
+		// Token: 0x060089EA RID: 35306 RVA: 0x00358AFC File Offset: 0x00356CFC
+		public override void InitializeStates(out StateMachine.BaseState default_state)
+		{
+			Telephone.States.CreateStatusItems();
+			default_state = this.unoperational;
+			this.unoperational.PlayAnim("off").TagTransition(GameTags.Operational, this.ready, false);
+			this.ready.TagTransition(GameTags.Operational, this.unoperational, true).DefaultState(this.ready.idle).ToggleRecurringChore(new Func<Telephone.StatesInstance, Chore>(this.CreateChore), null).Enter(delegate(Telephone.StatesInstance smi)
+			{
+				using (List<Telephone>.Enumerator enumerator = Components.Telephones.Items.GetEnumerator())
 				{
-					foreach (Telephone item in Components.Telephones.Items)
+					while (enumerator.MoveNext())
 					{
-						if (item.isInUse)
+						if (enumerator.Current.isInUse)
 						{
-							smi.GoTo(ready.speaker);
+							smi.GoTo(this.ready.speaker);
 						}
 					}
-				});
-			ready.idle.WorkableStartTransition((StatesInstance smi) => smi.master.GetComponent<TelephoneCallerWorkable>(), ready.calling.dial).TagTransition(GameTags.TelephoneRinging, ready.ringing).PlayAnim("off");
-			ready.calling.ScheduleGoTo(15f, ready.talking.babbling);
-			ready.calling.dial.PlayAnim("on_pre").OnAnimQueueComplete(ready.calling.animHack);
-			ready.calling.animHack.ScheduleActionNextFrame("animHack_delay", delegate(StatesInstance smi)
-			{
-				smi.GoTo(ready.calling.pre);
+				}
 			});
-			ready.calling.pre.PlayAnim("on").Enter(delegate(StatesInstance smi)
+			this.ready.idle.WorkableStartTransition((Telephone.StatesInstance smi) => smi.master.GetComponent<TelephoneCallerWorkable>(), this.ready.calling.dial).TagTransition(GameTags.TelephoneRinging, this.ready.ringing, false).PlayAnim("off");
+			this.ready.calling.ScheduleGoTo(15f, this.ready.talking.babbling);
+			this.ready.calling.dial.PlayAnim("on_pre").OnAnimQueueComplete(this.ready.calling.animHack);
+			this.ready.calling.animHack.ScheduleActionNextFrame("animHack_delay", delegate(Telephone.StatesInstance smi)
 			{
-				RingAllTelephones(smi);
-			}).OnAnimQueueComplete(ready.calling.wait);
-			ready.calling.wait.PlayAnim("on", KAnim.PlayMode.Loop).Transition(ready.talking.chatting, (StatesInstance smi) => smi.CallAnswered(), UpdateRate.SIM_4000ms);
-			ready.ringing.PlayAnim("on_receiving", KAnim.PlayMode.Loop).Transition(ready.answer, (StatesInstance smi) => smi.GetComponent<Telephone>().isInUse, UpdateRate.SIM_33ms).TagTransition(GameTags.TelephoneRinging, ready.speaker, on_remove: true)
-				.ScheduleGoTo(15f, ready.speaker)
-				.Exit(delegate(StatesInstance smi)
-				{
-					smi.GetComponent<Telephone>().RemoveTag(GameTags.TelephoneRinging);
-				});
-			ready.answer.PlayAnim("on_pre_loop_receiving").OnAnimQueueComplete(ready.talking.chatting);
-			ready.talking.ScheduleGoTo(25f, ready.hangup).Enter(delegate(StatesInstance smi)
-			{
-				UpdatePartyLine(smi);
+				smi.GoTo(this.ready.calling.pre);
 			});
-			ready.talking.babbling.PlayAnim("on_loop", KAnim.PlayMode.Loop).Transition(ready.talking.chatting, (StatesInstance smi) => smi.CallAnswered(), UpdateRate.SIM_33ms).ToggleStatusItem(babbling);
-			ready.talking.chatting.PlayAnim("on_loop_pre").QueueAnim("on_loop", loop: true).Transition(ready.talking.babbling, (StatesInstance smi) => !smi.CallAnswered(), UpdateRate.SIM_33ms)
-				.ToggleStatusItem(partyLine);
-			ready.speaker.PlayAnim("on_loop_nobody", KAnim.PlayMode.Loop).Transition(ready, (StatesInstance smi) => !smi.CallAnswered(), UpdateRate.SIM_4000ms).Transition(ready.answer, (StatesInstance smi) => smi.GetComponent<Telephone>().isInUse, UpdateRate.SIM_33ms);
-			ready.hangup.OnAnimQueueComplete(ready);
+			this.ready.calling.pre.PlayAnim("on").Enter(delegate(Telephone.StatesInstance smi)
+			{
+				this.RingAllTelephones(smi);
+			}).OnAnimQueueComplete(this.ready.calling.wait);
+			this.ready.calling.wait.PlayAnim("on", KAnim.PlayMode.Loop).Transition(this.ready.talking.chatting, (Telephone.StatesInstance smi) => smi.CallAnswered(), UpdateRate.SIM_4000ms);
+			this.ready.ringing.PlayAnim("on_receiving", KAnim.PlayMode.Loop).Transition(this.ready.answer, (Telephone.StatesInstance smi) => smi.GetComponent<Telephone>().isInUse, UpdateRate.SIM_33ms).TagTransition(GameTags.TelephoneRinging, this.ready.speaker, true).ScheduleGoTo(15f, this.ready.speaker).Exit(delegate(Telephone.StatesInstance smi)
+			{
+				smi.GetComponent<Telephone>().RemoveTag(GameTags.TelephoneRinging);
+			});
+			this.ready.answer.PlayAnim("on_pre_loop_receiving").OnAnimQueueComplete(this.ready.talking.chatting);
+			this.ready.talking.ScheduleGoTo(25f, this.ready.hangup).Enter(delegate(Telephone.StatesInstance smi)
+			{
+				this.UpdatePartyLine(smi);
+			});
+			this.ready.talking.babbling.PlayAnim("on_loop", KAnim.PlayMode.Loop).Transition(this.ready.talking.chatting, (Telephone.StatesInstance smi) => smi.CallAnswered(), UpdateRate.SIM_33ms).ToggleStatusItem(Telephone.States.babbling, null);
+			this.ready.talking.chatting.PlayAnim("on_loop_pre").QueueAnim("on_loop", true, null).Transition(this.ready.talking.babbling, (Telephone.StatesInstance smi) => !smi.CallAnswered(), UpdateRate.SIM_33ms).ToggleStatusItem(Telephone.States.partyLine, null);
+			this.ready.speaker.PlayAnim("on_loop_nobody", KAnim.PlayMode.Loop).Transition(this.ready, (Telephone.StatesInstance smi) => !smi.CallAnswered(), UpdateRate.SIM_4000ms).Transition(this.ready.answer, (Telephone.StatesInstance smi) => smi.GetComponent<Telephone>().isInUse, UpdateRate.SIM_33ms);
+			this.ready.hangup.OnAnimQueueComplete(this.ready);
 		}
 
-		private Chore CreateChore(StatesInstance smi)
+		// Token: 0x060089EB RID: 35307 RVA: 0x00358F34 File Offset: 0x00357134
+		private Chore CreateChore(Telephone.StatesInstance smi)
 		{
 			Workable component = smi.master.GetComponent<TelephoneCallerWorkable>();
-			WorkChore<TelephoneCallerWorkable> workChore = new WorkChore<TelephoneCallerWorkable>(Db.Get().ChoreTypes.Relax, component, null, run_until_complete: true, null, null, null, allow_in_red_alert: false, Db.Get().ScheduleBlockTypes.Recreation, ignore_schedule_block: false, only_when_operational: true, null, is_preemptable: false, allow_in_context_menu: true, allow_prioritization: false, PriorityScreen.PriorityClass.high);
+			WorkChore<TelephoneCallerWorkable> workChore = new WorkChore<TelephoneCallerWorkable>(Db.Get().ChoreTypes.Relax, component, null, true, null, null, null, false, Db.Get().ScheduleBlockTypes.Recreation, false, true, null, false, true, false, PriorityScreen.PriorityClass.high, 5, false, true);
 			workChore.AddPrecondition(ChorePreconditions.instance.CanDoWorkerPrioritizable, component);
 			return workChore;
 		}
 
-		public void UpdatePartyLine(StatesInstance smi)
+		// Token: 0x060089EC RID: 35308 RVA: 0x00358F94 File Offset: 0x00357194
+		public void UpdatePartyLine(Telephone.StatesInstance smi)
 		{
 			int myWorldId = smi.GetMyWorldId();
 			bool flag = false;
-			foreach (Telephone item in Components.Telephones.Items)
+			foreach (Telephone telephone in Components.Telephones.Items)
 			{
-				item.RemoveTag(GameTags.TelephoneRinging);
-				if (item.isInUse && myWorldId != item.GetMyWorldId())
+				telephone.RemoveTag(GameTags.TelephoneRinging);
+				if (telephone.isInUse && myWorldId != telephone.GetMyWorldId())
 				{
 					flag = true;
-					item.AddTag(GameTags.LongDistanceCall);
+					telephone.AddTag(GameTags.LongDistanceCall);
 				}
 			}
 			Telephone component = smi.GetComponent<Telephone>();
@@ -125,40 +174,42 @@ public class Telephone : StateMachineComponent<Telephone.StatesInstance>, IGameO
 			}
 		}
 
-		public void RingAllTelephones(StatesInstance smi)
+		// Token: 0x060089ED RID: 35309 RVA: 0x0035903C File Offset: 0x0035723C
+		public void RingAllTelephones(Telephone.StatesInstance smi)
 		{
 			Telephone component = smi.master.GetComponent<Telephone>();
-			foreach (Telephone item in Components.Telephones.Items)
+			foreach (Telephone telephone in Components.Telephones.Items)
 			{
-				if (component != item && item.GetComponent<Operational>().IsOperational)
+				if (component != telephone && telephone.GetComponent<Operational>().IsOperational)
 				{
-					TelephoneCallerWorkable component2 = item.GetComponent<TelephoneCallerWorkable>();
+					TelephoneCallerWorkable component2 = telephone.GetComponent<TelephoneCallerWorkable>();
 					if (component2 != null && component2.worker == null)
 					{
-						item.AddTag(GameTags.TelephoneRinging);
+						telephone.AddTag(GameTags.TelephoneRinging);
 					}
 				}
 			}
 		}
 
+		// Token: 0x060089EE RID: 35310 RVA: 0x003590D8 File Offset: 0x003572D8
 		private static void CreateStatusItems()
 		{
-			if (partyLine == null)
+			if (Telephone.States.partyLine == null)
 			{
-				partyLine = new StatusItem("PartyLine", BUILDING.STATUSITEMS.TELEPHONE.CONVERSATION.TALKING_TO, "", "", StatusItem.IconType.Info, NotificationType.Neutral, allow_multiples: false, OverlayModes.None.ID);
-				partyLine.resolveStringCallback = delegate(string str, object obj)
+				Telephone.States.partyLine = new StatusItem("PartyLine", BUILDING.STATUSITEMS.TELEPHONE.CONVERSATION.TALKING_TO, "", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, 129022, true, null);
+				Telephone.States.partyLine.resolveStringCallback = delegate(string str, object obj)
 				{
-					Telephone component2 = ((StatesInstance)obj).GetComponent<Telephone>();
+					Telephone component = ((Telephone.StatesInstance)obj).GetComponent<Telephone>();
 					int num = 0;
-					foreach (Telephone item in Components.Telephones.Items)
+					foreach (Telephone telephone in Components.Telephones.Items)
 					{
-						if (item.isInUse && item != component2)
+						if (telephone.isInUse && telephone != component)
 						{
 							num++;
 							if (num == 1)
 							{
-								str = str.Replace("{Asteroid}", item.GetMyWorld().GetProperName());
-								str = str.Replace("{Duplicant}", item.GetComponent<TelephoneCallerWorkable>().worker.GetProperName());
+								str = str.Replace("{Asteroid}", telephone.GetMyWorld().GetProperName());
+								str = str.Replace("{Duplicant}", telephone.GetComponent<TelephoneCallerWorkable>().worker.GetProperName());
 							}
 						}
 					}
@@ -168,141 +219,134 @@ public class Telephone : StateMachineComponent<Telephone.StatesInstance>, IGameO
 					}
 					return str;
 				};
-				partyLine.resolveTooltipCallback = delegate(string str, object obj)
+				Telephone.States.partyLine.resolveTooltipCallback = delegate(string str, object obj)
 				{
-					Telephone component = ((StatesInstance)obj).GetComponent<Telephone>();
-					foreach (Telephone item2 in Components.Telephones.Items)
+					Telephone component = ((Telephone.StatesInstance)obj).GetComponent<Telephone>();
+					foreach (Telephone telephone in Components.Telephones.Items)
 					{
-						if (item2.isInUse && item2 != component)
+						if (telephone.isInUse && telephone != component)
 						{
 							string text = BUILDING.STATUSITEMS.TELEPHONE.CONVERSATION.TALKING_TO;
-							text = text.Replace("{Duplicant}", item2.GetComponent<TelephoneCallerWorkable>().worker.GetProperName());
-							text = text.Replace("{Asteroid}", item2.GetMyWorld().GetProperName());
+							text = text.Replace("{Duplicant}", telephone.GetComponent<TelephoneCallerWorkable>().worker.GetProperName());
+							text = text.Replace("{Asteroid}", telephone.GetMyWorld().GetProperName());
 							str = str + text + "\n";
 						}
 					}
 					return str;
 				};
 			}
-			if (babbling == null)
+			if (Telephone.States.babbling == null)
 			{
-				babbling = new StatusItem("Babbling", BUILDING.STATUSITEMS.TELEPHONE.BABBLE.NAME, BUILDING.STATUSITEMS.TELEPHONE.BABBLE.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.Neutral, allow_multiples: false, OverlayModes.None.ID);
-				babbling.resolveTooltipCallback = delegate(string str, object obj)
+				Telephone.States.babbling = new StatusItem("Babbling", BUILDING.STATUSITEMS.TELEPHONE.BABBLE.NAME, BUILDING.STATUSITEMS.TELEPHONE.BABBLE.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, 129022, true, null);
+				Telephone.States.babbling.resolveTooltipCallback = delegate(string str, object obj)
 				{
-					StatesInstance statesInstance = (StatesInstance)obj;
+					Telephone.StatesInstance statesInstance = (Telephone.StatesInstance)obj;
 					str = str.Replace("{Duplicant}", statesInstance.GetComponent<TelephoneCallerWorkable>().worker.GetProperName());
 					return str;
 				};
 			}
 		}
+
+		// Token: 0x040067C0 RID: 26560
+		private GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.State unoperational;
+
+		// Token: 0x040067C1 RID: 26561
+		private Telephone.States.ReadyStates ready;
+
+		// Token: 0x040067C2 RID: 26562
+		private static StatusItem partyLine;
+
+		// Token: 0x040067C3 RID: 26563
+		private static StatusItem babbling;
+
+		// Token: 0x020019DD RID: 6621
+		public class ReadyStates : GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.State
+		{
+			// Token: 0x040067C4 RID: 26564
+			public GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.State idle;
+
+			// Token: 0x040067C5 RID: 26565
+			public GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.State ringing;
+
+			// Token: 0x040067C6 RID: 26566
+			public GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.State answer;
+
+			// Token: 0x040067C7 RID: 26567
+			public GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.State speaker;
+
+			// Token: 0x040067C8 RID: 26568
+			public GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.State hangup;
+
+			// Token: 0x040067C9 RID: 26569
+			public Telephone.States.ReadyStates.CallingStates calling;
+
+			// Token: 0x040067CA RID: 26570
+			public Telephone.States.ReadyStates.TalkingStates talking;
+
+			// Token: 0x020019DE RID: 6622
+			public class CallingStates : GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.State
+			{
+				// Token: 0x040067CB RID: 26571
+				public GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.State dial;
+
+				// Token: 0x040067CC RID: 26572
+				public GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.State animHack;
+
+				// Token: 0x040067CD RID: 26573
+				public GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.State pre;
+
+				// Token: 0x040067CE RID: 26574
+				public GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.State wait;
+			}
+
+			// Token: 0x020019DF RID: 6623
+			public class TalkingStates : GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.State
+			{
+				// Token: 0x040067CF RID: 26575
+				public GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.State babbling;
+
+				// Token: 0x040067D0 RID: 26576
+				public GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.State chatting;
+			}
+		}
 	}
 
-	public class StatesInstance : GameStateMachine<States, StatesInstance, Telephone, object>.GameInstance
+	// Token: 0x020019E1 RID: 6625
+	public class StatesInstance : GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.GameInstance
 	{
-		public StatesInstance(Telephone smi)
-			: base(smi)
+		// Token: 0x06008A04 RID: 35332 RVA: 0x000FA638 File Offset: 0x000F8838
+		public StatesInstance(Telephone smi) : base(smi)
 		{
 		}
 
+		// Token: 0x06008A05 RID: 35333 RVA: 0x003593FC File Offset: 0x003575FC
 		public bool CallAnswered()
 		{
-			foreach (Telephone item in Components.Telephones.Items)
+			foreach (Telephone telephone in Components.Telephones.Items)
 			{
-				if (item.isInUse && item != base.smi.GetComponent<Telephone>())
+				if (telephone.isInUse && telephone != base.smi.GetComponent<Telephone>())
 				{
-					item.wasAnswered = true;
+					telephone.wasAnswered = true;
 					return true;
 				}
 			}
 			return false;
 		}
 
+		// Token: 0x06008A06 RID: 35334 RVA: 0x00359478 File Offset: 0x00357678
 		public bool CallEnded()
 		{
-			foreach (Telephone item in Components.Telephones.Items)
+			using (List<Telephone>.Enumerator enumerator = Components.Telephones.Items.GetEnumerator())
 			{
-				if (item.isInUse)
+				while (enumerator.MoveNext())
 				{
-					return false;
+					if (enumerator.Current.isInUse)
+					{
+						return false;
+					}
 				}
 			}
 			return true;
 		}
-	}
-
-	public string babbleEffect;
-
-	public string chatEffect;
-
-	public string longDistanceEffect;
-
-	public string trackingEffect;
-
-	public bool isInUse;
-
-	public bool wasAnswered;
-
-	protected override void OnSpawn()
-	{
-		base.OnSpawn();
-		base.smi.StartSM();
-		Components.Telephones.Add(this);
-		GameScheduler.Instance.Schedule("Scheduling Tutorial", 2f, delegate
-		{
-			Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_Schedule);
-		});
-	}
-
-	protected override void OnCleanUp()
-	{
-		Components.Telephones.Remove(this);
-		base.OnCleanUp();
-	}
-
-	public void AddModifierDescriptions(List<Descriptor> descs, string effect_id)
-	{
-		Effect effect = Db.Get().effects.Get(effect_id);
-		string text;
-		string text2;
-		if (effect.Id == babbleEffect)
-		{
-			text = BUILDINGS.PREFABS.TELEPHONE.EFFECT_BABBLE;
-			text2 = BUILDINGS.PREFABS.TELEPHONE.EFFECT_BABBLE_TOOLTIP;
-		}
-		else if (effect.Id == chatEffect)
-		{
-			text = BUILDINGS.PREFABS.TELEPHONE.EFFECT_CHAT;
-			text2 = BUILDINGS.PREFABS.TELEPHONE.EFFECT_CHAT_TOOLTIP;
-		}
-		else
-		{
-			text = BUILDINGS.PREFABS.TELEPHONE.EFFECT_LONG_DISTANCE;
-			text2 = BUILDINGS.PREFABS.TELEPHONE.EFFECT_LONG_DISTANCE_TOOLTIP;
-		}
-		foreach (AttributeModifier selfModifier in effect.SelfModifiers)
-		{
-			Descriptor item = new Descriptor(text.Replace("{attrib}", Strings.Get("STRINGS.DUPLICANTS.ATTRIBUTES." + selfModifier.AttributeId.ToUpper() + ".NAME")).Replace("{amount}", selfModifier.GetFormattedString()), text2.Replace("{attrib}", Strings.Get("STRINGS.DUPLICANTS.ATTRIBUTES." + selfModifier.AttributeId.ToUpper() + ".NAME")).Replace("{amount}", selfModifier.GetFormattedString()));
-			item.IncreaseIndent();
-			descs.Add(item);
-		}
-	}
-
-	List<Descriptor> IGameObjectEffectDescriptor.GetDescriptors(GameObject go)
-	{
-		List<Descriptor> list = new List<Descriptor>();
-		Descriptor item = default(Descriptor);
-		item.SetupDescriptor(UI.BUILDINGEFFECTS.RECREATION, UI.BUILDINGEFFECTS.TOOLTIPS.RECREATION);
-		list.Add(item);
-		AddModifierDescriptions(list, babbleEffect);
-		AddModifierDescriptions(list, chatEffect);
-		AddModifierDescriptions(list, longDistanceEffect);
-		return list;
-	}
-
-	public void HangUp()
-	{
-		isInUse = false;
-		wasAnswered = false;
-		this.RemoveTag(GameTags.LongDistanceCall);
 	}
 }

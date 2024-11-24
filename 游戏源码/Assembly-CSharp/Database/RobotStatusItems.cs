@@ -1,88 +1,111 @@
+﻿using System;
 using UnityEngine;
 
-namespace Database;
-
-public class RobotStatusItems : StatusItems
+namespace Database
 {
-	public StatusItem LowBattery;
-
-	public StatusItem LowBatteryNoCharge;
-
-	public StatusItem DeadBattery;
-
-	public StatusItem CantReachStation;
-
-	public StatusItem DustBinFull;
-
-	public StatusItem Working;
-
-	public StatusItem UnloadingStorage;
-
-	public StatusItem ReactPositive;
-
-	public StatusItem ReactNegative;
-
-	public StatusItem MovingToChargeStation;
-
-	public RobotStatusItems(ResourceSet parent)
-		: base("RobotStatusItems", parent)
+	// Token: 0x0200215C RID: 8540
+	public class RobotStatusItems : StatusItems
 	{
-		CreateStatusItems();
-	}
+		// Token: 0x0600B5C9 RID: 46537 RVA: 0x0011538B File Offset: 0x0011358B
+		public RobotStatusItems(ResourceSet parent) : base("RobotStatusItems", parent)
+		{
+			this.CreateStatusItems();
+		}
 
-	private void CreateStatusItems()
-	{
-		CantReachStation = new StatusItem("CantReachStation", "ROBOTS", "status_item_exclamation", StatusItem.IconType.Custom, NotificationType.BadMinor, allow_multiples: false, OverlayModes.None.ID, showWorldIcon: false);
-		CantReachStation.resolveStringCallback = delegate(string str, object data)
+		// Token: 0x0600B5CA RID: 46538 RVA: 0x0045370C File Offset: 0x0045190C
+		private void CreateStatusItems()
 		{
-			GameObject go8 = (GameObject)data;
-			return str.Replace("{0}", go8.GetProperName());
-		};
-		LowBattery = new StatusItem("LowBattery", "ROBOTS", "status_item_need_power", StatusItem.IconType.Custom, NotificationType.BadMinor, allow_multiples: false, OverlayModes.None.ID, showWorldIcon: false);
-		LowBattery.resolveStringCallback = delegate(string str, object data)
-		{
-			GameObject go7 = (GameObject)data;
-			return str.Replace("{0}", go7.GetProperName());
-		};
-		LowBatteryNoCharge = new StatusItem("LowBatteryNoCharge", "ROBOTS", "status_item_need_power", StatusItem.IconType.Custom, NotificationType.BadMinor, allow_multiples: false, OverlayModes.None.ID, showWorldIcon: false);
-		LowBatteryNoCharge.resolveStringCallback = delegate(string str, object data)
-		{
-			GameObject go6 = (GameObject)data;
-			return str.Replace("{0}", go6.GetProperName());
-		};
-		DeadBattery = new StatusItem("DeadBattery", "ROBOTS", "status_item_need_power", StatusItem.IconType.Custom, NotificationType.BadMinor, allow_multiples: false, OverlayModes.None.ID, showWorldIcon: false);
-		DeadBattery.resolveStringCallback = delegate(string str, object data)
-		{
-			GameObject go5 = (GameObject)data;
-			return str.Replace("{0}", go5.GetProperName());
-		};
-		DustBinFull = new StatusItem("DustBinFull", "ROBOTS", "status_item_pending_clear", StatusItem.IconType.Custom, NotificationType.Neutral, allow_multiples: false, OverlayModes.None.ID, showWorldIcon: false);
-		DustBinFull.resolveStringCallback = delegate(string str, object data)
-		{
-			GameObject go4 = (GameObject)data;
-			return str.Replace("{0}", go4.GetProperName());
-		};
-		Working = new StatusItem("Working", "ROBOTS", "", StatusItem.IconType.Info, NotificationType.Neutral, allow_multiples: false, OverlayModes.None.ID, showWorldIcon: false);
-		Working.resolveStringCallback = delegate(string str, object data)
-		{
-			GameObject go3 = (GameObject)data;
-			return str.Replace("{0}", go3.GetProperName());
-		};
-		MovingToChargeStation = new StatusItem("MovingToChargeStation", "ROBOTS", "", StatusItem.IconType.Info, NotificationType.Neutral, allow_multiples: false, OverlayModes.None.ID, showWorldIcon: false);
-		MovingToChargeStation.resolveStringCallback = delegate(string str, object data)
-		{
-			GameObject go2 = (GameObject)data;
-			return str.Replace("{0}", go2.GetProperName());
-		};
-		UnloadingStorage = new StatusItem("UnloadingStorage", "ROBOTS", "", StatusItem.IconType.Info, NotificationType.Neutral, allow_multiples: false, OverlayModes.None.ID, showWorldIcon: false);
-		UnloadingStorage.resolveStringCallback = delegate(string str, object data)
-		{
-			GameObject go = (GameObject)data;
-			return str.Replace("{0}", go.GetProperName());
-		};
-		ReactPositive = new StatusItem("ReactPositive", "ROBOTS", "", StatusItem.IconType.Info, NotificationType.Neutral, allow_multiples: false, OverlayModes.None.ID, showWorldIcon: false);
-		ReactPositive.resolveStringCallback = (string str, object data) => str;
-		ReactNegative = new StatusItem("ReactNegative", "ROBOTS", "", StatusItem.IconType.Info, NotificationType.Neutral, allow_multiples: false, OverlayModes.None.ID, showWorldIcon: false);
-		ReactNegative.resolveStringCallback = (string str, object data) => str;
+			this.CantReachStation = new StatusItem("CantReachStation", "ROBOTS", "status_item_exclamation", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, false, 129022, null);
+			this.CantReachStation.resolveStringCallback = delegate(string str, object data)
+			{
+				GameObject go = (GameObject)data;
+				return str.Replace("{0}", go.GetProperName());
+			};
+			this.LowBattery = new StatusItem("LowBattery", "ROBOTS", "status_item_need_power", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, false, 129022, null);
+			this.LowBattery.resolveStringCallback = delegate(string str, object data)
+			{
+				GameObject go = (GameObject)data;
+				return str.Replace("{0}", go.GetProperName());
+			};
+			this.LowBatteryNoCharge = new StatusItem("LowBatteryNoCharge", "ROBOTS", "status_item_need_power", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, false, 129022, null);
+			this.LowBatteryNoCharge.resolveStringCallback = delegate(string str, object data)
+			{
+				GameObject go = (GameObject)data;
+				return str.Replace("{0}", go.GetProperName());
+			};
+			this.DeadBattery = new StatusItem("DeadBattery", "ROBOTS", "status_item_need_power", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, false, 129022, null);
+			this.DeadBattery.resolveStringCallback = delegate(string str, object data)
+			{
+				GameObject go = (GameObject)data;
+				return str.Replace("{0}", go.GetProperName());
+			};
+			this.DeadBatteryFlydo = new StatusItem("DeadBatteryFlydo", "ROBOTS", "status_item_need_power", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, false, 129022, null);
+			this.DeadBatteryFlydo.resolveStringCallback = delegate(string str, object data)
+			{
+				GameObject go = (GameObject)data;
+				return str.Replace("{0}", go.GetProperName());
+			};
+			this.DustBinFull = new StatusItem("DustBinFull", "ROBOTS", "status_item_pending_clear", StatusItem.IconType.Custom, NotificationType.Neutral, false, OverlayModes.None.ID, false, 129022, null);
+			this.DustBinFull.resolveStringCallback = delegate(string str, object data)
+			{
+				GameObject go = (GameObject)data;
+				return str.Replace("{0}", go.GetProperName());
+			};
+			this.Working = new StatusItem("Working", "ROBOTS", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, false, 129022, null);
+			this.Working.resolveStringCallback = delegate(string str, object data)
+			{
+				GameObject go = (GameObject)data;
+				return str.Replace("{0}", go.GetProperName());
+			};
+			this.MovingToChargeStation = new StatusItem("MovingToChargeStation", "ROBOTS", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, false, 129022, null);
+			this.MovingToChargeStation.resolveStringCallback = delegate(string str, object data)
+			{
+				GameObject go = (GameObject)data;
+				return str.Replace("{0}", go.GetProperName());
+			};
+			this.UnloadingStorage = new StatusItem("UnloadingStorage", "ROBOTS", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, false, 129022, null);
+			this.UnloadingStorage.resolveStringCallback = delegate(string str, object data)
+			{
+				GameObject go = (GameObject)data;
+				return str.Replace("{0}", go.GetProperName());
+			};
+			this.ReactPositive = new StatusItem("ReactPositive", "ROBOTS", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, false, 129022, null);
+			this.ReactPositive.resolveStringCallback = ((string str, object data) => str);
+			this.ReactNegative = new StatusItem("ReactNegative", "ROBOTS", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, false, 129022, null);
+			this.ReactNegative.resolveStringCallback = ((string str, object data) => str);
+		}
+
+		// Token: 0x040093DE RID: 37854
+		public StatusItem LowBattery;
+
+		// Token: 0x040093DF RID: 37855
+		public StatusItem LowBatteryNoCharge;
+
+		// Token: 0x040093E0 RID: 37856
+		public StatusItem DeadBattery;
+
+		// Token: 0x040093E1 RID: 37857
+		public StatusItem DeadBatteryFlydo;
+
+		// Token: 0x040093E2 RID: 37858
+		public StatusItem CantReachStation;
+
+		// Token: 0x040093E3 RID: 37859
+		public StatusItem DustBinFull;
+
+		// Token: 0x040093E4 RID: 37860
+		public StatusItem Working;
+
+		// Token: 0x040093E5 RID: 37861
+		public StatusItem UnloadingStorage;
+
+		// Token: 0x040093E6 RID: 37862
+		public StatusItem ReactPositive;
+
+		// Token: 0x040093E7 RID: 37863
+		public StatusItem ReactNegative;
+
+		// Token: 0x040093E8 RID: 37864
+		public StatusItem MovingToChargeStation;
 	}
 }

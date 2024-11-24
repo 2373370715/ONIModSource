@@ -1,210 +1,186 @@
+﻿using System;
 using System.Collections.Generic;
 using FMODUnity;
 using KSerialization;
+using UnityEngine;
 
+// Token: 0x02001915 RID: 6421
 public class PassengerRocketModule : KMonoBehaviour
 {
-	public enum RequestCrewState
+	// Token: 0x170008D5 RID: 2261
+	// (get) Token: 0x060085C3 RID: 34243 RVA: 0x000F7AC7 File Offset: 0x000F5CC7
+	public PassengerRocketModule.RequestCrewState PassengersRequested
 	{
-		Release,
-		Request
+		get
+		{
+			return this.passengersRequested;
+		}
 	}
 
-	public EventReference interiorReverbSnapshot;
-
-	[Serialize]
-	private RequestCrewState passengersRequested;
-
-	private static readonly EventSystem.IntraObjectHandler<PassengerRocketModule> OnRocketOnGroundTagDelegate = GameUtil.CreateHasTagHandler(GameTags.RocketOnGround, delegate(PassengerRocketModule component, object data)
-	{
-		component.RequestCrewBoard(RequestCrewState.Release);
-	});
-
-	private static readonly EventSystem.IntraObjectHandler<PassengerRocketModule> OnClustercraftStateChanged = new EventSystem.IntraObjectHandler<PassengerRocketModule>(delegate(PassengerRocketModule cmp, object data)
-	{
-		cmp.RefreshClusterStateForAudio();
-	});
-
-	private static EventSystem.IntraObjectHandler<PassengerRocketModule> RefreshDelegate = new EventSystem.IntraObjectHandler<PassengerRocketModule>(delegate(PassengerRocketModule cmp, object data)
-	{
-		cmp.RefreshOrders();
-		cmp.RefreshClusterStateForAudio();
-	});
-
-	private static EventSystem.IntraObjectHandler<PassengerRocketModule> OnLaunchDelegate = new EventSystem.IntraObjectHandler<PassengerRocketModule>(delegate(PassengerRocketModule component, object data)
-	{
-		component.ClearMinionAssignments(data);
-	});
-
-	private static readonly EventSystem.IntraObjectHandler<PassengerRocketModule> OnReachableChangedDelegate = new EventSystem.IntraObjectHandler<PassengerRocketModule>(delegate(PassengerRocketModule component, object data)
-	{
-		component.OnReachableChanged(data);
-	});
-
-	public RequestCrewState PassengersRequested => passengersRequested;
-
+	// Token: 0x060085C4 RID: 34244 RVA: 0x0034995C File Offset: 0x00347B5C
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		Game.Instance.Subscribe(-1123234494, OnAssignmentGroupChanged);
-		GameUtil.SubscribeToTags(this, OnRocketOnGroundTagDelegate, triggerImmediately: false);
-		Subscribe(-1547247383, OnClustercraftStateChanged);
-		Subscribe(1655598572, RefreshDelegate);
-		Subscribe(191901966, RefreshDelegate);
-		Subscribe(-71801987, RefreshDelegate);
-		Subscribe(-1277991738, OnLaunchDelegate);
-		Subscribe(-1432940121, OnReachableChangedDelegate);
-		new ReachabilityMonitor.Instance(GetComponent<Workable>()).StartSM();
+		Game.Instance.Subscribe(-1123234494, new Action<object>(this.OnAssignmentGroupChanged));
+		GameUtil.SubscribeToTags<PassengerRocketModule>(this, PassengerRocketModule.OnRocketOnGroundTagDelegate, false);
+		base.Subscribe<PassengerRocketModule>(-1547247383, PassengerRocketModule.OnClustercraftStateChanged);
+		base.Subscribe<PassengerRocketModule>(1655598572, PassengerRocketModule.RefreshDelegate);
+		base.Subscribe<PassengerRocketModule>(191901966, PassengerRocketModule.RefreshDelegate);
+		base.Subscribe<PassengerRocketModule>(-71801987, PassengerRocketModule.RefreshDelegate);
+		base.Subscribe<PassengerRocketModule>(-1277991738, PassengerRocketModule.OnLaunchDelegate);
+		base.Subscribe<PassengerRocketModule>(-1432940121, PassengerRocketModule.OnReachableChangedDelegate);
+		new ReachabilityMonitor.Instance(base.GetComponent<Workable>()).StartSM();
 	}
 
+	// Token: 0x060085C5 RID: 34245 RVA: 0x000F7ACF File Offset: 0x000F5CCF
 	protected override void OnCleanUp()
 	{
-		Game.Instance.Unsubscribe(-1123234494, OnAssignmentGroupChanged);
+		Game.Instance.Unsubscribe(-1123234494, new Action<object>(this.OnAssignmentGroupChanged));
 		base.OnCleanUp();
 	}
 
+	// Token: 0x060085C6 RID: 34246 RVA: 0x000F7AF2 File Offset: 0x000F5CF2
 	private void OnAssignmentGroupChanged(object data)
 	{
-		RefreshOrders();
+		this.RefreshOrders();
 	}
 
+	// Token: 0x060085C7 RID: 34247 RVA: 0x00349A10 File Offset: 0x00347C10
 	private void RefreshClusterStateForAudio()
 	{
-		if (!(ClusterManager.Instance != null))
+		if (ClusterManager.Instance != null)
 		{
-			return;
-		}
-		WorldContainer activeWorld = ClusterManager.Instance.activeWorld;
-		if (activeWorld != null && activeWorld.IsModuleInterior)
-		{
-			CraftModuleInterface craftInterface = GetComponent<RocketModuleCluster>().CraftInterface;
-			Clustercraft component = activeWorld.GetComponent<Clustercraft>();
-			if (craftInterface == component.ModuleInterface)
+			WorldContainer activeWorld = ClusterManager.Instance.activeWorld;
+			if (activeWorld != null && activeWorld.IsModuleInterior)
 			{
-				ClusterManager.Instance.UpdateRocketInteriorAudio();
+				UnityEngine.Object craftInterface = base.GetComponent<RocketModuleCluster>().CraftInterface;
+				Clustercraft component = activeWorld.GetComponent<Clustercraft>();
+				if (craftInterface == component.ModuleInterface)
+				{
+					ClusterManager.Instance.UpdateRocketInteriorAudio();
+				}
 			}
 		}
 	}
 
+	// Token: 0x060085C8 RID: 34248 RVA: 0x00349A70 File Offset: 0x00347C70
 	private void OnReachableChanged(object data)
 	{
-		bool num = (bool)data;
-		KSelectable component = GetComponent<KSelectable>();
-		if (num)
+		bool flag = (bool)data;
+		KSelectable component = base.GetComponent<KSelectable>();
+		if (flag)
 		{
-			component.RemoveStatusItem(Db.Get().BuildingStatusItems.PassengerModuleUnreachable);
+			component.RemoveStatusItem(Db.Get().BuildingStatusItems.PassengerModuleUnreachable, false);
+			return;
 		}
-		else
-		{
-			component.AddStatusItem(Db.Get().BuildingStatusItems.PassengerModuleUnreachable, this);
-		}
+		component.AddStatusItem(Db.Get().BuildingStatusItems.PassengerModuleUnreachable, this);
 	}
 
-	public void RequestCrewBoard(RequestCrewState requestBoard)
+	// Token: 0x060085C9 RID: 34249 RVA: 0x000F7AFA File Offset: 0x000F5CFA
+	public void RequestCrewBoard(PassengerRocketModule.RequestCrewState requestBoard)
 	{
-		passengersRequested = requestBoard;
-		RefreshOrders();
+		this.passengersRequested = requestBoard;
+		this.RefreshOrders();
 	}
 
+	// Token: 0x060085CA RID: 34250 RVA: 0x00349ABC File Offset: 0x00347CBC
 	public bool ShouldCrewGetIn()
 	{
-		CraftModuleInterface craftInterface = GetComponent<RocketModuleCluster>().CraftInterface;
-		if (passengersRequested != RequestCrewState.Request)
-		{
-			if (craftInterface.IsLaunchRequested())
-			{
-				return craftInterface.CheckPreppedForLaunch();
-			}
-			return false;
-		}
-		return true;
+		CraftModuleInterface craftInterface = base.GetComponent<RocketModuleCluster>().CraftInterface;
+		return this.passengersRequested == PassengerRocketModule.RequestCrewState.Request || (craftInterface.IsLaunchRequested() && craftInterface.CheckPreppedForLaunch());
 	}
 
+	// Token: 0x060085CB RID: 34251 RVA: 0x00349AF0 File Offset: 0x00347CF0
 	private void RefreshOrders()
 	{
-		if (!this.HasTag(GameTags.RocketOnGround) || !GetComponent<ClustercraftExteriorDoor>().HasTargetWorld())
+		if (!this.HasTag(GameTags.RocketOnGround) || !base.GetComponent<ClustercraftExteriorDoor>().HasTargetWorld())
 		{
 			return;
 		}
-		int cell = GetComponent<NavTeleporter>().GetCell();
-		int num = GetComponent<ClustercraftExteriorDoor>().TargetCell();
-		bool flag = ShouldCrewGetIn();
+		int cell = base.GetComponent<NavTeleporter>().GetCell();
+		int num = base.GetComponent<ClustercraftExteriorDoor>().TargetCell();
+		bool flag = this.ShouldCrewGetIn();
 		if (flag)
 		{
-			foreach (MinionIdentity item in Components.LiveMinionIdentities.Items)
+			using (List<MinionIdentity>.Enumerator enumerator = Components.LiveMinionIdentities.Items.GetEnumerator())
 			{
-				bool flag2 = Game.Instance.assignmentManager.assignment_groups[GetComponent<AssignmentGroupController>().AssignmentGroupID].HasMember(item.assignableProxy.Get());
-				bool flag3 = item.GetMyWorldId() == Grid.WorldIdx[num];
-				if (!flag3 && flag2)
+				while (enumerator.MoveNext())
 				{
-					item.GetSMI<RocketPassengerMonitor.Instance>().SetMoveTarget(num);
+					MinionIdentity minionIdentity = enumerator.Current;
+					bool flag2 = Game.Instance.assignmentManager.assignment_groups[base.GetComponent<AssignmentGroupController>().AssignmentGroupID].HasMember(minionIdentity.assignableProxy.Get());
+					bool flag3 = minionIdentity.GetMyWorldId() == (int)Grid.WorldIdx[num];
+					if (!flag3 && flag2)
+					{
+						minionIdentity.GetSMI<RocketPassengerMonitor.Instance>().SetMoveTarget(num);
+					}
+					else if (flag3 && !flag2)
+					{
+						minionIdentity.GetSMI<RocketPassengerMonitor.Instance>().SetMoveTarget(cell);
+					}
+					else
+					{
+						minionIdentity.GetSMI<RocketPassengerMonitor.Instance>().ClearMoveTarget(num);
+					}
 				}
-				else if (flag3 && !flag2)
-				{
-					item.GetSMI<RocketPassengerMonitor.Instance>().SetMoveTarget(cell);
-				}
-				else
-				{
-					item.GetSMI<RocketPassengerMonitor.Instance>().ClearMoveTarget(num);
-				}
+				goto IL_148;
 			}
 		}
-		else
+		foreach (MinionIdentity cmp in Components.LiveMinionIdentities.Items)
 		{
-			foreach (MinionIdentity item2 in Components.LiveMinionIdentities.Items)
+			RocketPassengerMonitor.Instance smi = cmp.GetSMI<RocketPassengerMonitor.Instance>();
+			if (smi != null)
 			{
-				item2.GetSMI<RocketPassengerMonitor.Instance>().ClearMoveTarget(cell);
-				item2.GetSMI<RocketPassengerMonitor.Instance>().ClearMoveTarget(num);
+				smi.ClearMoveTarget(cell);
+				smi.ClearMoveTarget(num);
 			}
 		}
+		IL_148:
 		for (int i = 0; i < Components.LiveMinionIdentities.Count; i++)
 		{
-			RefreshAccessStatus(Components.LiveMinionIdentities[i], flag);
+			this.RefreshAccessStatus(Components.LiveMinionIdentities[i], flag);
 		}
 	}
 
+	// Token: 0x060085CC RID: 34252 RVA: 0x00349C90 File Offset: 0x00347E90
 	private void RefreshAccessStatus(MinionIdentity minion, bool restrict)
 	{
-		ClustercraftInteriorDoor interiorDoor = GetComponent<ClustercraftExteriorDoor>().GetInteriorDoor();
-		AccessControl component = GetComponent<AccessControl>();
+		Component interiorDoor = base.GetComponent<ClustercraftExteriorDoor>().GetInteriorDoor();
+		AccessControl component = base.GetComponent<AccessControl>();
 		AccessControl component2 = interiorDoor.GetComponent<AccessControl>();
-		if (restrict)
-		{
-			if (Game.Instance.assignmentManager.assignment_groups[GetComponent<AssignmentGroupController>().AssignmentGroupID].HasMember(minion.assignableProxy.Get()))
-			{
-				component.SetPermission(minion.assignableProxy.Get(), AccessControl.Permission.Both);
-				component2.SetPermission(minion.assignableProxy.Get(), AccessControl.Permission.Neither);
-			}
-			else
-			{
-				component.SetPermission(minion.assignableProxy.Get(), AccessControl.Permission.Neither);
-				component2.SetPermission(minion.assignableProxy.Get(), AccessControl.Permission.Both);
-			}
-		}
-		else
+		if (!restrict)
 		{
 			component.SetPermission(minion.assignableProxy.Get(), AccessControl.Permission.Both);
 			component2.SetPermission(minion.assignableProxy.Get(), AccessControl.Permission.Both);
+			return;
 		}
+		if (Game.Instance.assignmentManager.assignment_groups[base.GetComponent<AssignmentGroupController>().AssignmentGroupID].HasMember(minion.assignableProxy.Get()))
+		{
+			component.SetPermission(minion.assignableProxy.Get(), AccessControl.Permission.Both);
+			component2.SetPermission(minion.assignableProxy.Get(), AccessControl.Permission.Neither);
+			return;
+		}
+		component.SetPermission(minion.assignableProxy.Get(), AccessControl.Permission.Neither);
+		component2.SetPermission(minion.assignableProxy.Get(), AccessControl.Permission.Both);
 	}
 
+	// Token: 0x060085CD RID: 34253 RVA: 0x00349D58 File Offset: 0x00347F58
 	public bool CheckPilotBoarded()
 	{
-		ICollection<IAssignableIdentity> members = GetComponent<AssignmentGroupController>().GetMembers();
+		ICollection<IAssignableIdentity> members = base.GetComponent<AssignmentGroupController>().GetMembers();
 		if (members.Count == 0)
 		{
 			return false;
 		}
 		List<IAssignableIdentity> list = new List<IAssignableIdentity>();
-		foreach (IAssignableIdentity item in members)
+		foreach (IAssignableIdentity assignableIdentity in members)
 		{
-			MinionAssignablesProxy minionAssignablesProxy = (MinionAssignablesProxy)item;
+			MinionAssignablesProxy minionAssignablesProxy = (MinionAssignablesProxy)assignableIdentity;
 			if (minionAssignablesProxy != null)
 			{
 				MinionResume component = minionAssignablesProxy.GetTargetGameObject().GetComponent<MinionResume>();
 				if (component != null && component.HasPerk(Db.Get().SkillPerks.CanUseRocketControlStation))
 				{
-					list.Add(item);
+					list.Add(assignableIdentity);
 				}
 			}
 		}
@@ -212,76 +188,98 @@ public class PassengerRocketModule : KMonoBehaviour
 		{
 			return false;
 		}
-		foreach (MinionAssignablesProxy item2 in list)
+		using (List<IAssignableIdentity>.Enumerator enumerator2 = list.GetEnumerator())
 		{
-			if (item2.GetTargetGameObject().GetMyWorldId() == Grid.WorldIdx[GetComponent<ClustercraftExteriorDoor>().TargetCell()])
+			while (enumerator2.MoveNext())
 			{
-				return true;
+				if (((MinionAssignablesProxy)enumerator2.Current).GetTargetGameObject().GetMyWorldId() == (int)Grid.WorldIdx[base.GetComponent<ClustercraftExteriorDoor>().TargetCell()])
+				{
+					return true;
+				}
 			}
 		}
 		return false;
 	}
 
-	public Tuple<int, int> GetCrewBoardedFraction()
+	// Token: 0x060085CE RID: 34254 RVA: 0x00349E6C File Offset: 0x0034806C
+	public global::Tuple<int, int> GetCrewBoardedFraction()
 	{
-		ICollection<IAssignableIdentity> members = GetComponent<AssignmentGroupController>().GetMembers();
+		ICollection<IAssignableIdentity> members = base.GetComponent<AssignmentGroupController>().GetMembers();
 		if (members.Count == 0)
 		{
-			return new Tuple<int, int>(0, 0);
+			return new global::Tuple<int, int>(0, 0);
 		}
 		int num = 0;
-		foreach (MinionAssignablesProxy item in members)
+		using (IEnumerator<IAssignableIdentity> enumerator = members.GetEnumerator())
 		{
-			if (item.GetTargetGameObject().GetMyWorldId() != Grid.WorldIdx[GetComponent<ClustercraftExteriorDoor>().TargetCell()])
+			while (enumerator.MoveNext())
 			{
-				num++;
-			}
-		}
-		return new Tuple<int, int>(members.Count - num, members.Count);
-	}
-
-	public bool CheckPassengersBoarded()
-	{
-		ICollection<IAssignableIdentity> members = GetComponent<AssignmentGroupController>().GetMembers();
-		if (members.Count == 0)
-		{
-			return false;
-		}
-		bool flag = false;
-		foreach (MinionAssignablesProxy item in members)
-		{
-			if (item != null)
-			{
-				MinionResume component = item.GetTargetGameObject().GetComponent<MinionResume>();
-				if (component != null && component.HasPerk(Db.Get().SkillPerks.CanUseRocketControlStation))
+				if (((MinionAssignablesProxy)enumerator.Current).GetTargetGameObject().GetMyWorldId() != (int)Grid.WorldIdx[base.GetComponent<ClustercraftExteriorDoor>().TargetCell()])
 				{
-					flag = true;
-					break;
+					num++;
 				}
 			}
 		}
-		if (!flag)
+		return new global::Tuple<int, int>(members.Count - num, members.Count);
+	}
+
+	// Token: 0x060085CF RID: 34255 RVA: 0x000F7B09 File Offset: 0x000F5D09
+	public bool HasCrewAssigned()
+	{
+		return ((ICollection<IAssignableIdentity>)base.GetComponent<AssignmentGroupController>().GetMembers()).Count > 0;
+	}
+
+	// Token: 0x060085D0 RID: 34256 RVA: 0x00349F04 File Offset: 0x00348104
+	public bool CheckPassengersBoarded(bool require_pilot = true)
+	{
+		ICollection<IAssignableIdentity> members = base.GetComponent<AssignmentGroupController>().GetMembers();
+		if (members.Count == 0)
 		{
 			return false;
 		}
-		foreach (MinionAssignablesProxy item2 in members)
+		if (require_pilot)
 		{
-			if (item2.GetTargetGameObject().GetMyWorldId() != Grid.WorldIdx[GetComponent<ClustercraftExteriorDoor>().TargetCell()])
+			bool flag = false;
+			foreach (IAssignableIdentity assignableIdentity in members)
+			{
+				MinionAssignablesProxy minionAssignablesProxy = (MinionAssignablesProxy)assignableIdentity;
+				if (minionAssignablesProxy != null)
+				{
+					MinionResume component = minionAssignablesProxy.GetTargetGameObject().GetComponent<MinionResume>();
+					if (component != null && component.HasPerk(Db.Get().SkillPerks.CanUseRocketControlStation))
+					{
+						flag = true;
+						break;
+					}
+				}
+			}
+			if (!flag)
 			{
 				return false;
+			}
+		}
+		using (IEnumerator<IAssignableIdentity> enumerator = members.GetEnumerator())
+		{
+			while (enumerator.MoveNext())
+			{
+				if (((MinionAssignablesProxy)enumerator.Current).GetTargetGameObject().GetMyWorldId() != (int)Grid.WorldIdx[base.GetComponent<ClustercraftExteriorDoor>().TargetCell()])
+				{
+					return false;
+				}
 			}
 		}
 		return true;
 	}
 
+	// Token: 0x060085D1 RID: 34257 RVA: 0x0034A000 File Offset: 0x00348200
 	public bool CheckExtraPassengers()
 	{
-		ClustercraftExteriorDoor component = GetComponent<ClustercraftExteriorDoor>();
+		ClustercraftExteriorDoor component = base.GetComponent<ClustercraftExteriorDoor>();
 		if (component.HasTargetWorld())
 		{
 			byte worldId = Grid.WorldIdx[component.TargetCell()];
-			List<MinionIdentity> worldItems = Components.LiveMinionIdentities.GetWorldItems(worldId);
-			string assignmentGroupID = GetComponent<AssignmentGroupController>().AssignmentGroupID;
+			List<MinionIdentity> worldItems = Components.LiveMinionIdentities.GetWorldItems((int)worldId, false);
+			string assignmentGroupID = base.GetComponent<AssignmentGroupController>().AssignmentGroupID;
 			for (int i = 0; i < worldItems.Count; i++)
 			{
 				if (!Game.Instance.assignmentManager.assignment_groups[assignmentGroupID].HasMember(worldItems[i].assignableProxy.Get()))
@@ -293,45 +291,94 @@ public class PassengerRocketModule : KMonoBehaviour
 		return false;
 	}
 
+	// Token: 0x060085D2 RID: 34258 RVA: 0x0034A088 File Offset: 0x00348288
 	public void RemoveRocketPassenger(MinionIdentity minion)
 	{
 		if (minion != null)
 		{
-			string assignmentGroupID = GetComponent<AssignmentGroupController>().AssignmentGroupID;
+			string assignmentGroupID = base.GetComponent<AssignmentGroupController>().AssignmentGroupID;
 			MinionAssignablesProxy member = minion.assignableProxy.Get();
 			if (Game.Instance.assignmentManager.assignment_groups[assignmentGroupID].HasMember(member))
 			{
 				Game.Instance.assignmentManager.assignment_groups[assignmentGroupID].RemoveMember(member);
 			}
-			RefreshOrders();
+			this.RefreshOrders();
 		}
 	}
 
+	// Token: 0x060085D3 RID: 34259 RVA: 0x0034A0F4 File Offset: 0x003482F4
 	public void RemovePassengersOnOtherWorlds()
 	{
-		ClustercraftExteriorDoor component = GetComponent<ClustercraftExteriorDoor>();
-		if (!component.HasTargetWorld())
+		ClustercraftExteriorDoor component = base.GetComponent<ClustercraftExteriorDoor>();
+		if (component.HasTargetWorld())
 		{
-			return;
-		}
-		int myWorldId = component.GetMyWorldId();
-		string assignmentGroupID = GetComponent<AssignmentGroupController>().AssignmentGroupID;
-		foreach (MinionIdentity item in Components.LiveMinionIdentities.Items)
-		{
-			MinionAssignablesProxy member = item.assignableProxy.Get();
-			if (Game.Instance.assignmentManager.assignment_groups[assignmentGroupID].HasMember(member) && item.GetMyParentWorldId() != myWorldId)
+			int myWorldId = component.GetMyWorldId();
+			string assignmentGroupID = base.GetComponent<AssignmentGroupController>().AssignmentGroupID;
+			foreach (MinionIdentity minionIdentity in Components.LiveMinionIdentities.Items)
 			{
-				Game.Instance.assignmentManager.assignment_groups[assignmentGroupID].RemoveMember(member);
+				MinionAssignablesProxy member = minionIdentity.assignableProxy.Get();
+				if (Game.Instance.assignmentManager.assignment_groups[assignmentGroupID].HasMember(member) && minionIdentity.GetMyParentWorldId() != myWorldId)
+				{
+					Game.Instance.assignmentManager.assignment_groups[assignmentGroupID].RemoveMember(member);
+				}
 			}
 		}
 	}
 
+	// Token: 0x060085D4 RID: 34260 RVA: 0x0034A1BC File Offset: 0x003483BC
 	public void ClearMinionAssignments(object data)
 	{
-		string assignmentGroupID = GetComponent<AssignmentGroupController>().AssignmentGroupID;
-		foreach (IAssignableIdentity member in Game.Instance.assignmentManager.assignment_groups[assignmentGroupID].GetMembers())
+		string assignmentGroupID = base.GetComponent<AssignmentGroupController>().AssignmentGroupID;
+		foreach (IAssignableIdentity minionIdentity in Game.Instance.assignmentManager.assignment_groups[assignmentGroupID].GetMembers())
 		{
-			Game.Instance.assignmentManager.RemoveFromWorld(member, this.GetMyWorldId());
+			Game.Instance.assignmentManager.RemoveFromWorld(minionIdentity, this.GetMyWorldId());
 		}
+	}
+
+	// Token: 0x04006504 RID: 25860
+	public EventReference interiorReverbSnapshot;
+
+	// Token: 0x04006505 RID: 25861
+	[Serialize]
+	private PassengerRocketModule.RequestCrewState passengersRequested;
+
+	// Token: 0x04006506 RID: 25862
+	private static readonly EventSystem.IntraObjectHandler<PassengerRocketModule> OnRocketOnGroundTagDelegate = GameUtil.CreateHasTagHandler<PassengerRocketModule>(GameTags.RocketOnGround, delegate(PassengerRocketModule component, object data)
+	{
+		component.RequestCrewBoard(PassengerRocketModule.RequestCrewState.Release);
+	});
+
+	// Token: 0x04006507 RID: 25863
+	private static readonly EventSystem.IntraObjectHandler<PassengerRocketModule> OnClustercraftStateChanged = new EventSystem.IntraObjectHandler<PassengerRocketModule>(delegate(PassengerRocketModule cmp, object data)
+	{
+		cmp.RefreshClusterStateForAudio();
+	});
+
+	// Token: 0x04006508 RID: 25864
+	private static EventSystem.IntraObjectHandler<PassengerRocketModule> RefreshDelegate = new EventSystem.IntraObjectHandler<PassengerRocketModule>(delegate(PassengerRocketModule cmp, object data)
+	{
+		cmp.RefreshOrders();
+		cmp.RefreshClusterStateForAudio();
+	});
+
+	// Token: 0x04006509 RID: 25865
+	private static EventSystem.IntraObjectHandler<PassengerRocketModule> OnLaunchDelegate = new EventSystem.IntraObjectHandler<PassengerRocketModule>(delegate(PassengerRocketModule component, object data)
+	{
+		component.ClearMinionAssignments(data);
+	});
+
+	// Token: 0x0400650A RID: 25866
+	private static readonly EventSystem.IntraObjectHandler<PassengerRocketModule> OnReachableChangedDelegate = new EventSystem.IntraObjectHandler<PassengerRocketModule>(delegate(PassengerRocketModule component, object data)
+	{
+		component.OnReachableChanged(data);
+	});
+
+	// Token: 0x02001916 RID: 6422
+	public enum RequestCrewState
+	{
+		// Token: 0x0400650C RID: 25868
+		Release,
+		// Token: 0x0400650D RID: 25869
+		Request
 	}
 }

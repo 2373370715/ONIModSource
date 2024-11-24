@@ -1,6 +1,6 @@
-using System.Runtime.InteropServices;
+﻿using System;
 
-[StructLayout(LayoutKind.Sequential, Size = 1)]
+// Token: 0x02000614 RID: 1556
 public readonly struct None
 {
 }

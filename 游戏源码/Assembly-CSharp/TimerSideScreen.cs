@@ -1,251 +1,208 @@
+﻿using System;
 using STRINGS;
 using UnityEngine;
 using UnityEngine.UI;
 
+// Token: 0x02001FE8 RID: 8168
 public class TimerSideScreen : SideScreenContent, IRenderEveryTick
 {
-	public Image greenActiveZone;
-
-	public Image redActiveZone;
-
-	private LogicTimerSensor targetTimedSwitch;
-
-	public KToggle modeButton;
-
-	public KButton resetButton;
-
-	public KSlider onDurationSlider;
-
-	[SerializeField]
-	private KNumberInputField onDurationNumberInput;
-
-	public KSlider offDurationSlider;
-
-	[SerializeField]
-	private KNumberInputField offDurationNumberInput;
-
-	public RectTransform endIndicator;
-
-	public RectTransform currentTimeMarker;
-
-	public LocText labelHeaderOnDuration;
-
-	public LocText labelHeaderOffDuration;
-
-	public LocText labelValueOnDuration;
-
-	public LocText labelValueOffDuration;
-
-	public LocText timeLeft;
-
-	public float phaseLength;
-
-	private bool cyclesMode;
-
-	[SerializeField]
-	private float minSeconds;
-
-	[SerializeField]
-	private float maxSeconds = 600f;
-
-	[SerializeField]
-	private float minCycles;
-
-	[SerializeField]
-	private float maxCycles = 10f;
-
-	private const int CYCLEMODE_DECIMALS = 2;
-
-	private const int SECONDSMODE_DECIMALS = 1;
-
+	// Token: 0x0600AD34 RID: 44340 RVA: 0x00110B66 File Offset: 0x0010ED66
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		labelHeaderOnDuration.text = UI.UISIDESCREENS.TIMER_SIDE_SCREEN.ON;
-		labelHeaderOffDuration.text = UI.UISIDESCREENS.TIMER_SIDE_SCREEN.OFF;
+		this.labelHeaderOnDuration.text = UI.UISIDESCREENS.TIMER_SIDE_SCREEN.ON;
+		this.labelHeaderOffDuration.text = UI.UISIDESCREENS.TIMER_SIDE_SCREEN.OFF;
 	}
 
+	// Token: 0x0600AD35 RID: 44341 RVA: 0x00410C0C File Offset: 0x0040EE0C
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		modeButton.onClick += delegate
+		this.modeButton.onClick += delegate()
 		{
-			ToggleMode();
+			this.ToggleMode();
 		};
-		resetButton.onClick += ResetTimer;
-		onDurationNumberInput.onEndEdit += delegate
+		this.resetButton.onClick += this.ResetTimer;
+		this.onDurationNumberInput.onEndEdit += delegate()
 		{
-			UpdateDurationValueFromTextInput(onDurationNumberInput.currentValue, onDurationSlider);
+			this.UpdateDurationValueFromTextInput(this.onDurationNumberInput.currentValue, this.onDurationSlider);
 		};
-		offDurationNumberInput.onEndEdit += delegate
+		this.offDurationNumberInput.onEndEdit += delegate()
 		{
-			UpdateDurationValueFromTextInput(offDurationNumberInput.currentValue, offDurationSlider);
+			this.UpdateDurationValueFromTextInput(this.offDurationNumberInput.currentValue, this.offDurationSlider);
 		};
-		onDurationSlider.wholeNumbers = false;
-		offDurationSlider.wholeNumbers = false;
+		this.onDurationSlider.wholeNumbers = false;
+		this.offDurationSlider.wholeNumbers = false;
 	}
 
+	// Token: 0x0600AD36 RID: 44342 RVA: 0x00110B98 File Offset: 0x0010ED98
 	public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetComponent<LogicTimerSensor>() != null;
 	}
 
+	// Token: 0x0600AD37 RID: 44343 RVA: 0x00410C94 File Offset: 0x0040EE94
 	public override void SetTarget(GameObject target)
 	{
-		greenActiveZone.color = GlobalAssets.Instance.colorSet.logicOnSidescreen;
-		redActiveZone.color = GlobalAssets.Instance.colorSet.logicOffSidescreen;
+		this.greenActiveZone.color = GlobalAssets.Instance.colorSet.logicOnSidescreen;
+		this.redActiveZone.color = GlobalAssets.Instance.colorSet.logicOffSidescreen;
 		base.SetTarget(target);
-		targetTimedSwitch = target.GetComponent<LogicTimerSensor>();
-		onDurationSlider.onValueChanged.RemoveAllListeners();
-		offDurationSlider.onValueChanged.RemoveAllListeners();
-		cyclesMode = targetTimedSwitch.displayCyclesMode;
-		UpdateVisualsForNewTarget();
-		ReconfigureRingVisuals();
-		onDurationSlider.onValueChanged.AddListener(delegate
+		this.targetTimedSwitch = target.GetComponent<LogicTimerSensor>();
+		this.onDurationSlider.onValueChanged.RemoveAllListeners();
+		this.offDurationSlider.onValueChanged.RemoveAllListeners();
+		this.cyclesMode = this.targetTimedSwitch.displayCyclesMode;
+		this.UpdateVisualsForNewTarget();
+		this.ReconfigureRingVisuals();
+		this.onDurationSlider.onValueChanged.AddListener(delegate(float value)
 		{
-			ChangeSetting();
+			this.ChangeSetting();
 		});
-		offDurationSlider.onValueChanged.AddListener(delegate
+		this.offDurationSlider.onValueChanged.AddListener(delegate(float value)
 		{
-			ChangeSetting();
+			this.ChangeSetting();
 		});
 	}
 
+	// Token: 0x0600AD38 RID: 44344 RVA: 0x00410D68 File Offset: 0x0040EF68
 	private void UpdateVisualsForNewTarget()
 	{
-		float onDuration = targetTimedSwitch.onDuration;
-		float offDuration = targetTimedSwitch.offDuration;
-		bool displayCyclesMode = targetTimedSwitch.displayCyclesMode;
+		float onDuration = this.targetTimedSwitch.onDuration;
+		float offDuration = this.targetTimedSwitch.offDuration;
+		bool displayCyclesMode = this.targetTimedSwitch.displayCyclesMode;
 		if (displayCyclesMode)
 		{
-			onDurationSlider.minValue = minCycles;
-			onDurationNumberInput.minValue = onDurationSlider.minValue;
-			onDurationSlider.maxValue = maxCycles;
-			onDurationNumberInput.maxValue = onDurationSlider.maxValue;
-			onDurationNumberInput.decimalPlaces = 2;
-			offDurationSlider.minValue = minCycles;
-			offDurationNumberInput.minValue = offDurationSlider.minValue;
-			offDurationSlider.maxValue = maxCycles;
-			offDurationNumberInput.maxValue = offDurationSlider.maxValue;
-			offDurationNumberInput.decimalPlaces = 2;
-			onDurationSlider.value = onDuration / 600f;
-			offDurationSlider.value = offDuration / 600f;
-			onDurationNumberInput.SetAmount(onDuration / 600f);
-			offDurationNumberInput.SetAmount(offDuration / 600f);
+			this.onDurationSlider.minValue = this.minCycles;
+			this.onDurationNumberInput.minValue = this.onDurationSlider.minValue;
+			this.onDurationSlider.maxValue = this.maxCycles;
+			this.onDurationNumberInput.maxValue = this.onDurationSlider.maxValue;
+			this.onDurationNumberInput.decimalPlaces = 2;
+			this.offDurationSlider.minValue = this.minCycles;
+			this.offDurationNumberInput.minValue = this.offDurationSlider.minValue;
+			this.offDurationSlider.maxValue = this.maxCycles;
+			this.offDurationNumberInput.maxValue = this.offDurationSlider.maxValue;
+			this.offDurationNumberInput.decimalPlaces = 2;
+			this.onDurationSlider.value = onDuration / 600f;
+			this.offDurationSlider.value = offDuration / 600f;
+			this.onDurationNumberInput.SetAmount(onDuration / 600f);
+			this.offDurationNumberInput.SetAmount(offDuration / 600f);
 		}
 		else
 		{
-			onDurationSlider.minValue = minSeconds;
-			onDurationNumberInput.minValue = onDurationSlider.minValue;
-			onDurationSlider.maxValue = maxSeconds;
-			onDurationNumberInput.maxValue = onDurationSlider.maxValue;
-			onDurationNumberInput.decimalPlaces = 1;
-			offDurationSlider.minValue = minSeconds;
-			offDurationNumberInput.minValue = offDurationSlider.minValue;
-			offDurationSlider.maxValue = maxSeconds;
-			offDurationNumberInput.maxValue = offDurationSlider.maxValue;
-			offDurationNumberInput.decimalPlaces = 1;
-			onDurationSlider.value = onDuration;
-			offDurationSlider.value = offDuration;
-			onDurationNumberInput.SetAmount(onDuration);
-			offDurationNumberInput.SetAmount(offDuration);
+			this.onDurationSlider.minValue = this.minSeconds;
+			this.onDurationNumberInput.minValue = this.onDurationSlider.minValue;
+			this.onDurationSlider.maxValue = this.maxSeconds;
+			this.onDurationNumberInput.maxValue = this.onDurationSlider.maxValue;
+			this.onDurationNumberInput.decimalPlaces = 1;
+			this.offDurationSlider.minValue = this.minSeconds;
+			this.offDurationNumberInput.minValue = this.offDurationSlider.minValue;
+			this.offDurationSlider.maxValue = this.maxSeconds;
+			this.offDurationNumberInput.maxValue = this.offDurationSlider.maxValue;
+			this.offDurationNumberInput.decimalPlaces = 1;
+			this.onDurationSlider.value = onDuration;
+			this.offDurationSlider.value = offDuration;
+			this.onDurationNumberInput.SetAmount(onDuration);
+			this.offDurationNumberInput.SetAmount(offDuration);
 		}
-		modeButton.GetComponentInChildren<LocText>().text = (displayCyclesMode ? UI.UISIDESCREENS.TIMER_SIDE_SCREEN.MODE_LABEL_CYCLES : UI.UISIDESCREENS.TIMER_SIDE_SCREEN.MODE_LABEL_SECONDS);
+		this.modeButton.GetComponentInChildren<LocText>().text = (displayCyclesMode ? UI.UISIDESCREENS.TIMER_SIDE_SCREEN.MODE_LABEL_CYCLES : UI.UISIDESCREENS.TIMER_SIDE_SCREEN.MODE_LABEL_SECONDS);
 	}
 
+	// Token: 0x0600AD39 RID: 44345 RVA: 0x00410FA8 File Offset: 0x0040F1A8
 	private void ToggleMode()
 	{
-		cyclesMode = !cyclesMode;
-		targetTimedSwitch.displayCyclesMode = cyclesMode;
-		float value = onDurationSlider.value;
-		float value2 = offDurationSlider.value;
-		if (cyclesMode)
+		this.cyclesMode = !this.cyclesMode;
+		this.targetTimedSwitch.displayCyclesMode = this.cyclesMode;
+		float num = this.onDurationSlider.value;
+		float num2 = this.offDurationSlider.value;
+		if (this.cyclesMode)
 		{
-			value = onDurationSlider.value / 600f;
-			value2 = offDurationSlider.value / 600f;
+			num = this.onDurationSlider.value / 600f;
+			num2 = this.offDurationSlider.value / 600f;
 		}
 		else
 		{
-			value = onDurationSlider.value * 600f;
-			value2 = offDurationSlider.value * 600f;
+			num = this.onDurationSlider.value * 600f;
+			num2 = this.offDurationSlider.value * 600f;
 		}
-		onDurationSlider.minValue = (cyclesMode ? minCycles : minSeconds);
-		onDurationNumberInput.minValue = onDurationSlider.minValue;
-		onDurationSlider.maxValue = (cyclesMode ? maxCycles : maxSeconds);
-		onDurationNumberInput.maxValue = onDurationSlider.maxValue;
-		onDurationNumberInput.decimalPlaces = ((!cyclesMode) ? 1 : 2);
-		offDurationSlider.minValue = (cyclesMode ? minCycles : minSeconds);
-		offDurationNumberInput.minValue = offDurationSlider.minValue;
-		offDurationSlider.maxValue = (cyclesMode ? maxCycles : maxSeconds);
-		offDurationNumberInput.maxValue = offDurationSlider.maxValue;
-		offDurationNumberInput.decimalPlaces = ((!cyclesMode) ? 1 : 2);
-		onDurationSlider.value = value;
-		offDurationSlider.value = value2;
-		onDurationNumberInput.SetAmount(value);
-		offDurationNumberInput.SetAmount(value2);
-		modeButton.GetComponentInChildren<LocText>().text = (cyclesMode ? UI.UISIDESCREENS.TIMER_SIDE_SCREEN.MODE_LABEL_CYCLES : UI.UISIDESCREENS.TIMER_SIDE_SCREEN.MODE_LABEL_SECONDS);
+		this.onDurationSlider.minValue = (this.cyclesMode ? this.minCycles : this.minSeconds);
+		this.onDurationNumberInput.minValue = this.onDurationSlider.minValue;
+		this.onDurationSlider.maxValue = (this.cyclesMode ? this.maxCycles : this.maxSeconds);
+		this.onDurationNumberInput.maxValue = this.onDurationSlider.maxValue;
+		this.onDurationNumberInput.decimalPlaces = (this.cyclesMode ? 2 : 1);
+		this.offDurationSlider.minValue = (this.cyclesMode ? this.minCycles : this.minSeconds);
+		this.offDurationNumberInput.minValue = this.offDurationSlider.minValue;
+		this.offDurationSlider.maxValue = (this.cyclesMode ? this.maxCycles : this.maxSeconds);
+		this.offDurationNumberInput.maxValue = this.offDurationSlider.maxValue;
+		this.offDurationNumberInput.decimalPlaces = (this.cyclesMode ? 2 : 1);
+		this.onDurationSlider.value = num;
+		this.offDurationSlider.value = num2;
+		this.onDurationNumberInput.SetAmount(num);
+		this.offDurationNumberInput.SetAmount(num2);
+		this.modeButton.GetComponentInChildren<LocText>().text = (this.cyclesMode ? UI.UISIDESCREENS.TIMER_SIDE_SCREEN.MODE_LABEL_CYCLES : UI.UISIDESCREENS.TIMER_SIDE_SCREEN.MODE_LABEL_SECONDS);
 	}
 
+	// Token: 0x0600AD3A RID: 44346 RVA: 0x004111A4 File Offset: 0x0040F3A4
 	private void ChangeSetting()
 	{
-		targetTimedSwitch.onDuration = (cyclesMode ? (onDurationSlider.value * 600f) : onDurationSlider.value);
-		targetTimedSwitch.offDuration = (cyclesMode ? (offDurationSlider.value * 600f) : offDurationSlider.value);
-		ReconfigureRingVisuals();
-		onDurationNumberInput.SetDisplayValue(cyclesMode ? (targetTimedSwitch.onDuration / 600f).ToString("F2") : targetTimedSwitch.onDuration.ToString());
-		offDurationNumberInput.SetDisplayValue(cyclesMode ? (targetTimedSwitch.offDuration / 600f).ToString("F2") : targetTimedSwitch.offDuration.ToString());
-		onDurationSlider.SetTooltipText(string.Format(UI.UISIDESCREENS.TIMER_SIDE_SCREEN.GREEN_DURATION_TOOLTIP, cyclesMode ? GameUtil.GetFormattedCycles(targetTimedSwitch.onDuration, "F2") : GameUtil.GetFormattedTime(targetTimedSwitch.onDuration)));
-		offDurationSlider.SetTooltipText(string.Format(UI.UISIDESCREENS.TIMER_SIDE_SCREEN.RED_DURATION_TOOLTIP, cyclesMode ? GameUtil.GetFormattedCycles(targetTimedSwitch.offDuration, "F2") : GameUtil.GetFormattedTime(targetTimedSwitch.offDuration)));
-		if (phaseLength == 0f)
+		this.targetTimedSwitch.onDuration = (this.cyclesMode ? (this.onDurationSlider.value * 600f) : this.onDurationSlider.value);
+		this.targetTimedSwitch.offDuration = (this.cyclesMode ? (this.offDurationSlider.value * 600f) : this.offDurationSlider.value);
+		this.ReconfigureRingVisuals();
+		this.onDurationNumberInput.SetDisplayValue(this.cyclesMode ? (this.targetTimedSwitch.onDuration / 600f).ToString("F2") : this.targetTimedSwitch.onDuration.ToString());
+		this.offDurationNumberInput.SetDisplayValue(this.cyclesMode ? (this.targetTimedSwitch.offDuration / 600f).ToString("F2") : this.targetTimedSwitch.offDuration.ToString());
+		this.onDurationSlider.SetTooltipText(string.Format(UI.UISIDESCREENS.TIMER_SIDE_SCREEN.GREEN_DURATION_TOOLTIP, this.cyclesMode ? GameUtil.GetFormattedCycles(this.targetTimedSwitch.onDuration, "F2", false) : GameUtil.GetFormattedTime(this.targetTimedSwitch.onDuration, "F0")));
+		this.offDurationSlider.SetTooltipText(string.Format(UI.UISIDESCREENS.TIMER_SIDE_SCREEN.RED_DURATION_TOOLTIP, this.cyclesMode ? GameUtil.GetFormattedCycles(this.targetTimedSwitch.offDuration, "F2", false) : GameUtil.GetFormattedTime(this.targetTimedSwitch.offDuration, "F0")));
+		if (this.phaseLength == 0f)
 		{
-			timeLeft.text = UI.UISIDESCREENS.TIMER_SIDE_SCREEN.DISABLED;
-			if (targetTimedSwitch.IsSwitchedOn)
+			this.timeLeft.text = UI.UISIDESCREENS.TIMER_SIDE_SCREEN.DISABLED;
+			if (this.targetTimedSwitch.IsSwitchedOn)
 			{
-				greenActiveZone.fillAmount = 1f;
-				redActiveZone.fillAmount = 0f;
+				this.greenActiveZone.fillAmount = 1f;
+				this.redActiveZone.fillAmount = 0f;
 			}
 			else
 			{
-				greenActiveZone.fillAmount = 0f;
-				redActiveZone.fillAmount = 1f;
+				this.greenActiveZone.fillAmount = 0f;
+				this.redActiveZone.fillAmount = 1f;
 			}
-			targetTimedSwitch.timeElapsedInCurrentState = 0f;
-			currentTimeMarker.rotation = Quaternion.identity;
-			currentTimeMarker.Rotate(0f, 0f, 0f);
+			this.targetTimedSwitch.timeElapsedInCurrentState = 0f;
+			this.currentTimeMarker.rotation = Quaternion.identity;
+			this.currentTimeMarker.Rotate(0f, 0f, 0f);
 		}
 	}
 
+	// Token: 0x0600AD3B RID: 44347 RVA: 0x004113EC File Offset: 0x0040F5EC
 	private void ReconfigureRingVisuals()
 	{
-		phaseLength = targetTimedSwitch.onDuration + targetTimedSwitch.offDuration;
-		greenActiveZone.fillAmount = targetTimedSwitch.onDuration / phaseLength;
-		redActiveZone.fillAmount = targetTimedSwitch.offDuration / phaseLength;
+		this.phaseLength = this.targetTimedSwitch.onDuration + this.targetTimedSwitch.offDuration;
+		this.greenActiveZone.fillAmount = this.targetTimedSwitch.onDuration / this.phaseLength;
+		this.redActiveZone.fillAmount = this.targetTimedSwitch.offDuration / this.phaseLength;
 	}
 
+	// Token: 0x0600AD3C RID: 44348 RVA: 0x00411450 File Offset: 0x0040F650
 	public void RenderEveryTick(float dt)
 	{
-		if (phaseLength != 0f)
+		if (this.phaseLength == 0f)
 		{
-			float timeElapsedInCurrentState = targetTimedSwitch.timeElapsedInCurrentState;
-			if (cyclesMode)
-			{
-				timeLeft.text = string.Format(UI.UISIDESCREENS.TIMER_SIDE_SCREEN.CURRENT_TIME, GameUtil.GetFormattedCycles(timeElapsedInCurrentState, "F2"), GameUtil.GetFormattedCycles(targetTimedSwitch.IsSwitchedOn ? targetTimedSwitch.onDuration : targetTimedSwitch.offDuration, "F2"));
-			}
-			else
-			{
-				timeLeft.text = string.Format(UI.UISIDESCREENS.TIMER_SIDE_SCREEN.CURRENT_TIME, GameUtil.GetFormattedTime(timeElapsedInCurrentState, "F1"), GameUtil.GetFormattedTime(targetTimedSwitch.IsSwitchedOn ? targetTimedSwitch.onDuration : targetTimedSwitch.offDuration, "F1"));
-			}
-			currentTimeMarker.rotation = Quaternion.identity;
-			if (targetTimedSwitch.IsSwitchedOn)
-			{
-				currentTimeMarker.Rotate(0f, 0f, targetTimedSwitch.timeElapsedInCurrentState / phaseLength * -360f);
-			}
-			else
-			{
-				currentTimeMarker.Rotate(0f, 0f, (targetTimedSwitch.onDuration + targetTimedSwitch.timeElapsedInCurrentState) / phaseLength * -360f);
-			}
+			return;
 		}
+		float timeElapsedInCurrentState = this.targetTimedSwitch.timeElapsedInCurrentState;
+		if (this.cyclesMode)
+		{
+			this.timeLeft.text = string.Format(UI.UISIDESCREENS.TIMER_SIDE_SCREEN.CURRENT_TIME, GameUtil.GetFormattedCycles(timeElapsedInCurrentState, "F2", false), GameUtil.GetFormattedCycles(this.targetTimedSwitch.IsSwitchedOn ? this.targetTimedSwitch.onDuration : this.targetTimedSwitch.offDuration, "F2", false));
+		}
+		else
+		{
+			this.timeLeft.text = string.Format(UI.UISIDESCREENS.TIMER_SIDE_SCREEN.CURRENT_TIME, GameUtil.GetFormattedTime(timeElapsedInCurrentState, "F1"), GameUtil.GetFormattedTime(this.targetTimedSwitch.IsSwitchedOn ? this.targetTimedSwitch.onDuration : this.targetTimedSwitch.offDuration, "F1"));
+		}
+		this.currentTimeMarker.rotation = Quaternion.identity;
+		if (this.targetTimedSwitch.IsSwitchedOn)
+		{
+			this.currentTimeMarker.Rotate(0f, 0f, this.targetTimedSwitch.timeElapsedInCurrentState / this.phaseLength * -360f);
+			return;
+		}
+		this.currentTimeMarker.Rotate(0f, 0f, (this.targetTimedSwitch.onDuration + this.targetTimedSwitch.timeElapsedInCurrentState) / this.phaseLength * -360f);
 	}
 
+	// Token: 0x0600AD3D RID: 44349 RVA: 0x004115B0 File Offset: 0x0040F7B0
 	private void UpdateDurationValueFromTextInput(float newValue, KSlider slider)
 	{
 		if (newValue < slider.minValue)
@@ -261,15 +218,92 @@ public class TimerSideScreen : SideScreenContent, IRenderEveryTick
 		if (nonLinearSlider != null)
 		{
 			slider.value = nonLinearSlider.GetPercentageFromValue(newValue);
+			return;
 		}
-		else
-		{
-			slider.value = newValue;
-		}
+		slider.value = newValue;
 	}
 
+	// Token: 0x0600AD3E RID: 44350 RVA: 0x00110BA6 File Offset: 0x0010EDA6
 	private void ResetTimer()
 	{
-		targetTimedSwitch.ResetTimer();
+		this.targetTimedSwitch.ResetTimer();
 	}
+
+	// Token: 0x040087E7 RID: 34791
+	public Image greenActiveZone;
+
+	// Token: 0x040087E8 RID: 34792
+	public Image redActiveZone;
+
+	// Token: 0x040087E9 RID: 34793
+	private LogicTimerSensor targetTimedSwitch;
+
+	// Token: 0x040087EA RID: 34794
+	public KToggle modeButton;
+
+	// Token: 0x040087EB RID: 34795
+	public KButton resetButton;
+
+	// Token: 0x040087EC RID: 34796
+	public KSlider onDurationSlider;
+
+	// Token: 0x040087ED RID: 34797
+	[SerializeField]
+	private KNumberInputField onDurationNumberInput;
+
+	// Token: 0x040087EE RID: 34798
+	public KSlider offDurationSlider;
+
+	// Token: 0x040087EF RID: 34799
+	[SerializeField]
+	private KNumberInputField offDurationNumberInput;
+
+	// Token: 0x040087F0 RID: 34800
+	public RectTransform endIndicator;
+
+	// Token: 0x040087F1 RID: 34801
+	public RectTransform currentTimeMarker;
+
+	// Token: 0x040087F2 RID: 34802
+	public LocText labelHeaderOnDuration;
+
+	// Token: 0x040087F3 RID: 34803
+	public LocText labelHeaderOffDuration;
+
+	// Token: 0x040087F4 RID: 34804
+	public LocText labelValueOnDuration;
+
+	// Token: 0x040087F5 RID: 34805
+	public LocText labelValueOffDuration;
+
+	// Token: 0x040087F6 RID: 34806
+	public LocText timeLeft;
+
+	// Token: 0x040087F7 RID: 34807
+	public float phaseLength;
+
+	// Token: 0x040087F8 RID: 34808
+	private bool cyclesMode;
+
+	// Token: 0x040087F9 RID: 34809
+	[SerializeField]
+	private float minSeconds;
+
+	// Token: 0x040087FA RID: 34810
+	[SerializeField]
+	private float maxSeconds = 600f;
+
+	// Token: 0x040087FB RID: 34811
+	[SerializeField]
+	private float minCycles;
+
+	// Token: 0x040087FC RID: 34812
+	[SerializeField]
+	private float maxCycles = 10f;
+
+	// Token: 0x040087FD RID: 34813
+	private const int CYCLEMODE_DECIMALS = 2;
+
+	// Token: 0x040087FE RID: 34814
+	private const int SECONDSMODE_DECIMALS = 1;
 }

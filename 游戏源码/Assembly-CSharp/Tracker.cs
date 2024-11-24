@@ -1,71 +1,68 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Token: 0x02000B51 RID: 2897
 public abstract class Tracker
 {
-	private const int standardSampleRate = 4;
-
-	private const int defaultCyclesTracked = 5;
-
-	public List<GameObject> objectsOfInterest = new List<GameObject>();
-
-	protected List<DataPoint> dataPoints = new List<DataPoint>();
-
-	private int maxPoints = Mathf.CeilToInt(750f);
-
-	public Tuple<float, float>[] ChartableData(float periodLength)
+	// Token: 0x060036E7 RID: 14055 RVA: 0x00214DD0 File Offset: 0x00212FD0
+	public global::Tuple<float, float>[] ChartableData(float periodLength)
 	{
 		float time = GameClock.Instance.GetTime();
-		List<Tuple<float, float>> list = new List<Tuple<float, float>>();
-		int num = dataPoints.Count - 1;
-		while (num >= 0 && !(dataPoints[num].periodStart < time - periodLength))
+		List<global::Tuple<float, float>> list = new List<global::Tuple<float, float>>();
+		int num = this.dataPoints.Count - 1;
+		while (num >= 0 && this.dataPoints[num].periodStart >= time - periodLength)
 		{
-			list.Add(new Tuple<float, float>(dataPoints[num].periodStart, dataPoints[num].periodValue));
+			list.Add(new global::Tuple<float, float>(this.dataPoints[num].periodStart, this.dataPoints[num].periodValue));
 			num--;
 		}
 		if (list.Count == 0)
 		{
-			if (dataPoints.Count > 0)
+			if (this.dataPoints.Count > 0)
 			{
-				list.Add(new Tuple<float, float>(dataPoints[dataPoints.Count - 1].periodStart, dataPoints[dataPoints.Count - 1].periodValue));
+				list.Add(new global::Tuple<float, float>(this.dataPoints[this.dataPoints.Count - 1].periodStart, this.dataPoints[this.dataPoints.Count - 1].periodValue));
 			}
 			else
 			{
-				list.Add(new Tuple<float, float>(0f, 0f));
+				list.Add(new global::Tuple<float, float>(0f, 0f));
 			}
 		}
 		list.Reverse();
 		return list.ToArray();
 	}
 
+	// Token: 0x060036E8 RID: 14056 RVA: 0x00214EC8 File Offset: 0x002130C8
 	public float GetDataTimeLength()
 	{
 		float num = 0f;
-		for (int num2 = dataPoints.Count - 1; num2 >= 0; num2--)
+		for (int i = this.dataPoints.Count - 1; i >= 0; i--)
 		{
-			num += dataPoints[num2].periodEnd - dataPoints[num2].periodStart;
+			num += this.dataPoints[i].periodEnd - this.dataPoints[i].periodStart;
 		}
 		return num;
 	}
 
+	// Token: 0x060036E9 RID: 14057
 	public abstract void UpdateData();
 
+	// Token: 0x060036EA RID: 14058
 	public abstract string FormatValueString(float value);
 
+	// Token: 0x060036EB RID: 14059 RVA: 0x000C3A65 File Offset: 0x000C1C65
 	public float GetCurrentValue()
 	{
-		if (dataPoints.Count == 0)
+		if (this.dataPoints.Count == 0)
 		{
 			return 0f;
 		}
-		return dataPoints[dataPoints.Count - 1].periodValue;
+		return this.dataPoints[this.dataPoints.Count - 1].periodValue;
 	}
 
+	// Token: 0x060036EC RID: 14060 RVA: 0x00214F1C File Offset: 0x0021311C
 	public float GetMinValue(float sampleHistoryLengthSeconds)
 	{
 		float time = GameClock.Instance.GetTime();
-		Tuple<float, float>[] array = ChartableData(sampleHistoryLengthSeconds);
+		global::Tuple<float, float>[] array = this.ChartableData(sampleHistoryLengthSeconds);
 		if (array.Length == 0)
 		{
 			return 0f;
@@ -76,7 +73,7 @@ public abstract class Tracker
 		}
 		float num = array[array.Length - 1].second;
 		int num2 = array.Length - 1;
-		while (num2 >= 0 && !(time - array[num2].first > sampleHistoryLengthSeconds))
+		while (num2 >= 0 && time - array[num2].first <= sampleHistoryLengthSeconds)
 		{
 			num = Mathf.Min(num, array[num2].second);
 			num2--;
@@ -84,10 +81,11 @@ public abstract class Tracker
 		return num;
 	}
 
+	// Token: 0x060036ED RID: 14061 RVA: 0x00214F90 File Offset: 0x00213190
 	public float GetMaxValue(int sampleHistoryLengthSeconds)
 	{
 		float time = GameClock.Instance.GetTime();
-		Tuple<float, float>[] array = ChartableData(sampleHistoryLengthSeconds);
+		global::Tuple<float, float>[] array = this.ChartableData((float)sampleHistoryLengthSeconds);
 		if (array.Length == 0)
 		{
 			return 0f;
@@ -98,7 +96,7 @@ public abstract class Tracker
 		}
 		float num = array[array.Length - 1].second;
 		int num2 = array.Length - 1;
-		while (num2 >= 0 && !(time - array[num2].first > (float)sampleHistoryLengthSeconds))
+		while (num2 >= 0 && time - array[num2].first <= (float)sampleHistoryLengthSeconds)
 		{
 			num = Mathf.Max(num, array[num2].second);
 			num2--;
@@ -106,80 +104,91 @@ public abstract class Tracker
 		return num;
 	}
 
+	// Token: 0x060036EE RID: 14062 RVA: 0x00215008 File Offset: 0x00213208
 	public float GetAverageValue(float sampleHistoryLengthSeconds)
 	{
 		float time = GameClock.Instance.GetTime();
-		Tuple<float, float>[] array = ChartableData(sampleHistoryLengthSeconds);
+		global::Tuple<float, float>[] array = this.ChartableData(sampleHistoryLengthSeconds);
 		float num = 0f;
 		float num2 = 0f;
-		float num3 = 0f;
-		for (int num4 = array.Length - 1; num4 >= 0; num4--)
+		for (int i = array.Length - 1; i >= 0; i--)
 		{
-			if (array[num4].first >= time - sampleHistoryLengthSeconds)
+			if (array[i].first >= time - sampleHistoryLengthSeconds)
 			{
-				float num5 = ((num4 == array.Length - 1) ? (time - array[num4].first) : (array[num4 + 1].first - array[num4].first));
-				num3 += num5;
-				if (!float.IsNaN(array[num4].second))
+				float num3 = (i == array.Length - 1) ? (time - array[i].first) : (array[i + 1].first - array[i].first);
+				num2 += num3;
+				if (!float.IsNaN(array[i].second))
 				{
-					num2 += num5 * array[num4].second;
+					num += num3 * array[i].second;
 				}
 			}
 		}
-		if (num3 == 0f)
+		float result;
+		if (num2 == 0f)
 		{
 			if (array.Length == 0)
 			{
-				return 0f;
+				result = 0f;
 			}
-			return array[array.Length - 1].second;
+			else
+			{
+				result = array[array.Length - 1].second;
+			}
 		}
-		return num2 / num3;
+		else
+		{
+			result = num / num2;
+		}
+		return result;
 	}
 
+	// Token: 0x060036EF RID: 14063 RVA: 0x002150DC File Offset: 0x002132DC
 	public float GetDelta(float secondsAgo)
 	{
 		float time = GameClock.Instance.GetTime();
-		Tuple<float, float>[] array = ChartableData(secondsAgo);
+		global::Tuple<float, float>[] array = this.ChartableData(secondsAgo);
 		if (array.Length < 2)
 		{
 			return 0f;
 		}
 		float num = -1f;
 		float second = array[array.Length - 1].second;
-		for (int num2 = array.Length - 1; num2 >= 0; num2--)
+		for (int i = array.Length - 1; i >= 0; i--)
 		{
-			if (time - array[num2].first >= secondsAgo)
+			if (time - array[i].first >= secondsAgo)
 			{
-				num = array[num2].second;
+				num = array[i].second;
 			}
 		}
 		return second - num;
 	}
 
+	// Token: 0x060036F0 RID: 14064 RVA: 0x0021514C File Offset: 0x0021334C
 	protected void AddPoint(float value)
 	{
 		if (float.IsNaN(value))
 		{
 			value = 0f;
 		}
-		dataPoints.Add(new DataPoint((dataPoints.Count == 0) ? GameClock.Instance.GetTime() : dataPoints[dataPoints.Count - 1].periodEnd, GameClock.Instance.GetTime(), value));
-		int count = Math.Max(0, dataPoints.Count - maxPoints);
-		dataPoints.RemoveRange(0, count);
+		this.dataPoints.Add(new DataPoint((this.dataPoints.Count == 0) ? GameClock.Instance.GetTime() : this.dataPoints[this.dataPoints.Count - 1].periodEnd, GameClock.Instance.GetTime(), value));
+		int count = Math.Max(0, this.dataPoints.Count - this.maxPoints);
+		this.dataPoints.RemoveRange(0, count);
 	}
 
+	// Token: 0x060036F1 RID: 14065 RVA: 0x002151E0 File Offset: 0x002133E0
 	public List<DataPoint> GetCompressedData()
 	{
 		int num = 10;
 		List<DataPoint> list = new List<DataPoint>();
-		float num2 = (dataPoints[dataPoints.Count - 1].periodEnd - dataPoints[0].periodStart) / (float)num;
+		float num2 = (this.dataPoints[this.dataPoints.Count - 1].periodEnd - this.dataPoints[0].periodStart) / (float)num;
 		for (int i = 0; i < num; i++)
 		{
 			float num3 = num2 * (float)i;
 			float num4 = num3 + num2;
 			float num5 = 0f;
-			for (int j = 0; j < dataPoints.Count; j++)
+			for (int j = 0; j < this.dataPoints.Count; j++)
 			{
-				DataPoint dataPoint = dataPoints[j];
+				DataPoint dataPoint = this.dataPoints[j];
 				num5 += dataPoint.periodValue * Mathf.Max(0f, Mathf.Min(num4, dataPoint.periodEnd) - Mathf.Max(dataPoint.periodStart, num3));
 			}
 			list.Add(new DataPoint(num3, num4, num5 / (num4 - num3)));
@@ -187,8 +196,24 @@ public abstract class Tracker
 		return list;
 	}
 
+	// Token: 0x060036F2 RID: 14066 RVA: 0x000C3A97 File Offset: 0x000C1C97
 	public void OverwriteData(List<DataPoint> newData)
 	{
-		dataPoints = newData;
+		this.dataPoints = newData;
 	}
+
+	// Token: 0x04002533 RID: 9523
+	private const int standardSampleRate = 4;
+
+	// Token: 0x04002534 RID: 9524
+	private const int defaultCyclesTracked = 5;
+
+	// Token: 0x04002535 RID: 9525
+	public List<GameObject> objectsOfInterest = new List<GameObject>();
+
+	// Token: 0x04002536 RID: 9526
+	protected List<DataPoint> dataPoints = new List<DataPoint>();
+
+	// Token: 0x04002537 RID: 9527
+	private int maxPoints = Mathf.CeilToInt(750f);
 }

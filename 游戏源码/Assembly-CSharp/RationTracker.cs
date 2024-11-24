@@ -1,101 +1,96 @@
+﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using KSerialization;
 using UnityEngine;
 
+// Token: 0x02001735 RID: 5941
 [SerializationConfig(MemberSerialization.OptIn)]
 [AddComponentMenu("KMonoBehaviour/scripts/RationTracker")]
-public class RationTracker : KMonoBehaviour, ISaveLoadable
+public class RationTracker : WorldResourceAmountTracker<RationTracker>, ISaveLoadable
 {
-	public struct Frame
-	{
-		public float caloriesProduced;
-
-		public float caloriesConsumed;
-	}
-
-	private static RationTracker instance;
-
-	[Serialize]
-	public Frame currentFrame;
-
-	[Serialize]
-	public Frame previousFrame;
-
-	[Serialize]
-	public Dictionary<string, float> caloriesConsumedByFood = new Dictionary<string, float>();
-
-	private static readonly EventSystem.IntraObjectHandler<RationTracker> OnNewDayDelegate = new EventSystem.IntraObjectHandler<RationTracker>(delegate(RationTracker component, object data)
-	{
-		component.OnNewDay(data);
-	});
-
-	public static void DestroyInstance()
-	{
-		instance = null;
-	}
-
-	public static RationTracker Get()
-	{
-		return instance;
-	}
-
+	// Token: 0x06007A4C RID: 31308 RVA: 0x000F0580 File Offset: 0x000EE780
 	protected override void OnPrefabInit()
 	{
-		instance = this;
+		base.OnPrefabInit();
+		this.itemTag = GameTags.Edible;
 	}
 
-	protected override void OnSpawn()
+	// Token: 0x06007A4D RID: 31309 RVA: 0x0031806C File Offset: 0x0031626C
+	[OnDeserialized]
+	private void OnDeserialized()
 	{
-		Subscribe(631075836, OnNewDayDelegate);
+		if (this.caloriesConsumedByFood != null && this.caloriesConsumedByFood.Count > 0)
+		{
+			foreach (string key in this.caloriesConsumedByFood.Keys)
+			{
+				float num = this.caloriesConsumedByFood[key];
+				float num2 = 0f;
+				if (this.amountsConsumedByID.TryGetValue(key, out num2))
+				{
+					this.amountsConsumedByID[key] = num2 + num;
+				}
+				else
+				{
+					this.amountsConsumedByID.Add(key, num);
+				}
+			}
+		}
+		this.caloriesConsumedByFood = null;
 	}
 
-	private void OnNewDay(object data)
+	// Token: 0x06007A4E RID: 31310 RVA: 0x00318120 File Offset: 0x00316320
+	protected override WorldResourceAmountTracker<RationTracker>.ItemData GetItemData(Pickupable item)
 	{
-		previousFrame = currentFrame;
-		currentFrame = default(Frame);
+		Edible component = item.GetComponent<Edible>();
+		return new WorldResourceAmountTracker<RationTracker>.ItemData
+		{
+			ID = component.FoodID,
+			amountValue = component.Calories,
+			units = component.Units
+		};
 	}
 
-	public float CountRations(Dictionary<string, float> unitCountByFoodType, WorldInventory inventory, bool excludeUnreachable = true)
+	// Token: 0x06007A4F RID: 31311 RVA: 0x00318164 File Offset: 0x00316364
+	public float GetAmountConsumed()
 	{
 		float num = 0f;
-		ICollection<Pickupable> pickupables = inventory.GetPickupables(GameTags.Edible);
+		foreach (KeyValuePair<string, float> keyValuePair in this.amountsConsumedByID)
+		{
+			num += keyValuePair.Value;
+		}
+		return num;
+	}
+
+	// Token: 0x06007A50 RID: 31312 RVA: 0x003181C4 File Offset: 0x003163C4
+	public float GetAmountConsumedForIDs(List<string> itemIDs)
+	{
+		float num = 0f;
+		foreach (string key in itemIDs)
+		{
+			if (this.amountsConsumedByID.ContainsKey(key))
+			{
+				num += this.amountsConsumedByID[key];
+			}
+		}
+		return num;
+	}
+
+	// Token: 0x06007A51 RID: 31313 RVA: 0x00318230 File Offset: 0x00316430
+	public float CountAmountForItemWithID(string ID, WorldInventory inventory, bool excludeUnreachable = true)
+	{
+		float num = 0f;
+		ICollection<Pickupable> pickupables = inventory.GetPickupables(this.itemTag, false);
 		if (pickupables != null)
 		{
-			foreach (Pickupable item in pickupables)
+			foreach (Pickupable pickupable in pickupables)
 			{
-				if (item.KPrefabID.HasTag(GameTags.StoredPrivate))
+				if (!pickupable.KPrefabID.HasTag(GameTags.StoredPrivate))
 				{
-					continue;
-				}
-				Edible component = item.GetComponent<Edible>();
-				num += component.Calories;
-				if (unitCountByFoodType != null)
-				{
-					if (!unitCountByFoodType.ContainsKey(component.FoodID))
+					WorldResourceAmountTracker<RationTracker>.ItemData itemData = this.GetItemData(pickupable);
+					if (itemData.ID == ID)
 					{
-						unitCountByFoodType[component.FoodID] = 0f;
-					}
-					unitCountByFoodType[component.FoodID] += component.Units;
-				}
-			}
-		}
-		return num;
-	}
-
-	public float CountRationsByFoodType(string foodID, WorldInventory inventory, bool excludeUnreachable = true)
-	{
-		float num = 0f;
-		ICollection<Pickupable> pickupables = inventory.GetPickupables(GameTags.Edible);
-		if (pickupables != null)
-		{
-			foreach (Pickupable item in pickupables)
-			{
-				if (!item.KPrefabID.HasTag(GameTags.StoredPrivate))
-				{
-					Edible component = item.GetComponent<Edible>();
-					if (component.FoodID == foodID)
-					{
-						num += component.Calories;
+						num += itemData.amountValue;
 					}
 				}
 			}
@@ -103,44 +98,7 @@ public class RationTracker : KMonoBehaviour, ISaveLoadable
 		return num;
 	}
 
-	public void RegisterCaloriesProduced(float calories)
-	{
-		currentFrame.caloriesProduced += calories;
-	}
-
-	public void RegisterRationsConsumed(Edible edible)
-	{
-		currentFrame.caloriesConsumed += edible.caloriesConsumed;
-		if (!caloriesConsumedByFood.ContainsKey(edible.FoodInfo.Id))
-		{
-			caloriesConsumedByFood.Add(edible.FoodInfo.Id, edible.caloriesConsumed);
-		}
-		else
-		{
-			caloriesConsumedByFood[edible.FoodInfo.Id] += edible.caloriesConsumed;
-		}
-	}
-
-	public float GetCaloiresConsumedByFood(List<string> foodTypes)
-	{
-		float num = 0f;
-		foreach (string foodType in foodTypes)
-		{
-			if (caloriesConsumedByFood.ContainsKey(foodType))
-			{
-				num += caloriesConsumedByFood[foodType];
-			}
-		}
-		return num;
-	}
-
-	public float GetCaloriesConsumed()
-	{
-		float num = 0f;
-		foreach (KeyValuePair<string, float> item in caloriesConsumedByFood)
-		{
-			num += item.Value;
-		}
-		return num;
-	}
+	// Token: 0x04005BCD RID: 23501
+	[Serialize]
+	public Dictionary<string, float> caloriesConsumedByFood = new Dictionary<string, float>();
 }

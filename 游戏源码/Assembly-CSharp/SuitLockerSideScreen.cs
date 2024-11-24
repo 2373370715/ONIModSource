@@ -1,115 +1,128 @@
+﻿using System;
 using STRINGS;
 using UnityEngine;
 
+// Token: 0x02001FDD RID: 8157
 public class SuitLockerSideScreen : SideScreenContent
 {
-	[SerializeField]
-	private GameObject initialConfigScreen;
-
-	[SerializeField]
-	private GameObject regularConfigScreen;
-
-	[SerializeField]
-	private LocText initialConfigLabel;
-
-	[SerializeField]
-	private KButton initialConfigRequestSuitButton;
-
-	[SerializeField]
-	private KButton initialConfigNoSuitButton;
-
-	[SerializeField]
-	private LocText regularConfigLabel;
-
-	[SerializeField]
-	private KButton regularConfigRequestSuitButton;
-
-	[SerializeField]
-	private KButton regularConfigDropSuitButton;
-
-	private SuitLocker suitLocker;
-
+	// Token: 0x0600ACD7 RID: 44247 RVA: 0x0010197B File Offset: 0x000FFB7B
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
 	}
 
+	// Token: 0x0600ACD8 RID: 44248 RVA: 0x00110666 File Offset: 0x0010E866
 	public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetComponent<SuitLocker>() != null;
 	}
 
+	// Token: 0x0600ACD9 RID: 44249 RVA: 0x0040F7A0 File Offset: 0x0040D9A0
 	public override void SetTarget(GameObject target)
 	{
-		suitLocker = target.GetComponent<SuitLocker>();
-		initialConfigRequestSuitButton.GetComponentInChildren<ToolTip>().SetSimpleTooltip(UI.UISIDESCREENS.SUIT_SIDE_SCREEN.CONFIG_REQUEST_SUIT_TOOLTIP);
-		initialConfigNoSuitButton.GetComponentInChildren<ToolTip>().SetSimpleTooltip(UI.UISIDESCREENS.SUIT_SIDE_SCREEN.CONFIG_NO_SUIT_TOOLTIP);
-		initialConfigRequestSuitButton.ClearOnClick();
-		initialConfigRequestSuitButton.onClick += delegate
+		this.suitLocker = target.GetComponent<SuitLocker>();
+		this.initialConfigRequestSuitButton.GetComponentInChildren<ToolTip>().SetSimpleTooltip(UI.UISIDESCREENS.SUIT_SIDE_SCREEN.CONFIG_REQUEST_SUIT_TOOLTIP);
+		this.initialConfigNoSuitButton.GetComponentInChildren<ToolTip>().SetSimpleTooltip(UI.UISIDESCREENS.SUIT_SIDE_SCREEN.CONFIG_NO_SUIT_TOOLTIP);
+		this.initialConfigRequestSuitButton.ClearOnClick();
+		this.initialConfigRequestSuitButton.onClick += delegate()
 		{
-			suitLocker.ConfigRequestSuit();
+			this.suitLocker.ConfigRequestSuit();
 		};
-		initialConfigNoSuitButton.ClearOnClick();
-		initialConfigNoSuitButton.onClick += delegate
+		this.initialConfigNoSuitButton.ClearOnClick();
+		this.initialConfigNoSuitButton.onClick += delegate()
 		{
-			suitLocker.ConfigNoSuit();
+			this.suitLocker.ConfigNoSuit();
 		};
-		regularConfigRequestSuitButton.ClearOnClick();
-		regularConfigRequestSuitButton.onClick += delegate
+		this.regularConfigRequestSuitButton.ClearOnClick();
+		this.regularConfigRequestSuitButton.onClick += delegate()
 		{
-			if (suitLocker.smi.sm.isWaitingForSuit.Get(suitLocker.smi))
+			if (this.suitLocker.smi.sm.isWaitingForSuit.Get(this.suitLocker.smi))
 			{
-				suitLocker.ConfigNoSuit();
+				this.suitLocker.ConfigNoSuit();
+				return;
 			}
-			else
-			{
-				suitLocker.ConfigRequestSuit();
-			}
+			this.suitLocker.ConfigRequestSuit();
 		};
-		regularConfigDropSuitButton.ClearOnClick();
-		regularConfigDropSuitButton.onClick += delegate
+		this.regularConfigDropSuitButton.ClearOnClick();
+		this.regularConfigDropSuitButton.onClick += delegate()
 		{
-			suitLocker.DropSuit();
+			this.suitLocker.DropSuit();
 		};
 	}
 
+	// Token: 0x0600ACDA RID: 44250 RVA: 0x0040F878 File Offset: 0x0040DA78
 	private void Update()
 	{
-		bool flag = suitLocker.smi.sm.isConfigured.Get(suitLocker.smi);
-		initialConfigScreen.gameObject.SetActive(!flag);
-		regularConfigScreen.gameObject.SetActive(flag);
-		bool flag2 = suitLocker.GetStoredOutfit() != null;
-		bool num = suitLocker.smi.sm.isWaitingForSuit.Get(suitLocker.smi);
-		regularConfigRequestSuitButton.isInteractable = !flag2;
-		if (!num)
+		bool flag = this.suitLocker.smi.sm.isConfigured.Get(this.suitLocker.smi);
+		this.initialConfigScreen.gameObject.SetActive(!flag);
+		this.regularConfigScreen.gameObject.SetActive(flag);
+		bool flag2 = this.suitLocker.GetStoredOutfit() != null;
+		bool flag3 = this.suitLocker.smi.sm.isWaitingForSuit.Get(this.suitLocker.smi);
+		this.regularConfigRequestSuitButton.isInteractable = !flag2;
+		if (!flag3)
 		{
-			regularConfigRequestSuitButton.GetComponentInChildren<LocText>().text = UI.UISIDESCREENS.SUIT_SIDE_SCREEN.CONFIG_REQUEST_SUIT;
-			regularConfigRequestSuitButton.GetComponentInChildren<ToolTip>().SetSimpleTooltip(UI.UISIDESCREENS.SUIT_SIDE_SCREEN.CONFIG_REQUEST_SUIT_TOOLTIP);
+			this.regularConfigRequestSuitButton.GetComponentInChildren<LocText>().text = UI.UISIDESCREENS.SUIT_SIDE_SCREEN.CONFIG_REQUEST_SUIT;
+			this.regularConfigRequestSuitButton.GetComponentInChildren<ToolTip>().SetSimpleTooltip(UI.UISIDESCREENS.SUIT_SIDE_SCREEN.CONFIG_REQUEST_SUIT_TOOLTIP);
 		}
 		else
 		{
-			regularConfigRequestSuitButton.GetComponentInChildren<LocText>().text = UI.UISIDESCREENS.SUIT_SIDE_SCREEN.CONFIG_CANCEL_REQUEST;
-			regularConfigRequestSuitButton.GetComponentInChildren<ToolTip>().SetSimpleTooltip(UI.UISIDESCREENS.SUIT_SIDE_SCREEN.CONFIG_CANCEL_REQUEST_TOOLTIP);
+			this.regularConfigRequestSuitButton.GetComponentInChildren<LocText>().text = UI.UISIDESCREENS.SUIT_SIDE_SCREEN.CONFIG_CANCEL_REQUEST;
+			this.regularConfigRequestSuitButton.GetComponentInChildren<ToolTip>().SetSimpleTooltip(UI.UISIDESCREENS.SUIT_SIDE_SCREEN.CONFIG_CANCEL_REQUEST_TOOLTIP);
 		}
 		if (flag2)
 		{
-			regularConfigDropSuitButton.isInteractable = true;
-			regularConfigDropSuitButton.GetComponentInChildren<ToolTip>().SetSimpleTooltip(UI.UISIDESCREENS.SUIT_SIDE_SCREEN.CONFIG_DROP_SUIT_TOOLTIP);
+			this.regularConfigDropSuitButton.isInteractable = true;
+			this.regularConfigDropSuitButton.GetComponentInChildren<ToolTip>().SetSimpleTooltip(UI.UISIDESCREENS.SUIT_SIDE_SCREEN.CONFIG_DROP_SUIT_TOOLTIP);
 		}
 		else
 		{
-			regularConfigDropSuitButton.isInteractable = false;
-			regularConfigDropSuitButton.GetComponentInChildren<ToolTip>().SetSimpleTooltip(UI.UISIDESCREENS.SUIT_SIDE_SCREEN.CONFIG_DROP_SUIT_NO_SUIT_TOOLTIP);
+			this.regularConfigDropSuitButton.isInteractable = false;
+			this.regularConfigDropSuitButton.GetComponentInChildren<ToolTip>().SetSimpleTooltip(UI.UISIDESCREENS.SUIT_SIDE_SCREEN.CONFIG_DROP_SUIT_NO_SUIT_TOOLTIP);
 		}
-		KSelectable component = suitLocker.GetComponent<KSelectable>();
+		KSelectable component = this.suitLocker.GetComponent<KSelectable>();
 		if (component != null)
 		{
 			StatusItemGroup.Entry statusItem = component.GetStatusItem(Db.Get().StatusItemCategories.Main);
 			if (statusItem.item != null)
 			{
-				regularConfigLabel.text = statusItem.item.GetName(statusItem.data);
-				regularConfigLabel.GetComponentInChildren<ToolTip>().SetSimpleTooltip(statusItem.item.GetTooltip(statusItem.data));
+				this.regularConfigLabel.text = statusItem.item.GetName(statusItem.data);
+				this.regularConfigLabel.GetComponentInChildren<ToolTip>().SetSimpleTooltip(statusItem.item.GetTooltip(statusItem.data));
 			}
 		}
 	}
+
+	// Token: 0x040087A2 RID: 34722
+	[SerializeField]
+	private GameObject initialConfigScreen;
+
+	// Token: 0x040087A3 RID: 34723
+	[SerializeField]
+	private GameObject regularConfigScreen;
+
+	// Token: 0x040087A4 RID: 34724
+	[SerializeField]
+	private LocText initialConfigLabel;
+
+	// Token: 0x040087A5 RID: 34725
+	[SerializeField]
+	private KButton initialConfigRequestSuitButton;
+
+	// Token: 0x040087A6 RID: 34726
+	[SerializeField]
+	private KButton initialConfigNoSuitButton;
+
+	// Token: 0x040087A7 RID: 34727
+	[SerializeField]
+	private LocText regularConfigLabel;
+
+	// Token: 0x040087A8 RID: 34728
+	[SerializeField]
+	private KButton regularConfigRequestSuitButton;
+
+	// Token: 0x040087A9 RID: 34729
+	[SerializeField]
+	private KButton regularConfigDropSuitButton;
+
+	// Token: 0x040087AA RID: 34730
+	private SuitLocker suitLocker;
 }

@@ -1,27 +1,26 @@
+﻿using System;
 using System.Collections.Generic;
 using Unity.Collections;
 using UnityEngine;
 
+// Token: 0x02001A83 RID: 6787
 public class ScannerNetworkVisualizerEffect : VisualizerEffect
 {
-	public Color highlightColor = new Color(0f, 1f, 0.8f, 1f);
-
-	public Color highlightColor2 = new Color(1f, 0.32f, 0f, 1f);
-
-	private int LastVisibleColumnCount;
-
+	// Token: 0x06008DEA RID: 36330 RVA: 0x000FCB38 File Offset: 0x000FAD38
 	protected override void SetupMaterial()
 	{
-		material = new Material(Shader.Find("Klei/PostFX/ScannerNetwork"));
+		this.material = new Material(Shader.Find("Klei/PostFX/ScannerNetwork"));
 	}
 
+	// Token: 0x06008DEB RID: 36331 RVA: 0x000FCAEE File Offset: 0x000FACEE
 	protected override void SetupOcclusionTex()
 	{
-		OcclusionTex = new Texture2D(512, 1, TextureFormat.RGFloat, mipChain: false);
-		OcclusionTex.filterMode = FilterMode.Point;
-		OcclusionTex.wrapMode = TextureWrapMode.Clamp;
+		this.OcclusionTex = new Texture2D(512, 1, TextureFormat.RGFloat, false);
+		this.OcclusionTex.filterMode = FilterMode.Point;
+		this.OcclusionTex.wrapMode = TextureWrapMode.Clamp;
 	}
 
+	// Token: 0x06008DEC RID: 36332 RVA: 0x0036E9C0 File Offset: 0x0036CBC0
 	protected override void OnPostRender()
 	{
 		ScannerNetworkVisualizer scannerNetworkVisualizer = null;
@@ -33,124 +32,127 @@ public class ScannerNetworkVisualizerEffect : VisualizerEffect
 		{
 			scannerNetworkVisualizer = BuildTool.Instance.visualizer.GetComponent<ScannerNetworkVisualizer>();
 		}
-		if (!(scannerNetworkVisualizer != null))
+		if (scannerNetworkVisualizer != null)
 		{
-			return;
-		}
-		FindWorldBounds(out var world_min, out var world_max);
-		if (world_max.x - world_min.x > OcclusionTex.width)
-		{
-			return;
-		}
-		NativeArray<float> pixelData = OcclusionTex.GetPixelData<float>(0);
-		for (int i = 0; i < OcclusionTex.width; i++)
-		{
-			pixelData[2 * i] = 0f;
-			pixelData[2 * i + 1] = 0f;
-		}
-		int visible_column_count = 0;
-		List<ScannerNetworkVisualizer> items = Components.ScannerVisualizers.GetItems(scannerNetworkVisualizer.GetMyWorldId());
-		for (int j = 0; j < items.Count; j++)
-		{
-			ScannerNetworkVisualizer scannerNetworkVisualizer2 = items[j];
-			if (scannerNetworkVisualizer2 != scannerNetworkVisualizer)
-			{
-				ComputeVisibility(scannerNetworkVisualizer2, pixelData, world_min, world_max, ref visible_column_count);
-			}
-		}
-		ComputeVisibility(scannerNetworkVisualizer, pixelData, world_min, world_max, ref visible_column_count);
-		OcclusionTex.Apply(updateMipmaps: false, makeNoLongerReadable: false);
-		Vector2I vector2I = world_min;
-		Vector2I vector2I2 = world_max;
-		if (myCamera == null)
-		{
-			myCamera = GetComponent<Camera>();
-			if (myCamera == null)
+			Vector2I vector2I;
+			Vector2I vector2I2;
+			ScannerNetworkVisualizerEffect.FindWorldBounds(out vector2I, out vector2I2);
+			if (vector2I2.x - vector2I.x > this.OcclusionTex.width)
 			{
 				return;
 			}
-		}
-		Ray ray = myCamera.ViewportPointToRay(Vector3.zero);
-		float distance = Mathf.Abs(ray.origin.z / ray.direction.z);
-		Vector3 point = ray.GetPoint(distance);
-		Vector4 value = default(Vector4);
-		value.x = point.x;
-		value.y = point.y;
-		ray = myCamera.ViewportPointToRay(Vector3.one);
-		distance = Mathf.Abs(ray.origin.z / ray.direction.z);
-		point = ray.GetPoint(distance);
-		value.z = point.x - value.x;
-		value.w = point.y - value.y;
-		material.SetVector("_UVOffsetScale", value);
-		Vector4 value2 = default(Vector4);
-		value2.x = vector2I.x;
-		value2.y = vector2I.y;
-		value2.z = vector2I2.x;
-		value2.w = vector2I2.y;
-		material.SetVector("_RangeParams", value2);
-		material.SetColor("_HighlightColor", highlightColor);
-		material.SetColor("_HighlightColor2", highlightColor2);
-		Vector4 value3 = default(Vector4);
-		value3.x = 1f / (float)OcclusionTex.width;
-		value3.y = 1f / (float)OcclusionTex.height;
-		value3.z = 0f;
-		value3.w = 0f;
-		material.SetVector("_OcclusionParams", value3);
-		material.SetTexture("_OcclusionTex", OcclusionTex);
-		Vector4 value4 = default(Vector4);
-		value4.x = Grid.WidthInCells;
-		value4.y = Grid.HeightInCells;
-		value4.z = 1f / (float)Grid.WidthInCells;
-		value4.w = 1f / (float)Grid.HeightInCells;
-		material.SetVector("_WorldParams", value4);
-		GL.PushMatrix();
-		material.SetPass(0);
-		GL.LoadOrtho();
-		GL.Begin(5);
-		GL.Color(Color.white);
-		GL.Vertex3(0f, 0f, 0f);
-		GL.Vertex3(0f, 1f, 0f);
-		GL.Vertex3(1f, 0f, 0f);
-		GL.Vertex3(1f, 1f, 0f);
-		GL.End();
-		GL.PopMatrix();
-		if (LastVisibleColumnCount != visible_column_count)
-		{
-			SoundEvent.PlayOneShot(GlobalAssets.GetSound("RangeVisualization_movement"), scannerNetworkVisualizer.transform.GetPosition());
-			LastVisibleColumnCount = visible_column_count;
+			NativeArray<float> pixelData = this.OcclusionTex.GetPixelData<float>(0);
+			for (int i = 0; i < this.OcclusionTex.width; i++)
+			{
+				pixelData[2 * i] = 0f;
+				pixelData[2 * i + 1] = 0f;
+			}
+			int num = 0;
+			List<ScannerNetworkVisualizer> items = Components.ScannerVisualizers.GetItems(scannerNetworkVisualizer.GetMyWorldId());
+			for (int j = 0; j < items.Count; j++)
+			{
+				ScannerNetworkVisualizer scannerNetworkVisualizer2 = items[j];
+				if (scannerNetworkVisualizer2 != scannerNetworkVisualizer)
+				{
+					ScannerNetworkVisualizerEffect.ComputeVisibility(scannerNetworkVisualizer2, pixelData, vector2I, vector2I2, ref num);
+				}
+			}
+			ScannerNetworkVisualizerEffect.ComputeVisibility(scannerNetworkVisualizer, pixelData, vector2I, vector2I2, ref num);
+			this.OcclusionTex.Apply(false, false);
+			Vector2I vector2I3 = vector2I;
+			Vector2I vector2I4 = vector2I2;
+			if (this.myCamera == null)
+			{
+				this.myCamera = base.GetComponent<Camera>();
+				if (this.myCamera == null)
+				{
+					return;
+				}
+			}
+			Ray ray = this.myCamera.ViewportPointToRay(Vector3.zero);
+			float distance = Mathf.Abs(ray.origin.z / ray.direction.z);
+			Vector3 point = ray.GetPoint(distance);
+			Vector4 vector;
+			vector.x = point.x;
+			vector.y = point.y;
+			ray = this.myCamera.ViewportPointToRay(Vector3.one);
+			distance = Mathf.Abs(ray.origin.z / ray.direction.z);
+			point = ray.GetPoint(distance);
+			vector.z = point.x - vector.x;
+			vector.w = point.y - vector.y;
+			this.material.SetVector("_UVOffsetScale", vector);
+			Vector4 value;
+			value.x = (float)vector2I3.x;
+			value.y = (float)vector2I3.y;
+			value.z = (float)vector2I4.x;
+			value.w = (float)vector2I4.y;
+			this.material.SetVector("_RangeParams", value);
+			this.material.SetColor("_HighlightColor", this.highlightColor);
+			this.material.SetColor("_HighlightColor2", this.highlightColor2);
+			Vector4 value2;
+			value2.x = 1f / (float)this.OcclusionTex.width;
+			value2.y = 1f / (float)this.OcclusionTex.height;
+			value2.z = 0f;
+			value2.w = 0f;
+			this.material.SetVector("_OcclusionParams", value2);
+			this.material.SetTexture("_OcclusionTex", this.OcclusionTex);
+			Vector4 value3;
+			value3.x = (float)Grid.WidthInCells;
+			value3.y = (float)Grid.HeightInCells;
+			value3.z = 1f / (float)Grid.WidthInCells;
+			value3.w = 1f / (float)Grid.HeightInCells;
+			this.material.SetVector("_WorldParams", value3);
+			GL.PushMatrix();
+			this.material.SetPass(0);
+			GL.LoadOrtho();
+			GL.Begin(5);
+			GL.Color(Color.white);
+			GL.Vertex3(0f, 0f, 0f);
+			GL.Vertex3(0f, 1f, 0f);
+			GL.Vertex3(1f, 0f, 0f);
+			GL.Vertex3(1f, 1f, 0f);
+			GL.End();
+			GL.PopMatrix();
+			if (this.LastVisibleColumnCount != num)
+			{
+				SoundEvent.PlayOneShot(GlobalAssets.GetSound("RangeVisualization_movement", false), scannerNetworkVisualizer.transform.GetPosition(), 1f);
+				this.LastVisibleColumnCount = num;
+			}
 		}
 	}
 
+	// Token: 0x06008DED RID: 36333 RVA: 0x0036EDF0 File Offset: 0x0036CFF0
 	private static void ComputeVisibility(ScannerNetworkVisualizer scan, NativeArray<float> pixels, Vector2I world_min, Vector2I world_max, ref int visible_column_count)
 	{
-		Vector2I vector2I = Grid.PosToXY(scan.transform.GetPosition());
+		Vector2I u = Grid.PosToXY(scan.transform.GetPosition());
 		int rangeMin = scan.RangeMin;
 		int rangeMax = scan.RangeMax;
-		Vector2I vector2I2 = vector2I + scan.OriginOffset;
-		bool visible = true;
-		for (int num = 0; num >= rangeMin; num--)
+		Vector2I vector2I = u + scan.OriginOffset;
+		bool flag = true;
+		for (int i = 0; i >= rangeMin; i--)
 		{
-			int x_abs = vector2I2.x + num;
-			int y_abs = vector2I2.y + Mathf.Abs(num);
-			ComputeVisibility(x_abs, y_abs, pixels, world_min, world_max, ref visible);
-			if (visible)
+			int x_abs = vector2I.x + i;
+			int y_abs = vector2I.y + Mathf.Abs(i);
+			ScannerNetworkVisualizerEffect.ComputeVisibility(x_abs, y_abs, pixels, world_min, world_max, ref flag);
+			if (flag)
 			{
 				visible_column_count++;
 			}
 		}
-		visible = true;
-		for (int i = 0; i <= rangeMax; i++)
+		flag = true;
+		for (int j = 0; j <= rangeMax; j++)
 		{
-			int x_abs2 = vector2I2.x + i;
-			int y_abs2 = vector2I2.y + Mathf.Abs(i);
-			ComputeVisibility(x_abs2, y_abs2, pixels, world_min, world_max, ref visible);
-			if (visible)
+			int x_abs2 = vector2I.x + j;
+			int y_abs2 = vector2I.y + Mathf.Abs(j);
+			ScannerNetworkVisualizerEffect.ComputeVisibility(x_abs2, y_abs2, pixels, world_min, world_max, ref flag);
+			if (flag)
 			{
 				visible_column_count++;
 			}
 		}
 	}
 
+	// Token: 0x06008DEE RID: 36334 RVA: 0x0036EEB4 File Offset: 0x0036D0B4
 	private static void ComputeVisibility(int x_abs, int y_abs, NativeArray<float> pixels, Vector2I world_min, Vector2I world_max, ref bool visible)
 	{
 		int num = x_abs - world_min.x;
@@ -159,25 +161,25 @@ public class ScannerNetworkVisualizerEffect : VisualizerEffect
 			return;
 		}
 		int cell = Grid.XYToCell(x_abs, y_abs);
-		visible &= HasSkyVisibility(cell);
-		if (pixels[2 * num] != 2f)
+		visible &= ScannerNetworkVisualizerEffect.HasSkyVisibility(cell);
+		if (pixels[2 * num] == 2f)
 		{
-			pixels[2 * num] = ((!visible) ? 1 : 2);
-			if (pixels[2 * num] == 1f && pixels[2 * num + 1] != 0f)
+			if (visible)
 			{
-				pixels[2 * num + 1] = Mathf.Min(pixels[2 * num + 1], y_abs + 1);
+				pixels[2 * num + 1] = Mathf.Min(pixels[2 * num + 1], (float)(y_abs + 1));
 			}
-			else
-			{
-				pixels[2 * num + 1] = y_abs + 1;
-			}
+			return;
 		}
-		else if (visible)
+		pixels[2 * num] = (float)(visible ? 2 : 1);
+		if (pixels[2 * num] == 1f && pixels[2 * num + 1] != 0f)
 		{
-			pixels[2 * num + 1] = Mathf.Min(pixels[2 * num + 1], y_abs + 1);
+			pixels[2 * num + 1] = Mathf.Min(pixels[2 * num + 1], (float)(y_abs + 1));
+			return;
 		}
+		pixels[2 * num + 1] = (float)(y_abs + 1);
 	}
 
+	// Token: 0x06008DEF RID: 36335 RVA: 0x0036E8A0 File Offset: 0x0036CAA0
 	private static void FindWorldBounds(out Vector2I world_min, out Vector2I world_max)
 	{
 		if (ClusterManager.Instance != null)
@@ -185,18 +187,26 @@ public class ScannerNetworkVisualizerEffect : VisualizerEffect
 			WorldContainer activeWorld = ClusterManager.Instance.activeWorld;
 			world_min = activeWorld.WorldOffset;
 			world_max = activeWorld.WorldOffset + activeWorld.WorldSize;
+			return;
 		}
-		else
-		{
-			world_min.x = 0;
-			world_min.y = 0;
-			world_max.x = Grid.WidthInCells;
-			world_max.y = Grid.HeightInCells;
-		}
+		world_min.x = 0;
+		world_min.y = 0;
+		world_max.x = Grid.WidthInCells;
+		world_max.y = Grid.HeightInCells;
 	}
 
+	// Token: 0x06008DF0 RID: 36336 RVA: 0x000C28AF File Offset: 0x000C0AAF
 	private static bool HasSkyVisibility(int cell)
 	{
 		return Grid.ExposedToSunlight[cell] >= 1;
 	}
+
+	// Token: 0x04006A9F RID: 27295
+	public Color highlightColor = new Color(0f, 1f, 0.8f, 1f);
+
+	// Token: 0x04006AA0 RID: 27296
+	public Color highlightColor2 = new Color(1f, 0.32f, 0f, 1f);
+
+	// Token: 0x04006AA1 RID: 27297
+	private int LastVisibleColumnCount;
 }

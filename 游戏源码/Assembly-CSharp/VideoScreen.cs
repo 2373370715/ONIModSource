@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using FMOD.Studio;
@@ -7,131 +7,99 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
 
+// Token: 0x02002048 RID: 8264
 public class VideoScreen : KModalScreen
 {
-	public static VideoScreen Instance;
-
-	[SerializeField]
-	private VideoPlayer videoPlayer;
-
-	[SerializeField]
-	private Slideshow slideshow;
-
-	[SerializeField]
-	private KButton closeButton;
-
-	[SerializeField]
-	private KButton proceedButton;
-
-	[SerializeField]
-	private RectTransform overlayContainer;
-
-	[SerializeField]
-	private List<VideoOverlay> overlayPrefabs;
-
-	private RawImage screen;
-
-	private RenderTexture renderTexture;
-
-	private EventReference activeAudioSnapshot;
-
-	[SerializeField]
-	private Image fadeOverlay;
-
-	private EventInstance audioHandle;
-
-	private bool victoryLoopQueued;
-
-	private string victoryLoopMessage = "";
-
-	private string victoryLoopClip = "";
-
-	private bool videoSkippable = true;
-
-	public System.Action OnStop;
-
+	// Token: 0x0600AFE8 RID: 45032 RVA: 0x00422668 File Offset: 0x00420868
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.ConsumeMouseScroll = true;
-		closeButton.onClick += delegate
+		this.closeButton.onClick += delegate()
 		{
-			Stop();
+			this.Stop();
 		};
-		proceedButton.onClick += delegate
+		this.proceedButton.onClick += delegate()
 		{
-			Stop();
+			this.Stop();
 		};
-		videoPlayer.isLooping = false;
-		videoPlayer.loopPointReached += delegate
+		this.videoPlayer.isLooping = false;
+		this.videoPlayer.loopPointReached += delegate(VideoPlayer data)
 		{
-			if (victoryLoopQueued)
+			if (this.victoryLoopQueued)
 			{
-				StartCoroutine(SwitchToVictoryLoop());
+				base.StartCoroutine(this.SwitchToVictoryLoop());
+				return;
 			}
-			else if (!videoPlayer.isLooping)
+			if (!this.videoPlayer.isLooping)
 			{
-				Stop();
+				this.Stop();
 			}
 		};
-		Instance = this;
-		Show(show: false);
+		VideoScreen.Instance = this;
+		this.Show(false);
 	}
 
+	// Token: 0x0600AFE9 RID: 45033 RVA: 0x00112502 File Offset: 0x00110702
 	protected override void OnForcedCleanUp()
 	{
-		Instance = null;
+		VideoScreen.Instance = null;
 		base.OnForcedCleanUp();
 	}
 
+	// Token: 0x0600AFEA RID: 45034 RVA: 0x00112510 File Offset: 0x00110710
 	protected override void OnShow(bool show)
 	{
 		base.transform.SetAsLastSibling();
 		base.OnShow(show);
-		screen = videoPlayer.gameObject.GetComponent<RawImage>();
+		this.screen = this.videoPlayer.gameObject.GetComponent<RawImage>();
 	}
 
+	// Token: 0x0600AFEB RID: 45035 RVA: 0x0011253A File Offset: 0x0011073A
 	public void DisableAllMedia()
 	{
-		overlayContainer.gameObject.SetActive(value: false);
-		videoPlayer.gameObject.SetActive(value: false);
-		slideshow.gameObject.SetActive(value: false);
+		this.overlayContainer.gameObject.SetActive(false);
+		this.videoPlayer.gameObject.SetActive(false);
+		this.slideshow.gameObject.SetActive(false);
 	}
 
+	// Token: 0x0600AFEC RID: 45036 RVA: 0x004226E0 File Offset: 0x004208E0
 	public void PlaySlideShow(Sprite[] sprites)
 	{
-		Show();
-		DisableAllMedia();
-		slideshow.updateType = SlideshowUpdateType.preloadedSprites;
-		slideshow.gameObject.SetActive(value: true);
-		slideshow.SetSprites(sprites);
-		slideshow.SetPaused(state: false);
+		this.Show(true);
+		this.DisableAllMedia();
+		this.slideshow.updateType = SlideshowUpdateType.preloadedSprites;
+		this.slideshow.gameObject.SetActive(true);
+		this.slideshow.SetSprites(sprites);
+		this.slideshow.SetPaused(false);
 	}
 
+	// Token: 0x0600AFED RID: 45037 RVA: 0x00422730 File Offset: 0x00420930
 	public void PlaySlideShow(string[] files)
 	{
-		Show();
-		DisableAllMedia();
-		slideshow.updateType = SlideshowUpdateType.loadOnDemand;
-		slideshow.gameObject.SetActive(value: true);
-		slideshow.SetFiles(files, 0);
-		slideshow.SetPaused(state: false);
+		this.Show(true);
+		this.DisableAllMedia();
+		this.slideshow.updateType = SlideshowUpdateType.loadOnDemand;
+		this.slideshow.gameObject.SetActive(true);
+		this.slideshow.SetFiles(files, 0);
+		this.slideshow.SetPaused(false);
 	}
 
+	// Token: 0x0600AFEE RID: 45038 RVA: 0x00422780 File Offset: 0x00420980
 	public override void OnKeyDown(KButtonEvent e)
 	{
-		if (e.IsAction(Action.Escape))
+		if (e.IsAction(global::Action.Escape))
 		{
-			if (slideshow.gameObject.activeSelf && e.TryConsume(Action.Escape))
+			if (this.slideshow.gameObject.activeSelf && e.TryConsume(global::Action.Escape))
 			{
-				Stop();
+				this.Stop();
 				return;
 			}
-			if (e.TryConsume(Action.Escape))
+			if (e.TryConsume(global::Action.Escape))
 			{
-				if (videoSkippable)
+				if (this.videoSkippable)
 				{
-					Stop();
+					this.Stop();
 				}
 				return;
 			}
@@ -139,125 +107,187 @@ public class VideoScreen : KModalScreen
 		base.OnKeyDown(e);
 	}
 
+	// Token: 0x0600AFEF RID: 45039 RVA: 0x004227D8 File Offset: 0x004209D8
 	public void PlayVideo(VideoClip clip, bool unskippable = false, EventReference overrideAudioSnapshot = default(EventReference), bool showProceedButton = false)
 	{
-		Debug.Assert(clip != null);
-		for (int i = 0; i < overlayContainer.childCount; i++)
+		global::Debug.Assert(clip != null);
+		for (int i = 0; i < this.overlayContainer.childCount; i++)
 		{
-			UnityEngine.Object.Destroy(overlayContainer.GetChild(i).gameObject);
+			UnityEngine.Object.Destroy(this.overlayContainer.GetChild(i).gameObject);
 		}
-		Show();
-		videoPlayer.isLooping = false;
-		activeAudioSnapshot = (overrideAudioSnapshot.IsNull ? AudioMixerSnapshots.Get().TutorialVideoPlayingSnapshot : overrideAudioSnapshot);
-		AudioMixer.instance.Start(activeAudioSnapshot);
-		DisableAllMedia();
-		videoPlayer.gameObject.SetActive(value: true);
-		renderTexture = new RenderTexture(Convert.ToInt32(clip.width), Convert.ToInt32(clip.height), 16);
-		screen.texture = renderTexture;
-		videoPlayer.targetTexture = renderTexture;
-		videoPlayer.audioOutputMode = VideoAudioOutputMode.None;
-		videoPlayer.clip = clip;
-		videoPlayer.Play();
-		if (audioHandle.isValid())
+		this.Show(true);
+		this.videoPlayer.isLooping = false;
+		this.activeAudioSnapshot = (overrideAudioSnapshot.IsNull ? AudioMixerSnapshots.Get().TutorialVideoPlayingSnapshot : overrideAudioSnapshot);
+		AudioMixer.instance.Start(this.activeAudioSnapshot);
+		this.DisableAllMedia();
+		this.videoPlayer.gameObject.SetActive(true);
+		this.renderTexture = new RenderTexture(Convert.ToInt32(clip.width), Convert.ToInt32(clip.height), 16);
+		this.screen.texture = this.renderTexture;
+		this.videoPlayer.targetTexture = this.renderTexture;
+		this.videoPlayer.audioOutputMode = VideoAudioOutputMode.None;
+		this.videoPlayer.clip = clip;
+		this.videoPlayer.timeReference = VideoTimeReference.ExternalTime;
+		this.videoPlayer.Play();
+		if (this.audioHandle.isValid())
 		{
-			KFMOD.EndOneShot(audioHandle);
-			audioHandle.clearHandle();
+			KFMOD.EndOneShot(this.audioHandle);
+			this.audioHandle.clearHandle();
 		}
-		audioHandle = KFMOD.BeginOneShot(GlobalAssets.GetSound("vid_" + clip.name), Vector3.zero);
-		KFMOD.EndOneShot(audioHandle);
-		videoSkippable = !unskippable;
-		closeButton.gameObject.SetActive(videoSkippable);
-		proceedButton.gameObject.SetActive(showProceedButton && videoSkippable);
+		this.audioHandle = KFMOD.BeginOneShot(GlobalAssets.GetSound("vid_" + clip.name, false), Vector3.zero, 1f);
+		KFMOD.EndOneShot(this.audioHandle);
+		this.videoSkippable = !unskippable;
+		this.closeButton.gameObject.SetActive(this.videoSkippable);
+		this.proceedButton.gameObject.SetActive(showProceedButton && this.videoSkippable);
 	}
 
+	// Token: 0x0600AFF0 RID: 45040 RVA: 0x0011256F File Offset: 0x0011076F
 	public void QueueVictoryVideoLoop(bool queue, string message = "", string victoryAchievement = "", string loopVideo = "")
 	{
-		victoryLoopQueued = queue;
-		victoryLoopMessage = message;
-		victoryLoopClip = loopVideo;
-		OnStop = (System.Action)Delegate.Combine(OnStop, (System.Action)delegate
+		this.victoryLoopQueued = queue;
+		this.victoryLoopMessage = message;
+		this.victoryLoopClip = loopVideo;
+		this.OnStop = (System.Action)Delegate.Combine(this.OnStop, new System.Action(delegate()
 		{
 			RetireColonyUtility.SaveColonySummaryData();
 			MainMenu.ActivateRetiredColoniesScreenFromData(base.transform.parent.gameObject, RetireColonyUtility.GetCurrentColonyRetiredColonyData());
-		});
+		}));
 	}
 
+	// Token: 0x0600AFF1 RID: 45041 RVA: 0x00422980 File Offset: 0x00420B80
 	public void SetOverlayText(string overlayTemplate, List<string> strings)
 	{
 		VideoOverlay videoOverlay = null;
-		foreach (VideoOverlay overlayPrefab in overlayPrefabs)
+		foreach (VideoOverlay videoOverlay2 in this.overlayPrefabs)
 		{
-			if (overlayPrefab.name == overlayTemplate)
+			if (videoOverlay2.name == overlayTemplate)
 			{
-				videoOverlay = overlayPrefab;
+				videoOverlay = videoOverlay2;
 				break;
 			}
 		}
 		DebugUtil.Assert(videoOverlay != null, "Could not find a template named ", overlayTemplate);
-		Util.KInstantiateUI<VideoOverlay>(videoOverlay.gameObject, overlayContainer.gameObject, force_active: true).SetText(strings);
-		overlayContainer.gameObject.SetActive(value: true);
+		global::Util.KInstantiateUI<VideoOverlay>(videoOverlay.gameObject, this.overlayContainer.gameObject, true).SetText(strings);
+		this.overlayContainer.gameObject.SetActive(true);
 	}
 
+	// Token: 0x0600AFF2 RID: 45042 RVA: 0x001125A9 File Offset: 0x001107A9
 	private IEnumerator SwitchToVictoryLoop()
 	{
-		victoryLoopQueued = false;
-		Color color = fadeOverlay.color;
-		for (float j = 0f; j < 1f; j += Time.unscaledDeltaTime)
+		this.victoryLoopQueued = false;
+		Color color = this.fadeOverlay.color;
+		for (float i = 0f; i < 1f; i += Time.unscaledDeltaTime)
 		{
-			fadeOverlay.color = new Color(color.r, color.g, color.b, j);
+			this.fadeOverlay.color = new Color(color.r, color.g, color.b, i);
 			yield return SequenceUtil.WaitForNextFrame;
 		}
-		fadeOverlay.color = new Color(color.r, color.g, color.b, 1f);
-		MusicManager.instance.PlaySong("Music_Victory_03_StoryAndSummary");
-		MusicManager.instance.SetSongParameter("Music_Victory_03_StoryAndSummary", "songSection", 1f);
-		closeButton.gameObject.SetActive(value: true);
-		proceedButton.gameObject.SetActive(value: true);
-		SetOverlayText("VictoryEnd", new List<string> { victoryLoopMessage });
-		videoPlayer.clip = Assets.GetVideo(victoryLoopClip);
-		videoPlayer.isLooping = true;
-		videoPlayer.Play();
-		proceedButton.gameObject.SetActive(value: true);
+		this.fadeOverlay.color = new Color(color.r, color.g, color.b, 1f);
+		MusicManager.instance.PlaySong("Music_Victory_03_StoryAndSummary", false);
+		MusicManager.instance.SetSongParameter("Music_Victory_03_StoryAndSummary", "songSection", 1f, true);
+		this.closeButton.gameObject.SetActive(true);
+		this.proceedButton.gameObject.SetActive(true);
+		this.SetOverlayText("VictoryEnd", new List<string>
+		{
+			this.victoryLoopMessage
+		});
+		this.videoPlayer.clip = Assets.GetVideo(this.victoryLoopClip);
+		this.videoPlayer.isLooping = true;
+		this.videoPlayer.Play();
+		this.proceedButton.gameObject.SetActive(true);
 		yield return SequenceUtil.WaitForSecondsRealtime(1f);
-		for (float j = 1f; j >= 0f; j -= Time.unscaledDeltaTime)
+		for (float i = 1f; i >= 0f; i -= Time.unscaledDeltaTime)
 		{
-			fadeOverlay.color = new Color(color.r, color.g, color.b, j);
+			this.fadeOverlay.color = new Color(color.r, color.g, color.b, i);
 			yield return SequenceUtil.WaitForNextFrame;
 		}
-		fadeOverlay.color = new Color(color.r, color.g, color.b, 0f);
+		this.fadeOverlay.color = new Color(color.r, color.g, color.b, 0f);
+		yield break;
 	}
 
+	// Token: 0x0600AFF3 RID: 45043 RVA: 0x00422A20 File Offset: 0x00420C20
 	public void Stop()
 	{
-		videoPlayer.Stop();
-		screen.texture = null;
-		videoPlayer.targetTexture = null;
-		if (!activeAudioSnapshot.IsNull)
+		this.videoPlayer.Stop();
+		this.screen.texture = null;
+		this.videoPlayer.targetTexture = null;
+		if (!this.activeAudioSnapshot.IsNull)
 		{
-			AudioMixer.instance.Stop(activeAudioSnapshot);
-			audioHandle.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+			AudioMixer.instance.Stop(this.activeAudioSnapshot, FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+			this.audioHandle.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
 		}
-		if (OnStop != null)
+		if (this.OnStop != null)
 		{
-			OnStop();
+			this.OnStop();
 		}
-		Show(show: false);
+		this.Show(false);
 	}
 
+	// Token: 0x0600AFF4 RID: 45044 RVA: 0x00422A98 File Offset: 0x00420C98
 	public override void ScreenUpdate(bool topLevel)
 	{
 		base.ScreenUpdate(topLevel);
-		if (audioHandle.isValid())
+		if (this.audioHandle.isValid())
 		{
-			audioHandle.getTimelinePosition(out var position);
-			double num = videoPlayer.time * 1000.0;
-			if ((double)position - num > 33.0)
-			{
-				videoPlayer.frame++;
-			}
-			else if (num - (double)position > 33.0)
-			{
-				videoPlayer.frame--;
-			}
+			int num;
+			this.audioHandle.getTimelinePosition(out num);
+			this.videoPlayer.externalReferenceTime = (double)((float)num / 1000f);
 		}
 	}
+
+	// Token: 0x04008A9F RID: 35487
+	public static VideoScreen Instance;
+
+	// Token: 0x04008AA0 RID: 35488
+	[SerializeField]
+	private VideoPlayer videoPlayer;
+
+	// Token: 0x04008AA1 RID: 35489
+	[SerializeField]
+	private Slideshow slideshow;
+
+	// Token: 0x04008AA2 RID: 35490
+	[SerializeField]
+	private KButton closeButton;
+
+	// Token: 0x04008AA3 RID: 35491
+	[SerializeField]
+	private KButton proceedButton;
+
+	// Token: 0x04008AA4 RID: 35492
+	[SerializeField]
+	private RectTransform overlayContainer;
+
+	// Token: 0x04008AA5 RID: 35493
+	[SerializeField]
+	private List<VideoOverlay> overlayPrefabs;
+
+	// Token: 0x04008AA6 RID: 35494
+	private RawImage screen;
+
+	// Token: 0x04008AA7 RID: 35495
+	private RenderTexture renderTexture;
+
+	// Token: 0x04008AA8 RID: 35496
+	private EventReference activeAudioSnapshot;
+
+	// Token: 0x04008AA9 RID: 35497
+	[SerializeField]
+	private Image fadeOverlay;
+
+	// Token: 0x04008AAA RID: 35498
+	private EventInstance audioHandle;
+
+	// Token: 0x04008AAB RID: 35499
+	private bool victoryLoopQueued;
+
+	// Token: 0x04008AAC RID: 35500
+	private string victoryLoopMessage = "";
+
+	// Token: 0x04008AAD RID: 35501
+	private string victoryLoopClip = "";
+
+	// Token: 0x04008AAE RID: 35502
+	private bool videoSkippable = true;
+
+	// Token: 0x04008AAF RID: 35503
+	public System.Action OnStop;
 }

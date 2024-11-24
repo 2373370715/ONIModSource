@@ -1,36 +1,35 @@
-using System;
+﻿using System;
 using Klei.AI;
 using STRINGS;
 using UnityEngine;
 
+// Token: 0x020004B8 RID: 1208
 public class MorbRoverMakerStorytrait : StoryTraitStateMachine<MorbRoverMakerStorytrait, MorbRoverMakerStorytrait.Instance, MorbRoverMakerStorytrait.Def>
 {
-	public class Def : TraitDef
+	// Token: 0x0600154E RID: 5454 RVA: 0x000AF884 File Offset: 0x000ADA84
+	public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
-		public const string LORE_UNLOCK_PREFIX = "story_trait_morbrover_";
+		base.serializable = StateMachine.SerializeType.ParamsOnly;
+		default_state = this.root;
+	}
 
-		public string MachineRevealedLoreId = "story_trait_morbrover_reveal";
+	// Token: 0x04000E62 RID: 3682
+	public StateMachine<MorbRoverMakerStorytrait, MorbRoverMakerStorytrait.Instance, StateMachineController, MorbRoverMakerStorytrait.Def>.BoolParameter HasAnyBioBotBeenReleased;
 
-		public string MachineRevealedLoreId2 = "story_trait_morbrover_reveal_lore";
-
-		public string CompleteLoreId2 = "story_trait_morbrover_complete_lore";
-
-		public string CompleteLoreId3 = "story_trait_morbrover_biobot";
-
-		public System.Action NormalPopupOpenCodexButtonPressed;
-
-		public StoryManager.PopupInfo EventMachineRevealedInfo;
-
+	// Token: 0x020004B9 RID: 1209
+	public class Def : StoryTraitStateMachine<MorbRoverMakerStorytrait, MorbRoverMakerStorytrait.Instance, MorbRoverMakerStorytrait.Def>.TraitDef
+	{
+		// Token: 0x06001550 RID: 5456 RVA: 0x00192F68 File Offset: 0x00191168
 		public override void Configure(GameObject prefab)
 		{
-			Story = Db.Get().Stories.MorbRoverMaker;
-			CompletionData = new StoryCompleteData
+			this.Story = Db.Get().Stories.MorbRoverMaker;
+			this.CompletionData = new StoryCompleteData
 			{
 				KeepSakeSpawnOffset = new CellOffset(0, 2),
 				CameraTargetOffset = new CellOffset(0, 3)
 			};
-			InitalLoreId = "story_trait_morbrover_initial";
-			EventIntroInfo = new StoryManager.PopupInfo
+			this.InitalLoreId = "story_trait_morbrover_initial";
+			this.EventIntroInfo = new StoryManager.PopupInfo
 			{
 				Title = CODEX.STORY_TRAITS.MORB_ROVER_MAKER.POPUPS.BEGIN.NAME,
 				Description = CODEX.STORY_TRAITS.MORB_ROVER_MAKER.POPUPS.BEGIN.DESCRIPTION,
@@ -39,37 +38,39 @@ public class MorbRoverMakerStorytrait : StoryTraitStateMachine<MorbRoverMakerSto
 				DisplayImmediate = true,
 				PopupType = EventInfoDataHelper.PopupType.BEGIN
 			};
-			EventMachineRevealedInfo = new StoryManager.PopupInfo
+			this.EventMachineRevealedInfo = new StoryManager.PopupInfo
 			{
 				Title = CODEX.STORY_TRAITS.MORB_ROVER_MAKER.POPUPS.REVEAL.NAME,
 				Description = CODEX.STORY_TRAITS.MORB_ROVER_MAKER.POPUPS.REVEAL.DESCRIPTION,
 				CloseButtonText = CODEX.STORY_TRAITS.MORB_ROVER_MAKER.POPUPS.REVEAL.BUTTON_CLOSE,
-				extraButtons = new StoryManager.ExtraButtonInfo[1]
+				extraButtons = new StoryManager.ExtraButtonInfo[]
 				{
 					new StoryManager.ExtraButtonInfo
 					{
 						ButtonText = CODEX.STORY_TRAITS.MORB_ROVER_MAKER.POPUPS.REVEAL.BUTTON_READLORE,
-						OnButtonClick = delegate
+						OnButtonClick = delegate()
 						{
-							NormalPopupOpenCodexButtonPressed?.Invoke();
-							UnlockRevealEntries();
-							string entryForLock = CodexCache.GetEntryForLock(MachineRevealedLoreId);
+							System.Action normalPopupOpenCodexButtonPressed = this.NormalPopupOpenCodexButtonPressed;
+							if (normalPopupOpenCodexButtonPressed != null)
+							{
+								normalPopupOpenCodexButtonPressed();
+							}
+							this.UnlockRevealEntries();
+							string entryForLock = CodexCache.GetEntryForLock(this.MachineRevealedLoreId);
 							if (entryForLock == null)
 							{
-								DebugUtil.DevLogError("Missing codex entry for lock: " + MachineRevealedLoreId);
+								DebugUtil.DevLogError("Missing codex entry for lock: " + this.MachineRevealedLoreId);
+								return;
 							}
-							else
-							{
-								ManagementMenu.Instance.OpenCodexToEntry(entryForLock);
-							}
+							ManagementMenu.Instance.OpenCodexToEntry(entryForLock, null);
 						}
 					}
 				},
 				TextureName = "BioBotCleanedUp_kanim",
 				PopupType = EventInfoDataHelper.PopupType.NORMAL
 			};
-			CompleteLoreId = "story_trait_morbrover_complete";
-			EventCompleteInfo = new StoryManager.PopupInfo
+			this.CompleteLoreId = "story_trait_morbrover_complete";
+			this.EventCompleteInfo = new StoryManager.PopupInfo
 			{
 				Title = CODEX.STORY_TRAITS.MORB_ROVER_MAKER.POPUPS.END.NAME,
 				Description = CODEX.STORY_TRAITS.MORB_ROVER_MAKER.POPUPS.END.DESCRIPTION,
@@ -79,111 +80,141 @@ public class MorbRoverMakerStorytrait : StoryTraitStateMachine<MorbRoverMakerSto
 			};
 		}
 
+		// Token: 0x06001551 RID: 5457 RVA: 0x000AF89D File Offset: 0x000ADA9D
 		public void UnlockRevealEntries()
 		{
-			Game.Instance.unlocks.Unlock(MachineRevealedLoreId);
-			Game.Instance.unlocks.Unlock(MachineRevealedLoreId2);
+			Game.Instance.unlocks.Unlock(this.MachineRevealedLoreId, true);
+			Game.Instance.unlocks.Unlock(this.MachineRevealedLoreId2, true);
 		}
+
+		// Token: 0x04000E63 RID: 3683
+		public const string LORE_UNLOCK_PREFIX = "story_trait_morbrover_";
+
+		// Token: 0x04000E64 RID: 3684
+		public string MachineRevealedLoreId = "story_trait_morbrover_reveal";
+
+		// Token: 0x04000E65 RID: 3685
+		public string MachineRevealedLoreId2 = "story_trait_morbrover_reveal_lore";
+
+		// Token: 0x04000E66 RID: 3686
+		public string CompleteLoreId2 = "story_trait_morbrover_complete_lore";
+
+		// Token: 0x04000E67 RID: 3687
+		public string CompleteLoreId3 = "story_trait_morbrover_biobot";
+
+		// Token: 0x04000E68 RID: 3688
+		public System.Action NormalPopupOpenCodexButtonPressed;
+
+		// Token: 0x04000E69 RID: 3689
+		public StoryManager.PopupInfo EventMachineRevealedInfo;
 	}
 
-	public new class Instance : TraitInstance
+	// Token: 0x020004BA RID: 1210
+	public new class Instance : StoryTraitStateMachine<MorbRoverMakerStorytrait, MorbRoverMakerStorytrait.Instance, MorbRoverMakerStorytrait.Def>.TraitInstance
 	{
-		private MorbRoverMaker.Instance machine;
-
-		private StoryInstance storyInstance;
-
-		public Instance(StateMachineController master, Def def)
-			: base(master, def)
+		// Token: 0x06001554 RID: 5460 RVA: 0x000AF8FF File Offset: 0x000ADAFF
+		public Instance(StateMachineController master, MorbRoverMakerStorytrait.Def def) : base(master, def)
 		{
-			def.NormalPopupOpenCodexButtonPressed = (System.Action)Delegate.Combine(def.NormalPopupOpenCodexButtonPressed, new System.Action(OnNormalPopupOpenCodexButtonPressed));
+			def.NormalPopupOpenCodexButtonPressed = (System.Action)Delegate.Combine(def.NormalPopupOpenCodexButtonPressed, new System.Action(this.OnNormalPopupOpenCodexButtonPressed));
 		}
 
+		// Token: 0x06001555 RID: 5461 RVA: 0x00193170 File Offset: 0x00191370
 		public override void StartSM()
 		{
 			base.StartSM();
-			machine = base.gameObject.GetSMI<MorbRoverMaker.Instance>();
-			storyInstance = StoryManager.Instance.GetStoryInstance(Db.Get().Stories.MorbRoverMaker.HashId);
-			if (storyInstance != null && machine != null)
+			this.machine = base.gameObject.GetSMI<MorbRoverMaker.Instance>();
+			this.storyInstance = StoryManager.Instance.GetStoryInstance(Db.Get().Stories.MorbRoverMaker.HashId);
+			if (this.storyInstance == null)
 			{
-				MorbRoverMaker.Instance instance = machine;
-				instance.OnUncovered = (System.Action)Delegate.Combine(instance.OnUncovered, new System.Action(OnMachineUncovered));
-				MorbRoverMaker.Instance instance2 = machine;
-				instance2.OnRoverSpawned = (Action<GameObject>)Delegate.Combine(instance2.OnRoverSpawned, new Action<GameObject>(OnRoverSpawned));
-				if (machine.HasBeenRevealed && storyInstance.CurrentState != StoryInstance.State.COMPLETE && storyInstance.CurrentState != StoryInstance.State.IN_PROGRESS)
+				return;
+			}
+			if (this.machine != null)
+			{
+				MorbRoverMaker.Instance instance = this.machine;
+				instance.OnUncovered = (System.Action)Delegate.Combine(instance.OnUncovered, new System.Action(this.OnMachineUncovered));
+				MorbRoverMaker.Instance instance2 = this.machine;
+				instance2.OnRoverSpawned = (Action<GameObject>)Delegate.Combine(instance2.OnRoverSpawned, new Action<GameObject>(this.OnRoverSpawned));
+				if (this.machine.HasBeenRevealed && this.storyInstance.CurrentState != StoryInstance.State.COMPLETE && this.storyInstance.CurrentState != StoryInstance.State.IN_PROGRESS)
 				{
-					DisplayPopup(base.def.EventMachineRevealedInfo);
+					base.DisplayPopup(base.def.EventMachineRevealedInfo);
 				}
-				if (machine.HasBeenRevealed && base.sm.HasAnyBioBotBeenReleased.Get(this) && storyInstance.CurrentState != StoryInstance.State.COMPLETE)
+				if (this.machine.HasBeenRevealed && base.sm.HasAnyBioBotBeenReleased.Get(this) && this.storyInstance.CurrentState != StoryInstance.State.COMPLETE)
 				{
-					CompleteEvent();
+					this.CompleteEvent();
 				}
 			}
 		}
 
+		// Token: 0x06001556 RID: 5462 RVA: 0x000AF92B File Offset: 0x000ADB2B
 		private void OnMachineUncovered()
 		{
-			if (storyInstance != null && !storyInstance.HasDisplayedPopup(EventInfoDataHelper.PopupType.NORMAL))
+			if (this.storyInstance != null && !this.storyInstance.HasDisplayedPopup(EventInfoDataHelper.PopupType.NORMAL))
 			{
-				DisplayPopup(base.def.EventMachineRevealedInfo);
+				base.DisplayPopup(base.def.EventMachineRevealedInfo);
 			}
 		}
 
+		// Token: 0x06001557 RID: 5463 RVA: 0x000AF954 File Offset: 0x000ADB54
 		protected override void ShowEventNormalUI()
 		{
 			base.ShowEventNormalUI();
-			if (storyInstance != null && storyInstance.PendingType == EventInfoDataHelper.PopupType.NORMAL)
+			if (this.storyInstance != null && this.storyInstance.PendingType == EventInfoDataHelper.PopupType.NORMAL)
 			{
-				EventInfoScreen.ShowPopup(storyInstance.EventInfo);
+				EventInfoScreen.ShowPopup(this.storyInstance.EventInfo);
 			}
 		}
 
+		// Token: 0x06001558 RID: 5464 RVA: 0x00193288 File Offset: 0x00191488
 		public override void OnPopupClosed()
 		{
 			base.OnPopupClosed();
-			if (storyInstance.HasDisplayedPopup(EventInfoDataHelper.PopupType.COMPLETE))
+			if (this.storyInstance.HasDisplayedPopup(EventInfoDataHelper.PopupType.COMPLETE))
 			{
-				Game.Instance.unlocks.Unlock(base.def.CompleteLoreId2);
-				Game.Instance.unlocks.Unlock(base.def.CompleteLoreId3);
+				Game.Instance.unlocks.Unlock(base.def.CompleteLoreId2, true);
+				Game.Instance.unlocks.Unlock(base.def.CompleteLoreId3, true);
+				return;
 			}
-			else if (storyInstance != null && storyInstance.HasDisplayedPopup(EventInfoDataHelper.PopupType.NORMAL))
+			if (this.storyInstance != null && this.storyInstance.HasDisplayedPopup(EventInfoDataHelper.PopupType.NORMAL))
 			{
-				TriggerStoryEvent(StoryInstance.State.IN_PROGRESS);
+				base.TriggerStoryEvent(StoryInstance.State.IN_PROGRESS);
 				base.def.UnlockRevealEntries();
+				return;
 			}
 		}
 
+		// Token: 0x06001559 RID: 5465 RVA: 0x000AF983 File Offset: 0x000ADB83
 		private void OnNormalPopupOpenCodexButtonPressed()
 		{
-			TriggerStoryEvent(StoryInstance.State.IN_PROGRESS);
+			base.TriggerStoryEvent(StoryInstance.State.IN_PROGRESS);
 		}
 
+		// Token: 0x0600155A RID: 5466 RVA: 0x000AF98C File Offset: 0x000ADB8C
 		private void OnRoverSpawned(GameObject rover)
 		{
-			base.smi.sm.HasAnyBioBotBeenReleased.Set(value: true, base.smi);
-			if (!storyInstance.HasDisplayedPopup(EventInfoDataHelper.PopupType.COMPLETE))
+			base.smi.sm.HasAnyBioBotBeenReleased.Set(true, base.smi, false);
+			if (!this.storyInstance.HasDisplayedPopup(EventInfoDataHelper.PopupType.COMPLETE))
 			{
-				CompleteEvent();
+				this.CompleteEvent();
 			}
 		}
 
+		// Token: 0x0600155B RID: 5467 RVA: 0x0019330C File Offset: 0x0019150C
 		protected override void OnCleanUp()
 		{
-			if (machine != null)
+			if (this.machine != null)
 			{
-				MorbRoverMaker.Instance instance = machine;
-				instance.OnUncovered = (System.Action)Delegate.Remove(instance.OnUncovered, new System.Action(OnMachineUncovered));
-				MorbRoverMaker.Instance instance2 = machine;
-				instance2.OnRoverSpawned = (Action<GameObject>)Delegate.Remove(instance2.OnRoverSpawned, new Action<GameObject>(OnRoverSpawned));
+				MorbRoverMaker.Instance instance = this.machine;
+				instance.OnUncovered = (System.Action)Delegate.Remove(instance.OnUncovered, new System.Action(this.OnMachineUncovered));
+				MorbRoverMaker.Instance instance2 = this.machine;
+				instance2.OnRoverSpawned = (Action<GameObject>)Delegate.Remove(instance2.OnRoverSpawned, new Action<GameObject>(this.OnRoverSpawned));
 			}
 			base.OnCleanUp();
 		}
-	}
 
-	public BoolParameter HasAnyBioBotBeenReleased;
+		// Token: 0x04000E6A RID: 3690
+		private MorbRoverMaker.Instance machine;
 
-	public override void InitializeStates(out BaseState default_state)
-	{
-		base.serializable = SerializeType.ParamsOnly;
-		default_state = root;
+		// Token: 0x04000E6B RID: 3691
+		private StoryInstance storyInstance;
 	}
 }

@@ -1,23 +1,26 @@
+﻿using System;
 using STRINGS;
 using UnityEngine;
 
+// Token: 0x0200184F RID: 6223
 public class LimitOneCommandModule : SelectModuleCondition
 {
-	public override bool EvaluateCondition(GameObject existingModule, BuildingDef selectedPart, SelectionContext selectionContext)
+	// Token: 0x060080B5 RID: 32949 RVA: 0x00335794 File Offset: 0x00333994
+	public override bool EvaluateCondition(GameObject existingModule, BuildingDef selectedPart, SelectModuleCondition.SelectionContext selectionContext)
 	{
 		if (existingModule == null)
 		{
 			return true;
 		}
-		foreach (GameObject item in AttachableBuilding.GetAttachedNetwork(existingModule.GetComponent<AttachableBuilding>()))
+		foreach (GameObject gameObject in AttachableBuilding.GetAttachedNetwork(existingModule.GetComponent<AttachableBuilding>()))
 		{
-			if (selectionContext != SelectionContext.ReplaceModule || !(item == existingModule.gameObject))
+			if (selectionContext != SelectModuleCondition.SelectionContext.ReplaceModule || !(gameObject == existingModule.gameObject))
 			{
-				if (item.GetComponent<RocketCommandConditions>() != null)
+				if (gameObject.GetComponent<RocketCommandConditions>() != null)
 				{
 					return false;
 				}
-				if (item.GetComponent<BuildingUnderConstruction>() != null && item.GetComponent<BuildingUnderConstruction>().Def.BuildingComplete.GetComponent<RocketCommandConditions>() != null)
+				if (gameObject.GetComponent<BuildingUnderConstruction>() != null && gameObject.GetComponent<BuildingUnderConstruction>().Def.BuildingComplete.GetComponent<RocketCommandConditions>() != null)
 				{
 					return false;
 				}
@@ -26,6 +29,7 @@ public class LimitOneCommandModule : SelectModuleCondition
 		return true;
 	}
 
+	// Token: 0x060080B6 RID: 32950 RVA: 0x000F4B18 File Offset: 0x000F2D18
 	public override string GetStatusTooltip(bool ready, GameObject moduleBase, BuildingDef selectedPart)
 	{
 		if (ready)

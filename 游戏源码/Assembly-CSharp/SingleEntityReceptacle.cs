@@ -1,77 +1,32 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using KSerialization;
 using UnityEngine;
 
+// Token: 0x02000F81 RID: 3969
 [AddComponentMenu("KMonoBehaviour/Workable/SingleEntityReceptacle")]
 public class SingleEntityReceptacle : Workable, IRender1000ms
 {
-	public enum ReceptacleDirection
+	// Token: 0x1700047B RID: 1147
+	// (get) Token: 0x06005050 RID: 20560 RVA: 0x000D45FA File Offset: 0x000D27FA
+	public FetchChore GetActiveRequest
 	{
-		Top,
-		Side,
-		Bottom
+		get
+		{
+			return this.fetchChore;
+		}
 	}
 
-	[MyCmpGet]
-	protected Operational operational;
-
-	[MyCmpReq]
-	protected Storage storage;
-
-	[MyCmpGet]
-	public Rotatable rotatable;
-
-	protected FetchChore fetchChore;
-
-	public ChoreType choreType = Db.Get().ChoreTypes.Fetch;
-
-	[Serialize]
-	public bool autoReplaceEntity;
-
-	[Serialize]
-	public Tag requestedEntityTag;
-
-	[Serialize]
-	public Tag requestedEntityAdditionalFilterTag;
-
-	[Serialize]
-	protected Ref<KSelectable> occupyObjectRef = new Ref<KSelectable>();
-
-	[SerializeField]
-	private List<Tag> possibleDepositTagsList = new List<Tag>();
-
-	[SerializeField]
-	private List<Func<GameObject, bool>> additionalCriteria = new List<Func<GameObject, bool>>();
-
-	[SerializeField]
-	protected bool destroyEntityOnDeposit;
-
-	[SerializeField]
-	protected ReceptacleDirection direction;
-
-	public Vector3 occupyingObjectRelativePosition = new Vector3(0f, 1f, 3f);
-
-	protected StatusItem statusItemAwaitingDelivery;
-
-	protected StatusItem statusItemNeed;
-
-	protected StatusItem statusItemNoneAvailable;
-
-	private static readonly EventSystem.IntraObjectHandler<SingleEntityReceptacle> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<SingleEntityReceptacle>(delegate(SingleEntityReceptacle component, object data)
-	{
-		component.OnOperationalChanged(data);
-	});
-
-	public FetchChore GetActiveRequest => fetchChore;
-
+	// Token: 0x1700047C RID: 1148
+	// (get) Token: 0x06005051 RID: 20561 RVA: 0x000D4602 File Offset: 0x000D2802
+	// (set) Token: 0x06005052 RID: 20562 RVA: 0x000D4629 File Offset: 0x000D2829
 	protected GameObject occupyingObject
 	{
 		get
 		{
-			if (occupyObjectRef.Get() != null)
+			if (this.occupyObjectRef.Get() != null)
 			{
-				return occupyObjectRef.Get().gameObject;
+				return this.occupyObjectRef.Get().gameObject;
 			}
 			return null;
 		}
@@ -79,26 +34,40 @@ public class SingleEntityReceptacle : Workable, IRender1000ms
 		{
 			if (value == null)
 			{
-				occupyObjectRef.Set(null);
+				this.occupyObjectRef.Set(null);
+				return;
 			}
-			else
-			{
-				occupyObjectRef.Set(value.GetComponent<KSelectable>());
-			}
+			this.occupyObjectRef.Set(value.GetComponent<KSelectable>());
 		}
 	}
 
-	public GameObject Occupant => occupyingObject;
-
-	public IReadOnlyList<Tag> possibleDepositObjectTags => possibleDepositTagsList;
-
-	public ReceptacleDirection Direction => direction;
-
-	public bool HasDepositTag(Tag tag)
+	// Token: 0x1700047D RID: 1149
+	// (get) Token: 0x06005053 RID: 20563 RVA: 0x000D4652 File Offset: 0x000D2852
+	public GameObject Occupant
 	{
-		return possibleDepositTagsList.Contains(tag);
+		get
+		{
+			return this.occupyingObject;
+		}
 	}
 
+	// Token: 0x1700047E RID: 1150
+	// (get) Token: 0x06005054 RID: 20564 RVA: 0x000D465A File Offset: 0x000D285A
+	public IReadOnlyList<Tag> possibleDepositObjectTags
+	{
+		get
+		{
+			return this.possibleDepositTagsList;
+		}
+	}
+
+	// Token: 0x06005055 RID: 20565 RVA: 0x000D4662 File Offset: 0x000D2862
+	public bool HasDepositTag(Tag tag)
+	{
+		return this.possibleDepositTagsList.Contains(tag);
+	}
+
+	// Token: 0x06005056 RID: 20566 RVA: 0x0026E57C File Offset: 0x0026C77C
 	public bool IsValidEntity(GameObject candidate)
 	{
 		KPrefabID component = candidate.GetComponent<KPrefabID>();
@@ -107,298 +76,422 @@ public class SingleEntityReceptacle : Workable, IRender1000ms
 			return false;
 		}
 		IReceptacleDirection component2 = candidate.GetComponent<IReceptacleDirection>();
-		bool flag = rotatable != null || component2 == null || component2.Direction == Direction;
+		bool flag = this.rotatable != null || component2 == null || component2.Direction == this.Direction;
 		int num = 0;
-		while (flag && num < additionalCriteria.Count)
+		while (flag && num < this.additionalCriteria.Count)
 		{
-			flag = additionalCriteria[num](candidate);
+			flag = this.additionalCriteria[num](candidate);
 			num++;
 		}
 		return flag;
 	}
 
+	// Token: 0x1700047F RID: 1151
+	// (get) Token: 0x06005057 RID: 20567 RVA: 0x000D4670 File Offset: 0x000D2870
+	public SingleEntityReceptacle.ReceptacleDirection Direction
+	{
+		get
+		{
+			return this.direction;
+		}
+	}
+
+	// Token: 0x06005058 RID: 20568 RVA: 0x000BC8FA File Offset: 0x000BAAFA
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 	}
 
+	// Token: 0x06005059 RID: 20569 RVA: 0x0026E5FC File Offset: 0x0026C7FC
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		if (occupyingObject != null)
+		if (this.occupyingObject != null)
 		{
-			PositionOccupyingObject();
-			SubscribeToOccupant();
+			this.PositionOccupyingObject();
+			this.SubscribeToOccupant();
 		}
-		UpdateStatusItem();
-		if (occupyingObject == null && !requestedEntityTag.IsValid)
+		this.UpdateStatusItem();
+		if (this.occupyingObject == null && !this.requestedEntityTag.IsValid)
 		{
-			requestedEntityAdditionalFilterTag = null;
+			this.requestedEntityAdditionalFilterTag = null;
 		}
-		if (occupyingObject == null && requestedEntityTag.IsValid)
+		if (this.occupyingObject == null && this.requestedEntityTag.IsValid)
 		{
-			CreateOrder(requestedEntityTag, requestedEntityAdditionalFilterTag);
+			this.CreateOrder(this.requestedEntityTag, this.requestedEntityAdditionalFilterTag);
 		}
-		Subscribe(-592767678, OnOperationalChangedDelegate);
+		base.Subscribe<SingleEntityReceptacle>(-592767678, SingleEntityReceptacle.OnOperationalChangedDelegate);
 	}
 
+	// Token: 0x0600505A RID: 20570 RVA: 0x000D4678 File Offset: 0x000D2878
 	public void AddDepositTag(Tag t)
 	{
-		possibleDepositTagsList.Add(t);
+		this.possibleDepositTagsList.Add(t);
 	}
 
+	// Token: 0x0600505B RID: 20571 RVA: 0x000D4686 File Offset: 0x000D2886
 	public void AddAdditionalCriteria(Func<GameObject, bool> criteria)
 	{
-		additionalCriteria.Add(criteria);
+		this.additionalCriteria.Add(criteria);
 	}
 
-	public void SetReceptacleDirection(ReceptacleDirection d)
+	// Token: 0x0600505C RID: 20572 RVA: 0x000D4694 File Offset: 0x000D2894
+	public void SetReceptacleDirection(SingleEntityReceptacle.ReceptacleDirection d)
 	{
-		direction = d;
+		this.direction = d;
 	}
 
+	// Token: 0x0600505D RID: 20573 RVA: 0x000A5E40 File Offset: 0x000A4040
 	public virtual void SetPreview(Tag entityTag, bool solid = false)
 	{
 	}
 
+	// Token: 0x0600505E RID: 20574 RVA: 0x000D469D File Offset: 0x000D289D
 	public virtual void CreateOrder(Tag entityTag, Tag additionalFilterTag)
 	{
-		requestedEntityTag = entityTag;
-		requestedEntityAdditionalFilterTag = additionalFilterTag;
-		CreateFetchChore(requestedEntityTag, requestedEntityAdditionalFilterTag);
-		SetPreview(entityTag, solid: true);
-		UpdateStatusItem();
+		this.requestedEntityTag = entityTag;
+		this.requestedEntityAdditionalFilterTag = additionalFilterTag;
+		this.CreateFetchChore(this.requestedEntityTag, this.requestedEntityAdditionalFilterTag);
+		this.SetPreview(entityTag, true);
+		this.UpdateStatusItem();
 	}
 
+	// Token: 0x0600505F RID: 20575 RVA: 0x000D46CD File Offset: 0x000D28CD
 	public void Render1000ms(float dt)
 	{
-		UpdateStatusItem();
+		this.UpdateStatusItem();
 	}
 
+	// Token: 0x06005060 RID: 20576 RVA: 0x0026E694 File Offset: 0x0026C894
 	protected virtual void UpdateStatusItem()
 	{
-		KSelectable component = GetComponent<KSelectable>();
-		if (Occupant != null)
+		KSelectable component = base.GetComponent<KSelectable>();
+		if (this.Occupant != null)
 		{
-			component.SetStatusItem(Db.Get().StatusItemCategories.EntityReceptacle, null);
+			component.SetStatusItem(Db.Get().StatusItemCategories.EntityReceptacle, null, null);
+			return;
 		}
-		else if (fetchChore != null)
+		if (this.fetchChore == null)
 		{
-			bool flag = fetchChore.fetcher != null;
-			WorldContainer myWorld = this.GetMyWorld();
-			if (!flag && myWorld != null)
+			component.SetStatusItem(Db.Get().StatusItemCategories.EntityReceptacle, this.statusItemNeed, null);
+			return;
+		}
+		bool flag = this.fetchChore.fetcher != null;
+		WorldContainer myWorld = this.GetMyWorld();
+		if (!flag && myWorld != null)
+		{
+			foreach (Tag tag in this.fetchChore.tags)
 			{
-				foreach (Tag tag in fetchChore.tags)
+				if (myWorld.worldInventory.GetTotalAmount(tag, true) > 0f)
 				{
-					if (myWorld.worldInventory.GetTotalAmount(tag, includeRelatedWorlds: true) > 0f)
+					if (myWorld.worldInventory.GetTotalAmount(this.requestedEntityAdditionalFilterTag, true) > 0f || this.requestedEntityAdditionalFilterTag == Tag.Invalid)
 					{
-						if (myWorld.worldInventory.GetTotalAmount(requestedEntityAdditionalFilterTag, includeRelatedWorlds: true) > 0f || requestedEntityAdditionalFilterTag == Tag.Invalid)
-						{
-							flag = true;
-						}
+						flag = true;
 						break;
 					}
+					break;
 				}
 			}
-			if (flag)
-			{
-				component.SetStatusItem(Db.Get().StatusItemCategories.EntityReceptacle, statusItemAwaitingDelivery);
-			}
-			else
-			{
-				component.SetStatusItem(Db.Get().StatusItemCategories.EntityReceptacle, statusItemNoneAvailable);
-			}
 		}
-		else
+		if (flag)
 		{
-			component.SetStatusItem(Db.Get().StatusItemCategories.EntityReceptacle, statusItemNeed);
+			component.SetStatusItem(Db.Get().StatusItemCategories.EntityReceptacle, this.statusItemAwaitingDelivery, null);
+			return;
 		}
+		component.SetStatusItem(Db.Get().StatusItemCategories.EntityReceptacle, this.statusItemNoneAvailable, null);
 	}
 
+	// Token: 0x06005061 RID: 20577 RVA: 0x0026E7E8 File Offset: 0x0026C9E8
 	protected void CreateFetchChore(Tag entityTag, Tag additionalRequiredTag)
 	{
-		if (fetchChore == null && entityTag.IsValid && entityTag != GameTags.Empty)
+		if (this.fetchChore == null && entityTag.IsValid && entityTag != GameTags.Empty)
 		{
-			fetchChore = new FetchChore(choreType, storage, 1f, new HashSet<Tag> { entityTag }, FetchChore.MatchCriteria.MatchID, (additionalRequiredTag.IsValid && additionalRequiredTag != GameTags.Empty) ? additionalRequiredTag : Tag.Invalid, null, null, run_until_complete: true, OnFetchComplete, delegate
+			this.fetchChore = new FetchChore(this.choreType, this.storage, 1f, new HashSet<Tag>
 			{
-				UpdateStatusItem();
-			}, delegate
+				entityTag
+			}, FetchChore.MatchCriteria.MatchID, (additionalRequiredTag.IsValid && additionalRequiredTag != GameTags.Empty) ? additionalRequiredTag : Tag.Invalid, null, null, true, new Action<Chore>(this.OnFetchComplete), delegate(Chore chore)
 			{
-				UpdateStatusItem();
-			}, Operational.State.Functional);
-			MaterialNeeds.UpdateNeed(requestedEntityTag, 1f, base.gameObject.GetMyWorldId());
-			UpdateStatusItem();
+				this.UpdateStatusItem();
+			}, delegate(Chore chore)
+			{
+				this.UpdateStatusItem();
+			}, Operational.State.Functional, 0);
+			MaterialNeeds.UpdateNeed(this.requestedEntityTag, 1f, base.gameObject.GetMyWorldId());
+			this.UpdateStatusItem();
 		}
 	}
 
+	// Token: 0x06005062 RID: 20578 RVA: 0x000D46D5 File Offset: 0x000D28D5
 	public virtual void OrderRemoveOccupant()
 	{
-		ClearOccupant();
+		this.ClearOccupant();
 	}
 
+	// Token: 0x06005063 RID: 20579 RVA: 0x0026E8B0 File Offset: 0x0026CAB0
 	protected virtual void ClearOccupant()
 	{
-		if ((bool)occupyingObject)
+		if (this.occupyingObject)
 		{
-			UnsubscribeFromOccupant();
-			storage.DropAll();
+			this.UnsubscribeFromOccupant();
+			this.storage.DropAll(false, false, default(Vector3), true, null);
 		}
-		occupyingObject = null;
-		UpdateActive();
-		UpdateStatusItem();
-		Trigger(-731304873, occupyingObject);
+		this.occupyingObject = null;
+		this.UpdateActive();
+		this.UpdateStatusItem();
+		base.Trigger(-731304873, this.occupyingObject);
 	}
 
+	// Token: 0x06005064 RID: 20580 RVA: 0x0026E90C File Offset: 0x0026CB0C
 	public void CancelActiveRequest()
 	{
-		if (fetchChore != null)
+		if (this.fetchChore != null)
 		{
-			MaterialNeeds.UpdateNeed(requestedEntityTag, -1f, base.gameObject.GetMyWorldId());
-			fetchChore.Cancel("User canceled");
-			fetchChore = null;
+			MaterialNeeds.UpdateNeed(this.requestedEntityTag, -1f, base.gameObject.GetMyWorldId());
+			this.fetchChore.Cancel("User canceled");
+			this.fetchChore = null;
 		}
-		requestedEntityTag = Tag.Invalid;
-		requestedEntityAdditionalFilterTag = Tag.Invalid;
-		UpdateStatusItem();
-		SetPreview(Tag.Invalid);
+		this.requestedEntityTag = Tag.Invalid;
+		this.requestedEntityAdditionalFilterTag = Tag.Invalid;
+		this.UpdateStatusItem();
+		this.SetPreview(Tag.Invalid, false);
 	}
 
+	// Token: 0x06005065 RID: 20581 RVA: 0x0026E97C File Offset: 0x0026CB7C
 	private void OnOccupantDestroyed(object data)
 	{
-		occupyingObject = null;
-		ClearOccupant();
-		if (autoReplaceEntity && requestedEntityTag.IsValid && requestedEntityTag != GameTags.Empty)
+		this.occupyingObject = null;
+		this.ClearOccupant();
+		if (this.autoReplaceEntity && this.requestedEntityTag.IsValid && this.requestedEntityTag != GameTags.Empty)
 		{
-			CreateOrder(requestedEntityTag, requestedEntityAdditionalFilterTag);
+			this.CreateOrder(this.requestedEntityTag, this.requestedEntityAdditionalFilterTag);
 		}
 	}
 
+	// Token: 0x06005066 RID: 20582 RVA: 0x000D46DD File Offset: 0x000D28DD
 	protected virtual void SubscribeToOccupant()
 	{
-		if (occupyingObject != null)
+		if (this.occupyingObject != null)
 		{
-			Subscribe(occupyingObject, 1969584890, OnOccupantDestroyed);
+			base.Subscribe(this.occupyingObject, 1969584890, new Action<object>(this.OnOccupantDestroyed));
 		}
 	}
 
+	// Token: 0x06005067 RID: 20583 RVA: 0x000D470B File Offset: 0x000D290B
 	protected virtual void UnsubscribeFromOccupant()
 	{
-		if (occupyingObject != null)
+		if (this.occupyingObject != null)
 		{
-			Unsubscribe(occupyingObject, 1969584890, OnOccupantDestroyed);
+			base.Unsubscribe(this.occupyingObject, 1969584890, new Action<object>(this.OnOccupantDestroyed));
 		}
 	}
 
+	// Token: 0x06005068 RID: 20584 RVA: 0x0026E9D0 File Offset: 0x0026CBD0
 	private void OnFetchComplete(Chore chore)
 	{
-		if (fetchChore == null)
+		if (this.fetchChore == null)
 		{
-			Debug.LogWarningFormat(base.gameObject, "{0} OnFetchComplete fetchChore null", base.gameObject);
+			global::Debug.LogWarningFormat(base.gameObject, "{0} OnFetchComplete fetchChore null", new object[]
+			{
+				base.gameObject
+			});
+			return;
 		}
-		else if (fetchChore.fetchTarget == null)
+		if (this.fetchChore.fetchTarget == null)
 		{
-			Debug.LogWarningFormat(base.gameObject, "{0} OnFetchComplete fetchChore.fetchTarget null", base.gameObject);
+			global::Debug.LogWarningFormat(base.gameObject, "{0} OnFetchComplete fetchChore.fetchTarget null", new object[]
+			{
+				base.gameObject
+			});
+			return;
 		}
-		else
-		{
-			OnDepositObject(fetchChore.fetchTarget.gameObject);
-		}
+		this.OnDepositObject(this.fetchChore.fetchTarget.gameObject);
 	}
 
+	// Token: 0x06005069 RID: 20585 RVA: 0x000D4738 File Offset: 0x000D2938
 	public void ForceDeposit(GameObject depositedObject)
 	{
-		if (occupyingObject != null)
+		if (this.occupyingObject != null)
 		{
-			ClearOccupant();
+			this.ClearOccupant();
 		}
-		OnDepositObject(depositedObject);
+		this.OnDepositObject(depositedObject);
 	}
 
+	// Token: 0x0600506A RID: 20586 RVA: 0x0026EA50 File Offset: 0x0026CC50
 	private void OnDepositObject(GameObject depositedObject)
 	{
-		SetPreview(Tag.Invalid);
-		MaterialNeeds.UpdateNeed(requestedEntityTag, -1f, base.gameObject.GetMyWorldId());
+		this.SetPreview(Tag.Invalid, false);
+		MaterialNeeds.UpdateNeed(this.requestedEntityTag, -1f, base.gameObject.GetMyWorldId());
 		KBatchedAnimController component = depositedObject.GetComponent<KBatchedAnimController>();
 		if (component != null)
 		{
 			component.GetBatchInstanceData().ClearOverrideTransformMatrix();
 		}
-		occupyingObject = SpawnOccupyingObject(depositedObject);
-		if (occupyingObject != null)
+		this.occupyingObject = this.SpawnOccupyingObject(depositedObject);
+		if (this.occupyingObject != null)
 		{
-			ConfigureOccupyingObject(occupyingObject);
-			occupyingObject.SetActive(value: true);
-			PositionOccupyingObject();
-			SubscribeToOccupant();
+			this.ConfigureOccupyingObject(this.occupyingObject);
+			this.occupyingObject.SetActive(true);
+			this.PositionOccupyingObject();
+			this.SubscribeToOccupant();
 		}
 		else
 		{
-			Debug.LogWarning(base.gameObject.name + " EntityReceptacle did not spawn occupying entity.");
+			global::Debug.LogWarning(base.gameObject.name + " EntityReceptacle did not spawn occupying entity.");
 		}
-		if (fetchChore != null)
+		if (this.fetchChore != null)
 		{
-			fetchChore.Cancel("receptacle filled");
-			fetchChore = null;
+			this.fetchChore.Cancel("receptacle filled");
+			this.fetchChore = null;
 		}
-		if (!autoReplaceEntity)
+		if (!this.autoReplaceEntity)
 		{
-			requestedEntityTag = Tag.Invalid;
-			requestedEntityAdditionalFilterTag = Tag.Invalid;
+			this.requestedEntityTag = Tag.Invalid;
+			this.requestedEntityAdditionalFilterTag = Tag.Invalid;
 		}
-		UpdateActive();
-		UpdateStatusItem();
-		if (destroyEntityOnDeposit)
+		this.UpdateActive();
+		this.UpdateStatusItem();
+		if (this.destroyEntityOnDeposit)
 		{
 			Util.KDestroyGameObject(depositedObject);
 		}
-		Trigger(-731304873, occupyingObject);
+		base.Trigger(-731304873, this.occupyingObject);
 	}
 
+	// Token: 0x0600506B RID: 20587 RVA: 0x000B1FA8 File Offset: 0x000B01A8
 	protected virtual GameObject SpawnOccupyingObject(GameObject depositedEntity)
 	{
 		return depositedEntity;
 	}
 
+	// Token: 0x0600506C RID: 20588 RVA: 0x000A5E40 File Offset: 0x000A4040
 	protected virtual void ConfigureOccupyingObject(GameObject source)
 	{
 	}
 
+	// Token: 0x0600506D RID: 20589 RVA: 0x0026EB64 File Offset: 0x0026CD64
 	protected virtual void PositionOccupyingObject()
 	{
-		if (rotatable != null)
+		if (this.rotatable != null)
 		{
-			occupyingObject.transform.SetPosition(base.gameObject.transform.GetPosition() + rotatable.GetRotatedOffset(occupyingObjectRelativePosition));
+			this.occupyingObject.transform.SetPosition(base.gameObject.transform.GetPosition() + this.rotatable.GetRotatedOffset(this.occupyingObjectRelativePosition));
 		}
 		else
 		{
-			occupyingObject.transform.SetPosition(base.gameObject.transform.GetPosition() + occupyingObjectRelativePosition);
+			this.occupyingObject.transform.SetPosition(base.gameObject.transform.GetPosition() + this.occupyingObjectRelativePosition);
 		}
-		KBatchedAnimController component = occupyingObject.GetComponent<KBatchedAnimController>();
+		KBatchedAnimController component = this.occupyingObject.GetComponent<KBatchedAnimController>();
 		component.enabled = false;
 		component.enabled = true;
 	}
 
+	// Token: 0x0600506E RID: 20590 RVA: 0x0026EBFC File Offset: 0x0026CDFC
 	protected void UpdateActive()
 	{
-		if (!Equals(null) && !(this == null) && !base.gameObject.Equals(null) && !(base.gameObject == null) && operational != null)
+		if (this.Equals(null) || this == null || base.gameObject.Equals(null) || base.gameObject == null)
 		{
-			operational.SetActive(operational.IsOperational && occupyingObject != null);
+			return;
+		}
+		if (this.operational != null)
+		{
+			this.operational.SetActive(this.operational.IsOperational && this.occupyingObject != null, false);
 		}
 	}
 
+	// Token: 0x0600506F RID: 20591 RVA: 0x000D4755 File Offset: 0x000D2955
 	protected override void OnCleanUp()
 	{
-		CancelActiveRequest();
-		UnsubscribeFromOccupant();
+		this.CancelActiveRequest();
+		this.UnsubscribeFromOccupant();
 		base.OnCleanUp();
 	}
 
+	// Token: 0x06005070 RID: 20592 RVA: 0x000D4769 File Offset: 0x000D2969
 	private void OnOperationalChanged(object data)
 	{
-		UpdateActive();
-		if ((bool)occupyingObject)
+		this.UpdateActive();
+		if (this.occupyingObject)
 		{
-			occupyingObject.Trigger(operational.IsOperational ? 1628751838 : 960378201);
+			this.occupyingObject.Trigger(this.operational.IsOperational ? 1628751838 : 960378201, null);
 		}
+	}
+
+	// Token: 0x04003805 RID: 14341
+	[MyCmpGet]
+	protected Operational operational;
+
+	// Token: 0x04003806 RID: 14342
+	[MyCmpReq]
+	protected Storage storage;
+
+	// Token: 0x04003807 RID: 14343
+	[MyCmpGet]
+	public Rotatable rotatable;
+
+	// Token: 0x04003808 RID: 14344
+	protected FetchChore fetchChore;
+
+	// Token: 0x04003809 RID: 14345
+	public ChoreType choreType = Db.Get().ChoreTypes.Fetch;
+
+	// Token: 0x0400380A RID: 14346
+	[Serialize]
+	public bool autoReplaceEntity;
+
+	// Token: 0x0400380B RID: 14347
+	[Serialize]
+	public Tag requestedEntityTag;
+
+	// Token: 0x0400380C RID: 14348
+	[Serialize]
+	public Tag requestedEntityAdditionalFilterTag;
+
+	// Token: 0x0400380D RID: 14349
+	[Serialize]
+	protected Ref<KSelectable> occupyObjectRef = new Ref<KSelectable>();
+
+	// Token: 0x0400380E RID: 14350
+	[SerializeField]
+	private List<Tag> possibleDepositTagsList = new List<Tag>();
+
+	// Token: 0x0400380F RID: 14351
+	[SerializeField]
+	private List<Func<GameObject, bool>> additionalCriteria = new List<Func<GameObject, bool>>();
+
+	// Token: 0x04003810 RID: 14352
+	[SerializeField]
+	protected bool destroyEntityOnDeposit;
+
+	// Token: 0x04003811 RID: 14353
+	[SerializeField]
+	protected SingleEntityReceptacle.ReceptacleDirection direction;
+
+	// Token: 0x04003812 RID: 14354
+	public Vector3 occupyingObjectRelativePosition = new Vector3(0f, 1f, 3f);
+
+	// Token: 0x04003813 RID: 14355
+	protected StatusItem statusItemAwaitingDelivery;
+
+	// Token: 0x04003814 RID: 14356
+	protected StatusItem statusItemNeed;
+
+	// Token: 0x04003815 RID: 14357
+	protected StatusItem statusItemNoneAvailable;
+
+	// Token: 0x04003816 RID: 14358
+	private static readonly EventSystem.IntraObjectHandler<SingleEntityReceptacle> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<SingleEntityReceptacle>(delegate(SingleEntityReceptacle component, object data)
+	{
+		component.OnOperationalChanged(data);
+	});
+
+	// Token: 0x02000F82 RID: 3970
+	public enum ReceptacleDirection
+	{
+		// Token: 0x04003818 RID: 14360
+		Top,
+		// Token: 0x04003819 RID: 14361
+		Side,
+		// Token: 0x0400381A RID: 14362
+		Bottom
 	}
 }

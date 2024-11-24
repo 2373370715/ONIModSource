@@ -1,115 +1,111 @@
-using System;
+﻿using System;
 using KSerialization;
 using STRINGS;
 using UnityEngine;
 
+// Token: 0x02000A9C RID: 2716
 [SerializationConfig(MemberSerialization.OptIn)]
 [AddComponentMenu("KMonoBehaviour/Workable/Movable")]
 public class Movable : Workable
 {
-	[MyCmpReq]
-	private Pickupable pickupable;
+	// Token: 0x17000209 RID: 521
+	// (get) Token: 0x06003253 RID: 12883 RVA: 0x000C0AAC File Offset: 0x000BECAC
+	public bool IsMarkedForMove
+	{
+		get
+		{
+			return this.isMarkedForMove;
+		}
+	}
 
-	[Serialize]
-	private bool isMarkedForMove;
-
-	[Serialize]
-	private Ref<Storage> storageProxy;
-
-	private int storageReachableChangedHandle = -1;
-
-	private int reachableChangedHandle = -1;
-
-	private int cancelHandle = -1;
-
-	private Guid pendingMoveGuid;
-
-	private Guid storageUnreachableGuid;
-
-	public bool IsMarkedForMove => isMarkedForMove;
-
+	// Token: 0x1700020A RID: 522
+	// (get) Token: 0x06003254 RID: 12884 RVA: 0x000C0AB4 File Offset: 0x000BECB4
 	public Storage StorageProxy
 	{
 		get
 		{
-			if (storageProxy == null)
+			if (this.storageProxy == null)
 			{
 				return null;
 			}
-			return storageProxy.Get();
+			return this.storageProxy.Get();
 		}
 	}
 
+	// Token: 0x06003255 RID: 12885 RVA: 0x000C0ACB File Offset: 0x000BECCB
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		Subscribe(493375141, OnRefreshUserMenu);
-		Subscribe(1335436905, OnSplitFromChunk);
+		base.Subscribe(493375141, new Action<object>(this.OnRefreshUserMenu));
+		base.Subscribe(1335436905, new Action<object>(this.OnSplitFromChunk));
 	}
 
+	// Token: 0x06003256 RID: 12886 RVA: 0x002031E8 File Offset: 0x002013E8
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		if (isMarkedForMove)
+		if (this.isMarkedForMove)
 		{
-			if (StorageProxy != null)
+			if (this.StorageProxy != null)
 			{
-				if (reachableChangedHandle < 0)
+				if (this.reachableChangedHandle < 0)
 				{
-					reachableChangedHandle = Subscribe(-1432940121, OnReachableChanged);
+					this.reachableChangedHandle = base.Subscribe(-1432940121, new Action<object>(this.OnReachableChanged));
 				}
-				if (storageReachableChangedHandle < 0)
+				if (this.storageReachableChangedHandle < 0)
 				{
-					storageReachableChangedHandle = StorageProxy.Subscribe(-1432940121, OnReachableChanged);
+					this.storageReachableChangedHandle = this.StorageProxy.Subscribe(-1432940121, new Action<object>(this.OnReachableChanged));
 				}
-				if (cancelHandle < 0)
+				if (this.cancelHandle < 0)
 				{
-					cancelHandle = Subscribe(2127324410, CleanupMove);
+					this.cancelHandle = base.Subscribe(2127324410, new Action<object>(this.CleanupMove));
 				}
 				base.gameObject.AddTag(GameTags.MarkedForMove);
 			}
 			else
 			{
-				isMarkedForMove = false;
+				this.isMarkedForMove = false;
 			}
 		}
-		if (IsCritter())
+		if (this.IsCritter())
 		{
-			skillsUpdateHandle = Game.Instance.Subscribe(-1523247426, UpdateStatusItem);
-			shouldShowSkillPerkStatusItem = isMarkedForMove;
-			requiredSkillPerk = Db.Get().SkillPerks.CanWrangleCreatures.Id;
-			UpdateStatusItem();
+			this.skillsUpdateHandle = Game.Instance.Subscribe(-1523247426, new Action<object>(this.UpdateStatusItem));
+			this.shouldShowSkillPerkStatusItem = this.isMarkedForMove;
+			this.requiredSkillPerk = Db.Get().SkillPerks.CanWrangleCreatures.Id;
+			this.UpdateStatusItem();
 		}
 	}
 
+	// Token: 0x06003257 RID: 12887 RVA: 0x00203300 File Offset: 0x00201500
 	private void OnReachableChanged(object data)
 	{
-		if (!isMarkedForMove)
+		if (this.isMarkedForMove)
 		{
-			return;
-		}
-		if (StorageProxy != null)
-		{
-			int num = Grid.PosToCell(pickupable);
-			int num2 = Grid.PosToCell(StorageProxy);
-			if (num != num2)
+			if (this.StorageProxy != null)
 			{
-				bool flag = MinionGroupProber.Get().IsReachable(num, OffsetGroups.Standard) && MinionGroupProber.Get().IsReachable(num2, OffsetGroups.Standard);
-				if (pickupable.KPrefabID.HasTag(GameTags.Creatures.Confined))
+				int num = Grid.PosToCell(this.pickupable);
+				int num2 = Grid.PosToCell(this.StorageProxy);
+				if (num != num2)
 				{
-					flag = false;
+					bool flag = MinionGroupProber.Get().IsReachable(num, OffsetGroups.Standard) && MinionGroupProber.Get().IsReachable(num2, OffsetGroups.Standard);
+					if (this.pickupable.KPrefabID.HasTag(GameTags.Creatures.Confined))
+					{
+						flag = false;
+					}
+					KSelectable component = base.GetComponent<KSelectable>();
+					this.pendingMoveGuid = component.ToggleStatusItem(Db.Get().MiscStatusItems.MarkedForMove, this.pendingMoveGuid, flag, this);
+					this.storageUnreachableGuid = component.ToggleStatusItem(Db.Get().MiscStatusItems.MoveStorageUnreachable, this.storageUnreachableGuid, !flag, this);
+					return;
 				}
-				KSelectable component = GetComponent<KSelectable>();
-				pendingMoveGuid = component.ToggleStatusItem(Db.Get().MiscStatusItems.MarkedForMove, pendingMoveGuid, flag, this);
-				storageUnreachableGuid = component.ToggleStatusItem(Db.Get().MiscStatusItems.MoveStorageUnreachable, storageUnreachableGuid, !flag, this);
 			}
-		}
-		else
-		{
-			ClearMove();
+			else
+			{
+				this.ClearMove();
+			}
 		}
 	}
 
+	// Token: 0x06003258 RID: 12888 RVA: 0x002033E0 File Offset: 0x002015E0
 	private void OnSplitFromChunk(object data)
 	{
 		Pickupable pickupable = data as Pickupable;
@@ -118,144 +114,181 @@ public class Movable : Workable
 			Movable component = pickupable.GetComponent<Movable>();
 			if (component.isMarkedForMove)
 			{
-				storageProxy = new Ref<Storage>(component.StorageProxy);
-				MarkForMove();
+				this.storageProxy = new Ref<Storage>(component.StorageProxy);
+				this.MarkForMove();
 			}
 		}
 	}
 
+	// Token: 0x06003259 RID: 12889 RVA: 0x000C0B03 File Offset: 0x000BED03
 	protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
-		if (isMarkedForMove && StorageProxy != null)
+		if (this.isMarkedForMove && this.StorageProxy != null)
 		{
-			StorageProxy.GetComponent<CancellableMove>().RemoveMovable(this);
-			ClearStorageProxy();
+			this.StorageProxy.GetComponent<CancellableMove>().RemoveMovable(this);
+			this.ClearStorageProxy();
 		}
 	}
 
+	// Token: 0x0600325A RID: 12890 RVA: 0x000C0B38 File Offset: 0x000BED38
 	private void CleanupMove(object data)
 	{
-		if (StorageProxy != null)
+		if (this.StorageProxy != null)
 		{
-			StorageProxy.GetComponent<CancellableMove>().OnCancel(this);
+			this.StorageProxy.GetComponent<CancellableMove>().OnCancel(this);
 		}
 	}
 
+	// Token: 0x0600325B RID: 12891 RVA: 0x00203424 File Offset: 0x00201624
 	public void ClearMove()
 	{
-		if (isMarkedForMove)
+		if (this.isMarkedForMove)
 		{
-			isMarkedForMove = false;
-			KSelectable component = GetComponent<KSelectable>();
-			pendingMoveGuid = component.RemoveStatusItem(pendingMoveGuid);
-			storageUnreachableGuid = component.RemoveStatusItem(storageUnreachableGuid);
-			ClearStorageProxy();
+			this.isMarkedForMove = false;
+			KSelectable component = base.GetComponent<KSelectable>();
+			this.pendingMoveGuid = component.RemoveStatusItem(this.pendingMoveGuid, false);
+			this.storageUnreachableGuid = component.RemoveStatusItem(this.storageUnreachableGuid, false);
+			this.ClearStorageProxy();
 			base.gameObject.RemoveTag(GameTags.MarkedForMove);
-			if (reachableChangedHandle != -1)
+			if (this.reachableChangedHandle != -1)
 			{
-				Unsubscribe(-1432940121, OnReachableChanged);
-				reachableChangedHandle = -1;
+				base.Unsubscribe(-1432940121, new Action<object>(this.OnReachableChanged));
+				this.reachableChangedHandle = -1;
 			}
-			if (cancelHandle != -1)
+			if (this.cancelHandle != -1)
 			{
-				Unsubscribe(2127324410, CleanupMove);
-				cancelHandle = -1;
+				base.Unsubscribe(2127324410, new Action<object>(this.CleanupMove));
+				this.cancelHandle = -1;
 			}
 		}
-		UpdateStatusItem();
+		this.UpdateStatusItem();
 	}
 
+	// Token: 0x0600325C RID: 12892 RVA: 0x000C0B59 File Offset: 0x000BED59
 	private void ClearStorageProxy()
 	{
-		if (storageReachableChangedHandle != -1)
+		if (this.storageReachableChangedHandle != -1)
 		{
-			StorageProxy.Unsubscribe(-1432940121, OnReachableChanged);
-			storageReachableChangedHandle = -1;
+			this.StorageProxy.Unsubscribe(-1432940121, new Action<object>(this.OnReachableChanged));
+			this.storageReachableChangedHandle = -1;
 		}
-		storageProxy = null;
+		this.storageProxy = null;
 	}
 
+	// Token: 0x0600325D RID: 12893 RVA: 0x000C0B8E File Offset: 0x000BED8E
 	private void OnClickMove()
 	{
 		MoveToLocationTool.Instance.Activate(this);
 	}
 
+	// Token: 0x0600325E RID: 12894 RVA: 0x000C0B38 File Offset: 0x000BED38
 	private void OnClickCancel()
 	{
-		if (StorageProxy != null)
+		if (this.StorageProxy != null)
 		{
-			StorageProxy.GetComponent<CancellableMove>().OnCancel(this);
+			this.StorageProxy.GetComponent<CancellableMove>().OnCancel(this);
 		}
 	}
 
+	// Token: 0x0600325F RID: 12895 RVA: 0x002034DC File Offset: 0x002016DC
 	private void OnRefreshUserMenu(object data)
 	{
-		if (!pickupable.KPrefabID.HasTag(GameTags.Stored))
+		if (this.pickupable.KPrefabID.HasTag(GameTags.Stored))
 		{
-			KIconButtonMenu.ButtonInfo button = (isMarkedForMove ? new KIconButtonMenu.ButtonInfo("action_control", UI.USERMENUACTIONS.PICKUPABLEMOVE.NAME_OFF, OnClickCancel, Action.NumActions, null, null, null, UI.USERMENUACTIONS.PICKUPABLEMOVE.TOOLTIP_OFF) : new KIconButtonMenu.ButtonInfo("action_control", UI.USERMENUACTIONS.PICKUPABLEMOVE.NAME, OnClickMove, Action.NumActions, null, null, null, UI.USERMENUACTIONS.PICKUPABLEMOVE.TOOLTIP));
-			Game.Instance.userMenu.AddButton(base.gameObject, button);
+			return;
 		}
+		KIconButtonMenu.ButtonInfo button = this.isMarkedForMove ? new KIconButtonMenu.ButtonInfo("action_control", UI.USERMENUACTIONS.PICKUPABLEMOVE.NAME_OFF, new System.Action(this.OnClickCancel), global::Action.NumActions, null, null, null, UI.USERMENUACTIONS.PICKUPABLEMOVE.TOOLTIP_OFF, true) : new KIconButtonMenu.ButtonInfo("action_control", UI.USERMENUACTIONS.PICKUPABLEMOVE.NAME, new System.Action(this.OnClickMove), global::Action.NumActions, null, null, null, UI.USERMENUACTIONS.PICKUPABLEMOVE.TOOLTIP, true);
+		Game.Instance.userMenu.AddButton(base.gameObject, button, 1f);
 	}
 
+	// Token: 0x06003260 RID: 12896 RVA: 0x000C0B9B File Offset: 0x000BED9B
 	public void MoveToLocation(int cell)
 	{
-		CreateStorageProxy(cell);
-		MarkForMove();
+		this.CreateStorageProxy(cell);
+		this.MarkForMove();
 		base.gameObject.Trigger(1122777325, base.gameObject);
 	}
 
+	// Token: 0x06003261 RID: 12897 RVA: 0x00203590 File Offset: 0x00201790
 	private void MarkForMove()
 	{
-		Trigger(2127324410);
-		isMarkedForMove = true;
-		OnReachableChanged(null);
-		storageReachableChangedHandle = StorageProxy.Subscribe(-1432940121, OnReachableChanged);
-		reachableChangedHandle = Subscribe(-1432940121, OnReachableChanged);
-		StorageProxy.GetComponent<CancellableMove>().SetMovable(this);
+		base.Trigger(2127324410, null);
+		this.isMarkedForMove = true;
+		this.OnReachableChanged(null);
+		this.storageReachableChangedHandle = this.StorageProxy.Subscribe(-1432940121, new Action<object>(this.OnReachableChanged));
+		this.reachableChangedHandle = base.Subscribe(-1432940121, new Action<object>(this.OnReachableChanged));
+		this.StorageProxy.GetComponent<CancellableMove>().SetMovable(this);
 		base.gameObject.AddTag(GameTags.MarkedForMove);
-		cancelHandle = Subscribe(2127324410, CleanupMove);
-		UpdateStatusItem();
+		this.cancelHandle = base.Subscribe(2127324410, new Action<object>(this.CleanupMove));
+		this.UpdateStatusItem();
 	}
 
+	// Token: 0x06003262 RID: 12898 RVA: 0x000C0BC0 File Offset: 0x000BEDC0
 	private void UpdateStatusItem()
 	{
-		if (IsCritter())
+		if (this.IsCritter())
 		{
-			shouldShowSkillPerkStatusItem = isMarkedForMove;
-			base.UpdateStatusItem();
+			this.shouldShowSkillPerkStatusItem = this.isMarkedForMove;
+			base.UpdateStatusItem(null);
 		}
 	}
 
+	// Token: 0x06003263 RID: 12899 RVA: 0x000C0BDD File Offset: 0x000BEDDD
 	private bool IsCritter()
 	{
-		return GetComponent<Capturable>() != null;
+		return base.GetComponent<Capturable>() != null;
 	}
 
+	// Token: 0x06003264 RID: 12900 RVA: 0x000C0BEB File Offset: 0x000BEDEB
 	public bool CanMoveTo(int cell)
 	{
-		if (!Grid.IsSolidCell(cell) && Grid.IsWorldValidCell(cell))
-		{
-			return base.gameObject.IsMyParentWorld(cell);
-		}
-		return false;
+		return !Grid.IsSolidCell(cell) && Grid.IsWorldValidCell(cell) && base.gameObject.IsMyParentWorld(cell);
 	}
 
+	// Token: 0x06003265 RID: 12901 RVA: 0x0020363C File Offset: 0x0020183C
 	private void CreateStorageProxy(int cell)
 	{
-		if (storageProxy == null || storageProxy.Get() == null)
+		if (this.storageProxy == null || this.storageProxy.Get() == null)
 		{
 			if (Grid.Objects[cell, 44] != null)
 			{
 				Storage component = Grid.Objects[cell, 44].GetComponent<Storage>();
-				storageProxy = new Ref<Storage>(component);
+				this.storageProxy = new Ref<Storage>(component);
 				return;
 			}
 			Vector3 position = Grid.CellToPosCBC(cell, MoveToLocationTool.Instance.visualizerLayer);
-			GameObject obj = Util.KInstantiate(Assets.GetPrefab(MovePickupablePlacerConfig.ID), position);
-			Storage component2 = obj.GetComponent<Storage>();
-			obj.SetActive(value: true);
-			storageProxy = new Ref<Storage>(component2);
+			GameObject gameObject = Util.KInstantiate(Assets.GetPrefab(MovePickupablePlacerConfig.ID), position);
+			Storage component2 = gameObject.GetComponent<Storage>();
+			gameObject.SetActive(true);
+			this.storageProxy = new Ref<Storage>(component2);
 		}
 	}
+
+	// Token: 0x040021D4 RID: 8660
+	[MyCmpReq]
+	private Pickupable pickupable;
+
+	// Token: 0x040021D5 RID: 8661
+	[Serialize]
+	private bool isMarkedForMove;
+
+	// Token: 0x040021D6 RID: 8662
+	[Serialize]
+	private Ref<Storage> storageProxy;
+
+	// Token: 0x040021D7 RID: 8663
+	private int storageReachableChangedHandle = -1;
+
+	// Token: 0x040021D8 RID: 8664
+	private int reachableChangedHandle = -1;
+
+	// Token: 0x040021D9 RID: 8665
+	private int cancelHandle = -1;
+
+	// Token: 0x040021DA RID: 8666
+	private Guid pendingMoveGuid;
+
+	// Token: 0x040021DB RID: 8667
+	private Guid storageUnreachableGuid;
 }

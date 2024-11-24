@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,268 +14,134 @@ using ProcGenGame;
 using STRINGS;
 using UnityEngine;
 
+// Token: 0x0200180C RID: 6156
 [AddComponentMenu("KMonoBehaviour/scripts/SaveLoader")]
 public class SaveLoader : KMonoBehaviour
 {
-	public class FlowUtilityNetworkInstance
+	// Token: 0x1700081D RID: 2077
+	// (get) Token: 0x06007F01 RID: 32513 RVA: 0x000F3B8A File Offset: 0x000F1D8A
+	// (set) Token: 0x06007F02 RID: 32514 RVA: 0x000F3B92 File Offset: 0x000F1D92
+	public bool loadedFromSave { get; private set; }
+
+	// Token: 0x06007F03 RID: 32515 RVA: 0x000F3B9B File Offset: 0x000F1D9B
+	public static void DestroyInstance()
 	{
-		public int id = -1;
-
-		public SimHashes containedElement = SimHashes.Vacuum;
-
-		public float containedMass;
-
-		public float containedTemperature;
+		SaveLoader.Instance = null;
 	}
 
-	[SerializationConfig(KSerialization.MemberSerialization.OptOut)]
-	public class FlowUtilityNetworkSaver : ISaveLoadable
+	// Token: 0x1700081E RID: 2078
+	// (get) Token: 0x06007F04 RID: 32516 RVA: 0x000F3BA3 File Offset: 0x000F1DA3
+	// (set) Token: 0x06007F05 RID: 32517 RVA: 0x000F3BAA File Offset: 0x000F1DAA
+	public static SaveLoader Instance { get; private set; }
+
+	// Token: 0x1700081F RID: 2079
+	// (get) Token: 0x06007F06 RID: 32518 RVA: 0x000F3BB2 File Offset: 0x000F1DB2
+	// (set) Token: 0x06007F07 RID: 32519 RVA: 0x000F3BBA File Offset: 0x000F1DBA
+	public Action<Cluster> OnWorldGenComplete { get; set; }
+
+	// Token: 0x17000820 RID: 2080
+	// (get) Token: 0x06007F08 RID: 32520 RVA: 0x000F3BC3 File Offset: 0x000F1DC3
+	public Cluster Cluster
 	{
-		public List<FlowUtilityNetworkInstance> gas;
-
-		public List<FlowUtilityNetworkInstance> liquid;
-
-		public FlowUtilityNetworkSaver()
+		get
 		{
-			gas = new List<FlowUtilityNetworkInstance>();
-			liquid = new List<FlowUtilityNetworkInstance>();
+			return this.m_cluster;
 		}
 	}
 
-	public struct SaveFileEntry
-	{
-		public string path;
-
-		public System.DateTime timeStamp;
-	}
-
-	public enum SaveType
-	{
-		local,
-		cloud,
-		both
-	}
-
-	private struct MinionAttrFloatData
-	{
-		public string Name;
-
-		public float Value;
-	}
-
-	private struct MinionMetricsData
-	{
-		public string Name;
-
-		public List<MinionAttrFloatData> Modifiers;
-
-		public float TotalExperienceGained;
-
-		public List<string> Skills;
-	}
-
-	private struct SavedPrefabMetricsData
-	{
-		public string PrefabName;
-
-		public int Count;
-	}
-
-	private struct WorldInventoryMetricsData
-	{
-		public string Name;
-
-		public float Amount;
-	}
-
-	private struct DailyReportMetricsData
-	{
-		public string Name;
-
-		[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-		public float? Net;
-
-		[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-		public float? Positive;
-
-		[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-		public float? Negative;
-	}
-
-	private struct PerformanceMeasurement
-	{
-		public string name;
-
-		public float value;
-	}
-
-	private struct WorldMetricsData
-	{
-		public string Name;
-
-		public float DiscoveryTimestamp;
-
-		public float DupeVisitedTimestamp;
-	}
-
-	[MyCmpGet]
-	private GridSettings gridSettings;
-
-	private bool saveFileCorrupt;
-
-	private bool compressSaveData = true;
-
-	private int lastUncompressedSize;
-
-	public bool saveAsText;
-
-	public const string MAINMENU_LEVELNAME = "launchscene";
-
-	public const string FRONTEND_LEVELNAME = "frontend";
-
-	public const string BACKEND_LEVELNAME = "backend";
-
-	public const string SAVE_EXTENSION = ".sav";
-
-	public const string AUTOSAVE_FOLDER = "auto_save";
-
-	public const string CLOUDSAVE_FOLDER = "cloud_save_files";
-
-	public const string SAVE_FOLDER = "save_files";
-
-	public const int MAX_AUTOSAVE_FILES = 10;
-
-	[NonSerialized]
-	public SaveManager saveManager;
-
-	private Cluster m_cluster;
-
-	private ClusterLayout m_clusterLayout;
-
-	private const string CorruptFileSuffix = "_";
-
-	private const float SAVE_BUFFER_HEAD_ROOM = 0.1f;
-
-	private bool mustRestartOnFail;
-
-	public const string METRIC_SAVED_PREFAB_KEY = "SavedPrefabs";
-
-	public const string METRIC_IS_AUTO_SAVE_KEY = "IsAutoSave";
-
-	public const string METRIC_WAS_DEBUG_EVER_USED = "WasDebugEverUsed";
-
-	public const string METRIC_IS_SANDBOX_ENABLED = "IsSandboxEnabled";
-
-	public const string METRIC_RESOURCES_ACCESSIBLE_KEY = "ResourcesAccessible";
-
-	public const string METRIC_DAILY_REPORT_KEY = "DailyReport";
-
-	public const string METRIC_WORLD_METRICS_KEY = "WorldMetrics";
-
-	public const string METRIC_MINION_METRICS_KEY = "MinionMetrics";
-
-	public const string METRIC_CUSTOM_GAME_SETTINGS = "CustomGameSettings";
-
-	public const string METRIC_CUSTOM_MIXING_SETTINGS = "CustomMixingSettings";
-
-	public const string METRIC_PERFORMANCE_MEASUREMENTS = "PerformanceMeasurements";
-
-	public const string METRIC_FRAME_TIME = "AverageFrameTime";
-
-	private static bool force_infinity;
-
-	public bool loadedFromSave { get; private set; }
-
-	public static SaveLoader Instance { get; private set; }
-
-	public Action<Cluster> OnWorldGenComplete { get; set; }
-
-	public Cluster Cluster => m_cluster;
-
+	// Token: 0x17000821 RID: 2081
+	// (get) Token: 0x06007F09 RID: 32521 RVA: 0x000F3BCB File Offset: 0x000F1DCB
 	public ClusterLayout ClusterLayout
 	{
 		get
 		{
-			if (m_clusterLayout == null)
+			if (this.m_clusterLayout == null)
 			{
-				m_clusterLayout = CustomGameSettings.Instance.GetCurrentClusterLayout();
+				this.m_clusterLayout = CustomGameSettings.Instance.GetCurrentClusterLayout();
 			}
-			return m_clusterLayout;
+			return this.m_clusterLayout;
 		}
 	}
 
+	// Token: 0x17000822 RID: 2082
+	// (get) Token: 0x06007F0A RID: 32522 RVA: 0x000F3BEB File Offset: 0x000F1DEB
+	// (set) Token: 0x06007F0B RID: 32523 RVA: 0x000F3BF3 File Offset: 0x000F1DF3
 	public SaveGame.GameInfo GameInfo { get; private set; }
 
-	public GameSpawnData cachedGSD { get; private set; }
-
-	public WorldDetailSave clusterDetailSave { get; private set; }
-
-	public static void DestroyInstance()
-	{
-		Instance = null;
-	}
-
+	// Token: 0x06007F0C RID: 32524 RVA: 0x000F3BFC File Offset: 0x000F1DFC
 	protected override void OnPrefabInit()
 	{
-		Instance = this;
-		saveManager = GetComponent<SaveManager>();
+		SaveLoader.Instance = this;
+		this.saveManager = base.GetComponent<SaveManager>();
 	}
 
+	// Token: 0x06007F0D RID: 32525 RVA: 0x000A5E40 File Offset: 0x000A4040
 	private void MoveCorruptFile(string filename)
 	{
 	}
 
+	// Token: 0x06007F0E RID: 32526 RVA: 0x0032D5EC File Offset: 0x0032B7EC
 	protected override void OnSpawn()
 	{
-		string activeSaveFilePath = GetActiveSaveFilePath();
+		string activeSaveFilePath = SaveLoader.GetActiveSaveFilePath();
 		if (WorldGen.CanLoad(activeSaveFilePath))
 		{
-			Sim.SIM_Initialize(Sim.DLL_MessageHandler);
+			Sim.SIM_Initialize(new Sim.GAME_MessageHandler(Sim.DLL_MessageHandler));
 			SimMessages.CreateSimElementsTable(ElementLoader.elements);
 			SimMessages.CreateDiseaseTable(Db.Get().Diseases);
-			loadedFromSave = true;
-			loadedFromSave = Load(activeSaveFilePath);
-			saveFileCorrupt = !loadedFromSave;
-			if (!loadedFromSave)
+			this.loadedFromSave = true;
+			this.loadedFromSave = this.Load(activeSaveFilePath);
+			this.saveFileCorrupt = !this.loadedFromSave;
+			if (!this.loadedFromSave)
 			{
-				SetActiveSaveFilePath(null);
-				if (mustRestartOnFail)
+				SaveLoader.SetActiveSaveFilePath(null);
+				if (this.mustRestartOnFail)
 				{
-					MoveCorruptFile(activeSaveFilePath);
+					this.MoveCorruptFile(activeSaveFilePath);
 					Sim.Shutdown();
 					App.LoadScene("frontend");
 					return;
 				}
 			}
 		}
-		if (!loadedFromSave)
+		if (!this.loadedFromSave)
 		{
 			Sim.Shutdown();
 			if (!string.IsNullOrEmpty(activeSaveFilePath))
 			{
-				DebugUtil.LogArgs("Couldn't load [" + activeSaveFilePath + "]");
+				DebugUtil.LogArgs(new object[]
+				{
+					"Couldn't load [" + activeSaveFilePath + "]"
+				});
 			}
-			if (saveFileCorrupt)
+			if (this.saveFileCorrupt)
 			{
-				MoveCorruptFile(activeSaveFilePath);
+				this.MoveCorruptFile(activeSaveFilePath);
 			}
-			if (!LoadFromWorldGen())
+			if (!this.LoadFromWorldGen())
 			{
-				DebugUtil.LogWarningArgs("Couldn't start new game with current world gen, moving file");
+				DebugUtil.LogWarningArgs(new object[]
+				{
+					"Couldn't start new game with current world gen, moving file"
+				});
 				KMonoBehaviour.isLoadingScene = true;
-				MoveCorruptFile(WorldGen.WORLDGEN_SAVE_FILENAME);
+				this.MoveCorruptFile(WorldGen.WORLDGEN_SAVE_FILENAME);
 				App.LoadScene("frontend");
 			}
 		}
 	}
 
+	// Token: 0x06007F0F RID: 32527 RVA: 0x0032D6FC File Offset: 0x0032B8FC
 	private static void CompressContents(BinaryWriter fileWriter, byte[] uncompressed, int length)
 	{
-		using ZlibStream zlibStream = new ZlibStream(fileWriter.BaseStream, CompressionMode.Compress, Ionic.Zlib.CompressionLevel.BestSpeed);
-		zlibStream.Write(uncompressed, 0, length);
-		zlibStream.Flush();
+		using (ZlibStream zlibStream = new ZlibStream(fileWriter.BaseStream, CompressionMode.Compress, Ionic.Zlib.CompressionLevel.BestSpeed))
+		{
+			zlibStream.Write(uncompressed, 0, length);
+			zlibStream.Flush();
+		}
 	}
 
+	// Token: 0x06007F10 RID: 32528 RVA: 0x0032D744 File Offset: 0x0032B944
 	private byte[] FloatToBytes(float[] floats)
 	{
 		byte[] array = new byte[floats.Length * 4];
@@ -283,11 +149,13 @@ public class SaveLoader : KMonoBehaviour
 		return array;
 	}
 
+	// Token: 0x06007F11 RID: 32529 RVA: 0x000F3C10 File Offset: 0x000F1E10
 	private static byte[] DecompressContents(byte[] compressed)
 	{
 		return ZlibStream.UncompressBuffer(compressed);
 	}
 
+	// Token: 0x06007F12 RID: 32530 RVA: 0x0032D76C File Offset: 0x0032B96C
 	private float[] BytesToFloat(byte[] bytes)
 	{
 		float[] array = new float[bytes.Length / 4];
@@ -295,6 +163,7 @@ public class SaveLoader : KMonoBehaviour
 		return array;
 	}
 
+	// Token: 0x06007F13 RID: 32531 RVA: 0x0032D794 File Offset: 0x0032B994
 	private SaveFileRoot PrepSaveFile()
 	{
 		SaveFileRoot saveFileRoot = new SaveFileRoot();
@@ -302,7 +171,7 @@ public class SaveLoader : KMonoBehaviour
 		saveFileRoot.HeightInCells = Grid.HeightInCells;
 		saveFileRoot.streamed["GridVisible"] = Grid.Visible;
 		saveFileRoot.streamed["GridSpawnable"] = Grid.Spawnable;
-		saveFileRoot.streamed["GridDamage"] = FloatToBytes(Grid.Damage);
+		saveFileRoot.streamed["GridDamage"] = this.FloatToBytes(Grid.Damage);
 		Global.Instance.modManager.SendMetricsEvent();
 		saveFileRoot.active_mods = new List<Label>();
 		foreach (Mod mod in Global.Instance.modManager.mods)
@@ -312,42 +181,46 @@ public class SaveLoader : KMonoBehaviour
 				saveFileRoot.active_mods.Add(mod.label);
 			}
 		}
-		using MemoryStream memoryStream = new MemoryStream();
-		using (BinaryWriter writer = new BinaryWriter(memoryStream))
+		using (MemoryStream memoryStream = new MemoryStream())
 		{
-			Camera.main.transform.parent.GetComponent<CameraController>().Save(writer);
+			using (BinaryWriter binaryWriter = new BinaryWriter(memoryStream))
+			{
+				Camera.main.transform.parent.GetComponent<CameraController>().Save(binaryWriter);
+			}
+			saveFileRoot.streamed["Camera"] = memoryStream.ToArray();
 		}
-		saveFileRoot.streamed["Camera"] = memoryStream.ToArray();
 		return saveFileRoot;
 	}
 
+	// Token: 0x06007F14 RID: 32532 RVA: 0x000F3C18 File Offset: 0x000F1E18
 	private void Save(BinaryWriter writer)
 	{
 		writer.WriteKleiString("world");
-		Serializer.Serialize(PrepSaveFile(), writer);
+		Serializer.Serialize(this.PrepSaveFile(), writer);
 		Game.SaveSettings(writer);
 		Sim.Save(writer, 0, 0);
-		saveManager.Save(writer);
+		this.saveManager.Save(writer);
 		Game.Instance.Save(writer);
 	}
 
+	// Token: 0x06007F15 RID: 32533 RVA: 0x0032D8F0 File Offset: 0x0032BAF0
 	private bool Load(IReader reader)
 	{
-		Debug.Assert(reader.ReadKleiString() == "world");
+		global::Debug.Assert(reader.ReadKleiString() == "world");
 		Deserializer deserializer = new Deserializer(reader);
 		SaveFileRoot saveFileRoot = new SaveFileRoot();
 		deserializer.Deserialize(saveFileRoot);
-		if ((GameInfo.saveMajorVersion == 7 || GameInfo.saveMinorVersion < 8) && saveFileRoot.requiredMods != null)
+		if ((this.GameInfo.saveMajorVersion == 7 || this.GameInfo.saveMinorVersion < 8) && saveFileRoot.requiredMods != null)
 		{
 			saveFileRoot.active_mods = new List<Label>();
-			foreach (ModInfo requiredMod in saveFileRoot.requiredMods)
+			foreach (ModInfo modInfo in saveFileRoot.requiredMods)
 			{
 				saveFileRoot.active_mods.Add(new Label
 				{
-					id = requiredMod.assetID,
-					version = (long)requiredMod.lastModifiedTime,
+					id = modInfo.assetID,
+					version = (long)modInfo.lastModifiedTime,
 					distribution_platform = Label.DistributionPlatform.Steam,
-					title = requiredMod.description
+					title = modInfo.description
 				});
 			}
 			saveFileRoot.requiredMods.Clear();
@@ -356,21 +229,24 @@ public class SaveLoader : KMonoBehaviour
 		modManager.Load(Content.LayerableFiles);
 		if (!modManager.MatchFootprint(saveFileRoot.active_mods, Content.LayerableFiles | Content.Strings | Content.DLL | Content.Translation | Content.Animation))
 		{
-			DebugUtil.LogWarningArgs("Mod footprint of save file doesn't match current mod configuration");
+			DebugUtil.LogWarningArgs(new object[]
+			{
+				"Mod footprint of save file doesn't match current mod configuration"
+			});
 		}
-		string text = $"Mod Footprint ({saveFileRoot.active_mods.Count}):";
-		foreach (Label active_mod in saveFileRoot.active_mods)
+		string text = string.Format("Mod Footprint ({0}):", saveFileRoot.active_mods.Count);
+		foreach (Label label in saveFileRoot.active_mods)
 		{
-			text = text + "\n  - " + active_mod.title;
+			text = text + "\n  - " + label.title;
 		}
-		Debug.Log(text);
-		LogActiveMods();
+		global::Debug.Log(text);
+		this.LogActiveMods();
 		Global.Instance.modManager.SendMetricsEvent();
-		WorldGen.LoadSettings();
+		WorldGen.LoadSettings(false);
 		CustomGameSettings.Instance.LoadClusters();
-		if (GameInfo.clusterId == null)
+		if (this.GameInfo.clusterId == null)
 		{
-			SaveGame.GameInfo gameInfo = GameInfo;
+			SaveGame.GameInfo gameInfo = this.GameInfo;
 			if (!string.IsNullOrEmpty(saveFileRoot.clusterID))
 			{
 				gameInfo.clusterId = saveFileRoot.clusterID;
@@ -387,35 +263,49 @@ public class SaveLoader : KMonoBehaviour
 					CustomGameSettings.Instance.SetQualitySetting(CustomGameSettingConfigs.ClusterLayout, gameInfo.clusterId);
 				}
 			}
-			GameInfo = gameInfo;
+			this.GameInfo = gameInfo;
 		}
-		Game.clusterId = GameInfo.clusterId;
+		Game.clusterId = this.GameInfo.clusterId;
 		Game.LoadSettings(deserializer);
 		GridSettings.Reset(saveFileRoot.WidthInCells, saveFileRoot.HeightInCells);
 		if (Application.isPlaying)
 		{
 			Singleton<KBatchedAnimUpdater>.Instance.InitializeGrid();
 		}
-		Sim.SIM_Initialize(Sim.DLL_MessageHandler);
+		Sim.SIM_Initialize(new Sim.GAME_MessageHandler(Sim.DLL_MessageHandler));
 		SimMessages.CreateSimElementsTable(ElementLoader.elements);
-		Sim.AllocateCells(saveFileRoot.WidthInCells, saveFileRoot.HeightInCells);
+		Sim.AllocateCells(saveFileRoot.WidthInCells, saveFileRoot.HeightInCells, false);
 		SimMessages.CreateDiseaseTable(Db.Get().Diseases);
 		Sim.HandleMessage(SimMessageHashes.ClearUnoccupiedCells, 0, null);
-		IReader reader2 = ((!saveFileRoot.streamed.ContainsKey("Sim")) ? reader : new FastReader(saveFileRoot.streamed["Sim"]));
+		IReader reader2;
+		if (saveFileRoot.streamed.ContainsKey("Sim"))
+		{
+			reader2 = new FastReader(saveFileRoot.streamed["Sim"]);
+		}
+		else
+		{
+			reader2 = reader;
+		}
 		if (Sim.LoadWorld(reader2) != 0)
 		{
-			DebugUtil.LogWarningArgs("\n--- Error loading save ---\nSimDLL found bad data\n");
+			DebugUtil.LogWarningArgs(new object[]
+			{
+				"\n--- Error loading save ---\nSimDLL found bad data\n"
+			});
 			Sim.Shutdown();
 			return false;
 		}
 		Sim.Start();
 		SceneInitializer.Instance.PostLoadPrefabs();
-		mustRestartOnFail = true;
-		if (!saveManager.Load(reader))
+		this.mustRestartOnFail = true;
+		if (!this.saveManager.Load(reader))
 		{
 			Sim.Shutdown();
-			DebugUtil.LogWarningArgs("\n--- Error loading save ---\n");
-			SetActiveSaveFilePath(null);
+			DebugUtil.LogWarningArgs(new object[]
+			{
+				"\n--- Error loading save ---\n"
+			});
+			SaveLoader.SetActiveSaveFilePath(null);
 			return false;
 		}
 		Grid.Visible = saveFileRoot.streamed["GridVisible"];
@@ -423,25 +313,25 @@ public class SaveLoader : KMonoBehaviour
 		{
 			Grid.Spawnable = saveFileRoot.streamed["GridSpawnable"];
 		}
-		Grid.Damage = BytesToFloat(saveFileRoot.streamed["GridDamage"]);
+		Grid.Damage = this.BytesToFloat(saveFileRoot.streamed["GridDamage"]);
 		Game.Instance.Load(deserializer);
 		CameraSaveData.Load(new FastReader(saveFileRoot.streamed["Camera"]));
 		ClusterManager.Instance.InitializeWorldGrid();
-		SimMessages.DefineWorldOffsets(ClusterManager.Instance.WorldContainers.Select(delegate(WorldContainer container)
+		SimMessages.DefineWorldOffsets((from container in ClusterManager.Instance.WorldContainers
+		select new SimMessages.WorldOffsetData
 		{
-			SimMessages.WorldOffsetData result = default(SimMessages.WorldOffsetData);
-			result.worldOffsetX = container.WorldOffset.x;
-			result.worldOffsetY = container.WorldOffset.y;
-			result.worldSizeX = container.WorldSize.x;
-			result.worldSizeY = container.WorldSize.y;
-			return result;
-		}).ToList());
+			worldOffsetX = container.WorldOffset.x,
+			worldOffsetY = container.WorldOffset.y,
+			worldSizeX = container.WorldSize.x,
+			worldSizeY = container.WorldSize.y
+		}).ToList<SimMessages.WorldOffsetData>());
 		return true;
 	}
 
+	// Token: 0x06007F16 RID: 32534 RVA: 0x0032DD14 File Offset: 0x0032BF14
 	private void LogActiveMods()
 	{
-		string text = $"Active Mods ({Global.Instance.modManager.mods.Count((Mod x) => x.IsEnabledForActiveDlc())}):";
+		string text = string.Format("Active Mods ({0}):", Global.Instance.modManager.mods.Count((Mod x) => x.IsEnabledForActiveDlc()));
 		foreach (Mod mod in Global.Instance.modManager.mods)
 		{
 			if (mod.IsEnabledForActiveDlc())
@@ -449,33 +339,36 @@ public class SaveLoader : KMonoBehaviour
 				text = text + "\n  - " + mod.title;
 			}
 		}
-		Debug.Log(text);
+		global::Debug.Log(text);
 	}
 
+	// Token: 0x06007F17 RID: 32535 RVA: 0x000F3C56 File Offset: 0x000F1E56
 	public static string GetSavePrefix()
 	{
-		return System.IO.Path.Combine(Util.RootFolder(), string.Format("{0}{1}", "save_files", System.IO.Path.DirectorySeparatorChar));
+		return System.IO.Path.Combine(global::Util.RootFolder(), string.Format("{0}{1}", "save_files", System.IO.Path.DirectorySeparatorChar));
 	}
 
+	// Token: 0x06007F18 RID: 32536 RVA: 0x0032DDCC File Offset: 0x0032BFCC
 	public static string GetCloudSavePrefix()
 	{
-		string path = System.IO.Path.Combine(Util.RootFolder(), string.Format("{0}{1}", "cloud_save_files", System.IO.Path.DirectorySeparatorChar));
-		string userID = GetUserID();
+		string text = System.IO.Path.Combine(global::Util.RootFolder(), string.Format("{0}{1}", "cloud_save_files", System.IO.Path.DirectorySeparatorChar));
+		string userID = SaveLoader.GetUserID();
 		if (string.IsNullOrEmpty(userID))
 		{
 			return null;
 		}
-		path = System.IO.Path.Combine(path, userID);
-		if (!System.IO.Directory.Exists(path))
+		text = System.IO.Path.Combine(text, userID);
+		if (!System.IO.Directory.Exists(text))
 		{
-			System.IO.Directory.CreateDirectory(path);
+			System.IO.Directory.CreateDirectory(text);
 		}
-		return path;
+		return text;
 	}
 
+	// Token: 0x06007F19 RID: 32537 RVA: 0x0032DE28 File Offset: 0x0032C028
 	public static string GetSavePrefixAndCreateFolder()
 	{
-		string savePrefix = GetSavePrefix();
+		string savePrefix = SaveLoader.GetSavePrefix();
 		if (!System.IO.Directory.Exists(savePrefix))
 		{
 			System.IO.Directory.CreateDirectory(savePrefix);
@@ -483,23 +376,31 @@ public class SaveLoader : KMonoBehaviour
 		return savePrefix;
 	}
 
+	// Token: 0x06007F1A RID: 32538 RVA: 0x0032DE4C File Offset: 0x0032C04C
 	public static string GetUserID()
 	{
-		return DistributionPlatform.Inst.LocalUser?.Id.ToString();
+		DistributionPlatform.User localUser = DistributionPlatform.Inst.LocalUser;
+		if (localUser == null)
+		{
+			return null;
+		}
+		return localUser.Id.ToString();
 	}
 
+	// Token: 0x06007F1B RID: 32539 RVA: 0x0032DE74 File Offset: 0x0032C074
 	public static string GetNextUsableSavePath(string filename)
 	{
 		int num = 0;
 		string arg = System.IO.Path.ChangeExtension(filename, null);
 		while (File.Exists(filename))
 		{
-			filename = SaveScreen.GetValidSaveFilename($"{arg} ({num})");
+			filename = SaveScreen.GetValidSaveFilename(string.Format("{0} ({1})", arg, num));
 			num++;
 		}
 		return filename;
 	}
 
+	// Token: 0x06007F1C RID: 32540 RVA: 0x000F3C7B File Offset: 0x000F1E7B
 	public static string GetOriginalSaveFileName(string filename)
 	{
 		if (!filename.Contains("/") && !filename.Contains("\\"))
@@ -510,27 +411,31 @@ public class SaveLoader : KMonoBehaviour
 		return System.IO.Path.GetFileName(filename);
 	}
 
+	// Token: 0x06007F1D RID: 32541 RVA: 0x000F3CAA File Offset: 0x000F1EAA
 	public static bool IsSaveAuto(string filename)
 	{
 		filename = filename.Replace('\\', '/');
 		return filename.Contains("/auto_save/");
 	}
 
+	// Token: 0x06007F1E RID: 32542 RVA: 0x000F3CC3 File Offset: 0x000F1EC3
 	public static bool IsSaveLocal(string filename)
 	{
 		filename = filename.Replace('\\', '/');
 		return filename.Contains("/save_files/");
 	}
 
+	// Token: 0x06007F1F RID: 32543 RVA: 0x000F3CDC File Offset: 0x000F1EDC
 	public static bool IsSaveCloud(string filename)
 	{
 		filename = filename.Replace('\\', '/');
 		return filename.Contains("/cloud_save_files/");
 	}
 
+	// Token: 0x06007F20 RID: 32544 RVA: 0x0032DEB4 File Offset: 0x0032C0B4
 	public static string GetAutoSavePrefix()
 	{
-		string text = System.IO.Path.Combine(GetSavePrefixAndCreateFolder(), string.Format("{0}{1}", "auto_save", System.IO.Path.DirectorySeparatorChar));
+		string text = System.IO.Path.Combine(SaveLoader.GetSavePrefixAndCreateFolder(), string.Format("{0}{1}", "auto_save", System.IO.Path.DirectorySeparatorChar));
 		if (!System.IO.Directory.Exists(text))
 		{
 			System.IO.Directory.CreateDirectory(text);
@@ -538,44 +443,50 @@ public class SaveLoader : KMonoBehaviour
 		return text;
 	}
 
+	// Token: 0x06007F21 RID: 32545 RVA: 0x000F3CF5 File Offset: 0x000F1EF5
 	public static void SetActiveSaveFilePath(string path)
 	{
 		KPlayerPrefs.SetString("SaveFilenameKey/", path);
 	}
 
+	// Token: 0x06007F22 RID: 32546 RVA: 0x000F3D02 File Offset: 0x000F1F02
 	public static string GetActiveSaveFilePath()
 	{
 		return KPlayerPrefs.GetString("SaveFilenameKey/");
 	}
 
+	// Token: 0x06007F23 RID: 32547 RVA: 0x0032DEF8 File Offset: 0x0032C0F8
 	public static string GetActiveAutoSavePath()
 	{
-		string activeSaveFilePath = GetActiveSaveFilePath();
+		string activeSaveFilePath = SaveLoader.GetActiveSaveFilePath();
 		if (activeSaveFilePath == null)
 		{
-			return GetAutoSavePrefix();
+			return SaveLoader.GetAutoSavePrefix();
 		}
 		return System.IO.Path.Combine(System.IO.Path.GetDirectoryName(activeSaveFilePath), "auto_save");
 	}
 
+	// Token: 0x06007F24 RID: 32548 RVA: 0x000F3D0E File Offset: 0x000F1F0E
 	public static string GetAutosaveFilePath()
 	{
-		return GetAutoSavePrefix() + "AutoSave Cycle 1.sav";
+		return SaveLoader.GetAutoSavePrefix() + "AutoSave Cycle 1.sav";
 	}
 
+	// Token: 0x06007F25 RID: 32549 RVA: 0x0032DF24 File Offset: 0x0032C124
 	public static string GetActiveSaveColonyFolder()
 	{
-		string text = GetActiveSaveFolder();
+		string text = SaveLoader.GetActiveSaveFolder();
 		if (text == null)
 		{
-			text = System.IO.Path.Combine(GetSavePrefix(), Instance.GameInfo.baseName);
+			text = System.IO.Path.Combine(SaveLoader.GetSavePrefix(), SaveLoader.Instance.GameInfo.baseName);
 		}
 		return text;
 	}
 
+	// Token: 0x06007F26 RID: 32550 RVA: 0x0032DF58 File Offset: 0x0032C158
 	public static string GetActiveSaveFolder()
 	{
-		string activeSaveFilePath = GetActiveSaveFilePath();
+		string activeSaveFilePath = SaveLoader.GetActiveSaveFilePath();
 		if (!string.IsNullOrEmpty(activeSaveFilePath))
 		{
 			return System.IO.Path.GetDirectoryName(activeSaveFilePath);
@@ -583,9 +494,10 @@ public class SaveLoader : KMonoBehaviour
 		return null;
 	}
 
-	public static List<SaveFileEntry> GetSaveFiles(string save_dir, bool sort, SearchOption search = SearchOption.AllDirectories)
+	// Token: 0x06007F27 RID: 32551 RVA: 0x0032DF7C File Offset: 0x0032C17C
+	public static List<SaveLoader.SaveFileEntry> GetSaveFiles(string save_dir, bool sort, SearchOption search = SearchOption.AllDirectories)
 	{
-		List<SaveFileEntry> list = new List<SaveFileEntry>();
+		List<SaveLoader.SaveFileEntry> list = new List<SaveLoader.SaveFileEntry>();
 		if (string.IsNullOrEmpty(save_dir))
 		{
 			return list;
@@ -596,26 +508,26 @@ public class SaveLoader : KMonoBehaviour
 			{
 				System.IO.Directory.CreateDirectory(save_dir);
 			}
-			string[] files = System.IO.Directory.GetFiles(save_dir, "*.sav", search);
-			foreach (string text in files)
+			foreach (string text in System.IO.Directory.GetFiles(save_dir, "*.sav", search))
 			{
 				try
 				{
 					System.DateTime lastWriteTimeUtc = File.GetLastWriteTimeUtc(text);
-					SaveFileEntry saveFileEntry = default(SaveFileEntry);
-					saveFileEntry.path = text;
-					saveFileEntry.timeStamp = lastWriteTimeUtc;
-					SaveFileEntry item = saveFileEntry;
+					SaveLoader.SaveFileEntry item = new SaveLoader.SaveFileEntry
+					{
+						path = text,
+						timeStamp = lastWriteTimeUtc
+					};
 					list.Add(item);
 				}
 				catch (Exception ex)
 				{
-					Debug.LogWarning("Problem reading file: " + text + "\n" + ex.ToString());
+					global::Debug.LogWarning("Problem reading file: " + text + "\n" + ex.ToString());
 				}
 			}
 			if (sort)
 			{
-				list.Sort((SaveFileEntry x, SaveFileEntry y) => y.timeStamp.CompareTo(x.timeStamp));
+				list.Sort((SaveLoader.SaveFileEntry x, SaveLoader.SaveFileEntry y) => y.timeStamp.CompareTo(x.timeStamp));
 			}
 		}
 		catch (Exception ex2)
@@ -633,50 +545,50 @@ public class SaveLoader : KMonoBehaviour
 			{
 				throw ex2;
 			}
-			GameObject parent = ((FrontEndManager.Instance == null) ? GameScreenManager.Instance.ssOverlayCanvas : FrontEndManager.Instance.gameObject);
-			Util.KInstantiateUI(ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject, parent, force_active: true).GetComponent<ConfirmDialogScreen>().PopupConfirmDialog(text2, null, null);
+			GameObject parent = (FrontEndManager.Instance == null) ? GameScreenManager.Instance.ssOverlayCanvas : FrontEndManager.Instance.gameObject;
+			global::Util.KInstantiateUI(ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject, parent, true).GetComponent<ConfirmDialogScreen>().PopupConfirmDialog(text2, null, null, null, null, null, null, null, null);
 		}
 		return list;
 	}
 
-	public static List<SaveFileEntry> GetAllFiles(bool sort, SaveType type = SaveType.both)
+	// Token: 0x06007F28 RID: 32552 RVA: 0x0032E0FC File Offset: 0x0032C2FC
+	public static List<SaveLoader.SaveFileEntry> GetAllFiles(bool sort, SaveLoader.SaveType type = SaveLoader.SaveType.both)
 	{
 		switch (type)
 		{
-		case SaveType.local:
-			return GetSaveFiles(GetSavePrefixAndCreateFolder(), sort);
-		case SaveType.cloud:
-			return GetSaveFiles(GetCloudSavePrefix(), sort);
-		case SaveType.both:
+		case SaveLoader.SaveType.local:
+			return SaveLoader.GetSaveFiles(SaveLoader.GetSavePrefixAndCreateFolder(), sort, SearchOption.AllDirectories);
+		case SaveLoader.SaveType.cloud:
+			return SaveLoader.GetSaveFiles(SaveLoader.GetCloudSavePrefix(), sort, SearchOption.AllDirectories);
+		case SaveLoader.SaveType.both:
 		{
-			List<SaveFileEntry> saveFiles = GetSaveFiles(GetSavePrefixAndCreateFolder(), sort: false);
-			List<SaveFileEntry> saveFiles2 = GetSaveFiles(GetCloudSavePrefix(), sort: false);
+			List<SaveLoader.SaveFileEntry> saveFiles = SaveLoader.GetSaveFiles(SaveLoader.GetSavePrefixAndCreateFolder(), false, SearchOption.AllDirectories);
+			List<SaveLoader.SaveFileEntry> saveFiles2 = SaveLoader.GetSaveFiles(SaveLoader.GetCloudSavePrefix(), false, SearchOption.AllDirectories);
 			saveFiles.AddRange(saveFiles2);
 			if (sort)
 			{
-				saveFiles.Sort((SaveFileEntry x, SaveFileEntry y) => y.timeStamp.CompareTo(x.timeStamp));
+				saveFiles.Sort((SaveLoader.SaveFileEntry x, SaveLoader.SaveFileEntry y) => y.timeStamp.CompareTo(x.timeStamp));
 			}
 			return saveFiles;
 		}
 		default:
-			return new List<SaveFileEntry>();
+			return new List<SaveLoader.SaveFileEntry>();
 		}
 	}
 
-	public static List<SaveFileEntry> GetAllColonyFiles(bool sort, SearchOption search = SearchOption.TopDirectoryOnly)
+	// Token: 0x06007F29 RID: 32553 RVA: 0x000F3D1F File Offset: 0x000F1F1F
+	public static List<SaveLoader.SaveFileEntry> GetAllColonyFiles(bool sort, SearchOption search = SearchOption.TopDirectoryOnly)
 	{
-		return GetSaveFiles(GetActiveSaveColonyFolder(), sort, search);
+		return SaveLoader.GetSaveFiles(SaveLoader.GetActiveSaveColonyFolder(), sort, search);
 	}
 
+	// Token: 0x06007F2A RID: 32554 RVA: 0x000F3D2D File Offset: 0x000F1F2D
 	public static bool GetCloudSavesDefault()
 	{
-		if (!(GetCloudSavesDefaultPref() == "Disabled"))
-		{
-			return true;
-		}
-		return false;
+		return !(SaveLoader.GetCloudSavesDefaultPref() == "Disabled");
 	}
 
+	// Token: 0x06007F2B RID: 32555 RVA: 0x0032E188 File Offset: 0x0032C388
 	public static string GetCloudSavesDefaultPref()
 	{
 		string text = KPlayerPrefs.GetString("SavesDefaultToCloud", "Enabled");
@@ -687,47 +599,43 @@ public class SaveLoader : KMonoBehaviour
 		return text;
 	}
 
+	// Token: 0x06007F2C RID: 32556 RVA: 0x000F3D43 File Offset: 0x000F1F43
 	public static void SetCloudSavesDefault(bool value)
 	{
-		SetCloudSavesDefaultPref(value ? "Enabled" : "Disabled");
+		SaveLoader.SetCloudSavesDefaultPref(value ? "Enabled" : "Disabled");
 	}
 
+	// Token: 0x06007F2D RID: 32557 RVA: 0x000F3D59 File Offset: 0x000F1F59
 	public static void SetCloudSavesDefaultPref(string pref)
 	{
 		if (pref != "Enabled" && pref != "Disabled")
 		{
-			Debug.LogWarning("Ignoring cloud saves default pref `" + pref + "` as it's not valid, expected `Enabled` or `Disabled`");
+			global::Debug.LogWarning("Ignoring cloud saves default pref `" + pref + "` as it's not valid, expected `Enabled` or `Disabled`");
+			return;
 		}
-		else
-		{
-			KPlayerPrefs.SetString("SavesDefaultToCloud", pref);
-		}
+		KPlayerPrefs.SetString("SavesDefaultToCloud", pref);
 	}
 
+	// Token: 0x06007F2E RID: 32558 RVA: 0x000F3D96 File Offset: 0x000F1F96
 	public static bool GetCloudSavesAvailable()
 	{
-		if (string.IsNullOrEmpty(GetUserID()))
-		{
-			return false;
-		}
-		if (GetCloudSavePrefix() == null)
-		{
-			return false;
-		}
-		return true;
+		return !string.IsNullOrEmpty(SaveLoader.GetUserID()) && SaveLoader.GetCloudSavePrefix() != null;
 	}
 
+	// Token: 0x06007F2F RID: 32559 RVA: 0x0032E1C8 File Offset: 0x0032C3C8
 	public static string GetLatestSaveForCurrentDLC()
 	{
-		List<SaveFileEntry> allFiles = GetAllFiles(sort: true);
+		List<SaveLoader.SaveFileEntry> allFiles = SaveLoader.GetAllFiles(true, SaveLoader.SaveType.both);
 		for (int i = 0; i < allFiles.Count; i++)
 		{
-			Tuple<SaveGame.Header, SaveGame.GameInfo> fileInfo = SaveGame.GetFileInfo(allFiles[i].path);
+			global::Tuple<SaveGame.Header, SaveGame.GameInfo> fileInfo = SaveGame.GetFileInfo(allFiles[i].path);
 			if (fileInfo != null)
 			{
-				_ = fileInfo.first;
+				SaveGame.Header first = fileInfo.first;
 				SaveGame.GameInfo second = fileInfo.second;
-				if (second.saveMajorVersion >= 7 && second.IsCompatableWithCurrentDlcConfiguration(out var _, out var _))
+				HashSet<string> hashSet;
+				HashSet<string> hashSet2;
+				if (second.saveMajorVersion >= 7 && second.IsCompatableWithCurrentDlcConfiguration(out hashSet, out hashSet2))
 				{
 					return allFiles[i].path;
 				}
@@ -736,21 +644,23 @@ public class SaveLoader : KMonoBehaviour
 		return null;
 	}
 
+	// Token: 0x06007F30 RID: 32560 RVA: 0x0032E23C File Offset: 0x0032C43C
 	public void InitialSave()
 	{
-		string text = GetActiveSaveFilePath();
+		string text = SaveLoader.GetActiveSaveFilePath();
 		if (string.IsNullOrEmpty(text))
 		{
-			text = GetAutosaveFilePath();
+			text = SaveLoader.GetAutosaveFilePath();
 		}
 		else if (!text.Contains(".sav"))
 		{
 			text += ".sav";
 		}
-		LogActiveMods();
-		Save(text);
+		this.LogActiveMods();
+		this.Save(text, false, true);
 	}
 
+	// Token: 0x06007F31 RID: 32561 RVA: 0x0032E288 File Offset: 0x0032C488
 	public string Save(string filename, bool isAutoSave = false, bool updateSavePointer = true)
 	{
 		KSerialization.Manager.Clear();
@@ -764,33 +674,33 @@ public class SaveLoader : KMonoBehaviour
 		}
 		catch (Exception ex)
 		{
-			Debug.LogWarning("Problem creating save folder for " + filename + "!\n" + ex.ToString());
+			global::Debug.LogWarning("Problem creating save folder for " + filename + "!\n" + ex.ToString());
 		}
-		ReportSaveMetrics(isAutoSave);
+		this.ReportSaveMetrics(isAutoSave);
 		RetireColonyUtility.SaveColonySummaryData();
 		if (isAutoSave && !GenericGameSettings.instance.keepAllAutosaves)
 		{
-			List<SaveFileEntry> saveFiles = GetSaveFiles(GetActiveAutoSavePath(), sort: true);
+			List<SaveLoader.SaveFileEntry> saveFiles = SaveLoader.GetSaveFiles(SaveLoader.GetActiveAutoSavePath(), true, SearchOption.AllDirectories);
 			List<string> list = new List<string>();
-			foreach (SaveFileEntry item in saveFiles)
+			foreach (SaveLoader.SaveFileEntry saveFileEntry in saveFiles)
 			{
-				Tuple<SaveGame.Header, SaveGame.GameInfo> fileInfo = SaveGame.GetFileInfo(item.path);
-				if (fileInfo != null && SaveGame.GetSaveUniqueID(fileInfo.second) == Instance.GameInfo.colonyGuid.ToString())
+				global::Tuple<SaveGame.Header, SaveGame.GameInfo> fileInfo = SaveGame.GetFileInfo(saveFileEntry.path);
+				if (fileInfo != null && SaveGame.GetSaveUniqueID(fileInfo.second) == SaveLoader.Instance.GameInfo.colonyGuid.ToString())
 				{
-					list.Add(item.path);
+					list.Add(saveFileEntry.path);
 				}
 			}
-			for (int num = list.Count - 1; num >= 9; num--)
+			for (int i = list.Count - 1; i >= 9; i--)
 			{
-				string text = list[num];
+				string text = list[i];
 				try
 				{
-					Debug.Log("Deleting old autosave: " + text);
+					global::Debug.Log("Deleting old autosave: " + text);
 					File.Delete(text);
 				}
 				catch (Exception ex2)
 				{
-					Debug.LogWarning("Problem deleting autosave: " + text + "\n" + ex2.ToString());
+					global::Debug.LogWarning("Problem deleting autosave: " + text + "\n" + ex2.ToString());
 				}
 				string text2 = System.IO.Path.ChangeExtension(text, ".png");
 				try
@@ -802,94 +712,147 @@ public class SaveLoader : KMonoBehaviour
 				}
 				catch (Exception ex3)
 				{
-					Debug.LogWarning("Problem deleting autosave screenshot: " + text2 + "\n" + ex3.ToString());
+					global::Debug.LogWarning("Problem deleting autosave screenshot: " + text2 + "\n" + ex3.ToString());
 				}
 			}
 		}
-		using (MemoryStream memoryStream = new MemoryStream((int)((float)lastUncompressedSize * 1.1f)))
+		using (MemoryStream memoryStream = new MemoryStream((int)((float)this.lastUncompressedSize * 1.1f)))
 		{
-			using BinaryWriter writer = new BinaryWriter(memoryStream);
-			Save(writer);
-			lastUncompressedSize = (int)memoryStream.Length;
-			try
+			using (BinaryWriter binaryWriter = new BinaryWriter(memoryStream))
 			{
-				using BinaryWriter binaryWriter = new BinaryWriter(File.Open(filename, FileMode.Create));
-				SaveGame.Header header;
-				byte[] saveHeader = SaveGame.Instance.GetSaveHeader(isAutoSave, compressSaveData, out header);
-				binaryWriter.Write(header.buildVersion);
-				binaryWriter.Write(header.headerSize);
-				binaryWriter.Write(header.headerVersion);
-				binaryWriter.Write(header.compression);
-				binaryWriter.Write(saveHeader);
-				KSerialization.Manager.SerializeDirectory(binaryWriter);
-				if (compressSaveData)
+				this.Save(binaryWriter);
+				this.lastUncompressedSize = (int)memoryStream.Length;
+				try
 				{
-					CompressContents(binaryWriter, memoryStream.GetBuffer(), (int)memoryStream.Length);
+					using (BinaryWriter binaryWriter2 = new BinaryWriter(File.Open(filename, FileMode.Create)))
+					{
+						SaveGame.Header header;
+						byte[] saveHeader = SaveGame.Instance.GetSaveHeader(isAutoSave, this.compressSaveData, out header);
+						binaryWriter2.Write(header.buildVersion);
+						binaryWriter2.Write(header.headerSize);
+						binaryWriter2.Write(header.headerVersion);
+						binaryWriter2.Write(header.compression);
+						binaryWriter2.Write(saveHeader);
+						KSerialization.Manager.SerializeDirectory(binaryWriter2);
+						if (this.compressSaveData)
+						{
+							SaveLoader.CompressContents(binaryWriter2, memoryStream.GetBuffer(), (int)memoryStream.Length);
+						}
+						else
+						{
+							binaryWriter2.Write(memoryStream.ToArray());
+						}
+						KCrashReporter.MOST_RECENT_SAVEFILE = filename;
+						Stats.Print();
+					}
 				}
-				else
+				catch (Exception ex4)
 				{
-					binaryWriter.Write(memoryStream.ToArray());
+					if (ex4 is UnauthorizedAccessException)
+					{
+						DebugUtil.LogArgs(new object[]
+						{
+							"UnauthorizedAccessException for " + filename
+						});
+						((ConfirmDialogScreen)GameScreenManager.Instance.StartScreen(ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject, GameScreenManager.Instance.ssOverlayCanvas.gameObject, GameScreenManager.UIRenderTarget.ScreenSpaceOverlay)).PopupConfirmDialog(string.Format(UI.CRASHSCREEN.SAVEFAILED, "Unauthorized Access Exception"), null, null, null, null, null, null, null, null);
+						return SaveLoader.GetActiveSaveFilePath();
+					}
+					if (ex4 is IOException)
+					{
+						DebugUtil.LogArgs(new object[]
+						{
+							"IOException (probably out of disk space) for " + filename
+						});
+						((ConfirmDialogScreen)GameScreenManager.Instance.StartScreen(ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject, GameScreenManager.Instance.ssOverlayCanvas.gameObject, GameScreenManager.UIRenderTarget.ScreenSpaceOverlay)).PopupConfirmDialog(string.Format(UI.CRASHSCREEN.SAVEFAILED, "IOException. You may not have enough free space!"), null, null, null, null, null, null, null, null);
+						return SaveLoader.GetActiveSaveFilePath();
+					}
+					throw ex4;
 				}
-				KCrashReporter.MOST_RECENT_SAVEFILE = filename;
-				Stats.Print();
-			}
-			catch (Exception ex4)
-			{
-				if (ex4 is UnauthorizedAccessException)
-				{
-					DebugUtil.LogArgs("UnauthorizedAccessException for " + filename);
-					((ConfirmDialogScreen)GameScreenManager.Instance.StartScreen(ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject, GameScreenManager.Instance.ssOverlayCanvas.gameObject)).PopupConfirmDialog(string.Format(UI.CRASHSCREEN.SAVEFAILED, "Unauthorized Access Exception"), null, null);
-					return GetActiveSaveFilePath();
-				}
-				if (ex4 is IOException)
-				{
-					DebugUtil.LogArgs("IOException (probably out of disk space) for " + filename);
-					((ConfirmDialogScreen)GameScreenManager.Instance.StartScreen(ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject, GameScreenManager.Instance.ssOverlayCanvas.gameObject)).PopupConfirmDialog(string.Format(UI.CRASHSCREEN.SAVEFAILED, "IOException. You may not have enough free space!"), null, null);
-					return GetActiveSaveFilePath();
-				}
-				throw ex4;
 			}
 		}
 		if (updateSavePointer)
 		{
-			SetActiveSaveFilePath(filename);
+			SaveLoader.SetActiveSaveFilePath(filename);
 		}
 		Game.Instance.timelapser.SaveColonyPreview(filename);
-		DebugUtil.LogArgs("Saved to", "[" + filename + "]");
+		DebugUtil.LogArgs(new object[]
+		{
+			"Saved to",
+			"[" + filename + "]"
+		});
 		GC.Collect();
 		return filename;
 	}
 
+	// Token: 0x06007F32 RID: 32562 RVA: 0x0032E730 File Offset: 0x0032C930
 	public static SaveGame.GameInfo LoadHeader(string filename, out SaveGame.Header header)
 	{
 		byte[] array = new byte[512];
-		using FileStream fileStream = File.OpenRead(filename);
-		fileStream.Read(array, 0, 512);
-		return SaveGame.GetHeader(new FastReader(array), out header, filename);
+		SaveGame.GameInfo header2;
+		using (FileStream fileStream = File.OpenRead(filename))
+		{
+			fileStream.Read(array, 0, 512);
+			header2 = SaveGame.GetHeader(new FastReader(array), out header, filename);
+		}
+		return header2;
 	}
 
+	// Token: 0x06007F33 RID: 32563 RVA: 0x0032E788 File Offset: 0x0032C988
 	public bool Load(string filename)
 	{
-		SetActiveSaveFilePath(filename);
+		SaveLoader.SetActiveSaveFilePath(filename);
 		try
 		{
 			KSerialization.Manager.Clear();
 			byte[] array = File.ReadAllBytes(filename);
 			IReader reader = new FastReader(array);
-			GameInfo = SaveGame.GetHeader(reader, out var header, filename);
-			ThreadedHttps<KleiMetrics>.Instance.SetExpansionsActive(GameInfo.dlcIds);
-			DebugUtil.LogArgs(string.Format("Loading save file: {4}\n headerVersion:{0}, buildVersion:{1}, headerSize:{2}, IsCompressed:{3}", header.headerVersion, header.buildVersion, header.headerSize, header.IsCompressed, filename));
-			DebugUtil.LogArgs(string.Format("GameInfo loaded from save header:\n  numberOfCycles:{0},\n  numberOfDuplicants:{1},\n  baseName:{2},\n  isAutoSave:{3},\n  originalSaveName:{4},\n  clusterId:{5},\n  worldTraits:{6},\n  colonyGuid:{7},\n  saveVersion:{8}.{9}", GameInfo.numberOfCycles, GameInfo.numberOfDuplicants, GameInfo.baseName, GameInfo.isAutoSave, GameInfo.originalSaveName, GameInfo.clusterId, (GameInfo.worldTraits != null && GameInfo.worldTraits.Length != 0) ? string.Join(", ", GameInfo.worldTraits) : "<i>none</i>", GameInfo.colonyGuid, GameInfo.saveMajorVersion, GameInfo.saveMinorVersion));
-			string originalSaveName = GameInfo.originalSaveName;
+			SaveGame.Header header;
+			this.GameInfo = SaveGame.GetHeader(reader, out header, filename);
+			ThreadedHttps<KleiMetrics>.Instance.SetExpansionsActive(this.GameInfo.dlcIds);
+			DebugUtil.LogArgs(new object[]
+			{
+				string.Format("Loading save file: {4}\n headerVersion:{0}, buildVersion:{1}, headerSize:{2}, IsCompressed:{3}", new object[]
+				{
+					header.headerVersion,
+					header.buildVersion,
+					header.headerSize,
+					header.IsCompressed,
+					filename
+				})
+			});
+			DebugUtil.LogArgs(new object[]
+			{
+				string.Format("GameInfo loaded from save header:\n  numberOfCycles:{0},\n  numberOfDuplicants:{1},\n  baseName:{2},\n  isAutoSave:{3},\n  originalSaveName:{4},\n  clusterId:{5},\n  worldTraits:{6},\n  colonyGuid:{7},\n  saveVersion:{8}.{9}", new object[]
+				{
+					this.GameInfo.numberOfCycles,
+					this.GameInfo.numberOfDuplicants,
+					this.GameInfo.baseName,
+					this.GameInfo.isAutoSave,
+					this.GameInfo.originalSaveName,
+					this.GameInfo.clusterId,
+					(this.GameInfo.worldTraits != null && this.GameInfo.worldTraits.Length != 0) ? string.Join(", ", this.GameInfo.worldTraits) : "<i>none</i>",
+					this.GameInfo.colonyGuid,
+					this.GameInfo.saveMajorVersion,
+					this.GameInfo.saveMinorVersion
+				})
+			});
+			string originalSaveName = this.GameInfo.originalSaveName;
 			if (originalSaveName.Contains("/") || originalSaveName.Contains("\\"))
 			{
-				string originalSaveFileName = GetOriginalSaveFileName(originalSaveName);
-				SaveGame.GameInfo gameInfo = GameInfo;
+				string originalSaveFileName = SaveLoader.GetOriginalSaveFileName(originalSaveName);
+				SaveGame.GameInfo gameInfo = this.GameInfo;
 				gameInfo.originalSaveName = originalSaveFileName;
-				GameInfo = gameInfo;
-				Debug.Log("Migration / Save originalSaveName updated from: `" + originalSaveName + "` => `" + GameInfo.originalSaveName + "`");
+				this.GameInfo = gameInfo;
+				global::Debug.Log(string.Concat(new string[]
+				{
+					"Migration / Save originalSaveName updated from: `",
+					originalSaveName,
+					"` => `",
+					this.GameInfo.originalSaveName,
+					"`"
+				}));
 			}
-			if (GameInfo.saveMajorVersion == 7 && GameInfo.saveMinorVersion < 4)
+			if (this.GameInfo.saveMajorVersion == 7 && this.GameInfo.saveMinorVersion < 4)
 			{
 				Helper.SetTypeInfoMask((SerializationTypeInfo)191);
 			}
@@ -899,123 +862,160 @@ public class SaveLoader : KMonoBehaviour
 				int num = array.Length - reader.Position;
 				byte[] array2 = new byte[num];
 				Array.Copy(array, reader.Position, array2, 0, num);
-				byte[] array3 = DecompressContents(array2);
-				lastUncompressedSize = array3.Length;
+				byte[] array3 = SaveLoader.DecompressContents(array2);
+				this.lastUncompressedSize = array3.Length;
 				IReader reader2 = new FastReader(array3);
-				Load(reader2);
+				this.Load(reader2);
 			}
 			else
 			{
-				lastUncompressedSize = array.Length;
-				Load(reader);
+				this.lastUncompressedSize = array.Length;
+				this.Load(reader);
 			}
 			KCrashReporter.MOST_RECENT_SAVEFILE = filename;
-			if (GameInfo.isAutoSave && !string.IsNullOrEmpty(GameInfo.originalSaveName))
+			if (this.GameInfo.isAutoSave && !string.IsNullOrEmpty(this.GameInfo.originalSaveName))
 			{
-				string text = null;
-				string originalSaveFileName2 = GetOriginalSaveFileName(GameInfo.originalSaveName);
-				if (IsSaveCloud(filename))
+				string originalSaveFileName2 = SaveLoader.GetOriginalSaveFileName(this.GameInfo.originalSaveName);
+				string text;
+				if (SaveLoader.IsSaveCloud(filename))
 				{
-					string cloudSavePrefix = GetCloudSavePrefix();
-					text = ((cloudSavePrefix == null) ? System.IO.Path.Combine(System.IO.Path.GetDirectoryName(filename).Replace("auto_save", ""), GameInfo.baseName, originalSaveFileName2) : System.IO.Path.Combine(cloudSavePrefix, GameInfo.baseName, originalSaveFileName2));
+					string cloudSavePrefix = SaveLoader.GetCloudSavePrefix();
+					if (cloudSavePrefix != null)
+					{
+						text = System.IO.Path.Combine(cloudSavePrefix, this.GameInfo.baseName, originalSaveFileName2);
+					}
+					else
+					{
+						text = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(filename).Replace("auto_save", ""), this.GameInfo.baseName, originalSaveFileName2);
+					}
 				}
 				else
 				{
-					text = System.IO.Path.Combine(GetSavePrefix(), GameInfo.baseName, originalSaveFileName2);
+					text = System.IO.Path.Combine(SaveLoader.GetSavePrefix(), this.GameInfo.baseName, originalSaveFileName2);
 				}
 				if (text != null)
 				{
-					SetActiveSaveFilePath(text);
+					SaveLoader.SetActiveSaveFilePath(text);
 				}
 			}
 		}
 		catch (Exception ex)
 		{
-			DebugUtil.LogWarningArgs("\n--- Error loading save ---\n" + ex.Message + "\n" + ex.StackTrace);
+			DebugUtil.LogWarningArgs(new object[]
+			{
+				"\n--- Error loading save ---\n" + ex.Message + "\n" + ex.StackTrace
+			});
 			Sim.Shutdown();
-			SetActiveSaveFilePath(null);
+			SaveLoader.SetActiveSaveFilePath(null);
 			return false;
 		}
 		Stats.Print();
-		DebugUtil.LogArgs("Loaded", "[" + filename + "]");
-		DebugUtil.LogArgs("World Seeds", "[" + clusterDetailSave.globalWorldSeed + "/" + clusterDetailSave.globalWorldLayoutSeed + "/" + clusterDetailSave.globalTerrainSeed + "/" + clusterDetailSave.globalNoiseSeed + "]");
+		DebugUtil.LogArgs(new object[]
+		{
+			"Loaded",
+			"[" + filename + "]"
+		});
+		DebugUtil.LogArgs(new object[]
+		{
+			"World Seeds",
+			string.Concat(new string[]
+			{
+				"[",
+				this.clusterDetailSave.globalWorldSeed.ToString(),
+				"/",
+				this.clusterDetailSave.globalWorldLayoutSeed.ToString(),
+				"/",
+				this.clusterDetailSave.globalTerrainSeed.ToString(),
+				"/",
+				this.clusterDetailSave.globalNoiseSeed.ToString(),
+				"]"
+			})
+		});
 		GC.Collect();
 		return true;
 	}
 
+	// Token: 0x06007F34 RID: 32564 RVA: 0x0032EC1C File Offset: 0x0032CE1C
 	public bool LoadFromWorldGen()
 	{
-		DebugUtil.LogArgs("Attempting to start a new game with current world gen");
-		WorldGen.LoadSettings();
+		DebugUtil.LogArgs(new object[]
+		{
+			"Attempting to start a new game with current world gen"
+		});
+		WorldGen.LoadSettings(false);
 		FastReader reader = new FastReader(File.ReadAllBytes(WorldGen.WORLDGEN_SAVE_FILENAME));
-		m_cluster = Cluster.Load(reader);
+		this.m_cluster = Cluster.Load(reader);
 		ListPool<SimSaveFileStructure, SaveLoader>.PooledList pooledList = ListPool<SimSaveFileStructure, SaveLoader>.Allocate();
-		m_cluster.LoadClusterSim(pooledList, reader);
-		SaveGame.GameInfo gameInfo = GameInfo;
-		gameInfo.clusterId = m_cluster.Id;
+		this.m_cluster.LoadClusterSim(pooledList, reader);
+		SaveGame.GameInfo gameInfo = this.GameInfo;
+		gameInfo.clusterId = this.m_cluster.Id;
 		gameInfo.colonyGuid = Guid.NewGuid();
 		ClusterLayout currentClusterLayout = CustomGameSettings.Instance.GetCurrentClusterLayout();
 		gameInfo.dlcIds = new List<string>(currentClusterLayout.requiredDlcIds);
-		foreach (string currentDlcMixingId in CustomGameSettings.Instance.GetCurrentDlcMixingIds())
+		foreach (string item in CustomGameSettings.Instance.GetCurrentDlcMixingIds())
 		{
-			if (!gameInfo.dlcIds.Contains(currentDlcMixingId))
+			if (!gameInfo.dlcIds.Contains(item))
 			{
-				gameInfo.dlcIds.Add(currentDlcMixingId);
+				gameInfo.dlcIds.Add(item);
 			}
 		}
-		GameInfo = gameInfo;
-		ThreadedHttps<KleiMetrics>.Instance.SetExpansionsActive(GameInfo.dlcIds);
-		if (pooledList.Count != m_cluster.worlds.Count)
+		this.GameInfo = gameInfo;
+		ThreadedHttps<KleiMetrics>.Instance.SetExpansionsActive(this.GameInfo.dlcIds);
+		if (pooledList.Count != this.m_cluster.worlds.Count)
 		{
-			Debug.LogError("Attempt failed. Failed to load all worlds.");
+			global::Debug.LogError("Attempt failed. Failed to load all worlds.");
 			pooledList.Recycle();
 			return false;
 		}
-		GridSettings.Reset(m_cluster.size.x, m_cluster.size.y);
+		GridSettings.Reset(this.m_cluster.size.x, this.m_cluster.size.y);
 		if (Application.isPlaying)
 		{
 			Singleton<KBatchedAnimUpdater>.Instance.InitializeGrid();
 		}
-		clusterDetailSave = new WorldDetailSave();
-		foreach (SimSaveFileStructure item in pooledList)
+		this.clusterDetailSave = new WorldDetailSave();
+		foreach (SimSaveFileStructure simSaveFileStructure in pooledList)
 		{
-			clusterDetailSave.globalNoiseSeed = item.worldDetail.globalNoiseSeed;
-			clusterDetailSave.globalTerrainSeed = item.worldDetail.globalTerrainSeed;
-			clusterDetailSave.globalWorldLayoutSeed = item.worldDetail.globalWorldLayoutSeed;
-			clusterDetailSave.globalWorldSeed = item.worldDetail.globalWorldSeed;
-			Vector2 vector = Grid.CellToPos2D(Grid.PosToCell(new Vector2I(item.x, item.y)));
-			foreach (WorldDetailSave.OverworldCell overworldCell in item.worldDetail.overworldCells)
+			this.clusterDetailSave.globalNoiseSeed = simSaveFileStructure.worldDetail.globalNoiseSeed;
+			this.clusterDetailSave.globalTerrainSeed = simSaveFileStructure.worldDetail.globalTerrainSeed;
+			this.clusterDetailSave.globalWorldLayoutSeed = simSaveFileStructure.worldDetail.globalWorldLayoutSeed;
+			this.clusterDetailSave.globalWorldSeed = simSaveFileStructure.worldDetail.globalWorldSeed;
+			Vector2 b = Grid.CellToPos2D(Grid.PosToCell(new Vector2I(simSaveFileStructure.x, simSaveFileStructure.y)));
+			foreach (WorldDetailSave.OverworldCell overworldCell in simSaveFileStructure.worldDetail.overworldCells)
 			{
-				for (int i = 0; i != overworldCell.poly.Vertices.Count; i++)
+				for (int num = 0; num != overworldCell.poly.Vertices.Count; num++)
 				{
-					overworldCell.poly.Vertices[i] += vector;
+					List<Vector2> vertices = overworldCell.poly.Vertices;
+					int index = num;
+					vertices[index] += b;
 				}
 				overworldCell.poly.RefreshBounds();
 			}
-			clusterDetailSave.overworldCells.AddRange(item.worldDetail.overworldCells);
+			this.clusterDetailSave.overworldCells.AddRange(simSaveFileStructure.worldDetail.overworldCells);
 		}
-		Sim.SIM_Initialize(Sim.DLL_MessageHandler);
+		Sim.SIM_Initialize(new Sim.GAME_MessageHandler(Sim.DLL_MessageHandler));
 		SimMessages.CreateSimElementsTable(ElementLoader.elements);
-		Sim.AllocateCells(m_cluster.size.x, m_cluster.size.y);
-		SimMessages.DefineWorldOffsets(m_cluster.worlds.Select(delegate(WorldGen world)
+		Sim.AllocateCells(this.m_cluster.size.x, this.m_cluster.size.y, false);
+		SimMessages.DefineWorldOffsets((from world in this.m_cluster.worlds
+		select new SimMessages.WorldOffsetData
 		{
-			SimMessages.WorldOffsetData result = default(SimMessages.WorldOffsetData);
-			result.worldOffsetX = world.WorldOffset.x;
-			result.worldOffsetY = world.WorldOffset.y;
-			result.worldSizeX = world.WorldSize.x;
-			result.worldSizeY = world.WorldSize.y;
-			return result;
-		}).ToList());
+			worldOffsetX = world.WorldOffset.x,
+			worldOffsetY = world.WorldOffset.y,
+			worldSizeX = world.WorldSize.x,
+			worldSizeY = world.WorldSize.y
+		}).ToList<SimMessages.WorldOffsetData>());
 		SimMessages.CreateDiseaseTable(Db.Get().Diseases);
 		Sim.HandleMessage(SimMessageHashes.ClearUnoccupiedCells, 0, null);
 		try
 		{
-			foreach (SimSaveFileStructure item2 in pooledList)
+			foreach (SimSaveFileStructure simSaveFileStructure2 in pooledList)
 			{
-				FastReader reader2 = new FastReader(item2.Sim);
+				FastReader reader2 = new FastReader(simSaveFileStructure2.Sim);
 				if (Sim.Load(reader2) != 0)
 				{
-					DebugUtil.LogWarningArgs("\n--- Error loading save ---\nSimDLL found bad data\n");
+					DebugUtil.LogWarningArgs(new object[]
+					{
+						"\n--- Error loading save ---\nSimDLL found bad data\n"
+					});
 					Sim.Shutdown();
 					pooledList.Recycle();
 					return false;
@@ -1024,17 +1024,17 @@ public class SaveLoader : KMonoBehaviour
 		}
 		catch (Exception ex)
 		{
-			Debug.LogWarning("--- Error loading Sim FROM NEW WORLDGEN ---" + ex.Message + "\n" + ex.StackTrace);
+			global::Debug.LogWarning("--- Error loading Sim FROM NEW WORLDGEN ---" + ex.Message + "\n" + ex.StackTrace);
 			Sim.Shutdown();
 			pooledList.Recycle();
 			return false;
 		}
-		Debug.Log("Attempt success");
+		global::Debug.Log("Attempt success");
 		Sim.Start();
 		SceneInitializer.Instance.PostLoadPrefabs();
 		SceneInitializer.Instance.NewSaveGamePrefab();
-		cachedGSD = m_cluster.currentWorld.SpawnData;
-		OnWorldGenComplete.Signal(m_cluster);
+		this.cachedGSD = this.m_cluster.currentWorld.SpawnData;
+		this.OnWorldGenComplete.Signal(this.m_cluster);
 		OniMetrics.LogEvent(OniMetrics.Event.NewSave, "NewGame", true);
 		StoryManager.Instance.InitialSaveSetup();
 		ThreadedHttps<KleiMetrics>.Instance.IncrementGameCount();
@@ -1043,89 +1043,103 @@ public class SaveLoader : KMonoBehaviour
 		return true;
 	}
 
+	// Token: 0x17000823 RID: 2083
+	// (get) Token: 0x06007F35 RID: 32565 RVA: 0x000F3DB0 File Offset: 0x000F1FB0
+	// (set) Token: 0x06007F36 RID: 32566 RVA: 0x000F3DB8 File Offset: 0x000F1FB8
+	public GameSpawnData cachedGSD { get; private set; }
+
+	// Token: 0x17000824 RID: 2084
+	// (get) Token: 0x06007F37 RID: 32567 RVA: 0x000F3DC1 File Offset: 0x000F1FC1
+	// (set) Token: 0x06007F38 RID: 32568 RVA: 0x000F3DC9 File Offset: 0x000F1FC9
+	public WorldDetailSave clusterDetailSave { get; private set; }
+
+	// Token: 0x06007F39 RID: 32569 RVA: 0x000F3DD2 File Offset: 0x000F1FD2
 	public void SetWorldDetail(WorldDetailSave worldDetail)
 	{
-		clusterDetailSave = worldDetail;
+		this.clusterDetailSave = worldDetail;
 	}
 
+	// Token: 0x06007F3A RID: 32570 RVA: 0x0032F120 File Offset: 0x0032D320
 	private void ReportSaveMetrics(bool is_auto_save)
 	{
-		if (ThreadedHttps<KleiMetrics>.Instance != null && ThreadedHttps<KleiMetrics>.Instance.enabled && !(saveManager == null))
+		if (ThreadedHttps<KleiMetrics>.Instance == null || !ThreadedHttps<KleiMetrics>.Instance.enabled || this.saveManager == null)
 		{
-			Dictionary<string, object> dictionary = new Dictionary<string, object>();
-			dictionary[GameClock.NewCycleKey] = GameClock.Instance.GetCycle() + 1;
-			dictionary["IsAutoSave"] = is_auto_save;
-			dictionary["SavedPrefabs"] = GetSavedPrefabMetrics();
-			dictionary["ResourcesAccessible"] = GetWorldInventoryMetrics();
-			dictionary["MinionMetrics"] = GetMinionMetrics();
-			dictionary["WorldMetrics"] = GetWorldMetrics();
-			if (is_auto_save)
-			{
-				dictionary["DailyReport"] = GetDailyReportMetrics();
-				dictionary["PerformanceMeasurements"] = GetPerformanceMeasurements();
-				dictionary["AverageFrameTime"] = GetFrameTime();
-			}
-			dictionary["CustomGameSettings"] = CustomGameSettings.Instance.GetSettingsForMetrics();
-			dictionary["CustomMixingSettings"] = CustomGameSettings.Instance.GetSettingsForMixingMetrics();
-			ThreadedHttps<KleiMetrics>.Instance.SendEvent(dictionary, "ReportSaveMetrics");
+			return;
 		}
+		Dictionary<string, object> dictionary = new Dictionary<string, object>();
+		dictionary[GameClock.NewCycleKey] = GameClock.Instance.GetCycle() + 1;
+		dictionary["IsAutoSave"] = is_auto_save;
+		dictionary["SavedPrefabs"] = this.GetSavedPrefabMetrics();
+		dictionary["ResourcesAccessible"] = this.GetWorldInventoryMetrics();
+		dictionary["MinionMetrics"] = this.GetMinionMetrics();
+		dictionary["WorldMetrics"] = this.GetWorldMetrics();
+		if (is_auto_save)
+		{
+			dictionary["DailyReport"] = this.GetDailyReportMetrics();
+			dictionary["PerformanceMeasurements"] = this.GetPerformanceMeasurements();
+			dictionary["AverageFrameTime"] = this.GetFrameTime();
+		}
+		dictionary["CustomGameSettings"] = CustomGameSettings.Instance.GetSettingsForMetrics();
+		dictionary["CustomMixingSettings"] = CustomGameSettings.Instance.GetSettingsForMixingMetrics();
+		ThreadedHttps<KleiMetrics>.Instance.SendEvent(dictionary, "ReportSaveMetrics");
 	}
 
-	private List<MinionMetricsData> GetMinionMetrics()
+	// Token: 0x06007F3B RID: 32571 RVA: 0x0032F23C File Offset: 0x0032D43C
+	private List<SaveLoader.MinionMetricsData> GetMinionMetrics()
 	{
-		List<MinionMetricsData> list = new List<MinionMetricsData>();
-		foreach (MinionIdentity item in Components.LiveMinionIdentities.Items)
+		List<SaveLoader.MinionMetricsData> list = new List<SaveLoader.MinionMetricsData>();
+		foreach (MinionIdentity minionIdentity in Components.LiveMinionIdentities.Items)
 		{
-			if (item == null)
+			if (!(minionIdentity == null))
 			{
-				continue;
-			}
-			Amounts amounts = item.gameObject.GetComponent<Modifiers>().amounts;
-			List<MinionAttrFloatData> list2 = new List<MinionAttrFloatData>(amounts.Count);
-			foreach (AmountInstance item2 in amounts)
-			{
-				float value = item2.value;
-				if (!float.IsNaN(value) && !float.IsInfinity(value))
+				Amounts amounts = minionIdentity.gameObject.GetComponent<Modifiers>().amounts;
+				List<SaveLoader.MinionAttrFloatData> list2 = new List<SaveLoader.MinionAttrFloatData>(amounts.Count);
+				foreach (AmountInstance amountInstance in amounts)
 				{
-					list2.Add(new MinionAttrFloatData
+					float value = amountInstance.value;
+					if (!float.IsNaN(value) && !float.IsInfinity(value))
 					{
-						Name = item2.modifier.Id,
-						Value = item2.value
-					});
+						list2.Add(new SaveLoader.MinionAttrFloatData
+						{
+							Name = amountInstance.modifier.Id,
+							Value = amountInstance.value
+						});
+					}
 				}
-			}
-			MinionResume component = item.gameObject.GetComponent<MinionResume>();
-			float totalExperienceGained = component.TotalExperienceGained;
-			List<string> list3 = new List<string>();
-			foreach (KeyValuePair<string, bool> item3 in component.MasteryBySkillID)
-			{
-				if (item3.Value)
+				MinionResume component = minionIdentity.gameObject.GetComponent<MinionResume>();
+				float totalExperienceGained = component.TotalExperienceGained;
+				List<string> list3 = new List<string>();
+				foreach (KeyValuePair<string, bool> keyValuePair in component.MasteryBySkillID)
 				{
-					list3.Add(item3.Key);
+					if (keyValuePair.Value)
+					{
+						list3.Add(keyValuePair.Key);
+					}
 				}
+				list.Add(new SaveLoader.MinionMetricsData
+				{
+					Name = minionIdentity.name,
+					Modifiers = list2,
+					TotalExperienceGained = totalExperienceGained,
+					Skills = list3
+				});
 			}
-			list.Add(new MinionMetricsData
-			{
-				Name = item.name,
-				Modifiers = list2,
-				TotalExperienceGained = totalExperienceGained,
-				Skills = list3
-			});
 		}
 		return list;
 	}
 
-	private List<SavedPrefabMetricsData> GetSavedPrefabMetrics()
+	// Token: 0x06007F3C RID: 32572 RVA: 0x0032F40C File Offset: 0x0032D60C
+	private List<SaveLoader.SavedPrefabMetricsData> GetSavedPrefabMetrics()
 	{
-		Dictionary<Tag, List<SaveLoadRoot>> lists = saveManager.GetLists();
-		List<SavedPrefabMetricsData> list = new List<SavedPrefabMetricsData>(lists.Count);
-		foreach (KeyValuePair<Tag, List<SaveLoadRoot>> item in lists)
+		Dictionary<Tag, List<SaveLoadRoot>> lists = this.saveManager.GetLists();
+		List<SaveLoader.SavedPrefabMetricsData> list = new List<SaveLoader.SavedPrefabMetricsData>(lists.Count);
+		foreach (KeyValuePair<Tag, List<SaveLoadRoot>> keyValuePair in lists)
 		{
-			Tag key = item.Key;
-			List<SaveLoadRoot> value = item.Value;
+			Tag key = keyValuePair.Key;
+			List<SaveLoadRoot> value = keyValuePair.Value;
 			if (value.Count > 0)
 			{
-				list.Add(new SavedPrefabMetricsData
+				list.Add(new SaveLoader.SavedPrefabMetricsData
 				{
 					PrefabName = key.ToString(),
 					Count = value.Count
@@ -1135,18 +1149,19 @@ public class SaveLoader : KMonoBehaviour
 		return list;
 	}
 
-	private List<WorldInventoryMetricsData> GetWorldInventoryMetrics()
+	// Token: 0x06007F3D RID: 32573 RVA: 0x0032F4B8 File Offset: 0x0032D6B8
+	private List<SaveLoader.WorldInventoryMetricsData> GetWorldInventoryMetrics()
 	{
 		Dictionary<Tag, float> allWorldsAccessibleAmounts = ClusterManager.Instance.GetAllWorldsAccessibleAmounts();
-		List<WorldInventoryMetricsData> list = new List<WorldInventoryMetricsData>(allWorldsAccessibleAmounts.Count);
-		foreach (KeyValuePair<Tag, float> item in allWorldsAccessibleAmounts)
+		List<SaveLoader.WorldInventoryMetricsData> list = new List<SaveLoader.WorldInventoryMetricsData>(allWorldsAccessibleAmounts.Count);
+		foreach (KeyValuePair<Tag, float> keyValuePair in allWorldsAccessibleAmounts)
 		{
-			float value = item.Value;
+			float value = keyValuePair.Value;
 			if (!float.IsInfinity(value) && !float.IsNaN(value))
 			{
-				list.Add(new WorldInventoryMetricsData
+				list.Add(new SaveLoader.WorldInventoryMetricsData
 				{
-					Name = item.Key.ToString(),
+					Name = keyValuePair.Key.ToString(),
 					Amount = value
 				});
 			}
@@ -1154,58 +1169,60 @@ public class SaveLoader : KMonoBehaviour
 		return list;
 	}
 
-	private List<DailyReportMetricsData> GetDailyReportMetrics()
+	// Token: 0x06007F3E RID: 32574 RVA: 0x0032F564 File Offset: 0x0032D764
+	private List<SaveLoader.DailyReportMetricsData> GetDailyReportMetrics()
 	{
-		List<DailyReportMetricsData> list = new List<DailyReportMetricsData>();
+		List<SaveLoader.DailyReportMetricsData> list = new List<SaveLoader.DailyReportMetricsData>();
 		int cycle = GameClock.Instance.GetCycle();
 		ReportManager.DailyReport dailyReport = ReportManager.Instance.FindReport(cycle);
 		if (dailyReport != null)
 		{
 			foreach (ReportManager.ReportEntry reportEntry in dailyReport.reportEntries)
 			{
-				DailyReportMetricsData item = default(DailyReportMetricsData);
+				SaveLoader.DailyReportMetricsData item = default(SaveLoader.DailyReportMetricsData);
 				item.Name = reportEntry.reportType.ToString();
 				if (!float.IsInfinity(reportEntry.Net) && !float.IsNaN(reportEntry.Net))
 				{
-					item.Net = reportEntry.Net;
+					item.Net = new float?(reportEntry.Net);
 				}
-				if (force_infinity)
+				if (SaveLoader.force_infinity)
 				{
 					item.Net = null;
 				}
 				if (!float.IsInfinity(reportEntry.Positive) && !float.IsNaN(reportEntry.Positive))
 				{
-					item.Positive = reportEntry.Positive;
+					item.Positive = new float?(reportEntry.Positive);
 				}
 				if (!float.IsInfinity(reportEntry.Negative) && !float.IsNaN(reportEntry.Negative))
 				{
-					item.Negative = reportEntry.Negative;
+					item.Negative = new float?(reportEntry.Negative);
 				}
 				list.Add(item);
 			}
-			list.Add(new DailyReportMetricsData
+			list.Add(new SaveLoader.DailyReportMetricsData
 			{
 				Name = "MinionCount",
-				Net = Components.LiveMinionIdentities.Count,
-				Positive = 0f,
-				Negative = 0f
+				Net = new float?((float)Components.LiveMinionIdentities.Count),
+				Positive = new float?(0f),
+				Negative = new float?(0f)
 			});
 		}
 		return list;
 	}
 
-	private List<PerformanceMeasurement> GetPerformanceMeasurements()
+	// Token: 0x06007F3F RID: 32575 RVA: 0x0032F6FC File Offset: 0x0032D8FC
+	private List<SaveLoader.PerformanceMeasurement> GetPerformanceMeasurements()
 	{
-		List<PerformanceMeasurement> list = new List<PerformanceMeasurement>();
+		List<SaveLoader.PerformanceMeasurement> list = new List<SaveLoader.PerformanceMeasurement>();
 		if (Global.Instance != null)
 		{
 			PerformanceMonitor component = Global.Instance.GetComponent<PerformanceMonitor>();
-			list.Add(new PerformanceMeasurement
+			list.Add(new SaveLoader.PerformanceMeasurement
 			{
 				name = "FramesAbove30",
 				value = component.NumFramesAbove30
 			});
-			list.Add(new PerformanceMeasurement
+			list.Add(new SaveLoader.PerformanceMeasurement
 			{
 				name = "FramesBelow30",
 				value = component.NumFramesBelow30
@@ -1215,25 +1232,31 @@ public class SaveLoader : KMonoBehaviour
 		return list;
 	}
 
+	// Token: 0x06007F40 RID: 32576 RVA: 0x0032F784 File Offset: 0x0032D984
 	private float GetFrameTime()
 	{
 		PerformanceMonitor component = Global.Instance.GetComponent<PerformanceMonitor>();
-		DebugUtil.LogArgs("Average frame time:", 1f / component.FPS);
+		DebugUtil.LogArgs(new object[]
+		{
+			"Average frame time:",
+			1f / component.FPS
+		});
 		return 1f / component.FPS;
 	}
 
-	private List<WorldMetricsData> GetWorldMetrics()
+	// Token: 0x06007F41 RID: 32577 RVA: 0x0032F7D0 File Offset: 0x0032D9D0
+	private List<SaveLoader.WorldMetricsData> GetWorldMetrics()
 	{
-		List<WorldMetricsData> list = new List<WorldMetricsData>();
+		List<SaveLoader.WorldMetricsData> list = new List<SaveLoader.WorldMetricsData>();
 		if (Global.Instance != null)
 		{
 			foreach (WorldContainer worldContainer in ClusterManager.Instance.WorldContainers)
 			{
 				if (!worldContainer.IsModuleInterior)
 				{
-					float discoveryTimestamp = (worldContainer.IsDiscovered ? worldContainer.DiscoveryTimestamp : (-1f));
-					float dupeVisitedTimestamp = (worldContainer.IsDupeVisited ? worldContainer.DupeVisitedTimestamp : (-1f));
-					list.Add(new WorldMetricsData
+					float discoveryTimestamp = worldContainer.IsDiscovered ? worldContainer.DiscoveryTimestamp : -1f;
+					float dupeVisitedTimestamp = worldContainer.IsDupeVisited ? worldContainer.DupeVisitedTimestamp : -1f;
+					list.Add(new SaveLoader.WorldMetricsData
 					{
 						Name = worldContainer.worldName,
 						DiscoveryTimestamp = discoveryTimestamp,
@@ -1245,19 +1268,13 @@ public class SaveLoader : KMonoBehaviour
 		return list;
 	}
 
+	// Token: 0x06007F42 RID: 32578 RVA: 0x000F3DDB File Offset: 0x000F1FDB
 	public bool IsDLCActiveForCurrentSave(string dlcid)
 	{
-		if (!DlcManager.IsContentSubscribed(dlcid))
-		{
-			return false;
-		}
-		if (dlcid == "" || dlcid == "")
-		{
-			return true;
-		}
-		return GameInfo.dlcIds.Contains(dlcid);
+		return DlcManager.IsContentSubscribed(dlcid) && (dlcid == "" || dlcid == "" || this.GameInfo.dlcIds.Contains(dlcid));
 	}
 
+	// Token: 0x06007F43 RID: 32579 RVA: 0x0032F894 File Offset: 0x0032DA94
 	public bool IsDlcListActiveForCurrentSave(string[] dlcIds)
 	{
 		if (dlcIds == null || dlcIds.Length == 0)
@@ -1270,7 +1287,7 @@ public class SaveLoader : KMonoBehaviour
 			{
 				return true;
 			}
-			if (IsDLCActiveForCurrentSave(text))
+			if (this.IsDLCActiveForCurrentSave(text))
 			{
 				return true;
 			}
@@ -1278,32 +1295,74 @@ public class SaveLoader : KMonoBehaviour
 		return false;
 	}
 
+	// Token: 0x06007F44 RID: 32580 RVA: 0x0032F8DC File Offset: 0x0032DADC
+	public bool IsAllDlcActiveForCurrentSave(string[] dlcIds)
+	{
+		if (dlcIds == null || dlcIds.Length == 0)
+		{
+			return true;
+		}
+		foreach (string text in dlcIds)
+		{
+			if (!(text == "") && !this.IsDLCActiveForCurrentSave(text))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+	// Token: 0x06007F45 RID: 32581 RVA: 0x0032F920 File Offset: 0x0032DB20
+	public bool IsAnyDlcActiveForCurrentSave(string[] dlcIds)
+	{
+		if (dlcIds == null || dlcIds.Length == 0)
+		{
+			return false;
+		}
+		foreach (string text in dlcIds)
+		{
+			if (!(text == "") && this.IsDLCActiveForCurrentSave(text))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	// Token: 0x06007F46 RID: 32582 RVA: 0x000F3E14 File Offset: 0x000F2014
+	public bool IsCorrectDlcActiveForCurrentSave(string[] required, string[] forbidden)
+	{
+		return this.IsAllDlcActiveForCurrentSave(required) && !this.IsAnyDlcActiveForCurrentSave(forbidden);
+	}
+
+	// Token: 0x06007F47 RID: 32583 RVA: 0x0032F964 File Offset: 0x0032DB64
 	public string GetSaveLoadContentLetters()
 	{
-		if (GameInfo.dlcIds.Count <= 0)
+		if (this.GameInfo.dlcIds.Count <= 0)
 		{
 			return "V";
 		}
 		string text = "";
-		foreach (string dlcId in GameInfo.dlcIds)
+		foreach (string dlcId in this.GameInfo.dlcIds)
 		{
 			text += DlcManager.GetContentLetter(dlcId);
 		}
 		return text;
 	}
 
+	// Token: 0x06007F48 RID: 32584 RVA: 0x0032F9E4 File Offset: 0x0032DBE4
 	public void UpgradeActiveSaveDLCInfo(string dlcId, bool trigger_load = false)
 	{
-		string activeSaveFolder = GetActiveSaveFolder();
-		string path = string.Concat(SaveGame.Instance.BaseName, UI.FRONTEND.OPTIONS_SCREEN.TOGGLE_SANDBOX_SCREEN.BACKUP_SAVE_GAME_APPEND, ".sav");
+		string activeSaveFolder = SaveLoader.GetActiveSaveFolder();
+		string path = SaveGame.Instance.BaseName + UI.FRONTEND.OPTIONS_SCREEN.TOGGLE_SANDBOX_SCREEN.BACKUP_SAVE_GAME_APPEND + ".sav";
 		string filename = System.IO.Path.Combine(activeSaveFolder, path);
-		Save(filename, isAutoSave: false, updateSavePointer: false);
-		if (!GameInfo.dlcIds.Contains(dlcId))
+		this.Save(filename, false, false);
+		if (!this.GameInfo.dlcIds.Contains(dlcId))
 		{
-			GameInfo.dlcIds.Add(dlcId);
+			this.GameInfo.dlcIds.Add(dlcId);
 		}
-		string current_save = GetActiveSaveFilePath();
-		Save(GetActiveSaveFilePath(), isAutoSave: false, updateSavePointer: false);
+		string current_save = SaveLoader.GetActiveSaveFilePath();
+		this.Save(SaveLoader.GetActiveSaveFilePath(), false, false);
 		if (trigger_load)
 		{
 			LoadingOverlay.Load(delegate
@@ -1311,5 +1370,246 @@ public class SaveLoader : KMonoBehaviour
 				LoadScreen.DoLoad(current_save);
 			});
 		}
+	}
+
+	// Token: 0x0400604E RID: 24654
+	[MyCmpGet]
+	private GridSettings gridSettings;
+
+	// Token: 0x04006050 RID: 24656
+	private bool saveFileCorrupt;
+
+	// Token: 0x04006051 RID: 24657
+	private bool compressSaveData = true;
+
+	// Token: 0x04006052 RID: 24658
+	private int lastUncompressedSize;
+
+	// Token: 0x04006053 RID: 24659
+	public bool saveAsText;
+
+	// Token: 0x04006054 RID: 24660
+	public const string MAINMENU_LEVELNAME = "launchscene";
+
+	// Token: 0x04006055 RID: 24661
+	public const string FRONTEND_LEVELNAME = "frontend";
+
+	// Token: 0x04006056 RID: 24662
+	public const string BACKEND_LEVELNAME = "backend";
+
+	// Token: 0x04006057 RID: 24663
+	public const string SAVE_EXTENSION = ".sav";
+
+	// Token: 0x04006058 RID: 24664
+	public const string AUTOSAVE_FOLDER = "auto_save";
+
+	// Token: 0x04006059 RID: 24665
+	public const string CLOUDSAVE_FOLDER = "cloud_save_files";
+
+	// Token: 0x0400605A RID: 24666
+	public const string SAVE_FOLDER = "save_files";
+
+	// Token: 0x0400605B RID: 24667
+	public const int MAX_AUTOSAVE_FILES = 10;
+
+	// Token: 0x0400605D RID: 24669
+	[NonSerialized]
+	public SaveManager saveManager;
+
+	// Token: 0x0400605F RID: 24671
+	private Cluster m_cluster;
+
+	// Token: 0x04006060 RID: 24672
+	private ClusterLayout m_clusterLayout;
+
+	// Token: 0x04006062 RID: 24674
+	private const string CorruptFileSuffix = "_";
+
+	// Token: 0x04006063 RID: 24675
+	private const float SAVE_BUFFER_HEAD_ROOM = 0.1f;
+
+	// Token: 0x04006064 RID: 24676
+	private bool mustRestartOnFail;
+
+	// Token: 0x04006067 RID: 24679
+	public const string METRIC_SAVED_PREFAB_KEY = "SavedPrefabs";
+
+	// Token: 0x04006068 RID: 24680
+	public const string METRIC_IS_AUTO_SAVE_KEY = "IsAutoSave";
+
+	// Token: 0x04006069 RID: 24681
+	public const string METRIC_WAS_DEBUG_EVER_USED = "WasDebugEverUsed";
+
+	// Token: 0x0400606A RID: 24682
+	public const string METRIC_IS_SANDBOX_ENABLED = "IsSandboxEnabled";
+
+	// Token: 0x0400606B RID: 24683
+	public const string METRIC_RESOURCES_ACCESSIBLE_KEY = "ResourcesAccessible";
+
+	// Token: 0x0400606C RID: 24684
+	public const string METRIC_DAILY_REPORT_KEY = "DailyReport";
+
+	// Token: 0x0400606D RID: 24685
+	public const string METRIC_WORLD_METRICS_KEY = "WorldMetrics";
+
+	// Token: 0x0400606E RID: 24686
+	public const string METRIC_MINION_METRICS_KEY = "MinionMetrics";
+
+	// Token: 0x0400606F RID: 24687
+	public const string METRIC_CUSTOM_GAME_SETTINGS = "CustomGameSettings";
+
+	// Token: 0x04006070 RID: 24688
+	public const string METRIC_CUSTOM_MIXING_SETTINGS = "CustomMixingSettings";
+
+	// Token: 0x04006071 RID: 24689
+	public const string METRIC_PERFORMANCE_MEASUREMENTS = "PerformanceMeasurements";
+
+	// Token: 0x04006072 RID: 24690
+	public const string METRIC_FRAME_TIME = "AverageFrameTime";
+
+	// Token: 0x04006073 RID: 24691
+	private static bool force_infinity;
+
+	// Token: 0x0200180D RID: 6157
+	public class FlowUtilityNetworkInstance
+	{
+		// Token: 0x04006074 RID: 24692
+		public int id = -1;
+
+		// Token: 0x04006075 RID: 24693
+		public SimHashes containedElement = SimHashes.Vacuum;
+
+		// Token: 0x04006076 RID: 24694
+		public float containedMass;
+
+		// Token: 0x04006077 RID: 24695
+		public float containedTemperature;
+	}
+
+	// Token: 0x0200180E RID: 6158
+	[SerializationConfig(KSerialization.MemberSerialization.OptOut)]
+	public class FlowUtilityNetworkSaver : ISaveLoadable
+	{
+		// Token: 0x06007F4B RID: 32587 RVA: 0x000F3E54 File Offset: 0x000F2054
+		public FlowUtilityNetworkSaver()
+		{
+			this.gas = new List<SaveLoader.FlowUtilityNetworkInstance>();
+			this.liquid = new List<SaveLoader.FlowUtilityNetworkInstance>();
+		}
+
+		// Token: 0x04006078 RID: 24696
+		public List<SaveLoader.FlowUtilityNetworkInstance> gas;
+
+		// Token: 0x04006079 RID: 24697
+		public List<SaveLoader.FlowUtilityNetworkInstance> liquid;
+	}
+
+	// Token: 0x0200180F RID: 6159
+	public struct SaveFileEntry
+	{
+		// Token: 0x0400607A RID: 24698
+		public string path;
+
+		// Token: 0x0400607B RID: 24699
+		public System.DateTime timeStamp;
+	}
+
+	// Token: 0x02001810 RID: 6160
+	public enum SaveType
+	{
+		// Token: 0x0400607D RID: 24701
+		local,
+		// Token: 0x0400607E RID: 24702
+		cloud,
+		// Token: 0x0400607F RID: 24703
+		both
+	}
+
+	// Token: 0x02001811 RID: 6161
+	private struct MinionAttrFloatData
+	{
+		// Token: 0x04006080 RID: 24704
+		public string Name;
+
+		// Token: 0x04006081 RID: 24705
+		public float Value;
+	}
+
+	// Token: 0x02001812 RID: 6162
+	private struct MinionMetricsData
+	{
+		// Token: 0x04006082 RID: 24706
+		public string Name;
+
+		// Token: 0x04006083 RID: 24707
+		public List<SaveLoader.MinionAttrFloatData> Modifiers;
+
+		// Token: 0x04006084 RID: 24708
+		public float TotalExperienceGained;
+
+		// Token: 0x04006085 RID: 24709
+		public List<string> Skills;
+	}
+
+	// Token: 0x02001813 RID: 6163
+	private struct SavedPrefabMetricsData
+	{
+		// Token: 0x04006086 RID: 24710
+		public string PrefabName;
+
+		// Token: 0x04006087 RID: 24711
+		public int Count;
+	}
+
+	// Token: 0x02001814 RID: 6164
+	private struct WorldInventoryMetricsData
+	{
+		// Token: 0x04006088 RID: 24712
+		public string Name;
+
+		// Token: 0x04006089 RID: 24713
+		public float Amount;
+	}
+
+	// Token: 0x02001815 RID: 6165
+	private struct DailyReportMetricsData
+	{
+		// Token: 0x0400608A RID: 24714
+		public string Name;
+
+		// Token: 0x0400608B RID: 24715
+		[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+		public float? Net;
+
+		// Token: 0x0400608C RID: 24716
+		[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+		public float? Positive;
+
+		// Token: 0x0400608D RID: 24717
+		[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+		public float? Negative;
+	}
+
+	// Token: 0x02001816 RID: 6166
+	private struct PerformanceMeasurement
+	{
+		// Token: 0x0400608E RID: 24718
+		public string name;
+
+		// Token: 0x0400608F RID: 24719
+		public float value;
+	}
+
+	// Token: 0x02001817 RID: 6167
+	private struct WorldMetricsData
+	{
+		// Token: 0x04006090 RID: 24720
+		public string Name;
+
+		// Token: 0x04006091 RID: 24721
+		public float DiscoveryTimestamp;
+
+		// Token: 0x04006092 RID: 24722
+		public float DupeVisitedTimestamp;
 	}
 }

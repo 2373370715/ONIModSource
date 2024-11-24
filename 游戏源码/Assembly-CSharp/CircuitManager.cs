@@ -1,261 +1,230 @@
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using STRINGS;
 using UnityEngine;
 
+// Token: 0x02001070 RID: 4208
 public class CircuitManager
 {
-	private struct CircuitInfo
-	{
-		public List<Generator> generators;
-
-		public List<IEnergyConsumer> consumers;
-
-		public List<Battery> batteries;
-
-		public List<Battery> inputTransformers;
-
-		public List<Generator> outputTransformers;
-
-		public List<WireUtilityNetworkLink>[] bridgeGroups;
-
-		public float minBatteryPercentFull;
-
-		public float wattsUsed;
-	}
-
-	public enum ConnectionStatus
-	{
-		NotConnected,
-		Unpowered,
-		Powered
-	}
-
-	public const ushort INVALID_ID = ushort.MaxValue;
-
-	private const int SimUpdateSortKey = 1000;
-
-	private const float MIN_POWERED_THRESHOLD = 0.01f;
-
-	private bool dirty = true;
-
-	private HashSet<Generator> generators = new HashSet<Generator>();
-
-	private HashSet<IEnergyConsumer> consumers = new HashSet<IEnergyConsumer>();
-
-	private HashSet<WireUtilityNetworkLink> bridges = new HashSet<WireUtilityNetworkLink>();
-
-	private float elapsedTime;
-
-	private List<CircuitInfo> circuitInfo = new List<CircuitInfo>();
-
-	private List<IEnergyConsumer> consumersShadow = new List<IEnergyConsumer>();
-
-	private List<Generator> activeGenerators = new List<Generator>();
-
+	// Token: 0x060055CC RID: 21964 RVA: 0x000D7F85 File Offset: 0x000D6185
 	public void Connect(Generator generator)
 	{
-		if (!Game.IsQuitting())
+		if (Game.IsQuitting())
 		{
-			generators.Add(generator);
-			dirty = true;
+			return;
 		}
+		this.generators.Add(generator);
+		this.dirty = true;
 	}
 
+	// Token: 0x060055CD RID: 21965 RVA: 0x000D7FA3 File Offset: 0x000D61A3
 	public void Disconnect(Generator generator)
 	{
-		if (!Game.IsQuitting())
+		if (Game.IsQuitting())
 		{
-			generators.Remove(generator);
-			dirty = true;
+			return;
 		}
+		this.generators.Remove(generator);
+		this.dirty = true;
 	}
 
+	// Token: 0x060055CE RID: 21966 RVA: 0x000D7FC1 File Offset: 0x000D61C1
 	public void Connect(IEnergyConsumer consumer)
 	{
-		if (!Game.IsQuitting())
+		if (Game.IsQuitting())
 		{
-			consumers.Add(consumer);
-			dirty = true;
+			return;
 		}
+		this.consumers.Add(consumer);
+		this.dirty = true;
 	}
 
+	// Token: 0x060055CF RID: 21967 RVA: 0x000D7FDF File Offset: 0x000D61DF
 	public void Disconnect(IEnergyConsumer consumer, bool isDestroy)
 	{
-		if (!Game.IsQuitting())
+		if (Game.IsQuitting())
 		{
-			consumers.Remove(consumer);
-			if (!isDestroy)
-			{
-				consumer.SetConnectionStatus(ConnectionStatus.NotConnected);
-			}
-			dirty = true;
+			return;
 		}
+		this.consumers.Remove(consumer);
+		if (!isDestroy)
+		{
+			consumer.SetConnectionStatus(CircuitManager.ConnectionStatus.NotConnected);
+		}
+		this.dirty = true;
 	}
 
+	// Token: 0x060055D0 RID: 21968 RVA: 0x000D8007 File Offset: 0x000D6207
 	public void Connect(WireUtilityNetworkLink bridge)
 	{
-		bridges.Add(bridge);
-		dirty = true;
+		this.bridges.Add(bridge);
+		this.dirty = true;
 	}
 
+	// Token: 0x060055D1 RID: 21969 RVA: 0x000D801D File Offset: 0x000D621D
 	public void Disconnect(WireUtilityNetworkLink bridge)
 	{
-		bridges.Remove(bridge);
-		dirty = true;
+		this.bridges.Remove(bridge);
+		this.dirty = true;
 	}
 
+	// Token: 0x060055D2 RID: 21970 RVA: 0x0027FB10 File Offset: 0x0027DD10
 	public float GetPowerDraw(ushort circuitID, Generator generator)
 	{
-		if (circuitID < circuitInfo.Count)
+		float result = 0f;
+		if ((int)circuitID < this.circuitInfo.Count)
 		{
-			CircuitInfo value = circuitInfo[circuitID];
-			circuitInfo[circuitID] = value;
-			circuitInfo[circuitID] = value;
+			CircuitManager.CircuitInfo value = this.circuitInfo[(int)circuitID];
+			this.circuitInfo[(int)circuitID] = value;
+			this.circuitInfo[(int)circuitID] = value;
 		}
-		return 0f;
+		return result;
 	}
 
+	// Token: 0x060055D3 RID: 21971 RVA: 0x0027FB58 File Offset: 0x0027DD58
 	public ushort GetCircuitID(int cell)
 	{
-		return (ushort)(Game.Instance.electricalConduitSystem.GetNetworkForCell(cell)?.id ?? 65535);
+		UtilityNetwork networkForCell = Game.Instance.electricalConduitSystem.GetNetworkForCell(cell);
+		return (ushort)((networkForCell == null) ? 65535 : networkForCell.id);
 	}
 
+	// Token: 0x060055D4 RID: 21972 RVA: 0x0027FB88 File Offset: 0x0027DD88
 	public ushort GetVirtualCircuitID(object virtualKey)
 	{
-		return (ushort)(Game.Instance.electricalConduitSystem.GetNetworkForVirtualKey(virtualKey)?.id ?? 65535);
+		UtilityNetwork networkForVirtualKey = Game.Instance.electricalConduitSystem.GetNetworkForVirtualKey(virtualKey);
+		return (ushort)((networkForVirtualKey == null) ? 65535 : networkForVirtualKey.id);
 	}
 
+	// Token: 0x060055D5 RID: 21973 RVA: 0x000D8033 File Offset: 0x000D6233
 	public ushort GetCircuitID(ICircuitConnected ent)
 	{
 		if (!ent.IsVirtual)
 		{
-			return GetCircuitID(ent.PowerCell);
+			return this.GetCircuitID(ent.PowerCell);
 		}
-		return GetVirtualCircuitID(ent.VirtualCircuitKey);
+		return this.GetVirtualCircuitID(ent.VirtualCircuitKey);
 	}
 
+	// Token: 0x060055D6 RID: 21974 RVA: 0x000D8056 File Offset: 0x000D6256
 	public void Sim200msFirst(float dt)
 	{
-		Refresh(dt);
+		this.Refresh(dt);
 	}
 
+	// Token: 0x060055D7 RID: 21975 RVA: 0x000D8056 File Offset: 0x000D6256
 	public void RenderEveryTick(float dt)
 	{
-		Refresh(dt);
+		this.Refresh(dt);
 	}
 
+	// Token: 0x060055D8 RID: 21976 RVA: 0x0027FBB8 File Offset: 0x0027DDB8
 	private void Refresh(float dt)
 	{
 		UtilityNetworkManager<ElectricalUtilityNetwork, Wire> electricalConduitSystem = Game.Instance.electricalConduitSystem;
-		if (!electricalConduitSystem.IsDirty && !dirty)
+		if (electricalConduitSystem.IsDirty || this.dirty)
 		{
-			return;
-		}
-		electricalConduitSystem.Update();
-		IList<UtilityNetwork> networks = electricalConduitSystem.GetNetworks();
-		while (this.circuitInfo.Count < networks.Count)
-		{
-			CircuitInfo circuitInfo = default(CircuitInfo);
-			circuitInfo.generators = new List<Generator>();
-			circuitInfo.consumers = new List<IEnergyConsumer>();
-			circuitInfo.batteries = new List<Battery>();
-			circuitInfo.inputTransformers = new List<Battery>();
-			circuitInfo.outputTransformers = new List<Generator>();
-			CircuitInfo item = circuitInfo;
-			item.bridgeGroups = new List<WireUtilityNetworkLink>[5];
-			for (int i = 0; i < item.bridgeGroups.Length; i++)
+			electricalConduitSystem.Update();
+			IList<UtilityNetwork> networks = electricalConduitSystem.GetNetworks();
+			while (this.circuitInfo.Count < networks.Count)
 			{
-				item.bridgeGroups[i] = new List<WireUtilityNetworkLink>();
+				CircuitManager.CircuitInfo circuitInfo = new CircuitManager.CircuitInfo
+				{
+					generators = new List<Generator>(),
+					consumers = new List<IEnergyConsumer>(),
+					batteries = new List<Battery>(),
+					inputTransformers = new List<Battery>(),
+					outputTransformers = new List<Generator>()
+				};
+				circuitInfo.bridgeGroups = new List<WireUtilityNetworkLink>[5];
+				for (int i = 0; i < circuitInfo.bridgeGroups.Length; i++)
+				{
+					circuitInfo.bridgeGroups[i] = new List<WireUtilityNetworkLink>();
+				}
+				this.circuitInfo.Add(circuitInfo);
 			}
-			this.circuitInfo.Add(item);
+			this.Rebuild();
 		}
-		Rebuild();
 	}
 
+	// Token: 0x060055D9 RID: 21977 RVA: 0x0027FC98 File Offset: 0x0027DE98
 	public void Rebuild()
 	{
-		for (int i = 0; i < circuitInfo.Count; i++)
+		for (int i = 0; i < this.circuitInfo.Count; i++)
 		{
-			CircuitInfo value = circuitInfo[i];
-			value.generators.Clear();
-			value.consumers.Clear();
-			value.batteries.Clear();
-			value.inputTransformers.Clear();
-			value.outputTransformers.Clear();
-			value.minBatteryPercentFull = 1f;
-			for (int j = 0; j < value.bridgeGroups.Length; j++)
+			CircuitManager.CircuitInfo circuitInfo = this.circuitInfo[i];
+			circuitInfo.generators.Clear();
+			circuitInfo.consumers.Clear();
+			circuitInfo.batteries.Clear();
+			circuitInfo.inputTransformers.Clear();
+			circuitInfo.outputTransformers.Clear();
+			circuitInfo.minBatteryPercentFull = 1f;
+			for (int j = 0; j < circuitInfo.bridgeGroups.Length; j++)
 			{
-				value.bridgeGroups[j].Clear();
+				circuitInfo.bridgeGroups[j].Clear();
 			}
-			circuitInfo[i] = value;
+			this.circuitInfo[i] = circuitInfo;
 		}
-		consumersShadow.AddRange(consumers);
-		List<IEnergyConsumer>.Enumerator enumerator = consumersShadow.GetEnumerator();
-		while (enumerator.MoveNext())
+		this.consumersShadow.AddRange(this.consumers);
+		foreach (IEnergyConsumer energyConsumer in this.consumersShadow)
 		{
-			IEnergyConsumer current = enumerator.Current;
-			ushort circuitID = GetCircuitID(current);
-			if (circuitID == ushort.MaxValue)
+			ushort circuitID = this.GetCircuitID(energyConsumer);
+			if (circuitID != 65535)
 			{
-				continue;
-			}
-			Battery battery = current as Battery;
-			if (battery != null)
-			{
-				CircuitInfo value2 = circuitInfo[circuitID];
-				if (battery.powerTransformer != null)
+				Battery battery = energyConsumer as Battery;
+				if (battery != null)
 				{
-					value2.inputTransformers.Add(battery);
+					CircuitManager.CircuitInfo circuitInfo2 = this.circuitInfo[(int)circuitID];
+					if (battery.powerTransformer != null)
+					{
+						circuitInfo2.inputTransformers.Add(battery);
+					}
+					else
+					{
+						circuitInfo2.batteries.Add(battery);
+						circuitInfo2.minBatteryPercentFull = Mathf.Min(this.circuitInfo[(int)circuitID].minBatteryPercentFull, battery.PercentFull);
+					}
+					this.circuitInfo[(int)circuitID] = circuitInfo2;
 				}
 				else
 				{
-					value2.batteries.Add(battery);
-					value2.minBatteryPercentFull = Mathf.Min(circuitInfo[circuitID].minBatteryPercentFull, battery.PercentFull);
+					this.circuitInfo[(int)circuitID].consumers.Add(energyConsumer);
 				}
-				circuitInfo[circuitID] = value2;
-			}
-			else
-			{
-				circuitInfo[circuitID].consumers.Add(current);
 			}
 		}
-		consumersShadow.Clear();
-		for (int k = 0; k < circuitInfo.Count; k++)
+		this.consumersShadow.Clear();
+		for (int k = 0; k < this.circuitInfo.Count; k++)
 		{
-			circuitInfo[k].consumers.Sort((IEnergyConsumer a, IEnergyConsumer b) => a.WattsNeededWhenActive.CompareTo(b.WattsNeededWhenActive));
+			this.circuitInfo[k].consumers.Sort((IEnergyConsumer a, IEnergyConsumer b) => a.WattsNeededWhenActive.CompareTo(b.WattsNeededWhenActive));
 		}
-		HashSet<Generator>.Enumerator enumerator2 = generators.GetEnumerator();
-		while (enumerator2.MoveNext())
+		foreach (Generator generator in this.generators)
 		{
-			Generator current2 = enumerator2.Current;
-			ushort circuitID2 = GetCircuitID(current2);
-			if (circuitID2 != ushort.MaxValue)
+			ushort circuitID2 = this.GetCircuitID(generator);
+			if (circuitID2 != 65535)
 			{
-				if (current2.GetType() == typeof(PowerTransformer))
+				if (generator.GetType() == typeof(PowerTransformer))
 				{
-					circuitInfo[circuitID2].outputTransformers.Add(current2);
+					this.circuitInfo[(int)circuitID2].outputTransformers.Add(generator);
 				}
 				else
 				{
-					circuitInfo[circuitID2].generators.Add(current2);
+					this.circuitInfo[(int)circuitID2].generators.Add(generator);
 				}
 			}
 		}
-		HashSet<WireUtilityNetworkLink>.Enumerator enumerator3 = bridges.GetEnumerator();
-		while (enumerator3.MoveNext())
+		foreach (WireUtilityNetworkLink wireUtilityNetworkLink in this.bridges)
 		{
-			WireUtilityNetworkLink current3 = enumerator3.Current;
-			ushort circuitID3 = GetCircuitID(current3);
-			if (circuitID3 != ushort.MaxValue)
+			ushort circuitID3 = this.GetCircuitID(wireUtilityNetworkLink);
+			if (circuitID3 != 65535)
 			{
-				Wire.WattageRating maxWattageRating = current3.GetMaxWattageRating();
-				circuitInfo[circuitID3].bridgeGroups[(int)maxWattageRating].Add(current3);
+				Wire.WattageRating maxWattageRating = wireUtilityNetworkLink.GetMaxWattageRating();
+				this.circuitInfo[(int)circuitID3].bridgeGroups[(int)maxWattageRating].Add(wireUtilityNetworkLink);
 			}
 		}
-		dirty = false;
+		this.dirty = false;
 	}
 
+	// Token: 0x060055DA RID: 21978 RVA: 0x0027FF70 File Offset: 0x0027E170
 	private float GetBatteryJoulesAvailable(List<Battery> batteries, out int num_powered)
 	{
 		float result = 0f;
@@ -272,23 +241,24 @@ public class CircuitManager
 		return result;
 	}
 
+	// Token: 0x060055DB RID: 21979 RVA: 0x0027FFC4 File Offset: 0x0027E1C4
 	public void Sim200msLast(float dt)
 	{
-		elapsedTime += dt;
-		if (elapsedTime < 0.2f)
+		this.elapsedTime += dt;
+		if (this.elapsedTime < 0.2f)
 		{
 			return;
 		}
-		elapsedTime -= 0.2f;
-		for (int i = 0; i < circuitInfo.Count; i++)
+		this.elapsedTime -= 0.2f;
+		for (int i = 0; i < this.circuitInfo.Count; i++)
 		{
-			CircuitInfo value = circuitInfo[i];
-			value.wattsUsed = 0f;
-			activeGenerators.Clear();
-			List<Generator> list = value.generators;
-			List<IEnergyConsumer> list2 = value.consumers;
-			List<Battery> batteries = value.batteries;
-			List<Generator> outputTransformers = value.outputTransformers;
+			CircuitManager.CircuitInfo circuitInfo = this.circuitInfo[i];
+			circuitInfo.wattsUsed = 0f;
+			this.activeGenerators.Clear();
+			List<Generator> list = circuitInfo.generators;
+			List<IEnergyConsumer> list2 = circuitInfo.consumers;
+			List<Battery> batteries = circuitInfo.batteries;
+			List<Generator> outputTransformers = circuitInfo.outputTransformers;
 			batteries.Sort((Battery a, Battery b) => a.JoulesAvailable.CompareTo(b.JoulesAvailable));
 			bool flag = false;
 			bool flag2 = list.Count > 0;
@@ -298,10 +268,10 @@ public class CircuitManager
 				if (generator.JoulesAvailable > 0f)
 				{
 					flag = true;
-					activeGenerators.Add(generator);
+					this.activeGenerators.Add(generator);
 				}
 			}
-			activeGenerators.Sort((Generator a, Generator b) => a.JoulesAvailable.CompareTo(b.JoulesAvailable));
+			this.activeGenerators.Sort((Generator a, Generator b) => a.JoulesAvailable.CompareTo(b.JoulesAvailable));
 			if (!flag)
 			{
 				for (int k = 0; k < outputTransformers.Count; k++)
@@ -322,12 +292,12 @@ public class CircuitManager
 				}
 				num = Mathf.Min(num, battery.PercentFull);
 			}
-			for (int m = 0; m < value.inputTransformers.Count; m++)
+			for (int m = 0; m < circuitInfo.inputTransformers.Count; m++)
 			{
-				Battery battery2 = value.inputTransformers[m];
+				Battery battery2 = circuitInfo.inputTransformers[m];
 				num = Mathf.Min(num, battery2.PercentFull);
 			}
-			value.minBatteryPercentFull = num;
+			circuitInfo.minBatteryPercentFull = num;
 			if (flag)
 			{
 				for (int n = 0; n < list2.Count; n++)
@@ -337,10 +307,10 @@ public class CircuitManager
 					if (num2 > 0f)
 					{
 						bool flag3 = false;
-						for (int num3 = 0; num3 < activeGenerators.Count; num3++)
+						for (int num3 = 0; num3 < this.activeGenerators.Count; num3++)
 						{
-							Generator g = activeGenerators[num3];
-							num2 = PowerFromGenerator(num2, g, energyConsumer);
+							Generator g = this.activeGenerators[num3];
+							num2 = this.PowerFromGenerator(num2, g, energyConsumer);
 							if (num2 <= 0f)
 							{
 								flag3 = true;
@@ -352,7 +322,7 @@ public class CircuitManager
 							for (int num4 = 0; num4 < outputTransformers.Count; num4++)
 							{
 								Generator g2 = outputTransformers[num4];
-								num2 = PowerFromGenerator(num2, g2, energyConsumer);
+								num2 = this.PowerFromGenerator(num2, g2, energyConsumer);
 								if (num2 <= 0f)
 								{
 									flag3 = true;
@@ -362,22 +332,22 @@ public class CircuitManager
 						}
 						if (!flag3)
 						{
-							num2 = PowerFromBatteries(num2, batteries, energyConsumer);
-							flag3 = num2 <= 0.01f;
+							num2 = this.PowerFromBatteries(num2, batteries, energyConsumer);
+							flag3 = (num2 <= 0.01f);
 						}
 						if (flag3)
 						{
-							value.wattsUsed += energyConsumer.WattsUsed;
+							circuitInfo.wattsUsed += energyConsumer.WattsUsed;
 						}
 						else
 						{
-							value.wattsUsed += energyConsumer.WattsUsed - num2 / 0.2f;
+							circuitInfo.wattsUsed += energyConsumer.WattsUsed - num2 / 0.2f;
 						}
-						energyConsumer.SetConnectionStatus((!flag3) ? ConnectionStatus.Unpowered : ConnectionStatus.Powered);
+						energyConsumer.SetConnectionStatus(flag3 ? CircuitManager.ConnectionStatus.Powered : CircuitManager.ConnectionStatus.Unpowered);
 					}
 					else
 					{
-						energyConsumer.SetConnectionStatus((!flag) ? ConnectionStatus.Unpowered : ConnectionStatus.Powered);
+						energyConsumer.SetConnectionStatus(flag ? CircuitManager.ConnectionStatus.Powered : CircuitManager.ConnectionStatus.Unpowered);
 					}
 				}
 			}
@@ -385,132 +355,140 @@ public class CircuitManager
 			{
 				for (int num5 = 0; num5 < list2.Count; num5++)
 				{
-					list2[num5].SetConnectionStatus(ConnectionStatus.Unpowered);
+					list2[num5].SetConnectionStatus(CircuitManager.ConnectionStatus.Unpowered);
 				}
 			}
 			else
 			{
 				for (int num6 = 0; num6 < list2.Count; num6++)
 				{
-					list2[num6].SetConnectionStatus(ConnectionStatus.NotConnected);
+					list2[num6].SetConnectionStatus(CircuitManager.ConnectionStatus.NotConnected);
 				}
 			}
-			circuitInfo[i] = value;
+			this.circuitInfo[i] = circuitInfo;
 		}
-		for (int num7 = 0; num7 < circuitInfo.Count; num7++)
+		for (int num7 = 0; num7 < this.circuitInfo.Count; num7++)
 		{
-			CircuitInfo value2 = circuitInfo[num7];
-			value2.batteries.Sort((Battery a, Battery b) => (a.Capacity - a.JoulesAvailable).CompareTo(b.Capacity - b.JoulesAvailable));
-			value2.inputTransformers.Sort((Battery a, Battery b) => (a.Capacity - a.JoulesAvailable).CompareTo(b.Capacity - b.JoulesAvailable));
-			value2.generators.Sort((Generator a, Generator b) => a.JoulesAvailable.CompareTo(b.JoulesAvailable));
-			float joules_used = 0f;
-			ChargeTransformers(value2.inputTransformers, value2.generators, ref joules_used);
-			ChargeTransformers(value2.inputTransformers, value2.outputTransformers, ref joules_used);
-			float joules_used2 = 0f;
-			ChargeBatteries(value2.batteries, value2.generators, ref joules_used2);
-			ChargeBatteries(value2.batteries, value2.outputTransformers, ref joules_used2);
-			value2.minBatteryPercentFull = 1f;
-			for (int num8 = 0; num8 < value2.batteries.Count; num8++)
+			CircuitManager.CircuitInfo circuitInfo2 = this.circuitInfo[num7];
+			circuitInfo2.batteries.Sort((Battery a, Battery b) => (a.Capacity - a.JoulesAvailable).CompareTo(b.Capacity - b.JoulesAvailable));
+			circuitInfo2.inputTransformers.Sort((Battery a, Battery b) => (a.Capacity - a.JoulesAvailable).CompareTo(b.Capacity - b.JoulesAvailable));
+			circuitInfo2.generators.Sort((Generator a, Generator b) => a.JoulesAvailable.CompareTo(b.JoulesAvailable));
+			float num8 = 0f;
+			this.ChargeTransformers<Generator>(circuitInfo2.inputTransformers, circuitInfo2.generators, ref num8);
+			this.ChargeTransformers<Generator>(circuitInfo2.inputTransformers, circuitInfo2.outputTransformers, ref num8);
+			float num9 = 0f;
+			this.ChargeBatteries(circuitInfo2.batteries, circuitInfo2.generators, ref num9);
+			this.ChargeBatteries(circuitInfo2.batteries, circuitInfo2.outputTransformers, ref num9);
+			circuitInfo2.minBatteryPercentFull = 1f;
+			for (int num10 = 0; num10 < circuitInfo2.batteries.Count; num10++)
 			{
-				float percentFull = value2.batteries[num8].PercentFull;
-				if (percentFull < value2.minBatteryPercentFull)
+				float percentFull = circuitInfo2.batteries[num10].PercentFull;
+				if (percentFull < circuitInfo2.minBatteryPercentFull)
 				{
-					value2.minBatteryPercentFull = percentFull;
+					circuitInfo2.minBatteryPercentFull = percentFull;
 				}
 			}
-			for (int num9 = 0; num9 < value2.inputTransformers.Count; num9++)
+			for (int num11 = 0; num11 < circuitInfo2.inputTransformers.Count; num11++)
 			{
-				float percentFull2 = value2.inputTransformers[num9].PercentFull;
-				if (percentFull2 < value2.minBatteryPercentFull)
+				float percentFull2 = circuitInfo2.inputTransformers[num11].PercentFull;
+				if (percentFull2 < circuitInfo2.minBatteryPercentFull)
 				{
-					value2.minBatteryPercentFull = percentFull2;
+					circuitInfo2.minBatteryPercentFull = percentFull2;
 				}
 			}
-			value2.wattsUsed += joules_used / 0.2f;
-			circuitInfo[num7] = value2;
+			circuitInfo2.wattsUsed += num8 / 0.2f;
+			this.circuitInfo[num7] = circuitInfo2;
 		}
-		for (int num10 = 0; num10 < circuitInfo.Count; num10++)
+		for (int num12 = 0; num12 < this.circuitInfo.Count; num12++)
 		{
-			CircuitInfo value3 = circuitInfo[num10];
-			value3.batteries.Sort((Battery a, Battery b) => a.JoulesAvailable.CompareTo(b.JoulesAvailable));
-			float joules_used3 = 0f;
-			ChargeTransformers(value3.inputTransformers, value3.batteries, ref joules_used3);
-			value3.wattsUsed += joules_used3 / 0.2f;
-			circuitInfo[num10] = value3;
+			CircuitManager.CircuitInfo circuitInfo3 = this.circuitInfo[num12];
+			circuitInfo3.batteries.Sort((Battery a, Battery b) => a.JoulesAvailable.CompareTo(b.JoulesAvailable));
+			float num13 = 0f;
+			this.ChargeTransformers<Battery>(circuitInfo3.inputTransformers, circuitInfo3.batteries, ref num13);
+			circuitInfo3.wattsUsed += num13 / 0.2f;
+			this.circuitInfo[num12] = circuitInfo3;
 		}
-		for (int num11 = 0; num11 < circuitInfo.Count; num11++)
+		for (int num14 = 0; num14 < this.circuitInfo.Count; num14++)
 		{
-			CircuitInfo value4 = circuitInfo[num11];
-			bool is_connected_to_something_useful = value4.generators.Count + value4.consumers.Count + value4.outputTransformers.Count > 0;
-			UpdateBatteryConnectionStatus(value4.batteries, is_connected_to_something_useful, num11);
-			bool flag4 = value4.generators.Count > 0 || value4.outputTransformers.Count > 0;
+			CircuitManager.CircuitInfo circuitInfo4 = this.circuitInfo[num14];
+			bool is_connected_to_something_useful = circuitInfo4.generators.Count + circuitInfo4.consumers.Count + circuitInfo4.outputTransformers.Count > 0;
+			this.UpdateBatteryConnectionStatus(circuitInfo4.batteries, is_connected_to_something_useful, num14);
+			bool flag4 = circuitInfo4.generators.Count > 0 || circuitInfo4.outputTransformers.Count > 0;
 			if (!flag4)
 			{
-				foreach (Battery battery3 in value4.batteries)
+				using (List<Battery>.Enumerator enumerator = circuitInfo4.batteries.GetEnumerator())
 				{
-					if (battery3.JoulesAvailable > 0f)
+					while (enumerator.MoveNext())
 					{
-						flag4 = true;
-						break;
+						if (enumerator.Current.JoulesAvailable > 0f)
+						{
+							flag4 = true;
+							break;
+						}
 					}
 				}
 			}
-			UpdateBatteryConnectionStatus(value4.inputTransformers, flag4, num11);
-			circuitInfo[num11] = value4;
-			for (int num12 = 0; num12 < value4.generators.Count; num12++)
+			this.UpdateBatteryConnectionStatus(circuitInfo4.inputTransformers, flag4, num14);
+			this.circuitInfo[num14] = circuitInfo4;
+			for (int num15 = 0; num15 < circuitInfo4.generators.Count; num15++)
 			{
-				Generator generator2 = value4.generators[num12];
-				ReportManager.Instance.ReportValue(ReportManager.ReportType.EnergyWasted, 0f - generator2.JoulesAvailable, StringFormatter.Replace(BUILDINGS.PREFABS.GENERATOR.OVERPRODUCTION, "{Generator}", generator2.gameObject.GetProperName()));
+				Generator generator2 = circuitInfo4.generators[num15];
+				ReportManager.Instance.ReportValue(ReportManager.ReportType.EnergyWasted, -generator2.JoulesAvailable, StringFormatter.Replace(BUILDINGS.PREFABS.GENERATOR.OVERPRODUCTION, "{Generator}", generator2.gameObject.GetProperName()), null);
 			}
 		}
-		for (int num13 = 0; num13 < circuitInfo.Count; num13++)
+		for (int num16 = 0; num16 < this.circuitInfo.Count; num16++)
 		{
-			CheckCircuitOverloaded(0.2f, num13, circuitInfo[num13].wattsUsed);
+			CircuitManager.CircuitInfo circuitInfo5 = this.circuitInfo[num16];
+			this.CheckCircuitOverloaded(0.2f, num16, circuitInfo5.wattsUsed);
 		}
 	}
 
+	// Token: 0x060055DC RID: 21980 RVA: 0x00280758 File Offset: 0x0027E958
 	private float PowerFromBatteries(float joules_needed, List<Battery> batteries, IEnergyConsumer c)
 	{
-		int num_powered;
+		int num2;
 		do
 		{
-			float num = GetBatteryJoulesAvailable(batteries, out num_powered) * (float)num_powered;
-			float num2 = ((num < joules_needed) ? num : joules_needed);
-			joules_needed -= num2;
-			ReportManager.Instance.ReportValue(ReportManager.ReportType.EnergyCreated, 0f - num2, c.Name);
-			float joules = num2 / (float)num_powered;
-			for (int i = batteries.Count - num_powered; i < batteries.Count; i++)
+			float num = this.GetBatteryJoulesAvailable(batteries, out num2) * (float)num2;
+			float num3 = (num < joules_needed) ? num : joules_needed;
+			joules_needed -= num3;
+			ReportManager.Instance.ReportValue(ReportManager.ReportType.EnergyCreated, -num3, c.Name, null);
+			float joules = num3 / (float)num2;
+			for (int i = batteries.Count - num2; i < batteries.Count; i++)
 			{
 				batteries[i].ConsumeEnergy(joules);
 			}
 		}
-		while (joules_needed >= 0.01f && num_powered > 0);
+		while (joules_needed >= 0.01f && num2 > 0);
 		return joules_needed;
 	}
 
+	// Token: 0x060055DD RID: 21981 RVA: 0x002807D4 File Offset: 0x0027E9D4
 	private float PowerFromGenerator(float joules_needed, Generator g, IEnergyConsumer c)
 	{
 		float num = Mathf.Min(g.JoulesAvailable, joules_needed);
 		joules_needed -= num;
-		g.ApplyDeltaJoules(0f - num);
-		ReportManager.Instance.ReportValue(ReportManager.ReportType.EnergyCreated, 0f - num, c.Name);
+		g.ApplyDeltaJoules(-num, false);
+		ReportManager.Instance.ReportValue(ReportManager.ReportType.EnergyCreated, -num, c.Name, null);
 		return joules_needed;
 	}
 
+	// Token: 0x060055DE RID: 21982 RVA: 0x00280814 File Offset: 0x0027EA14
 	private void ChargeBatteries(List<Battery> sink_batteries, List<Generator> source_generators, ref float joules_used)
 	{
 		if (sink_batteries.Count == 0)
 		{
 			return;
 		}
-		foreach (Generator source_generator in source_generators)
+		foreach (Generator generator in source_generators)
 		{
-			for (bool flag = true; flag && source_generator.JoulesAvailable >= 1f; flag = ChargeBatteriesFromGenerator(sink_batteries, source_generator, ref joules_used))
+			for (bool flag = true; flag && generator.JoulesAvailable >= 1f; flag = this.ChargeBatteriesFromGenerator(sink_batteries, generator, ref joules_used))
 			{
 			}
 		}
 	}
 
+	// Token: 0x060055DF RID: 21983 RVA: 0x00280884 File Offset: 0x0027EA84
 	private bool ChargeBatteriesFromGenerator(List<Battery> sink_batteries, Generator source_generator, ref float joules_used)
 	{
 		float num = source_generator.JoulesAvailable;
@@ -532,13 +510,14 @@ public class CircuitManager
 		}
 		if (num2 > 0f)
 		{
-			source_generator.ApplyDeltaJoules(0f - num2);
+			source_generator.ApplyDeltaJoules(-num2, false);
 			joules_used += num2;
 			return true;
 		}
 		return false;
 	}
 
+	// Token: 0x060055E0 RID: 21984 RVA: 0x00280934 File Offset: 0x0027EB34
 	private void UpdateBatteryConnectionStatus(List<Battery> batteries, bool is_connected_to_something_useful, int circuit_id)
 	{
 		foreach (Battery battery in batteries)
@@ -547,16 +526,17 @@ public class CircuitManager
 			{
 				if (battery.powerTransformer == null)
 				{
-					battery.SetConnectionStatus(is_connected_to_something_useful ? ConnectionStatus.Powered : ConnectionStatus.NotConnected);
+					battery.SetConnectionStatus(is_connected_to_something_useful ? CircuitManager.ConnectionStatus.Powered : CircuitManager.ConnectionStatus.NotConnected);
 				}
-				else if (GetCircuitID(battery) == circuit_id)
+				else if ((int)this.GetCircuitID(battery) == circuit_id)
 				{
-					battery.SetConnectionStatus((!is_connected_to_something_useful) ? ConnectionStatus.Unpowered : ConnectionStatus.Powered);
+					battery.SetConnectionStatus(is_connected_to_something_useful ? CircuitManager.ConnectionStatus.Powered : CircuitManager.ConnectionStatus.Unpowered);
 				}
 			}
 		}
 	}
 
+	// Token: 0x060055E1 RID: 21985 RVA: 0x002809B8 File Offset: 0x0027EBB8
 	private void ChargeTransformer<T>(Battery sink_transformer, List<T> source_energy_producers, ref float joules_used) where T : IEnergyProducer
 	{
 		if (source_energy_producers.Count <= 0)
@@ -572,11 +552,11 @@ public class CircuitManager
 		float num3 = 0f;
 		for (int i = 0; i < source_energy_producers.Count; i++)
 		{
-			T val = source_energy_producers[i];
-			if (val.JoulesAvailable > 0f)
+			T t = source_energy_producers[i];
+			if (t.JoulesAvailable > 0f)
 			{
-				float num4 = Mathf.Min(val.JoulesAvailable, num2 / (float)(source_energy_producers.Count - i));
-				val.ConsumeEnergy(num4);
+				float num4 = Mathf.Min(t.JoulesAvailable, num2 / (float)(source_energy_producers.Count - i));
+				t.ConsumeEnergy(num4);
 				num2 -= num4;
 				num3 += num4;
 			}
@@ -585,35 +565,43 @@ public class CircuitManager
 		joules_used += num3;
 	}
 
+	// Token: 0x060055E2 RID: 21986 RVA: 0x00280A6C File Offset: 0x0027EC6C
 	private void ChargeTransformers<T>(List<Battery> sink_transformers, List<T> source_energy_producers, ref float joules_used) where T : IEnergyProducer
 	{
 		foreach (Battery sink_transformer in sink_transformers)
 		{
-			ChargeTransformer(sink_transformer, source_energy_producers, ref joules_used);
+			this.ChargeTransformer<T>(sink_transformer, source_energy_producers, ref joules_used);
 		}
 	}
 
+	// Token: 0x060055E3 RID: 21987 RVA: 0x00280ABC File Offset: 0x0027ECBC
 	private void CheckCircuitOverloaded(float dt, int id, float watts_used)
 	{
 		UtilityNetwork networkByID = Game.Instance.electricalConduitSystem.GetNetworkByID(id);
 		if (networkByID != null)
 		{
-			((ElectricalUtilityNetwork)networkByID)?.UpdateOverloadTime(dt, watts_used, circuitInfo[id].bridgeGroups);
+			ElectricalUtilityNetwork electricalUtilityNetwork = (ElectricalUtilityNetwork)networkByID;
+			if (electricalUtilityNetwork != null)
+			{
+				electricalUtilityNetwork.UpdateOverloadTime(dt, watts_used, this.circuitInfo[id].bridgeGroups);
+			}
 		}
 	}
 
+	// Token: 0x060055E4 RID: 21988 RVA: 0x000D805F File Offset: 0x000D625F
 	public float GetWattsUsedByCircuit(ushort circuitID)
 	{
-		if (circuitID == ushort.MaxValue)
+		if (circuitID == 65535)
 		{
 			return -1f;
 		}
-		return circuitInfo[circuitID].wattsUsed;
+		return this.circuitInfo[(int)circuitID].wattsUsed;
 	}
 
+	// Token: 0x060055E5 RID: 21989 RVA: 0x00280B00 File Offset: 0x0027ED00
 	public float GetWattsNeededWhenActive(ushort originCircuitId)
 	{
-		if (originCircuitId == ushort.MaxValue)
+		if (originCircuitId == 65535)
 		{
 			return -1f;
 		}
@@ -629,72 +617,77 @@ public class CircuitManager
 			{
 				break;
 			}
-			foreach (ushort item in hashSet2)
+			foreach (ushort num2 in hashSet2)
 			{
-				if (item < 0 || item >= circuitInfo.Count)
+				if (num2 >= 0 && (int)num2 < this.circuitInfo.Count)
 				{
-					continue;
-				}
-				foreach (Battery inputTransformer in circuitInfo[item].inputTransformers)
-				{
-					ushort circuitID = inputTransformer.powerTransformer.CircuitID;
-					if (inputTransformer.powerTransformer.CircuitID != ushort.MaxValue)
+					foreach (Battery battery in this.circuitInfo[(int)num2].inputTransformers)
 					{
-						hashSet3.Add(circuitID);
+						ushort circuitID = battery.powerTransformer.CircuitID;
+						if (battery.powerTransformer.CircuitID != 65535)
+						{
+							hashSet3.Add(circuitID);
+						}
 					}
+					hashSet.Add(num2);
 				}
-				hashSet.Add(item);
 			}
 			hashSet2.Clear();
-			foreach (ushort item2 in hashSet3)
+			foreach (ushort item in hashSet3)
 			{
-				if (!hashSet.Contains(item2))
+				if (!hashSet.Contains(item))
 				{
-					hashSet2.Add(item2);
+					hashSet2.Add(item);
 				}
 			}
 			hashSet3.Clear();
 		}
+		HashSet<ushort> hashSet4 = hashSet;
 		Dictionary<ushort, float> dictionary = new Dictionary<ushort, float>();
-		foreach (ushort item3 in hashSet)
+		foreach (ushort num3 in hashSet4)
 		{
-			if (item3 < 0 || item3 >= circuitInfo.Count)
+			if (num3 >= 0 && (int)num3 < this.circuitInfo.Count)
 			{
-				continue;
+				float num4 = 0f;
+				foreach (IEnergyConsumer energyConsumer in this.circuitInfo[(int)num3].consumers)
+				{
+					num4 += energyConsumer.WattsNeededWhenActive;
+				}
+				dictionary.Add(num3, num4);
 			}
-			float num2 = 0f;
-			foreach (IEnergyConsumer consumer in circuitInfo[item3].consumers)
-			{
-				num2 += consumer.WattsNeededWhenActive;
-			}
-			dictionary.Add(item3, num2);
 		}
 		Dictionary<ushort, float> dictionary2 = new Dictionary<ushort, float>();
-		foreach (Battery inputTransformer2 in circuitInfo[originCircuitId].inputTransformers)
+		foreach (Battery battery2 in this.circuitInfo[(int)originCircuitId].inputTransformers)
 		{
-			dictionary.TryGetValue(inputTransformer2.powerTransformer.CircuitID, out var value);
-			float b = Mathf.Min(inputTransformer2.powerTransformer.WattageRating, value);
-			dictionary2.TryGetValue(inputTransformer2.powerTransformer.CircuitID, out var value2);
-			dictionary2[inputTransformer2.powerTransformer.CircuitID] = Mathf.Max(value2, b);
+			float b;
+			dictionary.TryGetValue(battery2.powerTransformer.CircuitID, out b);
+			float b2 = Mathf.Min(battery2.powerTransformer.WattageRating, b);
+			float a;
+			dictionary2.TryGetValue(battery2.powerTransformer.CircuitID, out a);
+			dictionary2[battery2.powerTransformer.CircuitID] = Mathf.Max(a, b2);
 		}
-		dictionary.TryGetValue(originCircuitId, out var value3);
-		foreach (KeyValuePair<ushort, float> item4 in dictionary2)
+		float num5;
+		dictionary.TryGetValue(originCircuitId, out num5);
+		foreach (KeyValuePair<ushort, float> keyValuePair in dictionary2)
 		{
-			Util.Deconstruct(item4, out var _, out var value4);
-			float num3 = value4;
-			value3 += num3;
+			ushort num6;
+			float num7;
+			keyValuePair.Deconstruct(out num6, out num7);
+			float num8 = num7;
+			num5 += num8;
 		}
-		return value3;
+		return num5;
 	}
 
+	// Token: 0x060055E6 RID: 21990 RVA: 0x00280E40 File Offset: 0x0027F040
 	public float GetWattsGeneratedByCircuit(ushort circuitID)
 	{
-		if (circuitID == ushort.MaxValue)
+		if (circuitID == 65535)
 		{
 			return -1f;
 		}
 		float num = 0f;
-		foreach (Generator generator in circuitInfo[circuitID].generators)
+		foreach (Generator generator in this.circuitInfo[(int)circuitID].generators)
 		{
 			if (!(generator == null) && generator.IsProducingPower())
 			{
@@ -704,113 +697,186 @@ public class CircuitManager
 		return num;
 	}
 
+	// Token: 0x060055E7 RID: 21991 RVA: 0x00280EC8 File Offset: 0x0027F0C8
 	public float GetPotentialWattsGeneratedByCircuit(ushort circuitID)
 	{
-		if (circuitID == ushort.MaxValue)
+		if (circuitID == 65535)
 		{
 			return -1f;
 		}
 		float num = 0f;
-		foreach (Generator generator in circuitInfo[circuitID].generators)
+		foreach (Generator generator in this.circuitInfo[(int)circuitID].generators)
 		{
 			num += generator.WattageRating;
 		}
 		return num;
 	}
 
+	// Token: 0x060055E8 RID: 21992 RVA: 0x00280F40 File Offset: 0x0027F140
 	public float GetJoulesAvailableOnCircuit(ushort circuitID)
 	{
-		int num_powered;
-		return GetBatteryJoulesAvailable(GetBatteriesOnCircuit(circuitID), out num_powered) * (float)num_powered;
+		int num;
+		return this.GetBatteryJoulesAvailable(this.GetBatteriesOnCircuit(circuitID), out num) * (float)num;
 	}
 
+	// Token: 0x060055E9 RID: 21993 RVA: 0x000D8080 File Offset: 0x000D6280
 	public ReadOnlyCollection<Generator> GetGeneratorsOnCircuit(ushort circuitID)
 	{
-		if (circuitID == ushort.MaxValue)
+		if (circuitID == 65535)
 		{
 			return null;
 		}
-		return circuitInfo[circuitID].generators.AsReadOnly();
+		return this.circuitInfo[(int)circuitID].generators.AsReadOnly();
 	}
 
+	// Token: 0x060055EA RID: 21994 RVA: 0x000D80A2 File Offset: 0x000D62A2
 	public ReadOnlyCollection<IEnergyConsumer> GetConsumersOnCircuit(ushort circuitID)
 	{
-		if (circuitID == ushort.MaxValue)
+		if (circuitID == 65535)
 		{
 			return null;
 		}
-		return circuitInfo[circuitID].consumers.AsReadOnly();
+		return this.circuitInfo[(int)circuitID].consumers.AsReadOnly();
 	}
 
+	// Token: 0x060055EB RID: 21995 RVA: 0x000D80C4 File Offset: 0x000D62C4
 	public ReadOnlyCollection<Battery> GetTransformersOnCircuit(ushort circuitID)
 	{
-		if (circuitID == ushort.MaxValue)
+		if (circuitID == 65535)
 		{
 			return null;
 		}
-		return circuitInfo[circuitID].inputTransformers.AsReadOnly();
+		return this.circuitInfo[(int)circuitID].inputTransformers.AsReadOnly();
 	}
 
+	// Token: 0x060055EC RID: 21996 RVA: 0x000D80E6 File Offset: 0x000D62E6
 	public List<Battery> GetBatteriesOnCircuit(ushort circuitID)
 	{
-		if (circuitID == ushort.MaxValue)
+		if (circuitID == 65535)
 		{
 			return null;
 		}
-		return circuitInfo[circuitID].batteries;
+		return this.circuitInfo[(int)circuitID].batteries;
 	}
 
+	// Token: 0x060055ED RID: 21997 RVA: 0x000D8103 File Offset: 0x000D6303
 	public float GetMinBatteryPercentFullOnCircuit(ushort circuitID)
 	{
-		if (circuitID == ushort.MaxValue)
+		if (circuitID == 65535)
 		{
 			return 0f;
 		}
-		return circuitInfo[circuitID].minBatteryPercentFull;
+		return this.circuitInfo[(int)circuitID].minBatteryPercentFull;
 	}
 
+	// Token: 0x060055EE RID: 21998 RVA: 0x000D8124 File Offset: 0x000D6324
 	public bool HasBatteries(ushort circuitID)
 	{
-		if (circuitID == ushort.MaxValue)
-		{
-			return false;
-		}
-		return circuitInfo[circuitID].batteries.Count + circuitInfo[circuitID].inputTransformers.Count > 0;
+		return circuitID != ushort.MaxValue && this.circuitInfo[(int)circuitID].batteries.Count + this.circuitInfo[(int)circuitID].inputTransformers.Count > 0;
 	}
 
+	// Token: 0x060055EF RID: 21999 RVA: 0x000D8160 File Offset: 0x000D6360
 	public bool HasGenerators(ushort circuitID)
 	{
-		if (circuitID == ushort.MaxValue)
-		{
-			return false;
-		}
-		return circuitInfo[circuitID].generators.Count + circuitInfo[circuitID].outputTransformers.Count > 0;
+		return circuitID != ushort.MaxValue && this.circuitInfo[(int)circuitID].generators.Count + this.circuitInfo[(int)circuitID].outputTransformers.Count > 0;
 	}
 
+	// Token: 0x060055F0 RID: 22000 RVA: 0x000D819C File Offset: 0x000D639C
 	public bool HasGenerators()
 	{
-		return generators.Count > 0;
+		return this.generators.Count > 0;
 	}
 
+	// Token: 0x060055F1 RID: 22001 RVA: 0x000D81AC File Offset: 0x000D63AC
 	public bool HasConsumers(ushort circuitID)
 	{
-		if (circuitID == ushort.MaxValue)
-		{
-			return false;
-		}
-		return circuitInfo[circuitID].consumers.Count > 0;
+		return circuitID != ushort.MaxValue && this.circuitInfo[(int)circuitID].consumers.Count > 0;
 	}
 
+	// Token: 0x060055F2 RID: 22002 RVA: 0x00280F60 File Offset: 0x0027F160
 	public float GetMaxSafeWattageForCircuit(ushort circuitID)
 	{
-		if (circuitID == ushort.MaxValue)
+		if (circuitID == 65535)
 		{
 			return 0f;
 		}
-		if (!(Game.Instance.electricalConduitSystem.GetNetworkByID(circuitID) is ElectricalUtilityNetwork electricalUtilityNetwork))
+		ElectricalUtilityNetwork electricalUtilityNetwork = Game.Instance.electricalConduitSystem.GetNetworkByID((int)circuitID) as ElectricalUtilityNetwork;
+		if (electricalUtilityNetwork == null)
 		{
 			return 0f;
 		}
 		return electricalUtilityNetwork.GetMaxSafeWattage();
+	}
+
+	// Token: 0x04003C3A RID: 15418
+	public const ushort INVALID_ID = 65535;
+
+	// Token: 0x04003C3B RID: 15419
+	private const int SimUpdateSortKey = 1000;
+
+	// Token: 0x04003C3C RID: 15420
+	private const float MIN_POWERED_THRESHOLD = 0.01f;
+
+	// Token: 0x04003C3D RID: 15421
+	private bool dirty = true;
+
+	// Token: 0x04003C3E RID: 15422
+	private HashSet<Generator> generators = new HashSet<Generator>();
+
+	// Token: 0x04003C3F RID: 15423
+	private HashSet<IEnergyConsumer> consumers = new HashSet<IEnergyConsumer>();
+
+	// Token: 0x04003C40 RID: 15424
+	private HashSet<WireUtilityNetworkLink> bridges = new HashSet<WireUtilityNetworkLink>();
+
+	// Token: 0x04003C41 RID: 15425
+	private float elapsedTime;
+
+	// Token: 0x04003C42 RID: 15426
+	private List<CircuitManager.CircuitInfo> circuitInfo = new List<CircuitManager.CircuitInfo>();
+
+	// Token: 0x04003C43 RID: 15427
+	private List<IEnergyConsumer> consumersShadow = new List<IEnergyConsumer>();
+
+	// Token: 0x04003C44 RID: 15428
+	private List<Generator> activeGenerators = new List<Generator>();
+
+	// Token: 0x02001071 RID: 4209
+	private struct CircuitInfo
+	{
+		// Token: 0x04003C45 RID: 15429
+		public List<Generator> generators;
+
+		// Token: 0x04003C46 RID: 15430
+		public List<IEnergyConsumer> consumers;
+
+		// Token: 0x04003C47 RID: 15431
+		public List<Battery> batteries;
+
+		// Token: 0x04003C48 RID: 15432
+		public List<Battery> inputTransformers;
+
+		// Token: 0x04003C49 RID: 15433
+		public List<Generator> outputTransformers;
+
+		// Token: 0x04003C4A RID: 15434
+		public List<WireUtilityNetworkLink>[] bridgeGroups;
+
+		// Token: 0x04003C4B RID: 15435
+		public float minBatteryPercentFull;
+
+		// Token: 0x04003C4C RID: 15436
+		public float wattsUsed;
+	}
+
+	// Token: 0x02001072 RID: 4210
+	public enum ConnectionStatus
+	{
+		// Token: 0x04003C4E RID: 15438
+		NotConnected,
+		// Token: 0x04003C4F RID: 15439
+		Unpowered,
+		// Token: 0x04003C50 RID: 15440
+		Powered
 	}
 }

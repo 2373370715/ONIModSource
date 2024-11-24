@@ -1,34 +1,48 @@
+﻿using System;
 using System.Collections.Generic;
 using STRINGS;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x02000583 RID: 1411
 public class SludgePressConfig : IBuildingConfig
 {
-	public const string ID = "SludgePress";
-
-	public override string[] GetDlcIds()
+	// Token: 0x060018FC RID: 6396 RVA: 0x000A5F1F File Offset: 0x000A411F
+	public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
+	// Token: 0x060018FD RID: 6397 RVA: 0x001A1554 File Offset: 0x0019F754
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef("SludgePress", 4, 3, "sludge_press_kanim", 100, 30f, TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER3, MATERIALS.ALL_MINERALS, 1600f, BuildLocationRule.OnFloor, noise: NOISE_POLLUTION.NOISY.TIER5, decor: TUNING.BUILDINGS.DECOR.PENALTY.TIER1);
-		obj.RequiresPowerInput = true;
-		obj.EnergyConsumptionWhenActive = 120f;
-		obj.SelfHeatKilowattsWhenActive = 4f;
-		obj.OutputConduitType = ConduitType.Liquid;
-		obj.UtilityOutputOffset = new CellOffset(1, 0);
-		obj.ViewMode = OverlayModes.Power.ID;
-		obj.AudioCategory = "HollowMetal";
-		obj.AudioSize = "large";
-		return obj;
+		string id = "SludgePress";
+		int width = 4;
+		int height = 3;
+		string anim = "sludge_press_kanim";
+		int hitpoints = 100;
+		float construction_time = 30f;
+		float[] tier = TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER3;
+		string[] all_MINERALS = MATERIALS.ALL_MINERALS;
+		float melting_point = 1600f;
+		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
+		EffectorValues tier2 = NOISE_POLLUTION.NOISY.TIER5;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, all_MINERALS, melting_point, build_location_rule, TUNING.BUILDINGS.DECOR.PENALTY.TIER1, tier2, 0.2f);
+		buildingDef.RequiresPowerInput = true;
+		buildingDef.EnergyConsumptionWhenActive = 120f;
+		buildingDef.SelfHeatKilowattsWhenActive = 4f;
+		buildingDef.OutputConduitType = ConduitType.Liquid;
+		buildingDef.UtilityOutputOffset = new CellOffset(1, 0);
+		buildingDef.ViewMode = OverlayModes.Power.ID;
+		buildingDef.AudioCategory = "HollowMetal";
+		buildingDef.AudioSize = "large";
+		return buildingDef;
 	}
 
+	// Token: 0x060018FE RID: 6398 RVA: 0x001A15EC File Offset: 0x0019F7EC
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		go.AddOrGet<DropAllWorkable>();
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
 		ComplexFabricator complexFabricator = go.AddOrGet<ComplexFabricator>();
@@ -38,47 +52,56 @@ public class SludgePressConfig : IBuildingConfig
 		go.AddOrGet<CopyBuildingSettings>();
 		ComplexFabricatorWorkable complexFabricatorWorkable = go.AddOrGet<ComplexFabricatorWorkable>();
 		BuildingTemplates.CreateComplexFabricatorStorage(go, complexFabricator);
-		complexFabricatorWorkable.overrideAnims = new KAnimFile[1] { Assets.GetAnim("anim_interacts_sludge_press_kanim") };
-		complexFabricatorWorkable.workingPstComplete = new HashedString[1] { "working_pst_complete" };
+		complexFabricatorWorkable.overrideAnims = new KAnimFile[]
+		{
+			Assets.GetAnim("anim_interacts_sludge_press_kanim")
+		};
+		complexFabricatorWorkable.workingPstComplete = new HashedString[]
+		{
+			"working_pst_complete"
+		};
 		ConduitDispenser conduitDispenser = go.AddOrGet<ConduitDispenser>();
 		conduitDispenser.conduitType = ConduitType.Liquid;
 		conduitDispenser.alwaysDispense = true;
 		conduitDispenser.elementFilter = null;
 		conduitDispenser.storage = go.GetComponent<ComplexFabricator>().outStorage;
-		AddRecipes(go);
+		this.AddRecipes(go);
 		Prioritizable.AddRef(go);
 	}
 
+	// Token: 0x060018FF RID: 6399 RVA: 0x001A16C4 File Offset: 0x0019F8C4
 	private void AddRecipes(GameObject go)
 	{
 		float num = 150f;
-		foreach (Element item in ElementLoader.elements.FindAll((Element e) => e.elementComposition != null))
+		foreach (Element element in ElementLoader.elements.FindAll((Element e) => e.elementComposition != null))
 		{
-			ComplexRecipe.RecipeElement[] array = new ComplexRecipe.RecipeElement[1]
+			ComplexRecipe.RecipeElement[] array = new ComplexRecipe.RecipeElement[]
 			{
-				new ComplexRecipe.RecipeElement(item.tag, num)
+				new ComplexRecipe.RecipeElement(element.tag, num)
 			};
-			ComplexRecipe.RecipeElement[] array2 = new ComplexRecipe.RecipeElement[item.elementComposition.Length];
-			for (int i = 0; i < item.elementComposition.Length; i++)
+			ComplexRecipe.RecipeElement[] array2 = new ComplexRecipe.RecipeElement[element.elementComposition.Length];
+			for (int i = 0; i < element.elementComposition.Length; i++)
 			{
-				ElementLoader.ElementComposition elementComposition = item.elementComposition[i];
-				Element element = ElementLoader.FindElementByName(elementComposition.elementID);
-				bool isLiquid = element.IsLiquid;
-				array2[i] = new ComplexRecipe.RecipeElement(element.tag, num * elementComposition.percentage, ComplexRecipe.RecipeElement.TemperatureOperation.AverageTemperature, isLiquid);
+				ElementLoader.ElementComposition elementComposition = element.elementComposition[i];
+				Element element2 = ElementLoader.FindElementByName(elementComposition.elementID);
+				bool isLiquid = element2.IsLiquid;
+				array2[i] = new ComplexRecipe.RecipeElement(element2.tag, num * elementComposition.percentage, ComplexRecipe.RecipeElement.TemperatureOperation.AverageTemperature, isLiquid);
 			}
-			string obsolete_id = ComplexRecipeManager.MakeObsoleteRecipeID("SludgePress", item.tag);
+			string obsolete_id = ComplexRecipeManager.MakeObsoleteRecipeID("SludgePress", element.tag);
 			string text = ComplexRecipeManager.MakeRecipeID("SludgePress", array, array2);
-			new ComplexRecipe(text, array, array2)
+			ComplexRecipe complexRecipe = new ComplexRecipe(text, array, array2);
+			complexRecipe.time = 20f;
+			complexRecipe.description = string.Format(STRINGS.BUILDINGS.PREFABS.SLUDGEPRESS.RECIPE_DESCRIPTION, element.name);
+			complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.Composite;
+			complexRecipe.fabricators = new List<Tag>
 			{
-				time = 20f,
-				description = string.Format(STRINGS.BUILDINGS.PREFABS.SLUDGEPRESS.RECIPE_DESCRIPTION, item.name),
-				nameDisplay = ComplexRecipe.RecipeNameDisplay.Composite,
-				fabricators = new List<Tag> { TagManager.Create("SludgePress") }
+				TagManager.Create("SludgePress")
 			};
 			ComplexRecipeManager.Get().AddObsoleteIDMapping(obsolete_id, text);
 		}
 	}
 
+	// Token: 0x06001900 RID: 6400 RVA: 0x000B077F File Offset: 0x000AE97F
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		SymbolOverrideControllerUtil.AddToPrefab(go);
@@ -92,4 +115,7 @@ public class SludgePressConfig : IBuildingConfig
 			component.SkillExperienceMultiplier = SKILLS.PART_DAY_EXPERIENCE;
 		};
 	}
+
+	// Token: 0x04001006 RID: 4102
+	public const string ID = "SludgePress";
 }

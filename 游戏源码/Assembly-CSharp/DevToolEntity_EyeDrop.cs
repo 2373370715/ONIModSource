@@ -1,34 +1,26 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using ImGuiNET;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+// Token: 0x02000BAF RID: 2991
 public class DevToolEntity_EyeDrop : DevTool
 {
-	private Vector2 sampleAtScreenPosition;
-
-	private Action<DevToolEntityTarget> onSelectionMadeFn;
-
-	private Func<DevToolEntityTarget, Option<string>> getErrorForCandidateTargetFn;
-
-	private bool requestingNavBack;
-
-	private static Vector2 posSampler_rectBasePos = new Vector2(200f, 200f);
-
-	private static Option<Vector2> posSampler_dragStartPos = Option.None;
-
+	// Token: 0x06003944 RID: 14660 RVA: 0x000C514A File Offset: 0x000C334A
 	public DevToolEntity_EyeDrop(Action<DevToolEntityTarget> onSelectionMadeFn, Func<DevToolEntityTarget, Option<string>> getErrorForCandidateTargetFn = null)
 	{
 		this.onSelectionMadeFn = onSelectionMadeFn;
 		this.getErrorForCandidateTargetFn = getErrorForCandidateTargetFn;
 	}
 
+	// Token: 0x06003945 RID: 14661 RVA: 0x0021E484 File Offset: 0x0021C684
 	protected override void RenderTo(DevPanel panel)
 	{
-		if (requestingNavBack)
+		if (this.requestingNavBack)
 		{
-			requestingNavBack = false;
+			this.requestingNavBack = false;
 			panel.NavGoBack();
 			return;
 		}
@@ -48,37 +40,39 @@ public class DevToolEntity_EyeDrop : DevTool
 			ImGuiEx.EndHelpMarker();
 		}
 		ImGui.Separator();
-		ImGuiInput_SampleScreenPosition(ref sampleAtScreenPosition);
+		DevToolEntity_EyeDrop.ImGuiInput_SampleScreenPosition(ref this.sampleAtScreenPosition);
 		using (ListPool<DevToolEntityTarget, DevToolEntity_EyeDrop>.PooledList pooledList = PoolsFor<DevToolEntity_EyeDrop>.AllocateList<DevToolEntityTarget>())
 		{
-			Option<string> error2 = CollectUIGameObjectHitsTo(pooledList, sampleAtScreenPosition);
-			Option<string> error3 = CollectWorldGameObjectHitsTo(pooledList, sampleAtScreenPosition);
-			var (option, error4) = GetSimCellAt(sampleAtScreenPosition);
-			if (option.IsSome())
+			Option<string> error = DevToolEntity_EyeDrop.CollectUIGameObjectHitsTo(pooledList, this.sampleAtScreenPosition);
+			Option<string> error2 = DevToolEntity_EyeDrop.CollectWorldGameObjectHitsTo(pooledList, this.sampleAtScreenPosition);
+			ValueTuple<Option<DevToolEntityTarget.ForSimCell>, Option<string>> simCellAt = DevToolEntity_EyeDrop.GetSimCellAt(this.sampleAtScreenPosition);
+			Option<DevToolEntityTarget.ForSimCell> item = simCellAt.Item1;
+			Option<string> item2 = simCellAt.Item2;
+			if (item.IsSome())
 			{
-				pooledList.Add(option.Unwrap());
+				pooledList.Add(item.Unwrap());
 			}
 			if (ImGui.TreeNode("Debug Info"))
 			{
-				DrawBullet("[UI GameObjects]", error2);
-				DrawBullet("[World GameObjects]", error3);
-				DrawBullet("[Sim Cell]", error4);
+				DevToolEntity_EyeDrop.<RenderTo>g__DrawBullet|5_0("[UI GameObjects]", error);
+				DevToolEntity_EyeDrop.<RenderTo>g__DrawBullet|5_0("[World GameObjects]", error2);
+				DevToolEntity_EyeDrop.<RenderTo>g__DrawBullet|5_0("[Sim Cell]", item2);
 				ImGui.TreePop();
 			}
 			ImGui.Separator();
-			foreach (DevToolEntityTarget item in pooledList)
+			foreach (DevToolEntityTarget devToolEntityTarget in pooledList)
 			{
-				Option<string> option2 = ((getErrorForCandidateTargetFn == null) ? ((Option<string>)Option.None) : getErrorForCandidateTargetFn(item));
-				Option<(Vector2, Vector2)> screenRect = item.GetScreenRect();
-				bool num = ImGuiEx.Button("Pick target \"" + item.GetDebugName() + "\"", option2.IsNone());
-				bool flag = ImGui.IsItemHovered();
-				if (flag)
+				Option<string> option = (this.getErrorForCandidateTargetFn == null) ? Option.None : this.getErrorForCandidateTargetFn(devToolEntityTarget);
+				Option<ValueTuple<Vector2, Vector2>> screenRect = devToolEntityTarget.GetScreenRect();
+				bool flag = ImGuiEx.Button("Pick target \"" + devToolEntityTarget.GetDebugName() + "\"", option.IsNone());
+				bool flag2 = ImGui.IsItemHovered();
+				if (flag2)
 				{
 					ImGui.BeginTooltip();
-					if (option2.IsSome())
+					if (option.IsSome())
 					{
 						ImGui.Text("Error:");
-						ImGui.Text(option2.Unwrap());
+						ImGui.Text(option.Unwrap());
 						if (screenRect.IsSome())
 						{
 							ImGui.Separator();
@@ -91,35 +85,20 @@ public class DevToolEntity_EyeDrop : DevTool
 					}
 					ImGui.EndTooltip();
 				}
-				if (num)
+				if (flag)
 				{
-					onSelectionMadeFn(item);
-					requestingNavBack = true;
+					this.onSelectionMadeFn(devToolEntityTarget);
+					this.requestingNavBack = true;
 				}
 				if (screenRect.IsSome())
 				{
-					DevToolEntity.DrawBoundingBox(screenRect.Unwrap(), item.GetDebugName(), flag);
+					DevToolEntity.DrawBoundingBox(screenRect.Unwrap(), devToolEntityTarget.GetDebugName(), flag2);
 				}
-			}
-		}
-		static void DrawBullet(string groupName, Option<string> error)
-		{
-			ImGui.Bullet();
-			ImGui.Text(groupName);
-			ImGui.SameLine();
-			if (error.IsSome())
-			{
-				ImGui.Text("[ERROR]");
-				ImGui.SameLine();
-				ImGui.Text(error.Unwrap());
-			}
-			else
-			{
-				ImGui.Text("No errors.");
 			}
 		}
 	}
 
+	// Token: 0x06003946 RID: 14662 RVA: 0x0021E6F8 File Offset: 0x0021C8F8
 	public static Option<string> CollectUIGameObjectHitsTo(IList<DevToolEntityTarget> targets, Vector3 screenPosition)
 	{
 		using (ListPool<RaycastResult, DevToolEntity_EyeDrop>.PooledList pooledList = PoolsFor<DevToolEntity_EyeDrop>.AllocateList<RaycastResult>())
@@ -133,17 +112,18 @@ public class DevToolEntity_EyeDrop : DevTool
 			{
 				position = screenPosition
 			}, pooledList);
-			foreach (RaycastResult item in pooledList)
+			foreach (RaycastResult raycastResult in pooledList)
 			{
-				if (!(item.gameObject.name == "ImGui Consume Input"))
+				if (!(raycastResult.gameObject.name == "ImGui Consume Input"))
 				{
-					targets.Add(new DevToolEntityTarget.ForUIGameObject(item.gameObject));
+					targets.Add(new DevToolEntityTarget.ForUIGameObject(raycastResult.gameObject));
 				}
 			}
 		}
 		return Option.None;
 	}
 
+	// Token: 0x06003947 RID: 14663 RVA: 0x0021E7CC File Offset: 0x0021C9CC
 	public static Option<string> CollectWorldGameObjectHitsTo(IList<DevToolEntityTarget> targets, Vector3 screenPosition)
 	{
 		Camera main = Camera.main;
@@ -151,63 +131,77 @@ public class DevToolEntity_EyeDrop : DevTool
 		{
 			return "No Main Camera found.";
 		}
-		var (option, result) = GetSimCellAt(screenPosition);
-		if (result.IsSome())
+		ValueTuple<Option<DevToolEntityTarget.ForSimCell>, Option<string>> simCellAt = DevToolEntity_EyeDrop.GetSimCellAt(screenPosition);
+		Option<DevToolEntityTarget.ForSimCell> item = simCellAt.Item1;
+		Option<string> item2 = simCellAt.Item2;
+		if (item2.IsSome())
 		{
-			return result;
+			return item2;
 		}
-		if (option.IsNone())
+		if (item.IsNone())
 		{
 			return "Couldn't find sim cell";
 		}
-		DevToolEntityTarget.ForSimCell forSimCell = option.Unwrap();
+		DevToolEntityTarget.ForSimCell forSimCell = item.Unwrap();
 		Vector2 pos = main.ScreenToWorldPoint(screenPosition);
-		using (ListPool<InterfaceTool.Intersection, DevToolEntity_EyeDrop>.PooledList intersections = PoolsFor<DevToolEntity_EyeDrop>.AllocateList<InterfaceTool.Intersection>())
+		using (ListPool<InterfaceTool.Intersection, DevToolEntity_EyeDrop>.PooledList pooledList = PoolsFor<DevToolEntity_EyeDrop>.AllocateList<InterfaceTool.Intersection>())
 		{
-			using ListPool<ScenePartitionerEntry, DevToolEntity_EyeDrop>.PooledList pooledList = PoolsFor<DevToolEntity_EyeDrop>.AllocateList<ScenePartitionerEntry>();
-			Grid.CellToXY(forSimCell.cellIndex, out var x, out var y);
-			Game.Instance.statusItemRenderer.GetIntersections(pos, intersections);
-			GameScenePartitioner.Instance.GatherEntries(x, y, 1, 1, GameScenePartitioner.Instance.collisionLayer, pooledList);
-			foreach (ScenePartitionerEntry item in pooledList)
+			using (ListPool<ScenePartitionerEntry, DevToolEntity_EyeDrop>.PooledList pooledList2 = PoolsFor<DevToolEntity_EyeDrop>.AllocateList<ScenePartitionerEntry>())
 			{
-				KCollider2D kCollider2D = item.obj as KCollider2D;
-				if (!kCollider2D.IsNullOrDestroyed() && kCollider2D.Intersects(pos) && !(kCollider2D.gameObject.name == "WorldSelectionCollider"))
+				int x_bottomLeft;
+				int y_bottomLeft;
+				Grid.CellToXY(forSimCell.cellIndex, out x_bottomLeft, out y_bottomLeft);
+				Game.Instance.statusItemRenderer.GetIntersections(pos, pooledList);
+				GameScenePartitioner.Instance.GatherEntries(x_bottomLeft, y_bottomLeft, 1, 1, GameScenePartitioner.Instance.collisionLayer, pooledList2);
+				foreach (ScenePartitionerEntry scenePartitionerEntry in pooledList2)
 				{
-					targets.Add(new DevToolEntityTarget.ForWorldGameObject(kCollider2D.gameObject));
+					KCollider2D kcollider2D = scenePartitionerEntry.obj as KCollider2D;
+					if (!kcollider2D.IsNullOrDestroyed() && kcollider2D.Intersects(pos) && !(kcollider2D.gameObject.name == "WorldSelectionCollider"))
+					{
+						targets.Add(new DevToolEntityTarget.ForWorldGameObject(kcollider2D.gameObject));
+					}
 				}
 			}
 		}
 		return Option.None;
 	}
 
-	public static (Option<DevToolEntityTarget.ForSimCell> target, Option<string> error) GetSimCellAt(Vector3 screenPosition)
+	// Token: 0x06003948 RID: 14664 RVA: 0x0021E948 File Offset: 0x0021CB48
+	[return: TupleElementNames(new string[]
+	{
+		"target",
+		"error"
+	})]
+	public static ValueTuple<Option<DevToolEntityTarget.ForSimCell>, Option<string>> GetSimCellAt(Vector3 screenPosition)
 	{
 		if (Game.Instance == null)
 		{
-			return (target: Option.None, error: "No Game instance found.");
+			return new ValueTuple<Option<DevToolEntityTarget.ForSimCell>, Option<string>>(Option.None, "No Game instance found.");
 		}
 		Camera main = Camera.main;
 		if (main.IsNullOrDestroyed())
 		{
-			return (target: Option.None, error: "No Main Camera found.");
+			return new ValueTuple<Option<DevToolEntityTarget.ForSimCell>, Option<string>>(Option.None, "No Main Camera found.");
 		}
 		Ray ray = main.ScreenPointToRay(screenPosition);
-		if (!new Plane(new Vector3(0f, 0f, -1f), new Vector3(0f, 0f, 1f)).Raycast(ray, out var enter))
+		float distance;
+		if (!new Plane(new Vector3(0f, 0f, -1f), new Vector3(0f, 0f, 1f)).Raycast(ray, out distance))
 		{
-			return (target: Option.None, error: "Ray from camera did not hit game plane.");
+			return new ValueTuple<Option<DevToolEntityTarget.ForSimCell>, Option<string>>(Option.None, "Ray from camera did not hit game plane.");
 		}
-		int num = Grid.PosToCell(ray.GetPoint(enter));
+		int num = Grid.PosToCell(ray.GetPoint(distance));
 		if (num < 0 || Grid.CellCount <= num)
 		{
-			return (target: Option.None, error: $"Found cell index {num} is out of range {num}..{Grid.CellCount}");
+			return new ValueTuple<Option<DevToolEntityTarget.ForSimCell>, Option<string>>(Option.None, string.Format("Found cell index {0} is out of range {1}..{2}", num, num, Grid.CellCount));
 		}
 		if (!Grid.IsValidCell(num))
 		{
-			return (target: Option.None, error: $"Cell index {num} is invalid");
+			return new ValueTuple<Option<DevToolEntityTarget.ForSimCell>, Option<string>>(Option.None, string.Format("Cell index {0} is invalid", num));
 		}
-		return (target: new DevToolEntityTarget.ForSimCell(num), error: Option.None);
+		return new ValueTuple<Option<DevToolEntityTarget.ForSimCell>, Option<string>>(new DevToolEntityTarget.ForSimCell(num), Option.None);
 	}
 
+	// Token: 0x06003949 RID: 14665 RVA: 0x0021EA98 File Offset: 0x0021CC98
 	public static void ImGuiInput_SampleScreenPosition(ref Vector2 unityScreenPosition)
 	{
 		float num = 4f;
@@ -216,67 +210,95 @@ public class DevToolEntity_EyeDrop : DevTool
 		float num4 = 6f;
 		float num5 = 2f;
 		float num6 = num + num2 + num3;
-		float num7 = num + num2 + num3 + num5 + num4;
+		float d = num + num2 + num3 + num5 + num4;
 		float rounding = num + 4f;
-		Vector2 vector = Vector2.one * num * 2f;
-		Vector2 vector2 = Vector2.one * num6 * 2f;
-		Vector2 vector3 = Vector2.one * (num6 + num4) * 2f;
-		Vector2 vector4 = Vector2.one * num7 * 2f;
-		ImGuiWindowFlags flags = ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.NoBackground | ImGuiWindowFlags.NoSavedSettings | ImGuiWindowFlags.HorizontalScrollbar;
+		Vector2 b = Vector2.one * num * 2f;
+		Vector2 vector = Vector2.one * num6 * 2f;
+		Vector2 b2 = Vector2.one * (num6 + num4) * 2f;
+		Vector2 vector2 = Vector2.one * d * 2f;
+		ImGuiWindowFlags flags = ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoBackground | ImGuiWindowFlags.NoSavedSettings | ImGuiWindowFlags.HorizontalScrollbar;
 		Vector2 mousePos = ImGui.GetMousePos();
-		Vector2 vector5 = posSampler_rectBasePos;
-		if (posSampler_dragStartPos.IsSome())
+		Vector2 a = DevToolEntity_EyeDrop.posSampler_rectBasePos;
+		if (DevToolEntity_EyeDrop.posSampler_dragStartPos.IsSome())
 		{
-			vector5 += mousePos - posSampler_dragStartPos.Unwrap();
+			a += mousePos - DevToolEntity_EyeDrop.posSampler_dragStartPos.Unwrap();
 		}
-		ImGui.SetNextWindowPos(vector5 - vector4 / 2f);
+		ImGui.SetNextWindowPos(a - vector2 / 2f);
 		ImGui.SetNextWindowSizeConstraints(Vector2.one, Vector2.one * -1f);
-		ImGui.SetNextWindowSize(vector4);
+		ImGui.SetNextWindowSize(vector2);
 		ImGui.PushStyleVar(ImGuiStyleVar.WindowMinSize, Vector2.zero);
 		ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, Vector2.zero);
-		int num8;
-		Color color;
 		if (ImGui.Begin("###ID_EyeDropper", flags))
 		{
 			bool flag = ImGui.IsWindowHovered();
-			if (ImGui.IsWindowHovered())
+			bool flag2 = ImGui.IsWindowHovered() && ImGui.IsMouseDown(ImGuiMouseButton.Left);
+			Color c;
+			if (flag2)
 			{
-				num8 = (ImGui.IsMouseDown(ImGuiMouseButton.Left) ? 1 : 0);
-				if (num8 != 0)
-				{
-					color = Util.ColorFromHex("C5153B");
-					goto IL_017c;
-				}
+				c = Util.ColorFromHex("C5153B");
+			}
+			else if (flag)
+			{
+				c = Util.ColorFromHex("F498AC");
 			}
 			else
 			{
-				num8 = 0;
+				c = Util.ColorFromHex("EC4F71");
 			}
-			color = ((!flag) ? Util.ColorFromHex("EC4F71") : Util.ColorFromHex("F498AC"));
-			goto IL_017c;
+			if (flag2 && DevToolEntity_EyeDrop.posSampler_dragStartPos.IsNone())
+			{
+				DevToolEntity_EyeDrop.posSampler_dragStartPos = mousePos;
+			}
+			if (ImGui.IsMouseReleased(ImGuiMouseButton.Left) && DevToolEntity_EyeDrop.posSampler_dragStartPos.IsSome())
+			{
+				DevToolEntity_EyeDrop.posSampler_rectBasePos += mousePos - DevToolEntity_EyeDrop.posSampler_dragStartPos.Unwrap();
+				DevToolEntity_EyeDrop.posSampler_dragStartPos = Option.None;
+			}
+			ImDrawListPtr windowDrawList = ImGui.GetWindowDrawList();
+			Vector2 vector3 = ImGui.GetCursorScreenPos() + Vector2.one * num5;
+			Vector2 b3 = Vector2.one * num4;
+			Vector2 vector4 = (vector - b) / 2f + b3;
+			unityScreenPosition = new Vector2(vector3.x + vector4.x + num, -(vector3.y + vector4.y + num) + (float)Screen.height);
+			windowDrawList.AddRectFilled(vector3, vector3 + b2, ImGui.GetColorU32(new Vector4(0f, 0f, 0f, 0.7f)), rounding);
+			windowDrawList.AddRectFilled(vector3 + vector4, vector3 + vector4 + b, ImGui.GetColorU32(c), rounding);
+			windowDrawList.AddRect(vector3 + b3, vector3 + b3 + vector, ImGui.GetColorU32(c), rounding, ImDrawFlags.None, num3);
+			ImGui.End();
 		}
-		goto IL_02eb;
-		IL_017c:
-		if (num8 != 0 && posSampler_dragStartPos.IsNone())
-		{
-			posSampler_dragStartPos = mousePos;
-		}
-		if (ImGui.IsMouseReleased(ImGuiMouseButton.Left) && posSampler_dragStartPos.IsSome())
-		{
-			posSampler_rectBasePos += mousePos - posSampler_dragStartPos.Unwrap();
-			posSampler_dragStartPos = Option.None;
-		}
-		ImDrawListPtr windowDrawList = ImGui.GetWindowDrawList();
-		Vector2 vector6 = ImGui.GetCursorScreenPos() + Vector2.one * num5;
-		Vector2 vector7 = Vector2.one * num4;
-		Vector2 vector8 = (vector2 - vector) / 2f + vector7;
-		unityScreenPosition = new Vector2(vector6.x + vector8.x + num, 0f - (vector6.y + vector8.y + num) + (float)Screen.height);
-		windowDrawList.AddRectFilled(vector6, vector6 + vector3, ImGui.GetColorU32(new Vector4(0f, 0f, 0f, 0.7f)), rounding);
-		windowDrawList.AddRectFilled(vector6 + vector8, vector6 + vector8 + vector, ImGui.GetColorU32(color), rounding);
-		windowDrawList.AddRect(vector6 + vector7, vector6 + vector7 + vector2, ImGui.GetColorU32(color), rounding, ImDrawFlags.None, num3);
-		ImGui.End();
-		goto IL_02eb;
-		IL_02eb:
 		ImGui.PopStyleVar(2);
 	}
+
+	// Token: 0x0600394B RID: 14667 RVA: 0x0021ED98 File Offset: 0x0021CF98
+	[CompilerGenerated]
+	internal static void <RenderTo>g__DrawBullet|5_0(string groupName, Option<string> error)
+	{
+		ImGui.Bullet();
+		ImGui.Text(groupName);
+		ImGui.SameLine();
+		if (error.IsSome())
+		{
+			ImGui.Text("[ERROR]");
+			ImGui.SameLine();
+			ImGui.Text(error.Unwrap());
+			return;
+		}
+		ImGui.Text("No errors.");
+	}
+
+	// Token: 0x040026E8 RID: 9960
+	private Vector2 sampleAtScreenPosition;
+
+	// Token: 0x040026E9 RID: 9961
+	private Action<DevToolEntityTarget> onSelectionMadeFn;
+
+	// Token: 0x040026EA RID: 9962
+	private Func<DevToolEntityTarget, Option<string>> getErrorForCandidateTargetFn;
+
+	// Token: 0x040026EB RID: 9963
+	private bool requestingNavBack;
+
+	// Token: 0x040026EC RID: 9964
+	private static Vector2 posSampler_rectBasePos = new Vector2(200f, 200f);
+
+	// Token: 0x040026ED RID: 9965
+	private static Option<Vector2> posSampler_dragStartPos = Option.None;
 }

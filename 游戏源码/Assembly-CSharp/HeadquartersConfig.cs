@@ -1,34 +1,47 @@
+﻿using System;
 using STRINGS;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x02000384 RID: 900
 public class HeadquartersConfig : IBuildingConfig
 {
-	public const string ID = "Headquarters";
-
+	// Token: 0x06000EBF RID: 3775 RVA: 0x0017A4CC File Offset: 0x001786CC
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef("Headquarters", 4, 4, "hqbase_kanim", 250, 30f, TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER7, MATERIALS.ALL_METALS, 1600f, BuildLocationRule.OnFloor, noise: NOISE_POLLUTION.NONE, decor: TUNING.BUILDINGS.DECOR.BONUS.TIER5);
-		obj.Floodable = false;
-		obj.Overheatable = false;
-		obj.AudioCategory = "Metal";
-		obj.BaseTimeUntilRepair = 400f;
-		obj.ShowInBuildMenu = false;
-		obj.DefaultAnimState = "idle";
+		string id = "Headquarters";
+		int width = 4;
+		int height = 4;
+		string anim = "hqbase_kanim";
+		int hitpoints = 250;
+		float construction_time = 30f;
+		float[] tier = TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER7;
+		string[] all_METALS = MATERIALS.ALL_METALS;
+		float melting_point = 1600f;
+		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
+		EffectorValues none = NOISE_POLLUTION.NONE;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, all_METALS, melting_point, build_location_rule, TUNING.BUILDINGS.DECOR.BONUS.TIER5, none, 0.2f);
+		buildingDef.Floodable = false;
+		buildingDef.Overheatable = false;
+		buildingDef.AudioCategory = "Metal";
+		buildingDef.BaseTimeUntilRepair = 400f;
+		buildingDef.ShowInBuildMenu = false;
+		buildingDef.DefaultAnimState = "idle";
 		SoundEventVolumeCache.instance.AddVolume("hqbase_kanim", "Portal_LP", NOISE_POLLUTION.NOISY.TIER3);
 		SoundEventVolumeCache.instance.AddVolume("hqbase_kanim", "Portal_open", NOISE_POLLUTION.NOISY.TIER4);
 		SoundEventVolumeCache.instance.AddVolume("hqbase_kanim", "Portal_close", NOISE_POLLUTION.NOISY.TIER4);
-		return obj;
+		return buildingDef;
 	}
 
+	// Token: 0x06000EC0 RID: 3776 RVA: 0x0017A598 File Offset: 0x00178798
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		LoreBearerUtil.AddLoreTo(go, LoreBearerUtil.UnlockSpecificEntry("pod_evacuation", UI.USERMENUACTIONS.READLORE.SEARCH_POD));
 		Telepad telepad = go.AddOrGet<Telepad>();
-		go.GetComponent<KPrefabID>().AddTag(GameTags.Telepad);
+		go.GetComponent<KPrefabID>().AddTag(GameTags.Telepad, false);
 		telepad.startingSkillPoints = 1f;
 		SocialGatheringPoint socialGatheringPoint = go.AddOrGet<SocialGatheringPoint>();
-		socialGatheringPoint.choreOffsets = new CellOffset[6]
+		socialGatheringPoint.choreOffsets = new CellOffset[]
 		{
 			new CellOffset(-1, 0),
 			new CellOffset(-2, 0),
@@ -44,18 +57,28 @@ public class HeadquartersConfig : IBuildingConfig
 		light2D.Range = 5f;
 		light2D.Offset = LIGHT2D.HEADQUARTERS_OFFSET;
 		light2D.overlayColour = LIGHT2D.HEADQUARTERS_OVERLAYCOLOR;
-		light2D.shape = LightShape.Circle;
+		light2D.shape = global::LightShape.Circle;
 		light2D.drawOverlay = true;
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.LightSource);
-		go.GetComponent<KPrefabID>().AddTag(GameTags.Experimental);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.LightSource, false);
+		go.GetComponent<KPrefabID>().AddTag(GameTags.Experimental, false);
 		RoleStation roleStation = go.AddOrGet<RoleStation>();
-		roleStation.overrideAnims = new KAnimFile[1] { Assets.GetAnim("anim_interacts_hqbase_skill_upgrade_kanim") };
-		roleStation.workAnims = new HashedString[1] { "upgrade" };
+		roleStation.overrideAnims = new KAnimFile[]
+		{
+			Assets.GetAnim("anim_interacts_hqbase_skill_upgrade_kanim")
+		};
+		roleStation.workAnims = new HashedString[]
+		{
+			"upgrade"
+		};
 		roleStation.workingPstComplete = null;
 		roleStation.workingPstFailed = null;
 	}
 
+	// Token: 0x06000EC1 RID: 3777 RVA: 0x000A5E40 File Offset: 0x000A4040
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
+
+	// Token: 0x04000A9E RID: 2718
+	public const string ID = "Headquarters";
 }

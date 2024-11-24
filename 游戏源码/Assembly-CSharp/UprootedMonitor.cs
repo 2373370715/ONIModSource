@@ -1,96 +1,60 @@
+﻿using System;
 using System.Collections.Generic;
 using KSerialization;
 using UnityEngine;
 
+// Token: 0x020011EC RID: 4588
 [AddComponentMenu("KMonoBehaviour/scripts/UprootedMonitor")]
 public class UprootedMonitor : KMonoBehaviour
 {
-	private int position;
-
-	[Serialize]
-	public bool canBeUprooted = true;
-
-	[Serialize]
-	private bool uprooted;
-
-	public CellOffset[] monitorCells = new CellOffset[1]
-	{
-		new CellOffset(0, -1)
-	};
-
-	private List<HandleVector<int>.Handle> partitionerEntries = new List<HandleVector<int>.Handle>();
-
-	private static readonly EventSystem.IntraObjectHandler<UprootedMonitor> OnUprootedDelegate = new EventSystem.IntraObjectHandler<UprootedMonitor>(delegate(UprootedMonitor component, object data)
-	{
-		if (!component.uprooted)
-		{
-			component.GetComponent<KPrefabID>().AddTag(GameTags.Uprooted);
-			component.uprooted = true;
-			component.Trigger(-216549700);
-		}
-	});
-
+	// Token: 0x17000594 RID: 1428
+	// (get) Token: 0x06005D64 RID: 23908 RVA: 0x000DD052 File Offset: 0x000DB252
 	public bool IsUprooted
 	{
 		get
 		{
-			if (!uprooted)
-			{
-				return GetComponent<KPrefabID>().HasTag(GameTags.Uprooted);
-			}
-			return true;
+			return this.uprooted || base.GetComponent<KPrefabID>().HasTag(GameTags.Uprooted);
 		}
 	}
 
+	// Token: 0x06005D65 RID: 23909 RVA: 0x0029DFC8 File Offset: 0x0029C1C8
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		Subscribe(-216549700, OnUprootedDelegate);
-		position = Grid.PosToCell(base.gameObject);
-		CellOffset[] array = monitorCells;
-		foreach (CellOffset offset in array)
+		base.Subscribe<UprootedMonitor>(-216549700, UprootedMonitor.OnUprootedDelegate);
+		this.position = Grid.PosToCell(base.gameObject);
+		foreach (CellOffset offset in this.monitorCells)
 		{
-			int cell = Grid.OffsetCell(position, offset);
-			if (Grid.IsValidCell(position) && Grid.IsValidCell(cell))
+			int cell = Grid.OffsetCell(this.position, offset);
+			if (Grid.IsValidCell(this.position) && Grid.IsValidCell(cell))
 			{
-				partitionerEntries.Add(GameScenePartitioner.Instance.Add("UprootedMonitor.OnSpawn", base.gameObject, cell, GameScenePartitioner.Instance.solidChangedLayer, OnGroundChanged));
+				this.partitionerEntries.Add(GameScenePartitioner.Instance.Add("UprootedMonitor.OnSpawn", base.gameObject, cell, GameScenePartitioner.Instance.solidChangedLayer, new Action<object>(this.OnGroundChanged)));
 			}
-			OnGroundChanged(null);
+			this.OnGroundChanged(null);
 		}
 	}
 
+	// Token: 0x06005D66 RID: 23910 RVA: 0x0029E07C File Offset: 0x0029C27C
 	protected override void OnCleanUp()
 	{
-		foreach (HandleVector<int>.Handle partitionerEntry in partitionerEntries)
+		foreach (HandleVector<int>.Handle handle in this.partitionerEntries)
 		{
-			HandleVector<int>.Handle handle = partitionerEntry;
 			GameScenePartitioner.Instance.Free(ref handle);
 		}
 		base.OnCleanUp();
 	}
 
+	// Token: 0x06005D67 RID: 23911 RVA: 0x000DD06E File Offset: 0x000DB26E
 	public bool CheckTileGrowable()
 	{
-		if (!canBeUprooted)
-		{
-			return true;
-		}
-		if (uprooted)
-		{
-			return false;
-		}
-		if (!IsSuitableFoundation(position))
-		{
-			return false;
-		}
-		return true;
+		return !this.canBeUprooted || (!this.uprooted && this.IsSuitableFoundation(this.position));
 	}
 
+	// Token: 0x06005D68 RID: 23912 RVA: 0x0029E0DC File Offset: 0x0029C2DC
 	public bool IsSuitableFoundation(int cell)
 	{
 		bool flag = true;
-		CellOffset[] array = monitorCells;
-		foreach (CellOffset offset in array)
+		foreach (CellOffset offset in this.monitorCells)
 		{
 			if (!Grid.IsCellOffsetValid(cell, offset))
 			{
@@ -106,16 +70,48 @@ public class UprootedMonitor : KMonoBehaviour
 		return flag;
 	}
 
+	// Token: 0x06005D69 RID: 23913 RVA: 0x000DD095 File Offset: 0x000DB295
 	public void OnGroundChanged(object callbackData)
 	{
-		if (!CheckTileGrowable())
+		if (!this.CheckTileGrowable())
 		{
-			uprooted = true;
+			this.uprooted = true;
 		}
-		if (uprooted)
+		if (this.uprooted)
 		{
-			GetComponent<KPrefabID>().AddTag(GameTags.Uprooted);
-			Trigger(-216549700);
+			base.GetComponent<KPrefabID>().AddTag(GameTags.Uprooted, false);
+			base.Trigger(-216549700, null);
 		}
 	}
+
+	// Token: 0x04004220 RID: 16928
+	private int position;
+
+	// Token: 0x04004221 RID: 16929
+	[Serialize]
+	public bool canBeUprooted = true;
+
+	// Token: 0x04004222 RID: 16930
+	[Serialize]
+	private bool uprooted;
+
+	// Token: 0x04004223 RID: 16931
+	public CellOffset[] monitorCells = new CellOffset[]
+	{
+		new CellOffset(0, -1)
+	};
+
+	// Token: 0x04004224 RID: 16932
+	private List<HandleVector<int>.Handle> partitionerEntries = new List<HandleVector<int>.Handle>();
+
+	// Token: 0x04004225 RID: 16933
+	private static readonly EventSystem.IntraObjectHandler<UprootedMonitor> OnUprootedDelegate = new EventSystem.IntraObjectHandler<UprootedMonitor>(delegate(UprootedMonitor component, object data)
+	{
+		if (!component.uprooted)
+		{
+			component.GetComponent<KPrefabID>().AddTag(GameTags.Uprooted, false);
+			component.uprooted = true;
+			component.Trigger(-216549700, null);
+		}
+	});
 }

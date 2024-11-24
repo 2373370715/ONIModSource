@@ -1,79 +1,91 @@
+﻿using System;
 using Klei.AI;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x020013FE RID: 5118
 [AddComponentMenu("KMonoBehaviour/Workable/HotTubWorkable")]
 public class HotTubWorkable : Workable, IWorkerPrioritizable
 {
-	public HotTub hotTub;
-
-	private bool faceLeft;
-
+	// Token: 0x0600692A RID: 26922 RVA: 0x000AC786 File Offset: 0x000AA986
 	private HotTubWorkable()
 	{
-		SetReportType(ReportManager.ReportType.PersonalTime);
+		base.SetReportType(ReportManager.ReportType.PersonalTime);
 	}
 
+	// Token: 0x0600692B RID: 26923 RVA: 0x000E4EDD File Offset: 0x000E30DD
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		synchronizeAnims = false;
-		showProgressBar = true;
-		resetProgressOnStop = true;
-		faceTargetWhenWorking = true;
-		SetWorkTime(90f);
+		this.synchronizeAnims = false;
+		this.showProgressBar = true;
+		this.resetProgressOnStop = true;
+		this.faceTargetWhenWorking = true;
+		base.SetWorkTime(90f);
 	}
 
-	public override AnimInfo GetAnim(Worker worker)
+	// Token: 0x0600692C RID: 26924 RVA: 0x002D965C File Offset: 0x002D785C
+	public override Workable.AnimInfo GetAnim(WorkerBase worker)
 	{
-		AnimInfo anim = base.GetAnim(worker);
+		Workable.AnimInfo anim = base.GetAnim(worker);
 		anim.smi = new HotTubWorkerStateMachine.StatesInstance(worker);
 		return anim;
 	}
 
-	protected override void OnStartWork(Worker worker)
+	// Token: 0x0600692D RID: 26925 RVA: 0x000E4F0C File Offset: 0x000E310C
+	protected override void OnStartWork(WorkerBase worker)
 	{
-		faceLeft = Random.value > 0.5f;
-		worker.GetComponent<Effects>().Add("HotTubRelaxing", should_save: false);
+		this.faceLeft = (UnityEngine.Random.value > 0.5f);
+		worker.GetComponent<Effects>().Add("HotTubRelaxing", false);
 	}
 
-	protected override void OnStopWork(Worker worker)
+	// Token: 0x0600692E RID: 26926 RVA: 0x000E4F36 File Offset: 0x000E3136
+	protected override void OnStopWork(WorkerBase worker)
 	{
 		worker.GetComponent<Effects>().Remove("HotTubRelaxing");
 	}
 
+	// Token: 0x0600692F RID: 26927 RVA: 0x000E4F48 File Offset: 0x000E3148
 	public override Vector3 GetFacingTarget()
 	{
-		return base.transform.GetPosition() + (faceLeft ? Vector3.left : Vector3.right);
+		return base.transform.GetPosition() + (this.faceLeft ? Vector3.left : Vector3.right);
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+	// Token: 0x06006930 RID: 26928 RVA: 0x002D9680 File Offset: 0x002D7880
+	protected override void OnCompleteWork(WorkerBase worker)
 	{
 		Effects component = worker.GetComponent<Effects>();
-		if (!string.IsNullOrEmpty(hotTub.trackingEffect))
+		if (!string.IsNullOrEmpty(this.hotTub.trackingEffect))
 		{
-			component.Add(hotTub.trackingEffect, should_save: true);
+			component.Add(this.hotTub.trackingEffect, true);
 		}
-		if (!string.IsNullOrEmpty(hotTub.specificEffect))
+		if (!string.IsNullOrEmpty(this.hotTub.specificEffect))
 		{
-			component.Add(hotTub.specificEffect, should_save: true);
+			component.Add(this.hotTub.specificEffect, true);
 		}
-		component.Add("WarmTouch", should_save: true).timeRemaining = 1800f;
+		component.Add("WarmTouch", true).timeRemaining = 1800f;
 	}
 
-	public bool GetWorkerPriority(Worker worker, out int priority)
+	// Token: 0x06006931 RID: 26929 RVA: 0x002D96F4 File Offset: 0x002D78F4
+	public bool GetWorkerPriority(WorkerBase worker, out int priority)
 	{
-		priority = hotTub.basePriority;
+		priority = this.hotTub.basePriority;
 		Effects component = worker.GetComponent<Effects>();
-		if (!string.IsNullOrEmpty(hotTub.trackingEffect) && component.HasEffect(hotTub.trackingEffect))
+		if (!string.IsNullOrEmpty(this.hotTub.trackingEffect) && component.HasEffect(this.hotTub.trackingEffect))
 		{
 			priority = 0;
 			return false;
 		}
-		if (!string.IsNullOrEmpty(hotTub.specificEffect) && component.HasEffect(hotTub.specificEffect))
+		if (!string.IsNullOrEmpty(this.hotTub.specificEffect) && component.HasEffect(this.hotTub.specificEffect))
 		{
 			priority = RELAXATION.PRIORITY.RECENTLY_USED;
 		}
 		return true;
 	}
+
+	// Token: 0x04004F61 RID: 20321
+	public HotTub hotTub;
+
+	// Token: 0x04004F62 RID: 20322
+	private bool faceLeft;
 }

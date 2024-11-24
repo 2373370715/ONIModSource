@@ -1,32 +1,45 @@
+﻿using System;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x020003CF RID: 975
 public class LiquidPumpConfig : IBuildingConfig
 {
-	public const string ID = "LiquidPump";
-
+	// Token: 0x06001030 RID: 4144 RVA: 0x0017FF48 File Offset: 0x0017E148
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef("LiquidPump", 2, 2, "pumpliquid_kanim", 100, 60f, BUILDINGS.CONSTRUCTION_MASS_KG.TIER4, MATERIALS.ALL_METALS, 1600f, BuildLocationRule.Anywhere, noise: NOISE_POLLUTION.NONE, decor: BUILDINGS.DECOR.PENALTY.TIER1);
-		obj.RequiresPowerInput = true;
-		obj.EnergyConsumptionWhenActive = 240f;
-		obj.ExhaustKilowattsWhenActive = 0f;
-		obj.SelfHeatKilowattsWhenActive = 2f;
-		obj.OutputConduitType = ConduitType.Liquid;
-		obj.Floodable = false;
-		obj.ViewMode = OverlayModes.LiquidConduits.ID;
-		obj.AudioCategory = "Metal";
-		obj.PowerInputOffset = new CellOffset(0, 1);
-		obj.UtilityOutputOffset = new CellOffset(1, 1);
-		obj.LogicInputPorts = LogicOperationalController.CreateSingleInputPortList(new CellOffset(0, 1));
+		string id = "LiquidPump";
+		int width = 2;
+		int height = 2;
+		string anim = "pumpliquid_kanim";
+		int hitpoints = 100;
+		float construction_time = 60f;
+		float[] tier = BUILDINGS.CONSTRUCTION_MASS_KG.TIER4;
+		string[] all_METALS = MATERIALS.ALL_METALS;
+		float melting_point = 1600f;
+		BuildLocationRule build_location_rule = BuildLocationRule.Anywhere;
+		EffectorValues none = NOISE_POLLUTION.NONE;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, all_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.PENALTY.TIER1, none, 0.2f);
+		buildingDef.RequiresPowerInput = true;
+		buildingDef.EnergyConsumptionWhenActive = 240f;
+		buildingDef.ExhaustKilowattsWhenActive = 0f;
+		buildingDef.SelfHeatKilowattsWhenActive = 2f;
+		buildingDef.OutputConduitType = ConduitType.Liquid;
+		buildingDef.Floodable = false;
+		buildingDef.ViewMode = OverlayModes.LiquidConduits.ID;
+		buildingDef.AudioCategory = "Metal";
+		buildingDef.PowerInputOffset = new CellOffset(0, 1);
+		buildingDef.UtilityOutputOffset = new CellOffset(1, 1);
+		buildingDef.LogicInputPorts = LogicOperationalController.CreateSingleInputPortList(new CellOffset(0, 1));
 		GeneratedBuildings.RegisterWithOverlay(OverlayScreen.LiquidVentIDs, "LiquidPump");
-		return obj;
+		return buildingDef;
 	}
 
+	// Token: 0x06001031 RID: 4145 RVA: 0x00180018 File Offset: 0x0017E218
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicOperationalController>();
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		go.AddOrGet<LoopingSounds>();
 		go.AddOrGet<EnergyConsumer>();
 		go.AddOrGet<Pump>();
@@ -43,6 +56,9 @@ public class LiquidPumpConfig : IBuildingConfig
 		conduitDispenser.alwaysDispense = true;
 		conduitDispenser.elementFilter = null;
 		go.AddOrGetDef<OperationalController.Def>();
-		go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayBehindConduits);
+		go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayBehindConduits, false);
 	}
+
+	// Token: 0x04000B68 RID: 2920
+	public const string ID = "LiquidPump";
 }

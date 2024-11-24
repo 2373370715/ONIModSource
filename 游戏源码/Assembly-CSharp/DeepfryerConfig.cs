@@ -1,30 +1,44 @@
+﻿using System;
 using System.Collections.Generic;
 using STRINGS;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x02000098 RID: 152
 public class DeepfryerConfig : IBuildingConfig
 {
-	public const string ID = "Deepfryer";
-
-	public override string[] GetDlcIds()
+	// Token: 0x0600026D RID: 621 RVA: 0x000A6337 File Offset: 0x000A4537
+	public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_DLC_2;
+		return DlcManager.DLC2;
 	}
 
+	// Token: 0x0600026E RID: 622 RVA: 0x001482BC File Offset: 0x001464BC
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef("Deepfryer", 2, 2, "deepfryer_kanim", 30, 30f, TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER4, MATERIALS.ALL_METALS, 1600f, BuildLocationRule.OnFloor, noise: NOISE_POLLUTION.NOISY.TIER3, decor: TUNING.BUILDINGS.DECOR.NONE);
-		obj.ViewMode = OverlayModes.Rooms.ID;
-		BuildingTemplates.CreateElectricalBuildingDef(obj);
-		obj.AudioCategory = "Metal";
-		obj.AudioSize = "large";
-		obj.EnergyConsumptionWhenActive = 480f;
-		obj.ExhaustKilowattsWhenActive = 2f;
-		obj.SelfHeatKilowattsWhenActive = 8f;
-		return obj;
+		string id = "Deepfryer";
+		int width = 2;
+		int height = 2;
+		string anim = "deepfryer_kanim";
+		int hitpoints = 30;
+		float construction_time = 30f;
+		float[] tier = TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER4;
+		string[] all_METALS = MATERIALS.ALL_METALS;
+		float melting_point = 1600f;
+		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
+		EffectorValues tier2 = NOISE_POLLUTION.NOISY.TIER3;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, all_METALS, melting_point, build_location_rule, TUNING.BUILDINGS.DECOR.NONE, tier2, 0.2f);
+		buildingDef.ViewMode = OverlayModes.Rooms.ID;
+		BuildingTemplates.CreateElectricalBuildingDef(buildingDef);
+		buildingDef.AudioCategory = "Metal";
+		buildingDef.AudioSize = "large";
+		buildingDef.EnergyConsumptionWhenActive = 480f;
+		buildingDef.ExhaustKilowattsWhenActive = 2f;
+		buildingDef.SelfHeatKilowattsWhenActive = 8f;
+		return buildingDef;
 	}
 
+	// Token: 0x0600026F RID: 623 RVA: 0x0014834C File Offset: 0x0014654C
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
@@ -35,91 +49,111 @@ public class DeepfryerConfig : IBuildingConfig
 		RoomTracker roomTracker = go.AddOrGet<RoomTracker>();
 		roomTracker.requiredRoomType = Db.Get().RoomTypes.Kitchen.Id;
 		roomTracker.requirement = RoomTracker.Requirement.Required;
-		go.AddOrGet<ComplexFabricatorWorkable>().overrideAnims = new KAnimFile[1] { Assets.GetAnim("anim_interacts_deepfryer_kanim") };
+		go.AddOrGet<ComplexFabricatorWorkable>().overrideAnims = new KAnimFile[]
+		{
+			Assets.GetAnim("anim_interacts_deepfryer_kanim")
+		};
 		deepfryer.sideScreenStyle = ComplexFabricatorSideScreen.StyleSetting.ListQueueHybrid;
 		Prioritizable.AddRef(go);
 		go.AddOrGet<DropAllWorkable>();
-		ConfigureRecipes();
+		this.ConfigureRecipes();
 		go.AddOrGetDef<PoweredController.Def>();
 		BuildingTemplates.CreateComplexFabricatorStorage(go, deepfryer);
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.CookTop);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.CookTop, false);
 	}
 
+	// Token: 0x06000270 RID: 624 RVA: 0x00148408 File Offset: 0x00146608
 	private void ConfigureRecipes()
 	{
-		ComplexRecipe.RecipeElement[] array = new ComplexRecipe.RecipeElement[2]
+		ComplexRecipe.RecipeElement[] array = new ComplexRecipe.RecipeElement[]
 		{
 			new ComplexRecipe.RecipeElement(CarrotConfig.ID, 1f),
 			new ComplexRecipe.RecipeElement("Tallow", 1f)
 		};
-		ComplexRecipe.RecipeElement[] array2 = new ComplexRecipe.RecipeElement[1]
+		ComplexRecipe.RecipeElement[] array2 = new ComplexRecipe.RecipeElement[]
 		{
-			new ComplexRecipe.RecipeElement("FriesCarrot", 1f, ComplexRecipe.RecipeElement.TemperatureOperation.Heated)
+			new ComplexRecipe.RecipeElement("FriesCarrot", 1f, ComplexRecipe.RecipeElement.TemperatureOperation.Heated, false)
 		};
-		FriesCarrotConfig.recipe = new ComplexRecipe(ComplexRecipeManager.MakeRecipeID("Deepfryer", array, array2), array, array2, GetDlcIds())
+		FriesCarrotConfig.recipe = new ComplexRecipe(ComplexRecipeManager.MakeRecipeID("Deepfryer", array, array2), array, array2, this.GetRequiredDlcIds())
 		{
 			time = FOOD.RECIPES.STANDARD_COOK_TIME,
-			description = ITEMS.FOOD.FRIESCARROT.RECIPEDESC,
+			description = STRINGS.ITEMS.FOOD.FRIESCARROT.RECIPEDESC,
 			nameDisplay = ComplexRecipe.RecipeNameDisplay.Result,
-			fabricators = new List<Tag> { "Deepfryer" },
+			fabricators = new List<Tag>
+			{
+				"Deepfryer"
+			},
 			sortOrder = 100
 		};
-		ComplexRecipe.RecipeElement[] array3 = new ComplexRecipe.RecipeElement[2]
+		ComplexRecipe.RecipeElement[] array3 = new ComplexRecipe.RecipeElement[]
 		{
 			new ComplexRecipe.RecipeElement("BeanPlantSeed", 6f),
 			new ComplexRecipe.RecipeElement("Tallow", 1f)
 		};
-		ComplexRecipe.RecipeElement[] array4 = new ComplexRecipe.RecipeElement[1]
+		ComplexRecipe.RecipeElement[] array4 = new ComplexRecipe.RecipeElement[]
 		{
-			new ComplexRecipe.RecipeElement("DeepFriedNosh", 1f, ComplexRecipe.RecipeElement.TemperatureOperation.Heated)
+			new ComplexRecipe.RecipeElement("DeepFriedNosh", 1f, ComplexRecipe.RecipeElement.TemperatureOperation.Heated, false)
 		};
-		FriesCarrotConfig.recipe = new ComplexRecipe(ComplexRecipeManager.MakeRecipeID("Deepfryer", array3, array4), array3, array4, GetDlcIds())
+		FriesCarrotConfig.recipe = new ComplexRecipe(ComplexRecipeManager.MakeRecipeID("Deepfryer", array3, array4), array3, array4, this.GetRequiredDlcIds())
 		{
 			time = FOOD.RECIPES.STANDARD_COOK_TIME,
-			description = ITEMS.FOOD.DEEPFRIEDNOSH.RECIPEDESC,
+			description = STRINGS.ITEMS.FOOD.DEEPFRIEDNOSH.RECIPEDESC,
 			nameDisplay = ComplexRecipe.RecipeNameDisplay.Result,
-			fabricators = new List<Tag> { "Deepfryer" },
+			fabricators = new List<Tag>
+			{
+				"Deepfryer"
+			},
 			sortOrder = 200
 		};
-		ComplexRecipe.RecipeElement[] array5 = new ComplexRecipe.RecipeElement[3]
+		ComplexRecipe.RecipeElement[] array5 = new ComplexRecipe.RecipeElement[]
 		{
 			new ComplexRecipe.RecipeElement("FishMeat", 1f),
 			new ComplexRecipe.RecipeElement("Tallow", 2.4f),
 			new ComplexRecipe.RecipeElement("ColdWheatSeed", 2f)
 		};
-		ComplexRecipe.RecipeElement[] array6 = new ComplexRecipe.RecipeElement[1]
+		ComplexRecipe.RecipeElement[] array6 = new ComplexRecipe.RecipeElement[]
 		{
-			new ComplexRecipe.RecipeElement("DeepFriedFish", 1f, ComplexRecipe.RecipeElement.TemperatureOperation.Heated)
+			new ComplexRecipe.RecipeElement("DeepFriedFish", 1f, ComplexRecipe.RecipeElement.TemperatureOperation.Heated, false)
 		};
-		DeepFriedFishConfig.recipe = new ComplexRecipe(ComplexRecipeManager.MakeRecipeID("Deepfryer", array5, array6), array5, array6, GetDlcIds())
+		DeepFriedFishConfig.recipe = new ComplexRecipe(ComplexRecipeManager.MakeRecipeID("Deepfryer", array5, array6), array5, array6, this.GetRequiredDlcIds())
 		{
 			time = FOOD.RECIPES.STANDARD_COOK_TIME,
-			description = ITEMS.FOOD.DEEPFRIEDFISH.RECIPEDESC,
+			description = STRINGS.ITEMS.FOOD.DEEPFRIEDFISH.RECIPEDESC,
 			nameDisplay = ComplexRecipe.RecipeNameDisplay.Result,
-			fabricators = new List<Tag> { "Deepfryer" },
+			fabricators = new List<Tag>
+			{
+				"Deepfryer"
+			},
 			sortOrder = 300
 		};
-		ComplexRecipe.RecipeElement[] array7 = new ComplexRecipe.RecipeElement[3]
+		ComplexRecipe.RecipeElement[] array7 = new ComplexRecipe.RecipeElement[]
 		{
 			new ComplexRecipe.RecipeElement("ShellfishMeat", 1f),
 			new ComplexRecipe.RecipeElement("Tallow", 2.4f),
 			new ComplexRecipe.RecipeElement("ColdWheatSeed", 2f)
 		};
-		ComplexRecipe.RecipeElement[] array8 = new ComplexRecipe.RecipeElement[1]
+		ComplexRecipe.RecipeElement[] array8 = new ComplexRecipe.RecipeElement[]
 		{
-			new ComplexRecipe.RecipeElement("DeepFriedShellfish", 1f, ComplexRecipe.RecipeElement.TemperatureOperation.Heated)
+			new ComplexRecipe.RecipeElement("DeepFriedShellfish", 1f, ComplexRecipe.RecipeElement.TemperatureOperation.Heated, false)
 		};
-		DeepFriedShellfishConfig.recipe = new ComplexRecipe(ComplexRecipeManager.MakeRecipeID("Deepfryer", array7, array8), array7, array8, GetDlcIds())
+		DeepFriedShellfishConfig.recipe = new ComplexRecipe(ComplexRecipeManager.MakeRecipeID("Deepfryer", array7, array8), array7, array8, this.GetRequiredDlcIds())
 		{
 			time = FOOD.RECIPES.STANDARD_COOK_TIME,
-			description = ITEMS.FOOD.DEEPFRIEDSHELLFISH.RECIPEDESC,
+			description = STRINGS.ITEMS.FOOD.DEEPFRIEDSHELLFISH.RECIPEDESC,
 			nameDisplay = ComplexRecipe.RecipeNameDisplay.Result,
-			fabricators = new List<Tag> { "Deepfryer" },
+			fabricators = new List<Tag>
+			{
+				"Deepfryer"
+			},
 			sortOrder = 300
 		};
 	}
 
+	// Token: 0x06000271 RID: 625 RVA: 0x000A5E40 File Offset: 0x000A4040
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
+
+	// Token: 0x04000199 RID: 409
+	public const string ID = "Deepfryer";
 }

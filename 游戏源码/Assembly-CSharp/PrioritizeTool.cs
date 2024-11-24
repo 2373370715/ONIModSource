@@ -1,43 +1,42 @@
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Token: 0x02001439 RID: 5177
 public class PrioritizeTool : FilteredDragTool
 {
-	public GameObject Placer;
-
-	public static PrioritizeTool Instance;
-
-	public Texture2D[] cursors;
-
+	// Token: 0x06006B43 RID: 27459 RVA: 0x000E6775 File Offset: 0x000E4975
 	public static void DestroyInstance()
 	{
-		Instance = null;
+		PrioritizeTool.Instance = null;
 	}
 
+	// Token: 0x06006B44 RID: 27460 RVA: 0x002E1EEC File Offset: 0x002E00EC
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		interceptNumberKeysForPriority = true;
-		Instance = this;
-		visualizer = Util.KInstantiate(visualizer);
-		viewMode = OverlayModes.Priorities.ID;
+		this.interceptNumberKeysForPriority = true;
+		PrioritizeTool.Instance = this;
+		this.visualizer = Util.KInstantiate(this.visualizer, null, null);
+		this.viewMode = OverlayModes.Priorities.ID;
 		Game.Instance.prioritizableRenderer.currentTool = this;
 	}
 
+	// Token: 0x06006B45 RID: 27461 RVA: 0x002E1F3C File Offset: 0x002E013C
 	public override string GetFilterLayerFromGameObject(GameObject input)
 	{
 		bool flag = false;
 		bool flag2 = false;
 		bool flag3 = false;
-		if ((bool)input.GetComponent<Diggable>())
+		if (input.GetComponent<Diggable>())
 		{
 			flag = true;
 		}
-		if ((bool)input.GetComponent<Constructable>() || ((bool)input.GetComponent<Deconstructable>() && input.GetComponent<Deconstructable>().IsMarkedForDeconstruction()))
+		if (input.GetComponent<Constructable>() || (input.GetComponent<Deconstructable>() && input.GetComponent<Deconstructable>().IsMarkedForDeconstruction()))
 		{
 			flag2 = true;
 		}
-		if ((bool)input.GetComponent<Clearable>() || (bool)input.GetComponent<Moppable>() || (bool)input.GetComponent<StorageLocker>())
+		if (input.GetComponent<Clearable>() || input.GetComponent<Moppable>() || input.GetComponent<StorageLocker>())
 		{
 			flag3 = true;
 		}
@@ -56,6 +55,7 @@ public class PrioritizeTool : FilteredDragTool
 		return ToolParameterMenu.FILTERLAYERS.OPERATE;
 	}
 
+	// Token: 0x06006B46 RID: 27462 RVA: 0x000E677D File Offset: 0x000E497D
 	protected override void GetDefaultFilters(Dictionary<string, ToolParameterMenu.ToggleState> filters)
 	{
 		filters.Add(ToolParameterMenu.FILTERLAYERS.ALL, ToolParameterMenu.ToggleState.On);
@@ -65,10 +65,11 @@ public class PrioritizeTool : FilteredDragTool
 		filters.Add(ToolParameterMenu.FILTERLAYERS.OPERATE, ToolParameterMenu.ToggleState.Off);
 	}
 
+	// Token: 0x06006B47 RID: 27463 RVA: 0x002E1FD0 File Offset: 0x002E01D0
 	private bool TryPrioritizeGameObject(GameObject target, PrioritySetting priority)
 	{
-		string filterLayerFromGameObject = GetFilterLayerFromGameObject(target);
-		if (IsActiveLayer(filterLayerFromGameObject))
+		string filterLayerFromGameObject = this.GetFilterLayerFromGameObject(target);
+		if (base.IsActiveLayer(filterLayerFromGameObject))
 		{
 			Prioritizable component = target.GetComponent<Prioritizable>();
 			if (component != null && component.showIcon && component.IsPrioritizable())
@@ -80,6 +81,7 @@ public class PrioritizeTool : FilteredDragTool
 		return false;
 	}
 
+	// Token: 0x06006B48 RID: 27464 RVA: 0x002E2018 File Offset: 0x002E0218
 	protected override void OnDragTool(int cell, int distFromOrigin)
 	{
 		PrioritySetting lastSelectedPriority = ToolMenu.Instance.PriorityScreen.GetLastSelectedPriority();
@@ -87,26 +89,25 @@ public class PrioritizeTool : FilteredDragTool
 		for (int i = 0; i < 45; i++)
 		{
 			GameObject gameObject = Grid.Objects[cell, i];
-			if (!(gameObject != null))
+			if (gameObject != null)
 			{
-				continue;
-			}
-			if ((bool)gameObject.GetComponent<Pickupable>())
-			{
-				ObjectLayerListItem objectLayerListItem = gameObject.GetComponent<Pickupable>().objectLayerListItem;
-				while (objectLayerListItem != null)
+				if (gameObject.GetComponent<Pickupable>())
 				{
-					GameObject gameObject2 = objectLayerListItem.gameObject;
-					objectLayerListItem = objectLayerListItem.nextItem;
-					if (!(gameObject2 == null) && !(gameObject2.GetComponent<MinionIdentity>() != null) && TryPrioritizeGameObject(gameObject2, lastSelectedPriority))
+					ObjectLayerListItem objectLayerListItem = gameObject.GetComponent<Pickupable>().objectLayerListItem;
+					while (objectLayerListItem != null)
 					{
-						num++;
+						GameObject gameObject2 = objectLayerListItem.gameObject;
+						objectLayerListItem = objectLayerListItem.nextItem;
+						if (!(gameObject2 == null) && !(gameObject2.GetComponent<MinionIdentity>() != null) && this.TryPrioritizeGameObject(gameObject2, lastSelectedPriority))
+						{
+							num++;
+						}
 					}
 				}
-			}
-			else if (TryPrioritizeGameObject(gameObject, lastSelectedPriority))
-			{
-				num++;
+				else if (this.TryPrioritizeGameObject(gameObject, lastSelectedPriority))
+				{
+					num++;
+				}
 			}
 		}
 		if (num > 0)
@@ -115,22 +116,25 @@ public class PrioritizeTool : FilteredDragTool
 		}
 	}
 
+	// Token: 0x06006B49 RID: 27465 RVA: 0x002E20D4 File Offset: 0x002E02D4
 	protected override void OnActivateTool()
 	{
 		base.OnActivateTool();
-		ToolMenu.Instance.PriorityScreen.ShowDiagram(show: true);
-		ToolMenu.Instance.PriorityScreen.Show();
+		ToolMenu.Instance.PriorityScreen.ShowDiagram(true);
+		ToolMenu.Instance.PriorityScreen.Show(true);
 		ToolMenu.Instance.PriorityScreen.transform.localScale = new Vector3(1.35f, 1.35f, 1.35f);
 	}
 
+	// Token: 0x06006B4A RID: 27466 RVA: 0x002E2130 File Offset: 0x002E0330
 	protected override void OnDeactivateTool(InterfaceTool new_tool)
 	{
 		base.OnDeactivateTool(new_tool);
-		ToolMenu.Instance.PriorityScreen.Show(show: false);
-		ToolMenu.Instance.PriorityScreen.ShowDiagram(show: false);
+		ToolMenu.Instance.PriorityScreen.Show(false);
+		ToolMenu.Instance.PriorityScreen.ShowDiagram(false);
 		ToolMenu.Instance.PriorityScreen.transform.localScale = new Vector3(1f, 1f, 1f);
 	}
 
+	// Token: 0x06006B4B RID: 27467 RVA: 0x002E218C File Offset: 0x002E038C
 	public void Update()
 	{
 		PrioritySetting lastSelectedPriority = ToolMenu.Instance.PriorityScreen.GetLastSelectedPriority();
@@ -144,11 +148,20 @@ public class PrioritizeTool : FilteredDragTool
 			num = num;
 		}
 		num += lastSelectedPriority.priority_value;
-		Texture2D mainTexture = cursors[num - 1];
-		MeshRenderer componentInChildren = visualizer.GetComponentInChildren<MeshRenderer>();
+		Texture2D mainTexture = this.cursors[num - 1];
+		MeshRenderer componentInChildren = this.visualizer.GetComponentInChildren<MeshRenderer>();
 		if (componentInChildren != null)
 		{
 			componentInChildren.material.mainTexture = mainTexture;
 		}
 	}
+
+	// Token: 0x040050BA RID: 20666
+	public GameObject Placer;
+
+	// Token: 0x040050BB RID: 20667
+	public static PrioritizeTool Instance;
+
+	// Token: 0x040050BC RID: 20668
+	public Texture2D[] cursors;
 }

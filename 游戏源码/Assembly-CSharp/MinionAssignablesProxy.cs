@@ -1,272 +1,330 @@
+﻿using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using KSerialization;
 using UnityEngine;
 
+// Token: 0x02000C32 RID: 3122
 [AddComponentMenu("KMonoBehaviour/scripts/MinionAssignablesProxy")]
 public class MinionAssignablesProxy : KMonoBehaviour, IAssignableIdentity
 {
-	public List<Ownables> ownables;
-
-	[Serialize]
-	private int target_instance_id = -1;
-
-	private bool slotsConfigured;
-
-	private static readonly EventSystem.IntraObjectHandler<MinionAssignablesProxy> OnAssignablesChangedDelegate = new EventSystem.IntraObjectHandler<MinionAssignablesProxy>(delegate(MinionAssignablesProxy component, object data)
-	{
-		component.OnAssignablesChanged(data);
-	});
-
-	private static readonly EventSystem.IntraObjectHandler<MinionAssignablesProxy> OnQueueDestroyObjectDelegate = new EventSystem.IntraObjectHandler<MinionAssignablesProxy>(delegate(MinionAssignablesProxy component, object data)
-	{
-		component.OnQueueDestroyObject(data);
-	});
-
+	// Token: 0x170002B1 RID: 689
+	// (get) Token: 0x06003BCA RID: 15306 RVA: 0x000C696A File Offset: 0x000C4B6A
+	// (set) Token: 0x06003BCB RID: 15307 RVA: 0x000C6972 File Offset: 0x000C4B72
 	public IAssignableIdentity target { get; private set; }
 
-	public bool IsConfigured => slotsConfigured;
+	// Token: 0x170002B2 RID: 690
+	// (get) Token: 0x06003BCC RID: 15308 RVA: 0x000C697B File Offset: 0x000C4B7B
+	public bool IsConfigured
+	{
+		get
+		{
+			return this.slotsConfigured;
+		}
+	}
 
-	public int TargetInstanceID => target_instance_id;
+	// Token: 0x170002B3 RID: 691
+	// (get) Token: 0x06003BCD RID: 15309 RVA: 0x000C6983 File Offset: 0x000C4B83
+	public int TargetInstanceID
+	{
+		get
+		{
+			return this.target_instance_id;
+		}
+	}
 
+	// Token: 0x06003BCE RID: 15310 RVA: 0x0022C0F0 File Offset: 0x0022A2F0
 	public GameObject GetTargetGameObject()
 	{
-		if (target == null && target_instance_id != -1)
+		if (this.target == null && this.target_instance_id != -1)
 		{
-			RestoreTargetFromInstanceID();
+			this.RestoreTargetFromInstanceID();
 		}
-		KMonoBehaviour kMonoBehaviour = (KMonoBehaviour)target;
-		if (kMonoBehaviour != null)
+		KMonoBehaviour kmonoBehaviour = (KMonoBehaviour)this.target;
+		if (kmonoBehaviour != null)
 		{
-			return kMonoBehaviour.gameObject;
+			return kmonoBehaviour.gameObject;
 		}
 		return null;
 	}
 
+	// Token: 0x06003BCF RID: 15311 RVA: 0x0022C134 File Offset: 0x0022A334
 	public float GetArrivalTime()
 	{
-		if (GetTargetGameObject().GetComponent<MinionIdentity>() != null)
+		if (this.GetTargetGameObject().GetComponent<MinionIdentity>() != null)
 		{
-			return GetTargetGameObject().GetComponent<MinionIdentity>().arrivalTime;
+			return this.GetTargetGameObject().GetComponent<MinionIdentity>().arrivalTime;
 		}
-		if (GetTargetGameObject().GetComponent<StoredMinionIdentity>() != null)
+		if (this.GetTargetGameObject().GetComponent<StoredMinionIdentity>() != null)
 		{
-			return GetTargetGameObject().GetComponent<StoredMinionIdentity>().arrivalTime;
+			return this.GetTargetGameObject().GetComponent<StoredMinionIdentity>().arrivalTime;
 		}
-		Debug.LogError("Could not get minion arrival time");
+		global::Debug.LogError("Could not get minion arrival time");
 		return -1f;
 	}
 
+	// Token: 0x06003BD0 RID: 15312 RVA: 0x0022C198 File Offset: 0x0022A398
 	public int GetTotalSkillpoints()
 	{
-		if (GetTargetGameObject().GetComponent<MinionIdentity>() != null)
+		if (this.GetTargetGameObject().GetComponent<MinionIdentity>() != null)
 		{
-			return GetTargetGameObject().GetComponent<MinionResume>().TotalSkillPointsGained;
+			return this.GetTargetGameObject().GetComponent<MinionResume>().TotalSkillPointsGained;
 		}
-		if (GetTargetGameObject().GetComponent<StoredMinionIdentity>() != null)
+		if (this.GetTargetGameObject().GetComponent<StoredMinionIdentity>() != null)
 		{
-			return MinionResume.CalculateTotalSkillPointsGained(GetTargetGameObject().GetComponent<StoredMinionIdentity>().TotalExperienceGained);
+			return MinionResume.CalculateTotalSkillPointsGained(this.GetTargetGameObject().GetComponent<StoredMinionIdentity>().TotalExperienceGained);
 		}
-		Debug.LogError("Could not get minion skill points time");
+		global::Debug.LogError("Could not get minion skill points time");
 		return -1;
 	}
 
+	// Token: 0x06003BD1 RID: 15313 RVA: 0x0022C200 File Offset: 0x0022A400
 	public void SetTarget(IAssignableIdentity target, GameObject targetGO)
 	{
-		Debug.Assert(target != null, "target was null");
+		global::Debug.Assert(target != null, "target was null");
 		if (targetGO == null)
 		{
-			Debug.LogWarningFormat("{0} MinionAssignablesProxy.SetTarget {1}, {2}, {3}. DESTROYING", GetInstanceID(), target_instance_id, target, targetGO);
+			global::Debug.LogWarningFormat("{0} MinionAssignablesProxy.SetTarget {1}, {2}, {3}. DESTROYING", new object[]
+			{
+				base.GetInstanceID(),
+				this.target_instance_id,
+				target,
+				targetGO
+			});
 			Util.KDestroyGameObject(base.gameObject);
 		}
 		this.target = target;
-		target_instance_id = targetGO.GetComponent<KPrefabID>().InstanceID;
+		this.target_instance_id = targetGO.GetComponent<KPrefabID>().InstanceID;
 		base.gameObject.name = "Minion Assignables Proxy : " + targetGO.name;
 	}
 
+	// Token: 0x06003BD2 RID: 15314 RVA: 0x0022C298 File Offset: 0x0022A498
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		ownables = new List<Ownables> { base.gameObject.AddOrGet<Ownables>() };
+		this.ownables = new List<Ownables>
+		{
+			base.gameObject.AddOrGet<Ownables>()
+		};
 		Components.MinionAssignablesProxy.Add(this);
-		Subscribe(1502190696, OnQueueDestroyObjectDelegate);
-		ConfigureAssignableSlots();
+		base.Subscribe<MinionAssignablesProxy>(1502190696, MinionAssignablesProxy.OnQueueDestroyObjectDelegate);
+		this.ConfigureAssignableSlots();
 	}
 
+	// Token: 0x06003BD3 RID: 15315 RVA: 0x000A5E40 File Offset: 0x000A4040
 	[OnDeserialized]
 	private void OnDeserialized()
 	{
 	}
 
+	// Token: 0x06003BD4 RID: 15316 RVA: 0x0022C2EC File Offset: 0x0022A4EC
 	public void ConfigureAssignableSlots()
 	{
-		if (slotsConfigured)
+		if (this.slotsConfigured)
 		{
 			return;
 		}
-		Ownables component = GetComponent<Ownables>();
-		Equipment component2 = GetComponent<Equipment>();
+		Ownables component = base.GetComponent<Ownables>();
+		Equipment component2 = base.GetComponent<Equipment>();
 		if (component2 != null)
 		{
-			foreach (AssignableSlot resource in Db.Get().AssignableSlots.resources)
+			foreach (AssignableSlot assignableSlot in Db.Get().AssignableSlots.resources)
 			{
-				if (resource is OwnableSlot)
+				if (assignableSlot is OwnableSlot)
 				{
-					OwnableSlotInstance slot_instance = new OwnableSlotInstance(component, (OwnableSlot)resource);
+					OwnableSlotInstance slot_instance = new OwnableSlotInstance(component, (OwnableSlot)assignableSlot);
 					component.Add(slot_instance);
 				}
-				else if (resource is EquipmentSlot)
+				else if (assignableSlot is EquipmentSlot)
 				{
-					EquipmentSlotInstance slot_instance2 = new EquipmentSlotInstance(component2, (EquipmentSlot)resource);
+					EquipmentSlotInstance slot_instance2 = new EquipmentSlotInstance(component2, (EquipmentSlot)assignableSlot);
 					component2.Add(slot_instance2);
 				}
 			}
 		}
-		slotsConfigured = true;
+		this.slotsConfigured = true;
 	}
 
+	// Token: 0x06003BD5 RID: 15317 RVA: 0x0022C3A8 File Offset: 0x0022A5A8
 	public void RestoreTargetFromInstanceID()
 	{
-		if (target_instance_id == -1 || target != null)
+		if (this.target_instance_id != -1 && this.target == null)
 		{
-			return;
-		}
-		KPrefabID instance = KPrefabIDTracker.Get().GetInstance(target_instance_id);
-		if ((bool)instance)
-		{
-			IAssignableIdentity component = instance.GetComponent<IAssignableIdentity>();
-			if (component != null)
+			KPrefabID instance = KPrefabIDTracker.Get().GetInstance(this.target_instance_id);
+			if (instance)
 			{
-				SetTarget(component, instance.gameObject);
+				IAssignableIdentity component = instance.GetComponent<IAssignableIdentity>();
+				if (component != null)
+				{
+					this.SetTarget(component, instance.gameObject);
+					return;
+				}
+				global::Debug.LogWarningFormat("RestoreTargetFromInstanceID target ID {0} was found but it wasn't an IAssignableIdentity, destroying proxy object.", new object[]
+				{
+					this.target_instance_id
+				});
+				Util.KDestroyGameObject(base.gameObject);
 				return;
 			}
-			Debug.LogWarningFormat("RestoreTargetFromInstanceID target ID {0} was found but it wasn't an IAssignableIdentity, destroying proxy object.", target_instance_id);
-			Util.KDestroyGameObject(base.gameObject);
-		}
-		else
-		{
-			Debug.LogWarningFormat("RestoreTargetFromInstanceID target ID {0} was not found, destroying proxy object.", target_instance_id);
-			Util.KDestroyGameObject(base.gameObject);
+			else
+			{
+				global::Debug.LogWarningFormat("RestoreTargetFromInstanceID target ID {0} was not found, destroying proxy object.", new object[]
+				{
+					this.target_instance_id
+				});
+				Util.KDestroyGameObject(base.gameObject);
+			}
 		}
 	}
 
+	// Token: 0x06003BD6 RID: 15318 RVA: 0x000C698B File Offset: 0x000C4B8B
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		RestoreTargetFromInstanceID();
-		if (target != null)
+		this.RestoreTargetFromInstanceID();
+		if (this.target != null)
 		{
-			Subscribe(-1585839766, OnAssignablesChangedDelegate);
+			base.Subscribe<MinionAssignablesProxy>(-1585839766, MinionAssignablesProxy.OnAssignablesChangedDelegate);
 			Game.Instance.assignmentManager.AddToAssignmentGroup("public", this);
 		}
 	}
 
+	// Token: 0x06003BD7 RID: 15319 RVA: 0x000C69C7 File Offset: 0x000C4BC7
 	private void OnQueueDestroyObject(object data)
 	{
 		Components.MinionAssignablesProxy.Remove(this);
 	}
 
+	// Token: 0x06003BD8 RID: 15320 RVA: 0x000C69D4 File Offset: 0x000C4BD4
 	protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		Game.Instance.assignmentManager.RemoveFromAllGroups(this);
-		GetComponent<Ownables>().UnassignAll();
-		GetComponent<Equipment>().UnequipAll();
+		base.GetComponent<Ownables>().UnassignAll();
+		base.GetComponent<Equipment>().UnequipAll();
 	}
 
+	// Token: 0x06003BD9 RID: 15321 RVA: 0x000C6A02 File Offset: 0x000C4C02
 	private void OnAssignablesChanged(object data)
 	{
-		if (!target.IsNull())
+		if (!this.target.IsNull())
 		{
-			((KMonoBehaviour)target).Trigger(-1585839766, data);
+			((KMonoBehaviour)this.target).Trigger(-1585839766, data);
 		}
 	}
 
+	// Token: 0x06003BDA RID: 15322 RVA: 0x0022C450 File Offset: 0x0022A650
 	private void CheckTarget()
 	{
-		if (target != null)
+		if (this.target == null)
 		{
-			return;
-		}
-		KPrefabID instance = KPrefabIDTracker.Get().GetInstance(target_instance_id);
-		if (!(instance != null))
-		{
-			return;
-		}
-		target = instance.GetComponent<IAssignableIdentity>();
-		if (target == null)
-		{
-			return;
-		}
-		MinionIdentity minionIdentity = target as MinionIdentity;
-		if ((bool)minionIdentity)
-		{
-			minionIdentity.ValidateProxy();
-			return;
-		}
-		StoredMinionIdentity storedMinionIdentity = target as StoredMinionIdentity;
-		if ((bool)storedMinionIdentity)
-		{
-			storedMinionIdentity.ValidateProxy();
+			KPrefabID instance = KPrefabIDTracker.Get().GetInstance(this.target_instance_id);
+			if (instance != null)
+			{
+				this.target = instance.GetComponent<IAssignableIdentity>();
+				if (this.target != null)
+				{
+					MinionIdentity minionIdentity = this.target as MinionIdentity;
+					if (minionIdentity)
+					{
+						minionIdentity.ValidateProxy();
+						return;
+					}
+					StoredMinionIdentity storedMinionIdentity = this.target as StoredMinionIdentity;
+					if (storedMinionIdentity)
+					{
+						storedMinionIdentity.ValidateProxy();
+					}
+				}
+			}
 		}
 	}
 
+	// Token: 0x06003BDB RID: 15323 RVA: 0x000C6A27 File Offset: 0x000C4C27
 	public List<Ownables> GetOwners()
 	{
-		CheckTarget();
-		return target.GetOwners();
+		this.CheckTarget();
+		return this.target.GetOwners();
 	}
 
+	// Token: 0x06003BDC RID: 15324 RVA: 0x000C6A3A File Offset: 0x000C4C3A
 	public string GetProperName()
 	{
-		CheckTarget();
-		return target.GetProperName();
+		this.CheckTarget();
+		return this.target.GetProperName();
 	}
 
+	// Token: 0x06003BDD RID: 15325 RVA: 0x000C6A4D File Offset: 0x000C4C4D
 	public Ownables GetSoleOwner()
 	{
-		CheckTarget();
-		return target.GetSoleOwner();
+		this.CheckTarget();
+		return this.target.GetSoleOwner();
 	}
 
+	// Token: 0x06003BDE RID: 15326 RVA: 0x000C6A60 File Offset: 0x000C4C60
 	public bool HasOwner(Assignables owner)
 	{
-		CheckTarget();
-		return target.HasOwner(owner);
+		this.CheckTarget();
+		return this.target.HasOwner(owner);
 	}
 
+	// Token: 0x06003BDF RID: 15327 RVA: 0x000C6A74 File Offset: 0x000C4C74
 	public int NumOwners()
 	{
-		CheckTarget();
-		return target.NumOwners();
+		this.CheckTarget();
+		return this.target.NumOwners();
 	}
 
+	// Token: 0x06003BE0 RID: 15328 RVA: 0x000C6A87 File Offset: 0x000C4C87
 	public bool IsNull()
 	{
-		CheckTarget();
-		return target.IsNull();
+		this.CheckTarget();
+		return this.target.IsNull();
 	}
 
+	// Token: 0x06003BE1 RID: 15329 RVA: 0x0022C4C8 File Offset: 0x0022A6C8
 	public static Ref<MinionAssignablesProxy> InitAssignableProxy(Ref<MinionAssignablesProxy> assignableProxyRef, IAssignableIdentity source)
 	{
 		if (assignableProxyRef == null)
 		{
 			assignableProxyRef = new Ref<MinionAssignablesProxy>();
 		}
-		GameObject targetGO = ((KMonoBehaviour)source).gameObject;
+		GameObject gameObject = ((KMonoBehaviour)source).gameObject;
 		MinionAssignablesProxy minionAssignablesProxy = assignableProxyRef.Get();
 		if (minionAssignablesProxy == null)
 		{
-			GameObject obj = GameUtil.KInstantiate(Assets.GetPrefab(MinionAssignablesProxyConfig.ID), Grid.SceneLayer.NoLayer);
-			minionAssignablesProxy = obj.GetComponent<MinionAssignablesProxy>();
-			minionAssignablesProxy.SetTarget(source, targetGO);
-			obj.SetActive(value: true);
+			GameObject gameObject2 = GameUtil.KInstantiate(Assets.GetPrefab(MinionAssignablesProxyConfig.ID), Grid.SceneLayer.NoLayer, null, 0);
+			minionAssignablesProxy = gameObject2.GetComponent<MinionAssignablesProxy>();
+			minionAssignablesProxy.SetTarget(source, gameObject);
+			gameObject2.SetActive(true);
 			assignableProxyRef.Set(minionAssignablesProxy);
 		}
 		else
 		{
-			minionAssignablesProxy.SetTarget(source, targetGO);
+			minionAssignablesProxy.SetTarget(source, gameObject);
 		}
 		return assignableProxyRef;
 	}
+
+	// Token: 0x040028F9 RID: 10489
+	public List<Ownables> ownables;
+
+	// Token: 0x040028FB RID: 10491
+	[Serialize]
+	private int target_instance_id = -1;
+
+	// Token: 0x040028FC RID: 10492
+	private bool slotsConfigured;
+
+	// Token: 0x040028FD RID: 10493
+	private static readonly EventSystem.IntraObjectHandler<MinionAssignablesProxy> OnAssignablesChangedDelegate = new EventSystem.IntraObjectHandler<MinionAssignablesProxy>(delegate(MinionAssignablesProxy component, object data)
+	{
+		component.OnAssignablesChanged(data);
+	});
+
+	// Token: 0x040028FE RID: 10494
+	private static readonly EventSystem.IntraObjectHandler<MinionAssignablesProxy> OnQueueDestroyObjectDelegate = new EventSystem.IntraObjectHandler<MinionAssignablesProxy>(delegate(MinionAssignablesProxy component, object data)
+	{
+		component.OnQueueDestroyObject(data);
+	});
 }

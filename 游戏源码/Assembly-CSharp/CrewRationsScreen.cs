@@ -1,192 +1,197 @@
+﻿using System;
 using System.Collections.Generic;
 using Klei.AI;
 using UnityEngine;
 using UnityEngine.UI;
 
+// Token: 0x02001D9F RID: 7583
 public class CrewRationsScreen : CrewListScreen<CrewRationsEntry>
 {
-	[SerializeField]
-	private KButton closebutton;
-
+	// Token: 0x06009E8D RID: 40589 RVA: 0x00107424 File Offset: 0x00105624
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		closebutton.onClick += delegate
+		this.closebutton.onClick += delegate()
 		{
 			ManagementMenu.Instance.CloseAll();
 		};
 	}
 
+	// Token: 0x06009E8E RID: 40590 RVA: 0x00107456 File Offset: 0x00105656
 	protected override void OnCmpEnable()
 	{
 		base.OnCmpEnable();
-		RefreshCrewPortraitContent();
-		SortByPreviousSelected();
+		base.RefreshCrewPortraitContent();
+		this.SortByPreviousSelected();
 	}
 
+	// Token: 0x06009E8F RID: 40591 RVA: 0x003CC3D4 File Offset: 0x003CA5D4
 	private void SortByPreviousSelected()
 	{
-		if (sortToggleGroup == null || lastSortToggle == null)
+		if (this.sortToggleGroup == null)
 		{
 			return;
 		}
-		for (int i = 0; i < ColumnTitlesContainer.childCount; i++)
+		if (this.lastSortToggle == null)
 		{
-			OverviewColumnIdentity component = ColumnTitlesContainer.GetChild(i).GetComponent<OverviewColumnIdentity>();
-			if (ColumnTitlesContainer.GetChild(i).GetComponent<Toggle>() == lastSortToggle)
+			return;
+		}
+		for (int i = 0; i < this.ColumnTitlesContainer.childCount; i++)
+		{
+			OverviewColumnIdentity component = this.ColumnTitlesContainer.GetChild(i).GetComponent<OverviewColumnIdentity>();
+			if (this.ColumnTitlesContainer.GetChild(i).GetComponent<Toggle>() == this.lastSortToggle)
 			{
 				if (component.columnID == "name")
 				{
-					SortByName(lastSortReversed);
+					base.SortByName(this.lastSortReversed);
 				}
 				if (component.columnID == "health")
 				{
-					SortByAmount("HitPoints", lastSortReversed);
+					this.SortByAmount("HitPoints", this.lastSortReversed);
 				}
 				if (component.columnID == "stress")
 				{
-					SortByAmount("Stress", lastSortReversed);
+					this.SortByAmount("Stress", this.lastSortReversed);
 				}
 				if (component.columnID == "calories")
 				{
-					SortByAmount("Calories", lastSortReversed);
+					this.SortByAmount("Calories", this.lastSortReversed);
 				}
 			}
 		}
 	}
 
+	// Token: 0x06009E90 RID: 40592 RVA: 0x003CC4D8 File Offset: 0x003CA6D8
 	protected override void PositionColumnTitles()
 	{
 		base.PositionColumnTitles();
-		for (int i = 0; i < ColumnTitlesContainer.childCount; i++)
+		for (int i = 0; i < this.ColumnTitlesContainer.childCount; i++)
 		{
-			OverviewColumnIdentity component = ColumnTitlesContainer.GetChild(i).GetComponent<OverviewColumnIdentity>();
-			if (!component.Sortable)
+			OverviewColumnIdentity component = this.ColumnTitlesContainer.GetChild(i).GetComponent<OverviewColumnIdentity>();
+			if (component.Sortable)
 			{
-				continue;
-			}
-			Toggle toggle = ColumnTitlesContainer.GetChild(i).GetComponent<Toggle>();
-			toggle.group = sortToggleGroup;
-			ImageToggleState toggleImage = toggle.GetComponentInChildren<ImageToggleState>(includeInactive: true);
-			if (component.columnID == "name")
-			{
-				toggle.onValueChanged.AddListener(delegate
+				Toggle toggle = this.ColumnTitlesContainer.GetChild(i).GetComponent<Toggle>();
+				toggle.group = this.sortToggleGroup;
+				ImageToggleState toggleImage = toggle.GetComponentInChildren<ImageToggleState>(true);
+				if (component.columnID == "name")
 				{
-					SortByName(!toggle.isOn);
-					lastSortToggle = toggle;
-					lastSortReversed = !toggle.isOn;
-					ResetSortToggles(toggle);
-					if (toggle.isOn)
+					toggle.onValueChanged.AddListener(delegate(bool value)
 					{
-						toggleImage.SetActive();
-					}
-					else
-					{
+						this.SortByName(!toggle.isOn);
+						this.lastSortToggle = toggle;
+						this.lastSortReversed = !toggle.isOn;
+						this.ResetSortToggles(toggle);
+						if (toggle.isOn)
+						{
+							toggleImage.SetActive();
+							return;
+						}
 						toggleImage.SetInactive();
-					}
-				});
-			}
-			if (component.columnID == "health")
-			{
-				toggle.onValueChanged.AddListener(delegate
-				{
-					SortByAmount("HitPoints", !toggle.isOn);
-					lastSortToggle = toggle;
-					lastSortReversed = !toggle.isOn;
-					ResetSortToggles(toggle);
-					if (toggle.isOn)
-					{
-						toggleImage.SetActive();
-					}
-					else
-					{
-						toggleImage.SetInactive();
-					}
-				});
-			}
-			if (component.columnID == "stress")
-			{
-				toggle.onValueChanged.AddListener(delegate
-				{
-					SortByAmount("Stress", !toggle.isOn);
-					lastSortToggle = toggle;
-					lastSortReversed = !toggle.isOn;
-					ResetSortToggles(toggle);
-					if (toggle.isOn)
-					{
-						toggleImage.SetActive();
-					}
-					else
-					{
-						toggleImage.SetInactive();
-					}
-				});
-			}
-			if (!(component.columnID == "calories"))
-			{
-				continue;
-			}
-			toggle.onValueChanged.AddListener(delegate
-			{
-				SortByAmount("Calories", !toggle.isOn);
-				lastSortToggle = toggle;
-				lastSortReversed = !toggle.isOn;
-				ResetSortToggles(toggle);
-				if (toggle.isOn)
-				{
-					toggleImage.SetActive();
+					});
 				}
-				else
+				if (component.columnID == "health")
 				{
-					toggleImage.SetInactive();
+					toggle.onValueChanged.AddListener(delegate(bool value)
+					{
+						this.SortByAmount("HitPoints", !toggle.isOn);
+						this.lastSortToggle = toggle;
+						this.lastSortReversed = !toggle.isOn;
+						this.ResetSortToggles(toggle);
+						if (toggle.isOn)
+						{
+							toggleImage.SetActive();
+							return;
+						}
+						toggleImage.SetInactive();
+					});
 				}
-			});
+				if (component.columnID == "stress")
+				{
+					toggle.onValueChanged.AddListener(delegate(bool value)
+					{
+						this.SortByAmount("Stress", !toggle.isOn);
+						this.lastSortToggle = toggle;
+						this.lastSortReversed = !toggle.isOn;
+						this.ResetSortToggles(toggle);
+						if (toggle.isOn)
+						{
+							toggleImage.SetActive();
+							return;
+						}
+						toggleImage.SetInactive();
+					});
+				}
+				if (component.columnID == "calories")
+				{
+					toggle.onValueChanged.AddListener(delegate(bool value)
+					{
+						this.SortByAmount("Calories", !toggle.isOn);
+						this.lastSortToggle = toggle;
+						this.lastSortReversed = !toggle.isOn;
+						this.ResetSortToggles(toggle);
+						if (toggle.isOn)
+						{
+							toggleImage.SetActive();
+							return;
+						}
+						toggleImage.SetInactive();
+					});
+				}
+			}
 		}
 	}
 
+	// Token: 0x06009E91 RID: 40593 RVA: 0x003CC624 File Offset: 0x003CA824
 	protected override void SpawnEntries()
 	{
 		base.SpawnEntries();
-		foreach (MinionIdentity item in Components.LiveMinionIdentities.Items)
+		foreach (MinionIdentity identity in Components.LiveMinionIdentities.Items)
 		{
-			CrewRationsEntry component = Util.KInstantiateUI(Prefab_CrewEntry, EntriesPanelTransform.gameObject).GetComponent<CrewRationsEntry>();
-			component.Populate(item);
-			EntryObjects.Add(component);
+			CrewRationsEntry component = Util.KInstantiateUI(this.Prefab_CrewEntry, this.EntriesPanelTransform.gameObject, false).GetComponent<CrewRationsEntry>();
+			component.Populate(identity);
+			this.EntryObjects.Add(component);
 		}
-		SortByPreviousSelected();
+		this.SortByPreviousSelected();
 	}
 
+	// Token: 0x06009E92 RID: 40594 RVA: 0x003CC6B0 File Offset: 0x003CA8B0
 	public override void ScreenUpdate(bool topLevel)
 	{
 		base.ScreenUpdate(topLevel);
-		foreach (CrewRationsEntry entryObject in EntryObjects)
+		foreach (CrewRationsEntry crewRationsEntry in this.EntryObjects)
 		{
-			entryObject.Refresh();
+			crewRationsEntry.Refresh();
 		}
 	}
 
+	// Token: 0x06009E93 RID: 40595 RVA: 0x003CC708 File Offset: 0x003CA908
 	private void SortByAmount(string amount_id, bool reverse)
 	{
-		List<CrewRationsEntry> list = new List<CrewRationsEntry>(EntryObjects);
+		List<CrewRationsEntry> list = new List<CrewRationsEntry>(this.EntryObjects);
 		list.Sort(delegate(CrewRationsEntry a, CrewRationsEntry b)
 		{
 			float value = a.Identity.GetAmounts().GetValue(amount_id);
 			float value2 = b.Identity.GetAmounts().GetValue(amount_id);
 			return value.CompareTo(value2);
 		});
-		ReorderEntries(list, reverse);
+		base.ReorderEntries(list, reverse);
 	}
 
+	// Token: 0x06009E94 RID: 40596 RVA: 0x003CC748 File Offset: 0x003CA948
 	private void ResetSortToggles(Toggle exceptToggle)
 	{
-		for (int i = 0; i < ColumnTitlesContainer.childCount; i++)
+		for (int i = 0; i < this.ColumnTitlesContainer.childCount; i++)
 		{
-			Toggle component = ColumnTitlesContainer.GetChild(i).GetComponent<Toggle>();
-			ImageToggleState componentInChildren = component.GetComponentInChildren<ImageToggleState>(includeInactive: true);
+			Toggle component = this.ColumnTitlesContainer.GetChild(i).GetComponent<Toggle>();
+			ImageToggleState componentInChildren = component.GetComponentInChildren<ImageToggleState>(true);
 			if (component != exceptToggle)
 			{
 				componentInChildren.SetDisabled();
 			}
 		}
 	}
+
+	// Token: 0x04007C52 RID: 31826
+	[SerializeField]
+	private KButton closebutton;
 }

@@ -1,6 +1,11 @@
-namespace Rendering;
+﻿using System;
 
-public interface IBlockTileInfo
+namespace Rendering
 {
-	int GetBlockTileConnectorID();
+	// Token: 0x020020C5 RID: 8389
+	public interface IBlockTileInfo
+	{
+		// Token: 0x0600B26F RID: 45679
+		int GetBlockTileConnectorID();
+	}
 }

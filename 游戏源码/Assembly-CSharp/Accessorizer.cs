@@ -1,3 +1,4 @@
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -5,165 +6,165 @@ using Database;
 using KSerialization;
 using UnityEngine;
 
+// Token: 0x02000980 RID: 2432
 [AddComponentMenu("KMonoBehaviour/scripts/Accessorizer")]
 public class Accessorizer : KMonoBehaviour
 {
-	[Serialize]
-	private List<ResourceRef<Accessory>> accessories = new List<ResourceRef<Accessory>>();
-
-	[MyCmpReq]
-	private KAnimControllerBase animController;
-
-	[Serialize]
-	private List<ResourceRef<ClothingItemResource>> clothingItems = new List<ResourceRef<ClothingItemResource>>();
-
-	public KCompBuilder.BodyData bodyData { get; set; }
-
+	// Token: 0x06002C02 RID: 11266 RVA: 0x000BC859 File Offset: 0x000BAA59
 	public List<ResourceRef<Accessory>> GetAccessories()
 	{
-		return accessories;
+		return this.accessories;
 	}
 
+	// Token: 0x06002C03 RID: 11267 RVA: 0x000BC861 File Offset: 0x000BAA61
 	public void SetAccessories(List<ResourceRef<Accessory>> data)
 	{
-		accessories = data;
+		this.accessories = data;
 	}
 
+	// Token: 0x17000191 RID: 401
+	// (get) Token: 0x06002C04 RID: 11268 RVA: 0x000BC86A File Offset: 0x000BAA6A
+	// (set) Token: 0x06002C05 RID: 11269 RVA: 0x000BC872 File Offset: 0x000BAA72
+	public KCompBuilder.BodyData bodyData { get; set; }
+
+	// Token: 0x06002C06 RID: 11270 RVA: 0x001EA014 File Offset: 0x001E8214
 	[OnDeserialized]
 	private void OnDeserialized()
 	{
-		MinionIdentity component = GetComponent<MinionIdentity>();
-		if (clothingItems.Count > 0 || (component != null && component.nameStringKey == "JORGE") || SaveLoader.Instance.GameInfo.IsVersionOlderThan(7, 30))
+		MinionIdentity component = base.GetComponent<MinionIdentity>();
+		if (this.clothingItems.Count > 0 || (component != null && component.nameStringKey == "JORGE") || SaveLoader.Instance.GameInfo.IsVersionOlderThan(7, 30))
 		{
 			if (component != null)
 			{
-				bodyData = UpdateAccessorySlots(component.nameStringKey, ref accessories);
+				this.bodyData = Accessorizer.UpdateAccessorySlots(component.nameStringKey, ref this.accessories);
 			}
-			accessories.RemoveAll((ResourceRef<Accessory> x) => x.Get() == null);
+			this.accessories.RemoveAll((ResourceRef<Accessory> x) => x.Get() == null);
 		}
-		if (clothingItems.Count > 0)
+		if (this.clothingItems.Count > 0)
 		{
-			GetComponent<WearableAccessorizer>().ApplyClothingItems(ClothingOutfitUtility.OutfitType.Clothing, clothingItems.Select((ResourceRef<ClothingItemResource> i) => i.Get()));
-			clothingItems.Clear();
+			base.GetComponent<WearableAccessorizer>().ApplyClothingItems(ClothingOutfitUtility.OutfitType.Clothing, from i in this.clothingItems
+			select i.Get());
+			this.clothingItems.Clear();
 		}
-		ApplyAccessories();
+		this.ApplyAccessories();
 	}
 
+	// Token: 0x06002C07 RID: 11271 RVA: 0x001EA110 File Offset: 0x001E8310
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		MinionIdentity component = GetComponent<MinionIdentity>();
+		MinionIdentity component = base.GetComponent<MinionIdentity>();
 		if (component != null)
 		{
-			bodyData = MinionStartingStats.CreateBodyData(Db.Get().Personalities.Get(component.personalityResourceId));
+			this.bodyData = MinionStartingStats.CreateBodyData(Db.Get().Personalities.Get(component.personalityResourceId));
 		}
 	}
 
+	// Token: 0x06002C08 RID: 11272 RVA: 0x001EA154 File Offset: 0x001E8354
 	public void AddAccessory(Accessory accessory)
 	{
-		if (accessory == null)
+		if (accessory != null)
 		{
-			return;
-		}
-		if (animController == null)
-		{
-			animController = GetComponent<KAnimControllerBase>();
-		}
-		animController.GetComponent<SymbolOverrideController>().AddSymbolOverride(accessory.slot.targetSymbolId, accessory.symbol, accessory.slot.overrideLayer);
-		if (!HasAccessory(accessory))
-		{
-			ResourceRef<Accessory> resourceRef = new ResourceRef<Accessory>(accessory);
-			if (resourceRef != null)
+			if (this.animController == null)
 			{
-				accessories.Add(resourceRef);
+				this.animController = base.GetComponent<KAnimControllerBase>();
+			}
+			this.animController.GetComponent<SymbolOverrideController>().AddSymbolOverride(accessory.slot.targetSymbolId, accessory.symbol, accessory.slot.overrideLayer);
+			if (!this.HasAccessory(accessory))
+			{
+				ResourceRef<Accessory> resourceRef = new ResourceRef<Accessory>(accessory);
+				if (resourceRef != null)
+				{
+					this.accessories.Add(resourceRef);
+				}
 			}
 		}
 	}
 
+	// Token: 0x06002C09 RID: 11273 RVA: 0x001EA1D0 File Offset: 0x001E83D0
 	public void RemoveAccessory(Accessory accessory)
 	{
-		accessories.RemoveAll((ResourceRef<Accessory> x) => x.Get() == accessory);
-		animController.GetComponent<SymbolOverrideController>().TryRemoveSymbolOverride(accessory.slot.targetSymbolId, accessory.slot.overrideLayer);
+		this.accessories.RemoveAll((ResourceRef<Accessory> x) => x.Get() == accessory);
+		this.animController.GetComponent<SymbolOverrideController>().TryRemoveSymbolOverride(accessory.slot.targetSymbolId, accessory.slot.overrideLayer);
 	}
 
+	// Token: 0x06002C0A RID: 11274 RVA: 0x001EA238 File Offset: 0x001E8438
 	public void ApplyAccessories()
 	{
-		foreach (ResourceRef<Accessory> accessory2 in accessories)
+		foreach (ResourceRef<Accessory> resourceRef in this.accessories)
 		{
-			Accessory accessory = accessory2.Get();
+			Accessory accessory = resourceRef.Get();
 			if (accessory != null)
 			{
-				AddAccessory(accessory);
+				this.AddAccessory(accessory);
 			}
 		}
 	}
 
+	// Token: 0x06002C0B RID: 11275 RVA: 0x001EA294 File Offset: 0x001E8494
 	public static KCompBuilder.BodyData UpdateAccessorySlots(string nameString, ref List<ResourceRef<Accessory>> accessories)
 	{
 		accessories.RemoveAll((ResourceRef<Accessory> acc) => acc.Get() == null);
 		Personality personalityFromNameStringKey = Db.Get().Personalities.GetPersonalityFromNameStringKey(nameString);
 		if (personalityFromNameStringKey != null)
 		{
-			KCompBuilder.BodyData result = MinionStartingStats.CreateBodyData(personalityFromNameStringKey);
+			KCompBuilder.BodyData bodyData = MinionStartingStats.CreateBodyData(personalityFromNameStringKey);
+			foreach (AccessorySlot accessorySlot in Db.Get().AccessorySlots.resources)
 			{
-				foreach (AccessorySlot resource in Db.Get().AccessorySlots.resources)
+				if (accessorySlot.accessories.Count != 0)
 				{
-					if (resource.accessories.Count == 0)
-					{
-						continue;
-					}
 					Accessory accessory = null;
-					if (resource == Db.Get().AccessorySlots.Body)
+					if (accessorySlot == Db.Get().AccessorySlots.Body)
 					{
-						accessory = resource.Lookup(result.body);
+						accessory = accessorySlot.Lookup(bodyData.body);
 					}
-					else if (resource == Db.Get().AccessorySlots.Arm)
+					else if (accessorySlot == Db.Get().AccessorySlots.Arm)
 					{
-						accessory = resource.Lookup(result.arms);
+						accessory = accessorySlot.Lookup(bodyData.arms);
 					}
-					else if (resource == Db.Get().AccessorySlots.ArmLower)
+					else if (accessorySlot == Db.Get().AccessorySlots.ArmLower)
 					{
-						accessory = resource.Lookup(result.armslower);
+						accessory = accessorySlot.Lookup(bodyData.armslower);
 					}
-					else if (resource == Db.Get().AccessorySlots.ArmLowerSkin)
+					else if (accessorySlot == Db.Get().AccessorySlots.ArmLowerSkin)
 					{
-						accessory = resource.Lookup(result.armLowerSkin);
+						accessory = accessorySlot.Lookup(bodyData.armLowerSkin);
 					}
-					else if (resource == Db.Get().AccessorySlots.ArmUpperSkin)
+					else if (accessorySlot == Db.Get().AccessorySlots.ArmUpperSkin)
 					{
-						accessory = resource.Lookup(result.armUpperSkin);
+						accessory = accessorySlot.Lookup(bodyData.armUpperSkin);
 					}
-					else if (resource == Db.Get().AccessorySlots.LegSkin)
+					else if (accessorySlot == Db.Get().AccessorySlots.LegSkin)
 					{
-						accessory = resource.Lookup(result.legSkin);
+						accessory = accessorySlot.Lookup(bodyData.legSkin);
 					}
-					else if (resource == Db.Get().AccessorySlots.Leg)
+					else if (accessorySlot == Db.Get().AccessorySlots.Leg)
 					{
-						accessory = resource.Lookup(result.legs);
+						accessory = accessorySlot.Lookup(bodyData.legs);
 					}
-					else if (resource == Db.Get().AccessorySlots.Belt)
+					else if (accessorySlot == Db.Get().AccessorySlots.Belt)
 					{
-						accessory = resource.Lookup(result.belt);
+						accessory = accessorySlot.Lookup(bodyData.belt);
 					}
-					else if (resource == Db.Get().AccessorySlots.Neck)
+					else if (accessorySlot == Db.Get().AccessorySlots.Neck)
 					{
-						accessory = resource.Lookup(result.neck);
+						accessory = accessorySlot.Lookup(bodyData.neck);
 					}
-					else if (resource == Db.Get().AccessorySlots.Pelvis)
+					else if (accessorySlot == Db.Get().AccessorySlots.Pelvis)
 					{
-						accessory = resource.Lookup(result.pelvis);
+						accessory = accessorySlot.Lookup(bodyData.pelvis);
 					}
-					else if (resource == Db.Get().AccessorySlots.Foot)
+					else if (accessorySlot == Db.Get().AccessorySlots.Foot)
 					{
-						accessory = resource.Lookup(result.foot);
+						accessory = accessorySlot.Lookup(bodyData.foot);
 					}
-					else if (resource == Db.Get().AccessorySlots.Cuff)
+					else if (accessorySlot == Db.Get().AccessorySlots.Cuff)
 					{
-						accessory = resource.Lookup(result.cuff);
+						accessory = accessorySlot.Lookup(bodyData.cuff);
 					}
-					else if (resource == Db.Get().AccessorySlots.Hand)
+					else if (accessorySlot == Db.Get().AccessorySlots.Hand)
 					{
-						accessory = resource.Lookup(result.hand);
+						accessory = accessorySlot.Lookup(bodyData.hand);
 					}
 					if (accessory != null)
 					{
@@ -172,79 +173,137 @@ public class Accessorizer : KMonoBehaviour
 						accessories.Add(item);
 					}
 				}
-				return result;
 			}
+			return bodyData;
 		}
 		return default(KCompBuilder.BodyData);
 	}
 
+	// Token: 0x06002C0C RID: 11276 RVA: 0x001EA5B4 File Offset: 0x001E87B4
 	public bool HasAccessory(Accessory accessory)
 	{
-		return accessories.Exists((ResourceRef<Accessory> x) => x.Get() == accessory);
+		return this.accessories.Exists((ResourceRef<Accessory> x) => x.Get() == accessory);
 	}
 
+	// Token: 0x06002C0D RID: 11277 RVA: 0x001EA5E8 File Offset: 0x001E87E8
 	public Accessory GetAccessory(AccessorySlot slot)
 	{
-		for (int i = 0; i < accessories.Count; i++)
+		for (int i = 0; i < this.accessories.Count; i++)
 		{
-			if (accessories[i].Get() != null && accessories[i].Get().slot == slot)
+			if (this.accessories[i].Get() != null && this.accessories[i].Get().slot == slot)
 			{
-				return accessories[i].Get();
+				return this.accessories[i].Get();
 			}
 		}
 		return null;
 	}
 
+	// Token: 0x06002C0E RID: 11278 RVA: 0x001EA64C File Offset: 0x001E884C
 	public void ApplyMinionPersonality(Personality personality)
 	{
-		bodyData = MinionStartingStats.CreateBodyData(personality);
-		accessories.Clear();
-		if (animController == null)
+		this.bodyData = MinionStartingStats.CreateBodyData(personality);
+		this.accessories.Clear();
+		if (this.animController == null)
 		{
-			animController = GetComponent<KAnimControllerBase>();
+			this.animController = base.GetComponent<KAnimControllerBase>();
 		}
-		string[] array = new string[9] { "snapTo_hat", "snapTo_hat_hair", "snapTo_goggles", "snapTo_headFX", "snapTo_neck", "snapTo_chest", "snapTo_pivot", "skirt", "necklace" };
-		foreach (string text in array)
+		foreach (string text in new string[]
 		{
-			animController.GetComponent<SymbolOverrideController>().RemoveSymbolOverride(text);
-			animController.SetSymbolVisiblity(text, is_visible: false);
+			"snapTo_hat",
+			"snapTo_hat_hair",
+			"snapTo_goggles",
+			"snapTo_headFX",
+			"snapTo_neck",
+			"snapTo_chest",
+			"snapTo_pivot",
+			"skirt",
+			"necklace"
+		})
+		{
+			this.animController.GetComponent<SymbolOverrideController>().RemoveSymbolOverride(text, 0);
+			this.animController.SetSymbolVisiblity(text, false);
 		}
-		AddAccessory(Db.Get().AccessorySlots.Eyes.Lookup(bodyData.eyes));
-		AddAccessory(Db.Get().AccessorySlots.Hair.Lookup(bodyData.hair));
-		AddAccessory(Db.Get().AccessorySlots.HatHair.Lookup("hat_" + HashCache.Get().Get(bodyData.hair)));
-		AddAccessory(Db.Get().AccessorySlots.HeadShape.Lookup(bodyData.headShape));
-		AddAccessory(Db.Get().AccessorySlots.Mouth.Lookup(bodyData.mouth));
-		AddAccessory(Db.Get().AccessorySlots.Body.Lookup(bodyData.body));
-		AddAccessory(Db.Get().AccessorySlots.Arm.Lookup(bodyData.arms));
-		AddAccessory(Db.Get().AccessorySlots.ArmLower.Lookup(bodyData.armslower));
-		AddAccessory(Db.Get().AccessorySlots.Neck.Lookup(bodyData.neck));
-		AddAccessory(Db.Get().AccessorySlots.Pelvis.Lookup(bodyData.pelvis));
-		AddAccessory(Db.Get().AccessorySlots.Leg.Lookup(bodyData.legs));
-		AddAccessory(Db.Get().AccessorySlots.Foot.Lookup(bodyData.foot));
-		AddAccessory(Db.Get().AccessorySlots.Hand.Lookup(bodyData.hand));
-		AddAccessory(Db.Get().AccessorySlots.Cuff.Lookup(bodyData.cuff));
-		AddAccessory(Db.Get().AccessorySlots.Belt.Lookup(bodyData.belt));
-		AddAccessory(Db.Get().AccessorySlots.ArmLowerSkin.Lookup(bodyData.armLowerSkin));
-		AddAccessory(Db.Get().AccessorySlots.ArmUpperSkin.Lookup(bodyData.armUpperSkin));
-		AddAccessory(Db.Get().AccessorySlots.LegSkin.Lookup(bodyData.legSkin));
-		UpdateHairBasedOnHat();
+		this.AddAccessory(Db.Get().AccessorySlots.Eyes.Lookup(this.bodyData.eyes));
+		this.AddAccessory(Db.Get().AccessorySlots.Hair.Lookup(this.bodyData.hair));
+		this.AddAccessory(Db.Get().AccessorySlots.HatHair.Lookup("hat_" + HashCache.Get().Get(this.bodyData.hair)));
+		this.AddAccessory(Db.Get().AccessorySlots.HeadShape.Lookup(this.bodyData.headShape));
+		this.AddAccessory(Db.Get().AccessorySlots.Mouth.Lookup(this.bodyData.mouth));
+		this.AddAccessory(Db.Get().AccessorySlots.Body.Lookup(this.bodyData.body));
+		this.AddAccessory(Db.Get().AccessorySlots.Arm.Lookup(this.bodyData.arms));
+		this.AddAccessory(Db.Get().AccessorySlots.ArmLower.Lookup(this.bodyData.armslower));
+		this.AddAccessory(Db.Get().AccessorySlots.Neck.Lookup(this.bodyData.neck));
+		this.AddAccessory(Db.Get().AccessorySlots.Pelvis.Lookup(this.bodyData.pelvis));
+		this.AddAccessory(Db.Get().AccessorySlots.Leg.Lookup(this.bodyData.legs));
+		this.AddAccessory(Db.Get().AccessorySlots.Foot.Lookup(this.bodyData.foot));
+		this.AddAccessory(Db.Get().AccessorySlots.Hand.Lookup(this.bodyData.hand));
+		this.AddAccessory(Db.Get().AccessorySlots.Cuff.Lookup(this.bodyData.cuff));
+		this.AddAccessory(Db.Get().AccessorySlots.Belt.Lookup(this.bodyData.belt));
+		this.AddAccessory(Db.Get().AccessorySlots.ArmLowerSkin.Lookup(this.bodyData.armLowerSkin));
+		this.AddAccessory(Db.Get().AccessorySlots.ArmUpperSkin.Lookup(this.bodyData.armUpperSkin));
+		this.AddAccessory(Db.Get().AccessorySlots.LegSkin.Lookup(this.bodyData.legSkin));
+		this.UpdateHairBasedOnHat();
 	}
 
+	// Token: 0x06002C0F RID: 11279 RVA: 0x001EA9CC File Offset: 0x001E8BCC
+	public void ApplyBodyData(KCompBuilder.BodyData bodyData)
+	{
+		this.accessories.Clear();
+		if (this.animController == null)
+		{
+			this.animController = base.GetComponent<KAnimControllerBase>();
+		}
+		foreach (string text in new string[]
+		{
+			"snapTo_hat",
+			"snapTo_hat_hair",
+			"snapTo_goggles",
+			"snapTo_headFX",
+			"snapTo_neck",
+			"snapTo_chest",
+			"snapTo_pivot",
+			"skirt",
+			"necklace"
+		})
+		{
+			this.animController.GetComponent<SymbolOverrideController>().RemoveSymbolOverride(text, 0);
+			this.animController.SetSymbolVisiblity(text, false);
+		}
+		this.AddAccessory(Db.Get().AccessorySlots.Eyes.Lookup(bodyData.eyes));
+		this.AddAccessory(Db.Get().AccessorySlots.Hair.Lookup(bodyData.hair));
+		this.AddAccessory(Db.Get().AccessorySlots.HatHair.Lookup("hat_" + HashCache.Get().Get(bodyData.hair)));
+		this.AddAccessory(Db.Get().AccessorySlots.HeadShape.Lookup(bodyData.headShape));
+		this.AddAccessory(Db.Get().AccessorySlots.Mouth.Lookup(bodyData.mouth));
+		this.AddAccessory(Db.Get().AccessorySlots.Body.Lookup(bodyData.body));
+		this.AddAccessory(Db.Get().AccessorySlots.Arm.Lookup(bodyData.arms));
+		this.AddAccessory(Db.Get().AccessorySlots.ArmLower.Lookup(bodyData.armslower));
+		this.AddAccessory(Db.Get().AccessorySlots.Neck.Lookup(bodyData.neck));
+		this.AddAccessory(Db.Get().AccessorySlots.Pelvis.Lookup(bodyData.pelvis));
+		this.AddAccessory(Db.Get().AccessorySlots.Leg.Lookup(bodyData.legs));
+		this.AddAccessory(Db.Get().AccessorySlots.Foot.Lookup(bodyData.foot));
+		this.AddAccessory(Db.Get().AccessorySlots.Hand.Lookup(bodyData.hand));
+		this.AddAccessory(Db.Get().AccessorySlots.Cuff.Lookup(bodyData.cuff));
+		this.AddAccessory(Db.Get().AccessorySlots.Belt.Lookup(bodyData.belt));
+		this.AddAccessory(Db.Get().AccessorySlots.ArmLowerSkin.Lookup(bodyData.armLowerSkin));
+		this.AddAccessory(Db.Get().AccessorySlots.ArmUpperSkin.Lookup(bodyData.armUpperSkin));
+		this.AddAccessory(Db.Get().AccessorySlots.LegSkin.Lookup(bodyData.legSkin));
+		this.UpdateHairBasedOnHat();
+	}
+
+	// Token: 0x06002C10 RID: 11280 RVA: 0x001EACE4 File Offset: 0x001E8EE4
 	public void UpdateHairBasedOnHat()
 	{
-		if (!GetAccessory(Db.Get().AccessorySlots.Hat).IsNullOrDestroyed())
+		if (!this.GetAccessory(Db.Get().AccessorySlots.Hat).IsNullOrDestroyed())
 		{
-			animController.SetSymbolVisiblity(Db.Get().AccessorySlots.Hair.targetSymbolId, is_visible: false);
-			animController.SetSymbolVisiblity(Db.Get().AccessorySlots.HatHair.targetSymbolId, is_visible: true);
+			this.animController.SetSymbolVisiblity(Db.Get().AccessorySlots.Hair.targetSymbolId, false);
+			this.animController.SetSymbolVisiblity(Db.Get().AccessorySlots.HatHair.targetSymbolId, true);
+			return;
 		}
-		else
-		{
-			animController.SetSymbolVisiblity(Db.Get().AccessorySlots.Hair.targetSymbolId, is_visible: true);
-			animController.SetSymbolVisiblity(Db.Get().AccessorySlots.HatHair.targetSymbolId, is_visible: false);
-			animController.SetSymbolVisiblity(Db.Get().AccessorySlots.Hat.targetSymbolId, is_visible: false);
-		}
+		this.animController.SetSymbolVisiblity(Db.Get().AccessorySlots.Hair.targetSymbolId, true);
+		this.animController.SetSymbolVisiblity(Db.Get().AccessorySlots.HatHair.targetSymbolId, false);
+		this.animController.SetSymbolVisiblity(Db.Get().AccessorySlots.Hat.targetSymbolId, false);
 	}
 
+	// Token: 0x06002C11 RID: 11281 RVA: 0x001EADB4 File Offset: 0x001E8FB4
 	public void GetBodySlots(ref KCompBuilder.BodyData fd)
 	{
 		fd.eyes = HashedString.Invalid;
@@ -267,9 +326,9 @@ public class Accessorizer : KMonoBehaviour
 		fd.necklace = HashedString.Invalid;
 		fd.cuff = HashedString.Invalid;
 		fd.hand = HashedString.Invalid;
-		for (int i = 0; i < accessories.Count; i++)
+		for (int i = 0; i < this.accessories.Count; i++)
 		{
-			Accessory accessory = accessories[i].Get();
+			Accessory accessory = this.accessories[i].Get();
 			if (accessory != null)
 			{
 				if (accessory.slot.Id == "Eyes")
@@ -355,4 +414,16 @@ public class Accessorizer : KMonoBehaviour
 			}
 		}
 	}
+
+	// Token: 0x04001D9C RID: 7580
+	[Serialize]
+	private List<ResourceRef<Accessory>> accessories = new List<ResourceRef<Accessory>>();
+
+	// Token: 0x04001D9D RID: 7581
+	[MyCmpReq]
+	private KAnimControllerBase animController;
+
+	// Token: 0x04001D9E RID: 7582
+	[Serialize]
+	private List<ResourceRef<ClothingItemResource>> clothingItems = new List<ResourceRef<ClothingItemResource>>();
 }

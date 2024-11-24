@@ -1,35 +1,50 @@
+﻿using System;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x02000284 RID: 644
 public class FloorLampConfig : IBuildingConfig
 {
-	public const string ID = "FloorLamp";
-
+	// Token: 0x0600098C RID: 2444 RVA: 0x001664E8 File Offset: 0x001646E8
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef("FloorLamp", 1, 2, "floorlamp_kanim", 10, 10f, BUILDINGS.CONSTRUCTION_MASS_KG.TIER1, MATERIALS.ALL_METALS, 800f, BuildLocationRule.OnFloor, noise: NOISE_POLLUTION.NONE, decor: BUILDINGS.DECOR.BONUS.TIER1);
-		obj.RequiresPowerInput = true;
-		obj.EnergyConsumptionWhenActive = 8f;
-		obj.SelfHeatKilowattsWhenActive = 0.5f;
-		obj.ViewMode = OverlayModes.Light.ID;
-		obj.AudioCategory = "Metal";
-		return obj;
+		string id = "FloorLamp";
+		int width = 1;
+		int height = 2;
+		string anim = "floorlamp_kanim";
+		int hitpoints = 10;
+		float construction_time = 10f;
+		float[] tier = BUILDINGS.CONSTRUCTION_MASS_KG.TIER1;
+		string[] all_METALS = MATERIALS.ALL_METALS;
+		float melting_point = 800f;
+		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
+		EffectorValues none = NOISE_POLLUTION.NONE;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, all_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.BONUS.TIER1, none, 0.2f);
+		buildingDef.RequiresPowerInput = true;
+		buildingDef.EnergyConsumptionWhenActive = 8f;
+		buildingDef.SelfHeatKilowattsWhenActive = 0.5f;
+		buildingDef.ViewMode = OverlayModes.Light.ID;
+		buildingDef.AudioCategory = "Metal";
+		return buildingDef;
 	}
 
+	// Token: 0x0600098D RID: 2445 RVA: 0x00166564 File Offset: 0x00164764
 	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
 		LightShapePreview lightShapePreview = go.AddComponent<LightShapePreview>();
 		lightShapePreview.lux = 1000;
 		lightShapePreview.radius = 4f;
-		lightShapePreview.shape = LightShape.Circle;
+		lightShapePreview.shape = global::LightShape.Circle;
 		lightShapePreview.offset = new CellOffset((int)def.BuildingComplete.GetComponent<Light2D>().Offset.x, (int)def.BuildingComplete.GetComponent<Light2D>().Offset.y);
 	}
 
+	// Token: 0x0600098E RID: 2446 RVA: 0x000A6415 File Offset: 0x000A4615
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.LightSource);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.LightSource, false);
 	}
 
+	// Token: 0x0600098F RID: 2447 RVA: 0x001665CC File Offset: 0x001647CC
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<EnergyConsumer>();
@@ -41,8 +56,11 @@ public class FloorLampConfig : IBuildingConfig
 		light2D.Angle = 0f;
 		light2D.Direction = LIGHT2D.FLOORLAMP_DIRECTION;
 		light2D.Offset = LIGHT2D.FLOORLAMP_OFFSET;
-		light2D.shape = LightShape.Circle;
+		light2D.shape = global::LightShape.Circle;
 		light2D.drawOverlay = true;
 		go.AddOrGetDef<LightController.Def>();
 	}
+
+	// Token: 0x04000730 RID: 1840
+	public const string ID = "FloorLamp";
 }

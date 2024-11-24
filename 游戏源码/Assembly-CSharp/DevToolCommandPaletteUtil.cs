@@ -1,19 +1,26 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 
+// Token: 0x02000BA2 RID: 2978
 public static class DevToolCommandPaletteUtil
 {
+	// Token: 0x06003917 RID: 14615 RVA: 0x0021D604 File Offset: 0x0021B804
 	public static List<DevToolCommandPalette.Command> GenerateDefaultCommandPalette()
 	{
 		List<DevToolCommandPalette.Command> list = new List<DevToolCommandPalette.Command>();
-		foreach (Type devToolType in ReflectionUtil.CollectTypesThatInheritOrImplement<DevTool>())
+		using (List<Type>.Enumerator enumerator = ReflectionUtil.CollectTypesThatInheritOrImplement<DevTool>(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy).GetEnumerator())
 		{
-			if (!devToolType.IsAbstract && ReflectionUtil.HasDefaultConstructor(devToolType))
+			while (enumerator.MoveNext())
 			{
-				list.Add(new DevToolCommandPalette.Command("Open DevTool: \"" + DevToolUtil.GenerateDevToolName(devToolType) + "\"", delegate
+				Type devToolType = enumerator.Current;
+				if (!devToolType.IsAbstract && ReflectionUtil.HasDefaultConstructor(devToolType))
 				{
-					DevToolUtil.Open((DevTool)Activator.CreateInstance(devToolType));
-				}));
+					list.Add(new DevToolCommandPalette.Command("Open DevTool: \"" + DevToolUtil.GenerateDevToolName(devToolType) + "\"", delegate()
+					{
+						DevToolUtil.Open((DevTool)Activator.CreateInstance(devToolType));
+					}));
+				}
 			}
 		}
 		return list;

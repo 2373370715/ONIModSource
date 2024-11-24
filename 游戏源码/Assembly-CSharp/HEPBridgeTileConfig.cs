@@ -1,37 +1,51 @@
+﻿using System;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x0200037D RID: 893
 public class HEPBridgeTileConfig : IBuildingConfig
 {
-	public const string ID = "HEPBridgeTile";
-
-	public override string[] GetDlcIds()
+	// Token: 0x06000E96 RID: 3734 RVA: 0x000A5F1F File Offset: 0x000A411F
+	public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
+	// Token: 0x06000E97 RID: 3735 RVA: 0x00179754 File Offset: 0x00177954
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef("HEPBridgeTile", 2, 1, "radbolt_joint_plate_kanim", 100, 3f, BUILDINGS.CONSTRUCTION_MASS_KG.TIER3, MATERIALS.PLASTICS, 1600f, BuildLocationRule.Tile, noise: NOISE_POLLUTION.NONE, decor: BUILDINGS.DECOR.PENALTY.TIER5);
-		obj.Overheatable = false;
-		obj.UseStructureTemperature = false;
-		obj.Floodable = false;
-		obj.Entombable = false;
-		obj.AudioCategory = "Plastic";
-		obj.AudioSize = "small";
-		obj.BaseTimeUntilRepair = -1f;
-		obj.InitialOrientation = Orientation.R180;
-		obj.ForegroundLayer = Grid.SceneLayer.TileMain;
-		obj.PermittedRotations = PermittedRotations.R360;
-		obj.ViewMode = OverlayModes.Radiation.ID;
-		obj.UseHighEnergyParticleInputPort = true;
-		obj.HighEnergyParticleInputOffset = new CellOffset(1, 0);
-		obj.UseHighEnergyParticleOutputPort = true;
-		obj.HighEnergyParticleOutputOffset = new CellOffset(0, 0);
+		string id = "HEPBridgeTile";
+		int width = 2;
+		int height = 1;
+		string anim = "radbolt_joint_plate_kanim";
+		int hitpoints = 100;
+		float construction_time = 3f;
+		float[] tier = BUILDINGS.CONSTRUCTION_MASS_KG.TIER3;
+		string[] plastics = MATERIALS.PLASTICS;
+		float melting_point = 1600f;
+		BuildLocationRule build_location_rule = BuildLocationRule.Tile;
+		EffectorValues none = NOISE_POLLUTION.NONE;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, plastics, melting_point, build_location_rule, BUILDINGS.DECOR.PENALTY.TIER5, none, 0.2f);
+		buildingDef.Overheatable = false;
+		buildingDef.UseStructureTemperature = false;
+		buildingDef.Floodable = false;
+		buildingDef.Entombable = false;
+		buildingDef.AudioCategory = "Plastic";
+		buildingDef.AudioSize = "small";
+		buildingDef.BaseTimeUntilRepair = -1f;
+		buildingDef.InitialOrientation = Orientation.R180;
+		buildingDef.ForegroundLayer = Grid.SceneLayer.TileMain;
+		buildingDef.PermittedRotations = PermittedRotations.R360;
+		buildingDef.ViewMode = OverlayModes.Radiation.ID;
+		buildingDef.UseHighEnergyParticleInputPort = true;
+		buildingDef.HighEnergyParticleInputOffset = new CellOffset(1, 0);
+		buildingDef.UseHighEnergyParticleOutputPort = true;
+		buildingDef.HighEnergyParticleOutputOffset = new CellOffset(0, 0);
 		GeneratedBuildings.RegisterWithOverlay(OverlayScreen.RadiationIDs, "HEPBridgeTile");
-		return obj;
+		return buildingDef;
 	}
 
+	// Token: 0x06000E98 RID: 3736 RVA: 0x00179830 File Offset: 0x00177A30
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
@@ -48,6 +62,7 @@ public class HEPBridgeTileConfig : IBuildingConfig
 		highEnergyParticleRedirector.Direction = EightDirection.Right;
 	}
 
+	// Token: 0x06000E99 RID: 3737 RVA: 0x000AC813 File Offset: 0x000AAA13
 	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
 		base.DoPostConfigurePreview(def, go);
@@ -55,17 +70,19 @@ public class HEPBridgeTileConfig : IBuildingConfig
 		go.AddOrGet<BuildingCellVisualizer>();
 	}
 
+	// Token: 0x06000E9A RID: 3738 RVA: 0x000AC82B File Offset: 0x000AAA2B
 	public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 		base.DoPostConfigureUnderConstruction(go);
 		go.AddOrGet<BuildingCellVisualizer>();
 	}
 
+	// Token: 0x06000E9B RID: 3739 RVA: 0x001798A8 File Offset: 0x00177AA8
 	public override void DoPostConfigureComplete(GameObject go)
 	{
-		go.GetComponent<KPrefabID>().AddTag(GameTags.HEPPassThrough);
+		go.GetComponent<KPrefabID>().AddTag(GameTags.HEPPassThrough, false);
 		go.AddOrGet<BuildingCellVisualizer>();
-		go.AddOrGetDef<MakeBaseSolid.Def>().solidOffsets = new CellOffset[1]
+		go.AddOrGetDef<MakeBaseSolid.Def>().solidOffsets = new CellOffset[]
 		{
 			new CellOffset(0, 0)
 		};
@@ -77,17 +94,22 @@ public class HEPBridgeTileConfig : IBuildingConfig
 			{
 			case Orientation.Neutral:
 				component2.Direction = EightDirection.Left;
-				break;
+				return;
 			case Orientation.R90:
 				component2.Direction = EightDirection.Up;
-				break;
+				return;
 			case Orientation.R180:
 				component2.Direction = EightDirection.Right;
-				break;
+				return;
 			case Orientation.R270:
 				component2.Direction = EightDirection.Down;
-				break;
+				return;
+			default:
+				return;
 			}
 		};
 	}
+
+	// Token: 0x04000A83 RID: 2691
+	public const string ID = "HEPBridgeTile";
 }

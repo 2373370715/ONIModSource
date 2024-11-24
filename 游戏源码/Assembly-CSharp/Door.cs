@@ -1,453 +1,175 @@
+﻿using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using KSerialization;
 using UnityEngine;
 
+// Token: 0x02000D3E RID: 3390
 [SerializationConfig(MemberSerialization.OptIn)]
 [AddComponentMenu("KMonoBehaviour/Workable/Door")]
 public class Door : Workable, ISaveLoadable, ISim200ms, INavDoor
 {
-	public enum DoorType
-	{
-		Pressure,
-		ManualPressure,
-		Internal,
-		Sealed
-	}
-
-	public enum ControlState
-	{
-		Auto,
-		Opened,
-		Locked,
-		NumStates
-	}
-
-	public class Controller : GameStateMachine<Controller, Controller.Instance, Door>
-	{
-		public class SealedStates : State
-		{
-			public class AwaitingUnlock : State
-			{
-				public State awaiting_arrival;
-
-				public State unlocking;
-			}
-
-			public State closed;
-
-			public AwaitingUnlock awaiting_unlock;
-
-			public State chore_pst;
-		}
-
-		public new class Instance : GameInstance
-		{
-			[MyCmpReq]
-			public Building building;
-
-			public Instance(Door door)
-				: base(door)
-			{
-			}
-
-			public void RefreshIsBlocked()
-			{
-				bool value = false;
-				int[] placementCells = building.PlacementCells;
-				foreach (int cell in placementCells)
-				{
-					if (Grid.Objects[cell, 40] != null)
-					{
-						value = true;
-						break;
-					}
-				}
-				base.sm.isBlocked.Set(value, base.smi);
-			}
-		}
-
-		public State open;
-
-		public State opening;
-
-		public State closed;
-
-		public State closing;
-
-		public State closedelay;
-
-		public State closeblocked;
-
-		public State locking;
-
-		public State locked;
-
-		public State unlocking;
-
-		public SealedStates Sealed;
-
-		public BoolParameter isOpen;
-
-		public BoolParameter isLocked;
-
-		public BoolParameter isBlocked;
-
-		public BoolParameter isSealed;
-
-		public BoolParameter sealDirectionRight;
-
-		public override void InitializeStates(out BaseState default_state)
-		{
-			base.serializable = SerializeType.Both_DEPRECATED;
-			default_state = closed;
-			root.Update("RefreshIsBlocked", delegate(Instance smi, float dt)
-			{
-				smi.RefreshIsBlocked();
-			}).ParamTransition(isSealed, Sealed.closed, GameStateMachine<Controller, Instance, Door, object>.IsTrue);
-			closeblocked.PlayAnim("open").ParamTransition(isOpen, open, GameStateMachine<Controller, Instance, Door, object>.IsTrue).ParamTransition(isBlocked, closedelay, GameStateMachine<Controller, Instance, Door, object>.IsFalse);
-			closedelay.PlayAnim("open").ScheduleGoTo(0.5f, closing).ParamTransition(isOpen, open, GameStateMachine<Controller, Instance, Door, object>.IsTrue)
-				.ParamTransition(isBlocked, closeblocked, GameStateMachine<Controller, Instance, Door, object>.IsTrue);
-			closing.ParamTransition(isBlocked, closeblocked, GameStateMachine<Controller, Instance, Door, object>.IsTrue).ToggleTag(GameTags.Transition).ToggleLoopingSound("Closing loop", (Instance smi) => smi.master.doorClosingSound, (Instance smi) => !string.IsNullOrEmpty(smi.master.doorClosingSound))
-				.Enter("SetParams", delegate(Instance smi)
-				{
-					smi.master.UpdateAnimAndSoundParams(smi.master.on);
-				})
-				.Update(delegate(Instance smi, float dt)
-				{
-					if (smi.master.doorClosingSound != null)
-					{
-						smi.master.loopingSounds.UpdateSecondParameter(smi.master.doorClosingSound, SOUND_PROGRESS_PARAMETER, smi.Get<KBatchedAnimController>().GetPositionPercent());
-					}
-				}, UpdateRate.SIM_33ms)
-				.Enter("SetActive", delegate(Instance smi)
-				{
-					smi.master.SetActive(active: true);
-				})
-				.Exit("SetActive", delegate(Instance smi)
-				{
-					smi.master.SetActive(active: false);
-				})
-				.PlayAnim("closing")
-				.OnAnimQueueComplete(closed);
-			open.PlayAnim("open").ParamTransition(isOpen, closeblocked, GameStateMachine<Controller, Instance, Door, object>.IsFalse).Enter("SetWorldStateOpen", delegate(Instance smi)
-			{
-				smi.master.SetWorldState();
-			});
-			closed.PlayAnim("closed").ParamTransition(isOpen, opening, GameStateMachine<Controller, Instance, Door, object>.IsTrue).ParamTransition(isLocked, locking, GameStateMachine<Controller, Instance, Door, object>.IsTrue)
-				.Enter("SetWorldStateClosed", delegate(Instance smi)
-				{
-					smi.master.SetWorldState();
-				});
-			locking.PlayAnim("locked_pre").OnAnimQueueComplete(locked).Enter("SetWorldStateClosed", delegate(Instance smi)
-			{
-				smi.master.SetWorldState();
-			});
-			locked.PlayAnim("locked").ParamTransition(isLocked, unlocking, GameStateMachine<Controller, Instance, Door, object>.IsFalse);
-			unlocking.PlayAnim("locked_pst").OnAnimQueueComplete(closed);
-			opening.ToggleTag(GameTags.Transition).ToggleLoopingSound("Opening loop", (Instance smi) => smi.master.doorOpeningSound, (Instance smi) => !string.IsNullOrEmpty(smi.master.doorOpeningSound)).Enter("SetParams", delegate(Instance smi)
-			{
-				smi.master.UpdateAnimAndSoundParams(smi.master.on);
-			})
-				.Update(delegate(Instance smi, float dt)
-				{
-					if (smi.master.doorOpeningSound != null)
-					{
-						smi.master.loopingSounds.UpdateSecondParameter(smi.master.doorOpeningSound, SOUND_PROGRESS_PARAMETER, smi.Get<KBatchedAnimController>().GetPositionPercent());
-					}
-				}, UpdateRate.SIM_33ms)
-				.Enter("SetActive", delegate(Instance smi)
-				{
-					smi.master.SetActive(active: true);
-				})
-				.Exit("SetActive", delegate(Instance smi)
-				{
-					smi.master.SetActive(active: false);
-				})
-				.PlayAnim("opening")
-				.OnAnimQueueComplete(open);
-			Sealed.Enter(delegate(Instance smi)
-			{
-				OccupyArea component = smi.master.GetComponent<OccupyArea>();
-				for (int i = 0; i < component.OccupiedCellsOffsets.Length; i++)
-				{
-					Grid.PreventFogOfWarReveal[Grid.OffsetCell(Grid.PosToCell(smi.master.gameObject), component.OccupiedCellsOffsets[i])] = false;
-				}
-				smi.sm.isLocked.Set(value: true, smi);
-				smi.master.controlState = ControlState.Locked;
-				smi.master.RefreshControlState();
-				if (smi.master.GetComponent<Unsealable>().facingRight)
-				{
-					smi.master.GetComponent<KBatchedAnimController>().FlipX = true;
-				}
-			}).Enter("SetWorldStateClosed", delegate(Instance smi)
-			{
-				smi.master.SetWorldState();
-			}).Exit(delegate(Instance smi)
-			{
-				smi.sm.isLocked.Set(value: false, smi);
-				smi.master.GetComponent<AccessControl>().controlEnabled = true;
-				smi.master.controlState = ControlState.Opened;
-				smi.master.RefreshControlState();
-				smi.sm.isOpen.Set(value: true, smi);
-				smi.sm.isLocked.Set(value: false, smi);
-				smi.sm.isSealed.Set(value: false, smi);
-			});
-			Sealed.closed.PlayAnim("sealed", KAnim.PlayMode.Once);
-			Sealed.awaiting_unlock.ToggleChore((Instance smi) => CreateUnsealChore(smi, approach_right: true), Sealed.chore_pst);
-			Sealed.chore_pst.Enter(delegate(Instance smi)
-			{
-				smi.master.hasBeenUnsealed = true;
-				if (smi.master.GetComponent<Unsealable>().unsealed)
-				{
-					smi.GoTo(opening);
-					FogOfWarMask.ClearMask(Grid.CellRight(Grid.PosToCell(smi.master.gameObject)));
-					FogOfWarMask.ClearMask(Grid.CellLeft(Grid.PosToCell(smi.master.gameObject)));
-				}
-				else
-				{
-					smi.GoTo(Sealed.closed);
-				}
-			});
-		}
-
-		private Chore CreateUnsealChore(Instance smi, bool approach_right)
-		{
-			return new WorkChore<Unsealable>(Db.Get().ChoreTypes.Toggle, smi.master);
-		}
-	}
-
-	[MyCmpReq]
-	private Operational operational;
-
-	[MyCmpGet]
-	private Rotatable rotatable;
-
-	[MyCmpReq]
-	private KBatchedAnimController animController;
-
-	[MyCmpReq]
-	public Building building;
-
-	[MyCmpGet]
-	private EnergyConsumer consumer;
-
-	[MyCmpAdd]
-	private LoopingSounds loopingSounds;
-
-	public Orientation verticalOrientation;
-
-	[SerializeField]
-	public bool hasComplexUserControls;
-
-	[SerializeField]
-	public float unpoweredAnimSpeed = 0.25f;
-
-	[SerializeField]
-	public float poweredAnimSpeed = 1f;
-
-	[SerializeField]
-	public DoorType doorType;
-
-	[SerializeField]
-	public bool allowAutoControl = true;
-
-	[SerializeField]
-	public string doorClosingSoundEventName;
-
-	[SerializeField]
-	public string doorOpeningSoundEventName;
-
-	private string doorClosingSound;
-
-	private string doorOpeningSound;
-
-	private static readonly HashedString SOUND_POWERED_PARAMETER = "doorPowered";
-
-	private static readonly HashedString SOUND_PROGRESS_PARAMETER = "doorProgress";
-
-	[Serialize]
-	private bool hasBeenUnsealed;
-
-	[Serialize]
-	private ControlState controlState;
-
-	private bool on;
-
-	private bool do_melt_check;
-
-	private int openCount;
-
-	private ControlState requestedState;
-
-	private Chore changeStateChore;
-
-	private Controller.Instance controller;
-
-	private LoggerFSS log;
-
-	private const float REFRESH_HACK_DELAY = 1f;
-
-	private bool doorOpenLiquidRefreshHack;
-
-	private float doorOpenLiquidRefreshTime;
-
-	private static readonly EventSystem.IntraObjectHandler<Door> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<Door>(delegate(Door component, object data)
-	{
-		component.OnCopySettings(data);
-	});
-
-	public static readonly HashedString OPEN_CLOSE_PORT_ID = new HashedString("DoorOpenClose");
-
-	private static readonly KAnimFile[] OVERRIDE_ANIMS = new KAnimFile[1] { Assets.GetAnim("anim_use_remote_kanim") };
-
-	private static readonly EventSystem.IntraObjectHandler<Door> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<Door>(delegate(Door component, object data)
-	{
-		component.OnOperationalChanged(data);
-	});
-
-	private static readonly EventSystem.IntraObjectHandler<Door> OnLogicValueChangedDelegate = new EventSystem.IntraObjectHandler<Door>(delegate(Door component, object data)
-	{
-		component.OnLogicValueChanged(data);
-	});
-
-	private bool applyLogicChange;
-
-	public ControlState CurrentState => controlState;
-
-	public ControlState RequestedState => requestedState;
-
-	public bool ShouldBlockFallingSand => rotatable.GetOrientation() != verticalOrientation;
-
-	public bool isSealed
-	{
-		get
-		{
-			if (controller != null)
-			{
-				return controller.sm.isSealed.Get(controller);
-			}
-			return false;
-		}
-	}
-
+	// Token: 0x0600424C RID: 16972 RVA: 0x002405BC File Offset: 0x0023E7BC
 	private void OnCopySettings(object data)
 	{
 		Door component = ((GameObject)data).GetComponent<Door>();
 		if (component != null)
 		{
-			QueueStateChange(component.requestedState);
+			this.QueueStateChange(component.requestedState);
 		}
 	}
 
+	// Token: 0x0600424D RID: 16973 RVA: 0x000CADBB File Offset: 0x000C8FBB
 	public Door()
 	{
-		SetOffsetTable(OffsetGroups.InvertedStandardTable);
+		base.SetOffsetTable(OffsetGroups.InvertedStandardTable);
 	}
 
+	// Token: 0x17000348 RID: 840
+	// (get) Token: 0x0600424E RID: 16974 RVA: 0x000CADEB File Offset: 0x000C8FEB
+	public Door.ControlState CurrentState
+	{
+		get
+		{
+			return this.controlState;
+		}
+	}
+
+	// Token: 0x17000349 RID: 841
+	// (get) Token: 0x0600424F RID: 16975 RVA: 0x000CADF3 File Offset: 0x000C8FF3
+	public Door.ControlState RequestedState
+	{
+		get
+		{
+			return this.requestedState;
+		}
+	}
+
+	// Token: 0x1700034A RID: 842
+	// (get) Token: 0x06004250 RID: 16976 RVA: 0x000CADFB File Offset: 0x000C8FFB
+	public bool ShouldBlockFallingSand
+	{
+		get
+		{
+			return this.rotatable.GetOrientation() != this.verticalOrientation;
+		}
+	}
+
+	// Token: 0x1700034B RID: 843
+	// (get) Token: 0x06004251 RID: 16977 RVA: 0x000CAE13 File Offset: 0x000C9013
+	public bool isSealed
+	{
+		get
+		{
+			return this.controller != null && this.controller.sm.isSealed.Get(this.controller);
+		}
+	}
+
+	// Token: 0x06004252 RID: 16978 RVA: 0x002405EC File Offset: 0x0023E7EC
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		overrideAnims = OVERRIDE_ANIMS;
-		synchronizeAnims = false;
-		SetWorkTime(3f);
-		if (!string.IsNullOrEmpty(doorClosingSoundEventName))
+		this.overrideAnims = Door.OVERRIDE_ANIMS;
+		this.synchronizeAnims = false;
+		base.SetWorkTime(3f);
+		if (!string.IsNullOrEmpty(this.doorClosingSoundEventName))
 		{
-			doorClosingSound = GlobalAssets.GetSound(doorClosingSoundEventName);
+			this.doorClosingSound = GlobalAssets.GetSound(this.doorClosingSoundEventName, false);
 		}
-		if (!string.IsNullOrEmpty(doorOpeningSoundEventName))
+		if (!string.IsNullOrEmpty(this.doorOpeningSoundEventName))
 		{
-			doorOpeningSound = GlobalAssets.GetSound(doorOpeningSoundEventName);
+			this.doorOpeningSound = GlobalAssets.GetSound(this.doorOpeningSoundEventName, false);
 		}
-		Subscribe(-905833192, OnCopySettingsDelegate);
+		base.Subscribe<Door>(-905833192, Door.OnCopySettingsDelegate);
 	}
 
-	private ControlState GetNextState(ControlState wantedState)
+	// Token: 0x06004253 RID: 16979 RVA: 0x000CAE3A File Offset: 0x000C903A
+	private Door.ControlState GetNextState(Door.ControlState wantedState)
 	{
-		return (ControlState)((int)(wantedState + 1) % 3);
+		return (wantedState + 1) % Door.ControlState.NumStates;
 	}
 
-	private static bool DisplacesGas(DoorType type)
+	// Token: 0x06004254 RID: 16980 RVA: 0x000CAE41 File Offset: 0x000C9041
+	private static bool DisplacesGas(Door.DoorType type)
 	{
-		return type != DoorType.Internal;
+		return type != Door.DoorType.Internal;
 	}
 
+	// Token: 0x06004255 RID: 16981 RVA: 0x0024066C File Offset: 0x0023E86C
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		if (GetComponent<KPrefabID>() != null)
+		if (base.GetComponent<KPrefabID>() != null)
 		{
-			log = new LoggerFSS("Door");
+			this.log = new LoggerFSS("Door", 35);
 		}
-		if (!allowAutoControl && controlState == ControlState.Auto)
+		if (!this.allowAutoControl && this.controlState == Door.ControlState.Auto)
 		{
-			controlState = ControlState.Locked;
+			this.controlState = Door.ControlState.Locked;
 		}
 		StructureTemperatureComponents structureTemperatures = GameComps.StructureTemperatures;
 		HandleVector<int>.Handle handle = structureTemperatures.GetHandle(base.gameObject);
-		if (DisplacesGas(doorType))
+		if (Door.DisplacesGas(this.doorType))
 		{
 			structureTemperatures.Bypass(handle);
 		}
-		controller = new Controller.Instance(this);
-		controller.StartSM();
-		if (doorType == DoorType.Sealed && !hasBeenUnsealed)
+		this.controller = new Door.Controller.Instance(this);
+		this.controller.StartSM();
+		if (this.doorType == Door.DoorType.Sealed && !this.hasBeenUnsealed)
 		{
-			Seal();
+			this.Seal();
 		}
-		UpdateDoorSpeed(operational.IsOperational);
-		Subscribe(-592767678, OnOperationalChangedDelegate);
-		Subscribe(824508782, OnOperationalChangedDelegate);
-		Subscribe(-801688580, OnLogicValueChangedDelegate);
-		requestedState = CurrentState;
-		ApplyRequestedControlState(force: true);
-		int num = ((rotatable.GetOrientation() == Orientation.Neutral) ? (building.Def.WidthInCells * (building.Def.HeightInCells - 1)) : 0);
-		int num2 = ((rotatable.GetOrientation() == Orientation.Neutral) ? building.Def.WidthInCells : building.Def.HeightInCells);
-		for (int i = 0; i != num2; i++)
+		this.UpdateDoorSpeed(this.operational.IsOperational);
+		base.Subscribe<Door>(-592767678, Door.OnOperationalChangedDelegate);
+		base.Subscribe<Door>(824508782, Door.OnOperationalChangedDelegate);
+		base.Subscribe<Door>(-801688580, Door.OnLogicValueChangedDelegate);
+		this.requestedState = this.CurrentState;
+		this.ApplyRequestedControlState(true);
+		int num = (this.rotatable.GetOrientation() == Orientation.Neutral) ? (this.building.Def.WidthInCells * (this.building.Def.HeightInCells - 1)) : 0;
+		int num2 = (this.rotatable.GetOrientation() == Orientation.Neutral) ? this.building.Def.WidthInCells : this.building.Def.HeightInCells;
+		for (int num3 = 0; num3 != num2; num3++)
 		{
-			int num3 = building.PlacementCells[num + i];
-			Grid.FakeFloor.Add(num3);
-			Pathfinding.Instance.AddDirtyNavGridCell(num3);
+			int num4 = this.building.PlacementCells[num + num3];
+			Grid.FakeFloor.Add(num4);
+			Pathfinding.Instance.AddDirtyNavGridCell(num4);
 		}
 		List<int> list = new List<int>();
-		int[] placementCells = building.PlacementCells;
-		foreach (int num4 in placementCells)
+		foreach (int num5 in this.building.PlacementCells)
 		{
-			Grid.HasDoor[num4] = true;
-			if (rotatable.IsRotated)
+			Grid.HasDoor[num5] = true;
+			if (this.rotatable.IsRotated)
 			{
-				list.Add(Grid.CellAbove(num4));
-				list.Add(Grid.CellBelow(num4));
+				list.Add(Grid.CellAbove(num5));
+				list.Add(Grid.CellBelow(num5));
 			}
 			else
 			{
-				list.Add(Grid.CellLeft(num4));
-				list.Add(Grid.CellRight(num4));
+				list.Add(Grid.CellLeft(num5));
+				list.Add(Grid.CellRight(num5));
 			}
-			SimMessages.SetCellProperties(num4, 8);
-			if (DisplacesGas(doorType))
+			SimMessages.SetCellProperties(num5, 8);
+			if (Door.DisplacesGas(this.doorType))
 			{
-				Grid.RenderedByWorld[num4] = false;
+				Grid.RenderedByWorld[num5] = false;
 			}
 		}
 	}
 
+	// Token: 0x06004256 RID: 16982 RVA: 0x002408AC File Offset: 0x0023EAAC
 	protected override void OnCleanUp()
 	{
-		UpdateDoorState(cleaningUp: true);
+		this.UpdateDoorState(true);
 		List<int> list = new List<int>();
-		int[] placementCells = building.PlacementCells;
-		foreach (int num in placementCells)
+		foreach (int num in this.building.PlacementCells)
 		{
 			SimMessages.ClearCellProperties(num, 12);
 			Grid.RenderedByWorld[num] = Grid.Element[num].substance.renderedByWorld;
 			Grid.FakeFloor.Remove(num);
 			if (Grid.Element[num].IsSolid)
 			{
-				SimMessages.ReplaceAndDisplaceElement(num, SimHashes.Vacuum, CellEventLogger.Instance.DoorOpen, 0f);
+				SimMessages.ReplaceAndDisplaceElement(num, SimHashes.Vacuum, CellEventLogger.Instance.DoorOpen, 0f, -1f, byte.MaxValue, 0, -1);
 			}
 			Pathfinding.Instance.AddDirtyNavGridCell(num);
-			if (rotatable.IsRotated)
+			if (this.rotatable.IsRotated)
 			{
 				list.Add(Grid.CellAbove(num));
 				list.Add(Grid.CellBelow(num));
@@ -458,11 +180,10 @@ public class Door : Workable, ISaveLoadable, ISim200ms, INavDoor
 				list.Add(Grid.CellRight(num));
 			}
 		}
-		placementCells = building.PlacementCells;
-		foreach (int num2 in placementCells)
+		foreach (int num2 in this.building.PlacementCells)
 		{
 			Grid.HasDoor[num2] = false;
-			Game.Instance.SetDupePassableSolid(num2, passable: false, Grid.Solid[num2]);
+			Game.Instance.SetDupePassableSolid(num2, false, Grid.Solid[num2]);
 			Grid.CritterImpassable[num2] = false;
 			Grid.DupeImpassable[num2] = false;
 			Pathfinding.Instance.AddDirtyNavGridCell(num2);
@@ -470,177 +191,187 @@ public class Door : Workable, ISaveLoadable, ISim200ms, INavDoor
 		base.OnCleanUp();
 	}
 
+	// Token: 0x06004257 RID: 16983 RVA: 0x000CAE4A File Offset: 0x000C904A
 	public void Seal()
 	{
-		controller.sm.isSealed.Set(value: true, controller);
+		this.controller.sm.isSealed.Set(true, this.controller, false);
 	}
 
+	// Token: 0x06004258 RID: 16984 RVA: 0x000CAE6A File Offset: 0x000C906A
 	public void OrderUnseal()
 	{
-		controller.GoTo(controller.sm.Sealed.awaiting_unlock);
+		this.controller.GoTo(this.controller.sm.Sealed.awaiting_unlock);
 	}
 
+	// Token: 0x06004259 RID: 16985 RVA: 0x00240A08 File Offset: 0x0023EC08
 	private void RefreshControlState()
 	{
-		switch (controlState)
+		switch (this.controlState)
 		{
-		case ControlState.Auto:
-			controller.sm.isLocked.Set(value: false, controller);
+		case Door.ControlState.Auto:
+			this.controller.sm.isLocked.Set(false, this.controller, false);
 			break;
-		case ControlState.Opened:
-			controller.sm.isLocked.Set(value: false, controller);
+		case Door.ControlState.Opened:
+			this.controller.sm.isLocked.Set(false, this.controller, false);
 			break;
-		case ControlState.Locked:
-			controller.sm.isLocked.Set(value: true, controller);
+		case Door.ControlState.Locked:
+			this.controller.sm.isLocked.Set(true, this.controller, false);
 			break;
 		}
-		Trigger(279163026, controlState);
-		SetWorldState();
-		GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Main, Db.Get().BuildingStatusItems.CurrentDoorControlState, this);
+		base.Trigger(279163026, this.controlState);
+		this.SetWorldState();
+		base.GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Main, Db.Get().BuildingStatusItems.CurrentDoorControlState, this);
 	}
 
+	// Token: 0x0600425A RID: 16986 RVA: 0x00240AD8 File Offset: 0x0023ECD8
 	private void OnOperationalChanged(object data)
 	{
-		bool isOperational = operational.IsOperational;
-		if (isOperational != on)
+		bool isOperational = this.operational.IsOperational;
+		if (isOperational != this.on)
 		{
-			UpdateDoorSpeed(isOperational);
-			if (on && GetComponent<KPrefabID>().HasTag(GameTags.Transition))
+			this.UpdateDoorSpeed(isOperational);
+			if (this.on && base.GetComponent<KPrefabID>().HasTag(GameTags.Transition))
 			{
-				SetActive(active: true);
+				this.SetActive(true);
+				return;
 			}
-			else
-			{
-				SetActive(active: false);
-			}
+			this.SetActive(false);
 		}
 	}
 
+	// Token: 0x0600425B RID: 16987 RVA: 0x00240B2C File Offset: 0x0023ED2C
 	private void UpdateDoorSpeed(bool powered)
 	{
-		on = powered;
-		UpdateAnimAndSoundParams(powered);
-		float positionPercent = animController.GetPositionPercent();
-		animController.Play(animController.CurrentAnim.hash, animController.PlayMode);
-		animController.SetPositionPercent(positionPercent);
+		this.on = powered;
+		this.UpdateAnimAndSoundParams(powered);
+		float positionPercent = this.animController.GetPositionPercent();
+		this.animController.Play(this.animController.CurrentAnim.hash, this.animController.PlayMode, 1f, 0f);
+		this.animController.SetPositionPercent(positionPercent);
 	}
 
+	// Token: 0x0600425C RID: 16988 RVA: 0x00240B90 File Offset: 0x0023ED90
 	private void UpdateAnimAndSoundParams(bool powered)
 	{
 		if (powered)
 		{
-			animController.PlaySpeedMultiplier = poweredAnimSpeed;
-			if (doorClosingSound != null)
+			this.animController.PlaySpeedMultiplier = this.poweredAnimSpeed;
+			if (this.doorClosingSound != null)
 			{
-				loopingSounds.UpdateFirstParameter(doorClosingSound, SOUND_POWERED_PARAMETER, 1f);
+				this.loopingSounds.UpdateFirstParameter(this.doorClosingSound, Door.SOUND_POWERED_PARAMETER, 1f);
 			}
-			if (doorOpeningSound != null)
+			if (this.doorOpeningSound != null)
 			{
-				loopingSounds.UpdateFirstParameter(doorOpeningSound, SOUND_POWERED_PARAMETER, 1f);
+				this.loopingSounds.UpdateFirstParameter(this.doorOpeningSound, Door.SOUND_POWERED_PARAMETER, 1f);
+				return;
 			}
 		}
 		else
 		{
-			animController.PlaySpeedMultiplier = unpoweredAnimSpeed;
-			if (doorClosingSound != null)
+			this.animController.PlaySpeedMultiplier = this.unpoweredAnimSpeed;
+			if (this.doorClosingSound != null)
 			{
-				loopingSounds.UpdateFirstParameter(doorClosingSound, SOUND_POWERED_PARAMETER, 0f);
+				this.loopingSounds.UpdateFirstParameter(this.doorClosingSound, Door.SOUND_POWERED_PARAMETER, 0f);
 			}
-			if (doorOpeningSound != null)
+			if (this.doorOpeningSound != null)
 			{
-				loopingSounds.UpdateFirstParameter(doorOpeningSound, SOUND_POWERED_PARAMETER, 0f);
+				this.loopingSounds.UpdateFirstParameter(this.doorOpeningSound, Door.SOUND_POWERED_PARAMETER, 0f);
 			}
 		}
 	}
 
+	// Token: 0x0600425D RID: 16989 RVA: 0x000CAE8C File Offset: 0x000C908C
 	private void SetActive(bool active)
 	{
-		if (operational.IsOperational)
+		if (this.operational.IsOperational)
 		{
-			operational.SetActive(active);
+			this.operational.SetActive(active, false);
 		}
 	}
 
+	// Token: 0x0600425E RID: 16990 RVA: 0x00240C50 File Offset: 0x0023EE50
 	private void SetWorldState()
 	{
-		int[] placementCells = building.PlacementCells;
-		bool is_door_open = IsOpen();
-		SetPassableState(is_door_open, placementCells);
-		SetSimState(is_door_open, placementCells);
+		int[] placementCells = this.building.PlacementCells;
+		bool is_door_open = this.IsOpen();
+		this.SetPassableState(is_door_open, placementCells);
+		this.SetSimState(is_door_open, placementCells);
 	}
 
+	// Token: 0x0600425F RID: 16991 RVA: 0x00240C80 File Offset: 0x0023EE80
 	private void SetPassableState(bool is_door_open, IList<int> cells)
 	{
 		for (int i = 0; i < cells.Count; i++)
 		{
 			int num = cells[i];
-			switch (doorType)
+			switch (this.doorType)
 			{
-			case DoorType.Pressure:
-			case DoorType.ManualPressure:
-			case DoorType.Sealed:
+			case Door.DoorType.Pressure:
+			case Door.DoorType.ManualPressure:
+			case Door.DoorType.Sealed:
 			{
-				Grid.CritterImpassable[num] = controlState != ControlState.Opened;
+				Grid.CritterImpassable[num] = (this.controlState != Door.ControlState.Opened);
 				bool solid = !is_door_open;
-				bool passable = controlState != ControlState.Locked;
+				bool passable = this.controlState != Door.ControlState.Locked;
 				Game.Instance.SetDupePassableSolid(num, passable, solid);
-				if (controlState == ControlState.Opened)
+				if (this.controlState == Door.ControlState.Opened)
 				{
-					doorOpenLiquidRefreshHack = true;
-					doorOpenLiquidRefreshTime = 1f;
+					this.doorOpenLiquidRefreshHack = true;
+					this.doorOpenLiquidRefreshTime = 1f;
 				}
 				break;
 			}
-			case DoorType.Internal:
-				Grid.CritterImpassable[num] = controlState != ControlState.Opened;
-				Grid.DupeImpassable[num] = controlState == ControlState.Locked;
+			case Door.DoorType.Internal:
+				Grid.CritterImpassable[num] = (this.controlState != Door.ControlState.Opened);
+				Grid.DupeImpassable[num] = (this.controlState == Door.ControlState.Locked);
 				break;
 			}
 			Pathfinding.Instance.AddDirtyNavGridCell(num);
 		}
 	}
 
+	// Token: 0x06004260 RID: 16992 RVA: 0x00240D58 File Offset: 0x0023EF58
 	private void SetSimState(bool is_door_open, IList<int> cells)
 	{
-		PrimaryElement component = GetComponent<PrimaryElement>();
+		PrimaryElement component = base.GetComponent<PrimaryElement>();
 		float mass = component.Mass / (float)cells.Count;
 		for (int i = 0; i < cells.Count; i++)
 		{
 			int num = cells[i];
-			DoorType doorType = this.doorType;
-			if ((uint)doorType > 1u && doorType != DoorType.Sealed)
+			Door.DoorType doorType = this.doorType;
+			if (doorType <= Door.DoorType.ManualPressure || doorType == Door.DoorType.Sealed)
 			{
-				continue;
-			}
-			World.Instance.groundRenderer.MarkDirty(num);
-			if (is_door_open)
-			{
-				SimMessages.Dig(num, Game.Instance.callbackManager.Add(new Game.CallbackInfo(OnSimDoorOpened)).index, skipEvent: true);
-				if (ShouldBlockFallingSand)
+				World.Instance.groundRenderer.MarkDirty(num);
+				if (is_door_open)
 				{
-					SimMessages.ClearCellProperties(num, 4);
+					SimMessages.Dig(num, Game.Instance.callbackManager.Add(new Game.CallbackInfo(new System.Action(this.OnSimDoorOpened), false)).index, true);
+					if (this.ShouldBlockFallingSand)
+					{
+						SimMessages.ClearCellProperties(num, 4);
+					}
+					else
+					{
+						SimMessages.SetCellProperties(num, 4);
+					}
 				}
 				else
 				{
+					HandleVector<Game.CallbackInfo>.Handle handle = Game.Instance.callbackManager.Add(new Game.CallbackInfo(new System.Action(this.OnSimDoorClosed), false));
+					float temperature = component.Temperature;
+					if (temperature <= 0f)
+					{
+						temperature = component.Temperature;
+					}
+					SimMessages.ReplaceAndDisplaceElement(num, component.ElementID, CellEventLogger.Instance.DoorClose, mass, temperature, byte.MaxValue, 0, handle.index);
 					SimMessages.SetCellProperties(num, 4);
 				}
-				continue;
 			}
-			HandleVector<Game.CallbackInfo>.Handle handle = Game.Instance.callbackManager.Add(new Game.CallbackInfo(OnSimDoorClosed));
-			float temperature = component.Temperature;
-			if (temperature <= 0f)
-			{
-				temperature = component.Temperature;
-			}
-			SimMessages.ReplaceAndDisplaceElement(num, component.ElementID, CellEventLogger.Instance.DoorClose, mass, temperature, byte.MaxValue, 0, handle.index);
-			SimMessages.SetCellProperties(num, 4);
 		}
 	}
 
+	// Token: 0x06004261 RID: 16993 RVA: 0x00240E78 File Offset: 0x0023F078
 	private void UpdateDoorState(bool cleaningUp)
 	{
-		int[] placementCells = building.PlacementCells;
-		foreach (int num in placementCells)
+		foreach (int num in this.building.PlacementCells)
 		{
 			if (Grid.IsValidCell(num))
 			{
@@ -649,83 +380,89 @@ public class Door : Workable, ISaveLoadable, ISim200ms, INavDoor
 		}
 	}
 
-	public void QueueStateChange(ControlState nextState)
+	// Token: 0x06004262 RID: 16994 RVA: 0x00240EBC File Offset: 0x0023F0BC
+	public void QueueStateChange(Door.ControlState nextState)
 	{
-		if (requestedState != nextState)
+		if (this.requestedState != nextState)
 		{
-			requestedState = nextState;
+			this.requestedState = nextState;
 		}
 		else
 		{
-			requestedState = controlState;
+			this.requestedState = this.controlState;
 		}
-		if (requestedState == controlState)
+		if (this.requestedState == this.controlState)
 		{
-			if (changeStateChore != null)
+			if (this.changeStateChore != null)
 			{
-				changeStateChore.Cancel("Change state");
-				changeStateChore = null;
-				GetComponent<KSelectable>().RemoveStatusItem(Db.Get().BuildingStatusItems.ChangeDoorControlState);
+				this.changeStateChore.Cancel("Change state");
+				this.changeStateChore = null;
+				base.GetComponent<KSelectable>().RemoveStatusItem(Db.Get().BuildingStatusItems.ChangeDoorControlState, false);
 			}
+			return;
 		}
-		else if (DebugHandler.InstantBuildMode)
+		if (DebugHandler.InstantBuildMode)
 		{
-			controlState = requestedState;
-			RefreshControlState();
-			OnOperationalChanged(null);
-			GetComponent<KSelectable>().RemoveStatusItem(Db.Get().BuildingStatusItems.ChangeDoorControlState);
-			Open();
-			Close();
+			this.controlState = this.requestedState;
+			this.RefreshControlState();
+			this.OnOperationalChanged(null);
+			base.GetComponent<KSelectable>().RemoveStatusItem(Db.Get().BuildingStatusItems.ChangeDoorControlState, false);
+			this.Open();
+			this.Close();
+			return;
 		}
-		else
+		if (this.changeStateChore != null)
 		{
-			if (changeStateChore != null)
-			{
-				changeStateChore.Cancel("Change state");
-			}
-			GetComponent<KSelectable>().AddStatusItem(Db.Get().BuildingStatusItems.ChangeDoorControlState, this);
-			changeStateChore = new WorkChore<Door>(Db.Get().ChoreTypes.Toggle, this, null, run_until_complete: true, null, null, null, allow_in_red_alert: true, null, ignore_schedule_block: false, only_when_operational: false);
+			this.changeStateChore.Cancel("Change state");
 		}
+		base.GetComponent<KSelectable>().AddStatusItem(Db.Get().BuildingStatusItems.ChangeDoorControlState, this);
+		this.changeStateChore = new WorkChore<Door>(Db.Get().ChoreTypes.Toggle, this, null, true, null, null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 	}
 
+	// Token: 0x06004263 RID: 16995 RVA: 0x00240FDC File Offset: 0x0023F1DC
 	private void OnSimDoorOpened()
 	{
-		if (!(this == null) && DisplacesGas(doorType))
+		if (this == null || !Door.DisplacesGas(this.doorType))
 		{
-			StructureTemperatureComponents structureTemperatures = GameComps.StructureTemperatures;
-			HandleVector<int>.Handle handle = structureTemperatures.GetHandle(base.gameObject);
-			structureTemperatures.UnBypass(handle);
-			do_melt_check = false;
+			return;
 		}
+		StructureTemperatureComponents structureTemperatures = GameComps.StructureTemperatures;
+		HandleVector<int>.Handle handle = structureTemperatures.GetHandle(base.gameObject);
+		structureTemperatures.UnBypass(handle);
+		this.do_melt_check = false;
 	}
 
+	// Token: 0x06004264 RID: 16996 RVA: 0x00241020 File Offset: 0x0023F220
 	private void OnSimDoorClosed()
 	{
-		if (!(this == null) && DisplacesGas(doorType))
+		if (this == null || !Door.DisplacesGas(this.doorType))
 		{
-			StructureTemperatureComponents structureTemperatures = GameComps.StructureTemperatures;
-			HandleVector<int>.Handle handle = structureTemperatures.GetHandle(base.gameObject);
-			structureTemperatures.Bypass(handle);
-			do_melt_check = true;
+			return;
 		}
+		StructureTemperatureComponents structureTemperatures = GameComps.StructureTemperatures;
+		HandleVector<int>.Handle handle = structureTemperatures.GetHandle(base.gameObject);
+		structureTemperatures.Bypass(handle);
+		this.do_melt_check = true;
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+	// Token: 0x06004265 RID: 16997 RVA: 0x000CAEA8 File Offset: 0x000C90A8
+	protected override void OnCompleteWork(WorkerBase worker)
 	{
 		base.OnCompleteWork(worker);
-		changeStateChore = null;
-		ApplyRequestedControlState();
+		this.changeStateChore = null;
+		this.ApplyRequestedControlState(false);
 	}
 
+	// Token: 0x06004266 RID: 16998 RVA: 0x00241064 File Offset: 0x0023F264
 	public void Open()
 	{
-		if (openCount == 0 && DisplacesGas(doorType))
+		if (this.openCount == 0 && Door.DisplacesGas(this.doorType))
 		{
 			StructureTemperatureComponents structureTemperatures = GameComps.StructureTemperatures;
 			HandleVector<int>.Handle handle = structureTemperatures.GetHandle(base.gameObject);
 			if (handle.IsValid() && structureTemperatures.IsBypassed(handle))
 			{
-				int[] placementCells = building.PlacementCells;
+				int[] placementCells = this.building.PlacementCells;
 				float num = 0f;
 				int num2 = 0;
 				foreach (int i2 in placementCells)
@@ -739,152 +476,516 @@ public class Door : Workable, ISaveLoadable, ISim200ms, INavDoor
 				if (num2 > 0)
 				{
 					num /= (float)placementCells.Length;
-					PrimaryElement component = GetComponent<PrimaryElement>();
-					KCrashReporter.Assert(num > 0f, "Door has calculated an invalid temperature");
+					PrimaryElement component = base.GetComponent<PrimaryElement>();
+					KCrashReporter.Assert(num > 0f, "Door has calculated an invalid temperature", null);
 					component.Temperature = num;
 				}
 			}
 		}
-		openCount++;
-		ControlState controlState = this.controlState;
-		if ((uint)controlState > 1u)
+		this.openCount++;
+		Door.ControlState controlState = this.controlState;
+		if (controlState > Door.ControlState.Opened)
 		{
-			_ = 2;
+			return;
 		}
-		else
-		{
-			controller.sm.isOpen.Set(value: true, controller);
-		}
+		this.controller.sm.isOpen.Set(true, this.controller, false);
 	}
 
+	// Token: 0x06004267 RID: 16999 RVA: 0x00241178 File Offset: 0x0023F378
 	public void Close()
 	{
-		openCount = Mathf.Max(0, openCount - 1);
-		if (openCount == 0 && DisplacesGas(doorType))
+		this.openCount = Mathf.Max(0, this.openCount - 1);
+		if (this.openCount == 0 && Door.DisplacesGas(this.doorType))
 		{
 			StructureTemperatureComponents structureTemperatures = GameComps.StructureTemperatures;
 			HandleVector<int>.Handle handle = structureTemperatures.GetHandle(base.gameObject);
-			PrimaryElement component = GetComponent<PrimaryElement>();
+			PrimaryElement component = base.GetComponent<PrimaryElement>();
 			if (handle.IsValid() && !structureTemperatures.IsBypassed(handle))
 			{
 				float temperature = structureTemperatures.GetPayload(handle).Temperature;
 				component.Temperature = temperature;
 			}
 		}
-		switch (controlState)
+		switch (this.controlState)
 		{
-		case ControlState.Locked:
-			controller.sm.isOpen.Set(value: false, controller);
-			break;
-		case ControlState.Auto:
-			if (openCount == 0)
+		case Door.ControlState.Auto:
+			if (this.openCount == 0)
 			{
-				controller.sm.isOpen.Set(value: false, controller);
+				this.controller.sm.isOpen.Set(false, this.controller, false);
 				Game.Instance.userMenu.Refresh(base.gameObject);
 			}
 			break;
-		case ControlState.Opened:
+		case Door.ControlState.Opened:
 			break;
+		case Door.ControlState.Locked:
+			this.controller.sm.isOpen.Set(false, this.controller, false);
+			return;
+		default:
+			return;
 		}
 	}
 
+	// Token: 0x06004268 RID: 17000 RVA: 0x000CAEBF File Offset: 0x000C90BF
 	public bool IsPendingClose()
 	{
-		return controller.IsInsideState(controller.sm.closedelay);
+		return this.controller.IsInsideState(this.controller.sm.closedelay);
 	}
 
+	// Token: 0x06004269 RID: 17001 RVA: 0x0024126C File Offset: 0x0023F46C
 	public bool IsOpen()
 	{
-		if (!controller.IsInsideState(controller.sm.open) && !controller.IsInsideState(controller.sm.closedelay))
-		{
-			return controller.IsInsideState(controller.sm.closeblocked);
-		}
-		return true;
+		return this.controller.IsInsideState(this.controller.sm.open) || this.controller.IsInsideState(this.controller.sm.closedelay) || this.controller.IsInsideState(this.controller.sm.closeblocked);
 	}
 
+	// Token: 0x0600426A RID: 17002 RVA: 0x002412D0 File Offset: 0x0023F4D0
 	private void ApplyRequestedControlState(bool force = false)
 	{
-		if (requestedState != controlState || force)
+		if (this.requestedState == this.controlState && !force)
 		{
-			controlState = requestedState;
-			RefreshControlState();
-			OnOperationalChanged(null);
-			GetComponent<KSelectable>().RemoveStatusItem(Db.Get().BuildingStatusItems.ChangeDoorControlState);
-			Trigger(1734268753, this);
-			if (!force)
-			{
-				Open();
-				Close();
-			}
+			return;
+		}
+		this.controlState = this.requestedState;
+		this.RefreshControlState();
+		this.OnOperationalChanged(null);
+		base.GetComponent<KSelectable>().RemoveStatusItem(Db.Get().BuildingStatusItems.ChangeDoorControlState, false);
+		base.Trigger(1734268753, this);
+		if (!force)
+		{
+			this.Open();
+			this.Close();
 		}
 	}
 
+	// Token: 0x0600426B RID: 17003 RVA: 0x00241340 File Offset: 0x0023F540
 	public void OnLogicValueChanged(object data)
 	{
 		LogicValueChanged logicValueChanged = (LogicValueChanged)data;
-		if (!(logicValueChanged.portID != OPEN_CLOSE_PORT_ID))
+		if (logicValueChanged.portID != Door.OPEN_CLOSE_PORT_ID)
 		{
-			int newValue = logicValueChanged.newValue;
-			if (changeStateChore != null)
-			{
-				changeStateChore.Cancel("Change state");
-				changeStateChore = null;
-			}
-			bool flag = LogicCircuitNetwork.IsBitActive(0, newValue);
-			requestedState = (flag ? ControlState.Opened : ControlState.Locked);
-			applyLogicChange = true;
+			return;
 		}
+		int newValue = logicValueChanged.newValue;
+		if (this.changeStateChore != null)
+		{
+			this.changeStateChore.Cancel("Change state");
+			this.changeStateChore = null;
+		}
+		this.requestedState = (LogicCircuitNetwork.IsBitActive(0, newValue) ? Door.ControlState.Opened : Door.ControlState.Locked);
+		this.applyLogicChange = true;
 	}
 
+	// Token: 0x0600426C RID: 17004 RVA: 0x002413AC File Offset: 0x0023F5AC
 	public void Sim200ms(float dt)
 	{
 		if (this == null)
 		{
 			return;
 		}
-		int[] placementCells;
-		if (doorOpenLiquidRefreshHack)
+		if (this.doorOpenLiquidRefreshHack)
 		{
-			doorOpenLiquidRefreshTime -= dt;
-			if (doorOpenLiquidRefreshTime <= 0f)
+			this.doorOpenLiquidRefreshTime -= dt;
+			if (this.doorOpenLiquidRefreshTime <= 0f)
 			{
-				doorOpenLiquidRefreshHack = false;
-				placementCells = building.PlacementCells;
-				foreach (int cell in placementCells)
+				this.doorOpenLiquidRefreshHack = false;
+				foreach (int cell in this.building.PlacementCells)
 				{
 					Pathfinding.Instance.AddDirtyNavGridCell(cell);
 				}
 			}
 		}
-		if (applyLogicChange)
+		if (this.applyLogicChange)
 		{
-			applyLogicChange = false;
-			ApplyRequestedControlState();
+			this.applyLogicChange = false;
+			this.ApplyRequestedControlState(false);
 		}
-		if (!do_melt_check)
+		if (this.do_melt_check)
 		{
-			return;
-		}
-		StructureTemperatureComponents structureTemperatures = GameComps.StructureTemperatures;
-		HandleVector<int>.Handle handle = structureTemperatures.GetHandle(base.gameObject);
-		if (!handle.IsValid() || !structureTemperatures.IsBypassed(handle))
-		{
-			return;
-		}
-		placementCells = building.PlacementCells;
-		foreach (int i2 in placementCells)
-		{
-			if (!Grid.Solid[i2])
+			StructureTemperatureComponents structureTemperatures = GameComps.StructureTemperatures;
+			HandleVector<int>.Handle handle = structureTemperatures.GetHandle(base.gameObject);
+			if (handle.IsValid() && structureTemperatures.IsBypassed(handle))
 			{
-				Util.KDestroyGameObject(this);
-				break;
+				foreach (int i2 in this.building.PlacementCells)
+				{
+					if (!Grid.Solid[i2])
+					{
+						Util.KDestroyGameObject(this);
+						return;
+					}
+				}
 			}
 		}
 	}
 
-	[SpecialName]
+	// Token: 0x0600426E RID: 17006 RVA: 0x000CAEDC File Offset: 0x000C90DC
 	bool INavDoor.get_isSpawned()
 	{
 		return base.isSpawned;
+	}
+
+	// Token: 0x04002D2A RID: 11562
+	[MyCmpReq]
+	private Operational operational;
+
+	// Token: 0x04002D2B RID: 11563
+	[MyCmpGet]
+	private Rotatable rotatable;
+
+	// Token: 0x04002D2C RID: 11564
+	[MyCmpReq]
+	private KBatchedAnimController animController;
+
+	// Token: 0x04002D2D RID: 11565
+	[MyCmpReq]
+	public Building building;
+
+	// Token: 0x04002D2E RID: 11566
+	[MyCmpGet]
+	private EnergyConsumer consumer;
+
+	// Token: 0x04002D2F RID: 11567
+	[MyCmpAdd]
+	private LoopingSounds loopingSounds;
+
+	// Token: 0x04002D30 RID: 11568
+	public Orientation verticalOrientation;
+
+	// Token: 0x04002D31 RID: 11569
+	[SerializeField]
+	public bool hasComplexUserControls;
+
+	// Token: 0x04002D32 RID: 11570
+	[SerializeField]
+	public float unpoweredAnimSpeed = 0.25f;
+
+	// Token: 0x04002D33 RID: 11571
+	[SerializeField]
+	public float poweredAnimSpeed = 1f;
+
+	// Token: 0x04002D34 RID: 11572
+	[SerializeField]
+	public Door.DoorType doorType;
+
+	// Token: 0x04002D35 RID: 11573
+	[SerializeField]
+	public bool allowAutoControl = true;
+
+	// Token: 0x04002D36 RID: 11574
+	[SerializeField]
+	public string doorClosingSoundEventName;
+
+	// Token: 0x04002D37 RID: 11575
+	[SerializeField]
+	public string doorOpeningSoundEventName;
+
+	// Token: 0x04002D38 RID: 11576
+	private string doorClosingSound;
+
+	// Token: 0x04002D39 RID: 11577
+	private string doorOpeningSound;
+
+	// Token: 0x04002D3A RID: 11578
+	private static readonly HashedString SOUND_POWERED_PARAMETER = "doorPowered";
+
+	// Token: 0x04002D3B RID: 11579
+	private static readonly HashedString SOUND_PROGRESS_PARAMETER = "doorProgress";
+
+	// Token: 0x04002D3C RID: 11580
+	[Serialize]
+	private bool hasBeenUnsealed;
+
+	// Token: 0x04002D3D RID: 11581
+	[Serialize]
+	private Door.ControlState controlState;
+
+	// Token: 0x04002D3E RID: 11582
+	private bool on;
+
+	// Token: 0x04002D3F RID: 11583
+	private bool do_melt_check;
+
+	// Token: 0x04002D40 RID: 11584
+	private int openCount;
+
+	// Token: 0x04002D41 RID: 11585
+	private Door.ControlState requestedState;
+
+	// Token: 0x04002D42 RID: 11586
+	private Chore changeStateChore;
+
+	// Token: 0x04002D43 RID: 11587
+	private Door.Controller.Instance controller;
+
+	// Token: 0x04002D44 RID: 11588
+	private LoggerFSS log;
+
+	// Token: 0x04002D45 RID: 11589
+	private const float REFRESH_HACK_DELAY = 1f;
+
+	// Token: 0x04002D46 RID: 11590
+	private bool doorOpenLiquidRefreshHack;
+
+	// Token: 0x04002D47 RID: 11591
+	private float doorOpenLiquidRefreshTime;
+
+	// Token: 0x04002D48 RID: 11592
+	private static readonly EventSystem.IntraObjectHandler<Door> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<Door>(delegate(Door component, object data)
+	{
+		component.OnCopySettings(data);
+	});
+
+	// Token: 0x04002D49 RID: 11593
+	public static readonly HashedString OPEN_CLOSE_PORT_ID = new HashedString("DoorOpenClose");
+
+	// Token: 0x04002D4A RID: 11594
+	private static readonly KAnimFile[] OVERRIDE_ANIMS = new KAnimFile[]
+	{
+		Assets.GetAnim("anim_use_remote_kanim")
+	};
+
+	// Token: 0x04002D4B RID: 11595
+	private static readonly EventSystem.IntraObjectHandler<Door> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<Door>(delegate(Door component, object data)
+	{
+		component.OnOperationalChanged(data);
+	});
+
+	// Token: 0x04002D4C RID: 11596
+	private static readonly EventSystem.IntraObjectHandler<Door> OnLogicValueChangedDelegate = new EventSystem.IntraObjectHandler<Door>(delegate(Door component, object data)
+	{
+		component.OnLogicValueChanged(data);
+	});
+
+	// Token: 0x04002D4D RID: 11597
+	private bool applyLogicChange;
+
+	// Token: 0x02000D3F RID: 3391
+	public enum DoorType
+	{
+		// Token: 0x04002D4F RID: 11599
+		Pressure,
+		// Token: 0x04002D50 RID: 11600
+		ManualPressure,
+		// Token: 0x04002D51 RID: 11601
+		Internal,
+		// Token: 0x04002D52 RID: 11602
+		Sealed
+	}
+
+	// Token: 0x02000D40 RID: 3392
+	public enum ControlState
+	{
+		// Token: 0x04002D54 RID: 11604
+		Auto,
+		// Token: 0x04002D55 RID: 11605
+		Opened,
+		// Token: 0x04002D56 RID: 11606
+		Locked,
+		// Token: 0x04002D57 RID: 11607
+		NumStates
+	}
+
+	// Token: 0x02000D41 RID: 3393
+	public class Controller : GameStateMachine<Door.Controller, Door.Controller.Instance, Door>
+	{
+		// Token: 0x0600426F RID: 17007 RVA: 0x00241538 File Offset: 0x0023F738
+		public override void InitializeStates(out StateMachine.BaseState default_state)
+		{
+			base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
+			default_state = this.closed;
+			this.root.Update("RefreshIsBlocked", delegate(Door.Controller.Instance smi, float dt)
+			{
+				smi.RefreshIsBlocked();
+			}, UpdateRate.SIM_200ms, false).ParamTransition<bool>(this.isSealed, this.Sealed.closed, GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.IsTrue);
+			this.closeblocked.PlayAnim("open").ParamTransition<bool>(this.isOpen, this.open, GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.IsTrue).ParamTransition<bool>(this.isBlocked, this.closedelay, GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.IsFalse);
+			this.closedelay.PlayAnim("open").ScheduleGoTo(0.5f, this.closing).ParamTransition<bool>(this.isOpen, this.open, GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.IsTrue).ParamTransition<bool>(this.isBlocked, this.closeblocked, GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.IsTrue);
+			this.closing.ParamTransition<bool>(this.isBlocked, this.closeblocked, GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.IsTrue).ToggleTag(GameTags.Transition).ToggleLoopingSound("Closing loop", (Door.Controller.Instance smi) => smi.master.doorClosingSound, (Door.Controller.Instance smi) => !string.IsNullOrEmpty(smi.master.doorClosingSound)).Enter("SetParams", delegate(Door.Controller.Instance smi)
+			{
+				smi.master.UpdateAnimAndSoundParams(smi.master.on);
+			}).Update(delegate(Door.Controller.Instance smi, float dt)
+			{
+				if (smi.master.doorClosingSound != null)
+				{
+					smi.master.loopingSounds.UpdateSecondParameter(smi.master.doorClosingSound, Door.SOUND_PROGRESS_PARAMETER, smi.Get<KBatchedAnimController>().GetPositionPercent());
+				}
+			}, UpdateRate.SIM_33ms, false).Enter("SetActive", delegate(Door.Controller.Instance smi)
+			{
+				smi.master.SetActive(true);
+			}).Exit("SetActive", delegate(Door.Controller.Instance smi)
+			{
+				smi.master.SetActive(false);
+			}).PlayAnim("closing").OnAnimQueueComplete(this.closed);
+			this.open.PlayAnim("open").ParamTransition<bool>(this.isOpen, this.closeblocked, GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.IsFalse).Enter("SetWorldStateOpen", delegate(Door.Controller.Instance smi)
+			{
+				smi.master.SetWorldState();
+			});
+			this.closed.PlayAnim("closed").ParamTransition<bool>(this.isOpen, this.opening, GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.IsTrue).ParamTransition<bool>(this.isLocked, this.locking, GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.IsTrue).Enter("SetWorldStateClosed", delegate(Door.Controller.Instance smi)
+			{
+				smi.master.SetWorldState();
+			});
+			this.locking.PlayAnim("locked_pre").OnAnimQueueComplete(this.locked).Enter("SetWorldStateClosed", delegate(Door.Controller.Instance smi)
+			{
+				smi.master.SetWorldState();
+			});
+			this.locked.PlayAnim("locked").ParamTransition<bool>(this.isLocked, this.unlocking, GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.IsFalse);
+			this.unlocking.PlayAnim("locked_pst").OnAnimQueueComplete(this.closed);
+			this.opening.ToggleTag(GameTags.Transition).ToggleLoopingSound("Opening loop", (Door.Controller.Instance smi) => smi.master.doorOpeningSound, (Door.Controller.Instance smi) => !string.IsNullOrEmpty(smi.master.doorOpeningSound)).Enter("SetParams", delegate(Door.Controller.Instance smi)
+			{
+				smi.master.UpdateAnimAndSoundParams(smi.master.on);
+			}).Update(delegate(Door.Controller.Instance smi, float dt)
+			{
+				if (smi.master.doorOpeningSound != null)
+				{
+					smi.master.loopingSounds.UpdateSecondParameter(smi.master.doorOpeningSound, Door.SOUND_PROGRESS_PARAMETER, smi.Get<KBatchedAnimController>().GetPositionPercent());
+				}
+			}, UpdateRate.SIM_33ms, false).Enter("SetActive", delegate(Door.Controller.Instance smi)
+			{
+				smi.master.SetActive(true);
+			}).Exit("SetActive", delegate(Door.Controller.Instance smi)
+			{
+				smi.master.SetActive(false);
+			}).PlayAnim("opening").OnAnimQueueComplete(this.open);
+			this.Sealed.Enter(delegate(Door.Controller.Instance smi)
+			{
+				OccupyArea component = smi.master.GetComponent<OccupyArea>();
+				for (int i = 0; i < component.OccupiedCellsOffsets.Length; i++)
+				{
+					Grid.PreventFogOfWarReveal[Grid.OffsetCell(Grid.PosToCell(smi.master.gameObject), component.OccupiedCellsOffsets[i])] = false;
+				}
+				smi.sm.isLocked.Set(true, smi, false);
+				smi.master.controlState = Door.ControlState.Locked;
+				smi.master.RefreshControlState();
+				if (smi.master.GetComponent<Unsealable>().facingRight)
+				{
+					smi.master.GetComponent<KBatchedAnimController>().FlipX = true;
+				}
+			}).Enter("SetWorldStateClosed", delegate(Door.Controller.Instance smi)
+			{
+				smi.master.SetWorldState();
+			}).Exit(delegate(Door.Controller.Instance smi)
+			{
+				smi.sm.isLocked.Set(false, smi, false);
+				smi.master.GetComponent<AccessControl>().controlEnabled = true;
+				smi.master.controlState = Door.ControlState.Opened;
+				smi.master.RefreshControlState();
+				smi.sm.isOpen.Set(true, smi, false);
+				smi.sm.isLocked.Set(false, smi, false);
+				smi.sm.isSealed.Set(false, smi, false);
+			});
+			this.Sealed.closed.PlayAnim("sealed", KAnim.PlayMode.Once);
+			this.Sealed.awaiting_unlock.ToggleChore((Door.Controller.Instance smi) => this.CreateUnsealChore(smi, true), this.Sealed.chore_pst);
+			this.Sealed.chore_pst.Enter(delegate(Door.Controller.Instance smi)
+			{
+				smi.master.hasBeenUnsealed = true;
+				if (smi.master.GetComponent<Unsealable>().unsealed)
+				{
+					smi.GoTo(this.opening);
+					FogOfWarMask.ClearMask(Grid.CellRight(Grid.PosToCell(smi.master.gameObject)));
+					FogOfWarMask.ClearMask(Grid.CellLeft(Grid.PosToCell(smi.master.gameObject)));
+					return;
+				}
+				smi.GoTo(this.Sealed.closed);
+			});
+		}
+
+		// Token: 0x06004270 RID: 17008 RVA: 0x00241A74 File Offset: 0x0023FC74
+		private Chore CreateUnsealChore(Door.Controller.Instance smi, bool approach_right)
+		{
+			return new WorkChore<Unsealable>(Db.Get().ChoreTypes.Toggle, smi.master, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
+		}
+
+		// Token: 0x04002D58 RID: 11608
+		public GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.State open;
+
+		// Token: 0x04002D59 RID: 11609
+		public GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.State opening;
+
+		// Token: 0x04002D5A RID: 11610
+		public GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.State closed;
+
+		// Token: 0x04002D5B RID: 11611
+		public GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.State closing;
+
+		// Token: 0x04002D5C RID: 11612
+		public GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.State closedelay;
+
+		// Token: 0x04002D5D RID: 11613
+		public GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.State closeblocked;
+
+		// Token: 0x04002D5E RID: 11614
+		public GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.State locking;
+
+		// Token: 0x04002D5F RID: 11615
+		public GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.State locked;
+
+		// Token: 0x04002D60 RID: 11616
+		public GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.State unlocking;
+
+		// Token: 0x04002D61 RID: 11617
+		public Door.Controller.SealedStates Sealed;
+
+		// Token: 0x04002D62 RID: 11618
+		public StateMachine<Door.Controller, Door.Controller.Instance, Door, object>.BoolParameter isOpen;
+
+		// Token: 0x04002D63 RID: 11619
+		public StateMachine<Door.Controller, Door.Controller.Instance, Door, object>.BoolParameter isLocked;
+
+		// Token: 0x04002D64 RID: 11620
+		public StateMachine<Door.Controller, Door.Controller.Instance, Door, object>.BoolParameter isBlocked;
+
+		// Token: 0x04002D65 RID: 11621
+		public StateMachine<Door.Controller, Door.Controller.Instance, Door, object>.BoolParameter isSealed;
+
+		// Token: 0x04002D66 RID: 11622
+		public StateMachine<Door.Controller, Door.Controller.Instance, Door, object>.BoolParameter sealDirectionRight;
+
+		// Token: 0x02000D42 RID: 3394
+		public class SealedStates : GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.State
+		{
+			// Token: 0x04002D67 RID: 11623
+			public GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.State closed;
+
+			// Token: 0x04002D68 RID: 11624
+			public Door.Controller.SealedStates.AwaitingUnlock awaiting_unlock;
+
+			// Token: 0x04002D69 RID: 11625
+			public GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.State chore_pst;
+
+			// Token: 0x02000D43 RID: 3395
+			public class AwaitingUnlock : GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.State
+			{
+				// Token: 0x04002D6A RID: 11626
+				public GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.State awaiting_arrival;
+
+				// Token: 0x04002D6B RID: 11627
+				public GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.State unlocking;
+			}
+		}
+
+		// Token: 0x02000D44 RID: 3396
+		public new class Instance : GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.GameInstance
+		{
+			// Token: 0x06004276 RID: 17014 RVA: 0x000CAEFE File Offset: 0x000C90FE
+			public Instance(Door door) : base(door)
+			{
+			}
+
+			// Token: 0x06004277 RID: 17015 RVA: 0x00241B2C File Offset: 0x0023FD2C
+			public void RefreshIsBlocked()
+			{
+				bool value = false;
+				foreach (int cell in this.building.PlacementCells)
+				{
+					if (Grid.Objects[cell, 40] != null)
+					{
+						value = true;
+						break;
+					}
+				}
+				base.sm.isBlocked.Set(value, base.smi, false);
+			}
+
+			// Token: 0x04002D6C RID: 11628
+			[MyCmpReq]
+			public Building building;
+		}
 	}
 }

@@ -1,50 +1,54 @@
+﻿using System;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x020004E4 RID: 1252
 public class PetroleumGeneratorConfig : IBuildingConfig
 {
-	public const string ID = "PetroleumGenerator";
-
-	public const float CONSUMPTION_RATE = 2f;
-
-	private const SimHashes INPUT_ELEMENT = SimHashes.Petroleum;
-
-	private const SimHashes EXHAUST_ELEMENT_GAS = SimHashes.CarbonDioxide;
-
-	private const SimHashes EXHAUST_ELEMENT_LIQUID = SimHashes.DirtyWater;
-
-	public const float EFFICIENCY_RATE = 0.5f;
-
-	public const float EXHAUST_GAS_RATE = 0.5f;
-
-	public const float EXHAUST_LIQUID_RATE = 0.75f;
-
-	private const int WIDTH = 3;
-
-	private const int HEIGHT = 4;
-
+	// Token: 0x06001616 RID: 5654 RVA: 0x001965F4 File Offset: 0x001947F4
 	public override BuildingDef CreateBuildingDef()
 	{
-		string[] array = new string[1] { "Metal" };
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef(construction_mass: new float[1] { BUILDINGS.CONSTRUCTION_MASS_KG.TIER5[0] }, construction_materials: array, melting_point: 2400f, build_location_rule: BuildLocationRule.OnFloor, noise: NOISE_POLLUTION.NOISY.TIER5, id: "PetroleumGenerator", width: 3, height: 4, anim: "generatorpetrol_kanim", hitpoints: 100, construction_time: 480f, decor: BUILDINGS.DECOR.PENALTY.TIER2);
-		obj.GeneratorWattageRating = 2000f;
-		obj.GeneratorBaseCapacity = 2000f;
-		obj.ExhaustKilowattsWhenActive = 4f;
-		obj.SelfHeatKilowattsWhenActive = 16f;
-		obj.ViewMode = OverlayModes.Power.ID;
-		obj.AudioCategory = "Metal";
-		obj.UtilityInputOffset = new CellOffset(-1, 0);
-		obj.RequiresPowerOutput = true;
-		obj.PowerOutputOffset = new CellOffset(1, 0);
-		obj.LogicInputPorts = LogicOperationalController.CreateSingleInputPortList(new CellOffset(0, 0));
-		obj.InputConduitType = ConduitType.Liquid;
-		return obj;
+		string id = "PetroleumGenerator";
+		int width = 3;
+		int height = 4;
+		string anim = "generatorpetrol_kanim";
+		int hitpoints = 100;
+		float construction_time = 480f;
+		string[] array = new string[]
+		{
+			"Metal"
+		};
+		float[] construction_mass = new float[]
+		{
+			BUILDINGS.CONSTRUCTION_MASS_KG.TIER5[0]
+		};
+		string[] construction_materials = array;
+		float melting_point = 2400f;
+		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
+		EffectorValues tier = NOISE_POLLUTION.NOISY.TIER5;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, construction_mass, construction_materials, melting_point, build_location_rule, BUILDINGS.DECOR.PENALTY.TIER2, tier, 0.2f);
+		buildingDef.GeneratorWattageRating = 2000f;
+		buildingDef.GeneratorBaseCapacity = buildingDef.GeneratorWattageRating;
+		buildingDef.ExhaustKilowattsWhenActive = 4f;
+		buildingDef.SelfHeatKilowattsWhenActive = 16f;
+		buildingDef.ViewMode = OverlayModes.Power.ID;
+		buildingDef.AudioCategory = "Metal";
+		buildingDef.UtilityInputOffset = new CellOffset(-1, 0);
+		buildingDef.RequiresPowerOutput = true;
+		buildingDef.PowerOutputOffset = new CellOffset(1, 0);
+		buildingDef.LogicInputPorts = LogicOperationalController.CreateSingleInputPortList(new CellOffset(0, 0));
+		buildingDef.InputConduitType = ConduitType.Liquid;
+		return buildingDef;
 	}
 
+	// Token: 0x06001617 RID: 5655 RVA: 0x001966D0 File Offset: 0x001948D0
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicOperationalController>();
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.PowerBuilding, false);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.GeneratorType, false);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.HeavyDutyGeneratorType, false);
 		go.AddOrGet<LoopingSounds>();
 		go.AddOrGet<Storage>();
 		BuildingDef def = go.GetComponent<Building>().Def;
@@ -61,18 +65,49 @@ public class PetroleumGeneratorConfig : IBuildingConfig
 		energyGenerator.powerDistributionOrder = 8;
 		energyGenerator.ignoreBatteryRefillPercent = true;
 		energyGenerator.hasMeter = true;
-		EnergyGenerator.Formula formula = default(EnergyGenerator.Formula);
-		formula.inputs = new EnergyGenerator.InputItem[1]
+		energyGenerator.formula = new EnergyGenerator.Formula
 		{
-			new EnergyGenerator.InputItem(GameTags.CombustibleLiquid, 2f, num)
+			inputs = new EnergyGenerator.InputItem[]
+			{
+				new EnergyGenerator.InputItem(GameTags.CombustibleLiquid, 2f, num)
+			},
+			outputs = new EnergyGenerator.OutputItem[]
+			{
+				new EnergyGenerator.OutputItem(SimHashes.CarbonDioxide, 0.5f, false, new CellOffset(0, 3), 383.15f),
+				new EnergyGenerator.OutputItem(SimHashes.DirtyWater, 0.75f, false, new CellOffset(1, 1), 313.15f)
+			}
 		};
-		formula.outputs = new EnergyGenerator.OutputItem[2]
-		{
-			new EnergyGenerator.OutputItem(SimHashes.CarbonDioxide, 0.5f, store: false, new CellOffset(0, 3), 383.15f),
-			new EnergyGenerator.OutputItem(SimHashes.DirtyWater, 0.75f, store: false, new CellOffset(1, 1), 313.15f)
-		};
-		energyGenerator.formula = formula;
 		Tinkerable.MakePowerTinkerable(go);
 		go.AddOrGetDef<PoweredActiveController.Def>();
 	}
+
+	// Token: 0x04000EE9 RID: 3817
+	public const string ID = "PetroleumGenerator";
+
+	// Token: 0x04000EEA RID: 3818
+	public const float CONSUMPTION_RATE = 2f;
+
+	// Token: 0x04000EEB RID: 3819
+	private const SimHashes INPUT_ELEMENT = SimHashes.Petroleum;
+
+	// Token: 0x04000EEC RID: 3820
+	private const SimHashes EXHAUST_ELEMENT_GAS = SimHashes.CarbonDioxide;
+
+	// Token: 0x04000EED RID: 3821
+	private const SimHashes EXHAUST_ELEMENT_LIQUID = SimHashes.DirtyWater;
+
+	// Token: 0x04000EEE RID: 3822
+	public const float EFFICIENCY_RATE = 0.5f;
+
+	// Token: 0x04000EEF RID: 3823
+	public const float EXHAUST_GAS_RATE = 0.5f;
+
+	// Token: 0x04000EF0 RID: 3824
+	public const float EXHAUST_LIQUID_RATE = 0.75f;
+
+	// Token: 0x04000EF1 RID: 3825
+	private const int WIDTH = 3;
+
+	// Token: 0x04000EF2 RID: 3826
+	private const int HEIGHT = 4;
 }

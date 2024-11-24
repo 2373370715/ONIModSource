@@ -1,61 +1,44 @@
+﻿using System;
 using Klei.AI;
 using STRINGS;
 using UnityEngine;
 
+// Token: 0x02000E0B RID: 3595
 [AddComponentMenu("KMonoBehaviour/scripts/ItemPedestal")]
 public class ItemPedestal : KMonoBehaviour
 {
-	[MyCmpReq]
-	protected SingleEntityReceptacle receptacle;
-
-	[MyCmpReq]
-	private DecorProvider decorProvider;
-
-	private const float MINIMUM_DECOR = 5f;
-
-	private const float STORED_DECOR_MODIFIER = 2f;
-
-	private const int RADIUS_BONUS = 2;
-
-	private AttributeModifier decorModifier;
-
-	private AttributeModifier decorRadiusModifier;
-
-	private static readonly EventSystem.IntraObjectHandler<ItemPedestal> OnOccupantChangedDelegate = new EventSystem.IntraObjectHandler<ItemPedestal>(delegate(ItemPedestal component, object data)
-	{
-		component.OnOccupantChanged(data);
-	});
-
+	// Token: 0x060046C2 RID: 18114 RVA: 0x0024FEA4 File Offset: 0x0024E0A4
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		Subscribe(-731304873, OnOccupantChangedDelegate);
-		if ((bool)receptacle.Occupant)
+		base.Subscribe<ItemPedestal>(-731304873, ItemPedestal.OnOccupantChangedDelegate);
+		if (this.receptacle.Occupant)
 		{
-			KBatchedAnimController component = receptacle.Occupant.GetComponent<KBatchedAnimController>();
-			if ((bool)component)
+			KBatchedAnimController component = this.receptacle.Occupant.GetComponent<KBatchedAnimController>();
+			if (component)
 			{
 				component.enabled = true;
 				component.sceneLayer = Grid.SceneLayer.Move;
 			}
-			OnOccupantChanged(receptacle.Occupant);
+			this.OnOccupantChanged(this.receptacle.Occupant);
 		}
 	}
 
+	// Token: 0x060046C3 RID: 18115 RVA: 0x0024FF14 File Offset: 0x0024E114
 	private void OnOccupantChanged(object data)
 	{
 		Attributes attributes = this.GetAttributes();
-		if (decorModifier != null)
+		if (this.decorModifier != null)
 		{
-			attributes.Remove(decorModifier);
-			attributes.Remove(decorRadiusModifier);
-			decorModifier = null;
-			decorRadiusModifier = null;
+			attributes.Remove(this.decorModifier);
+			attributes.Remove(this.decorRadiusModifier);
+			this.decorModifier = null;
+			this.decorRadiusModifier = null;
 		}
 		if (data != null)
 		{
 			GameObject gameObject = (GameObject)data;
-			DecorProvider component = gameObject.GetComponent<DecorProvider>();
+			UnityEngine.Object component = gameObject.GetComponent<DecorProvider>();
 			float value = 5f;
 			float value2 = 3f;
 			if (component != null)
@@ -64,10 +47,39 @@ public class ItemPedestal : KMonoBehaviour
 				value2 = Db.Get().BuildingAttributes.DecorRadius.Lookup(gameObject).GetTotalValue() + 2f;
 			}
 			string description = string.Format(BUILDINGS.PREFABS.ITEMPEDESTAL.DISPLAYED_ITEM_FMT, gameObject.GetComponent<KPrefabID>().PrefabTag.ProperName());
-			decorModifier = new AttributeModifier(Db.Get().BuildingAttributes.Decor.Id, value, description);
-			decorRadiusModifier = new AttributeModifier(Db.Get().BuildingAttributes.DecorRadius.Id, value2, description);
-			attributes.Add(decorModifier);
-			attributes.Add(decorRadiusModifier);
+			this.decorModifier = new AttributeModifier(Db.Get().BuildingAttributes.Decor.Id, value, description, false, false, true);
+			this.decorRadiusModifier = new AttributeModifier(Db.Get().BuildingAttributes.DecorRadius.Id, value2, description, false, false, true);
+			attributes.Add(this.decorModifier);
+			attributes.Add(this.decorRadiusModifier);
 		}
 	}
+
+	// Token: 0x040030FB RID: 12539
+	[MyCmpReq]
+	protected SingleEntityReceptacle receptacle;
+
+	// Token: 0x040030FC RID: 12540
+	[MyCmpReq]
+	private DecorProvider decorProvider;
+
+	// Token: 0x040030FD RID: 12541
+	private const float MINIMUM_DECOR = 5f;
+
+	// Token: 0x040030FE RID: 12542
+	private const float STORED_DECOR_MODIFIER = 2f;
+
+	// Token: 0x040030FF RID: 12543
+	private const int RADIUS_BONUS = 2;
+
+	// Token: 0x04003100 RID: 12544
+	private AttributeModifier decorModifier;
+
+	// Token: 0x04003101 RID: 12545
+	private AttributeModifier decorRadiusModifier;
+
+	// Token: 0x04003102 RID: 12546
+	private static readonly EventSystem.IntraObjectHandler<ItemPedestal> OnOccupantChangedDelegate = new EventSystem.IntraObjectHandler<ItemPedestal>(delegate(ItemPedestal component, object data)
+	{
+		component.OnOccupantChanged(data);
+	});
 }

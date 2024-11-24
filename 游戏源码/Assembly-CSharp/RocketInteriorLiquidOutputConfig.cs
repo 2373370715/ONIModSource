@@ -1,50 +1,61 @@
+﻿using System;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x02000565 RID: 1381
 public class RocketInteriorLiquidOutputConfig : IBuildingConfig
 {
-	private const ConduitType CONDUIT_TYPE = ConduitType.Liquid;
-
-	private const CargoBay.CargoType CARGO_TYPE = CargoBay.CargoType.Liquids;
-
-	public const string ID = "RocketInteriorLiquidOutput";
-
-	public override string[] GetDlcIds()
+	// Token: 0x0600186A RID: 6250 RVA: 0x000A5F1F File Offset: 0x000A411F
+	public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
+	// Token: 0x0600186B RID: 6251 RVA: 0x0019F4E4 File Offset: 0x0019D6E4
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef("RocketInteriorLiquidOutput", 1, 1, "rocket_floor_plug_liquid_out_kanim", 30, 3f, BUILDINGS.CONSTRUCTION_MASS_KG.TIER0, MATERIALS.ALL_METALS, 1600f, BuildLocationRule.OnRocketEnvelope, noise: NOISE_POLLUTION.NONE, decor: BUILDINGS.DECOR.PENALTY.TIER2);
-		obj.OutputConduitType = ConduitType.Liquid;
-		obj.UtilityOutputOffset = new CellOffset(0, 0);
-		obj.RequiresPowerInput = true;
-		obj.EnergyConsumptionWhenActive = 60f;
-		obj.ExhaustKilowattsWhenActive = 0f;
-		obj.SelfHeatKilowattsWhenActive = 0.5f;
-		obj.Overheatable = false;
-		obj.Floodable = false;
-		obj.Entombable = false;
-		obj.ViewMode = OverlayModes.LiquidConduits.ID;
-		obj.ObjectLayer = ObjectLayer.Building;
-		obj.SceneLayer = Grid.SceneLayer.Building;
-		obj.AudioCategory = "Metal";
-		obj.AudioSize = "small";
-		obj.BaseTimeUntilRepair = -1f;
-		obj.PermittedRotations = PermittedRotations.R360;
-		obj.ShowInBuildMenu = true;
+		string id = "RocketInteriorLiquidOutput";
+		int width = 1;
+		int height = 1;
+		string anim = "rocket_floor_plug_liquid_out_kanim";
+		int hitpoints = 30;
+		float construction_time = 3f;
+		float[] tier = BUILDINGS.CONSTRUCTION_MASS_KG.TIER0;
+		string[] all_METALS = MATERIALS.ALL_METALS;
+		float melting_point = 1600f;
+		BuildLocationRule build_location_rule = BuildLocationRule.OnRocketEnvelope;
+		EffectorValues none = NOISE_POLLUTION.NONE;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, all_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.PENALTY.TIER2, none, 0.2f);
+		buildingDef.OutputConduitType = ConduitType.Liquid;
+		buildingDef.UtilityOutputOffset = new CellOffset(0, 0);
+		buildingDef.RequiresPowerInput = true;
+		buildingDef.EnergyConsumptionWhenActive = 60f;
+		buildingDef.ExhaustKilowattsWhenActive = 0f;
+		buildingDef.SelfHeatKilowattsWhenActive = 0.5f;
+		buildingDef.Overheatable = false;
+		buildingDef.Floodable = false;
+		buildingDef.Entombable = false;
+		buildingDef.ViewMode = OverlayModes.LiquidConduits.ID;
+		buildingDef.ObjectLayer = ObjectLayer.Building;
+		buildingDef.SceneLayer = Grid.SceneLayer.Building;
+		buildingDef.AudioCategory = "Metal";
+		buildingDef.AudioSize = "small";
+		buildingDef.BaseTimeUntilRepair = -1f;
+		buildingDef.PermittedRotations = PermittedRotations.R360;
+		buildingDef.ShowInBuildMenu = true;
 		GeneratedBuildings.RegisterWithOverlay(OverlayScreen.LiquidVentIDs, "RocketInteriorLiquidOutput");
-		return obj;
+		return buildingDef;
 	}
 
+	// Token: 0x0600186C RID: 6252 RVA: 0x000B04F0 File Offset: 0x000AE6F0
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		base.ConfigureBuildingTemplate(go, prefab_tag);
-		go.GetComponent<KPrefabID>().AddTag(GameTags.RocketInteriorBuilding);
+		go.GetComponent<KPrefabID>().AddTag(GameTags.RocketInteriorBuilding, false);
 		go.AddComponent<RequireInputs>();
 	}
 
+	// Token: 0x0600186D RID: 6253 RVA: 0x0019F5D4 File Offset: 0x0019D7D4
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGetDef<PoweredActiveController.Def>();
@@ -61,4 +72,13 @@ public class RocketInteriorLiquidOutputConfig : IBuildingConfig
 		conduitDispenser.alwaysDispense = true;
 		conduitDispenser.elementFilter = null;
 	}
+
+	// Token: 0x04000FD3 RID: 4051
+	private const ConduitType CONDUIT_TYPE = ConduitType.Liquid;
+
+	// Token: 0x04000FD4 RID: 4052
+	private const CargoBay.CargoType CARGO_TYPE = CargoBay.CargoType.Liquids;
+
+	// Token: 0x04000FD5 RID: 4053
+	public const string ID = "RocketInteriorLiquidOutput";
 }

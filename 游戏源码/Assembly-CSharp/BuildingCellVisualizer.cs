@@ -1,146 +1,150 @@
+﻿using System;
 using UnityEngine;
 
+// Token: 0x020009A1 RID: 2465
 [SkipSaveFileSerialization]
 [AddComponentMenu("KMonoBehaviour/scripts/BuildingCellVisualizer")]
 public class BuildingCellVisualizer : EntityCellVisualizer
 {
-	[MyCmpReq]
-	private Building building;
-
+	// Token: 0x06002CD9 RID: 11481 RVA: 0x000BD0F6 File Offset: 0x000BB2F6
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 	}
 
+	// Token: 0x06002CDA RID: 11482 RVA: 0x001ECEB0 File Offset: 0x001EB0B0
 	protected override void LoadDiseaseIcon()
 	{
-		DiseaseVisualization.Info info = Assets.instance.DiseaseVisualization.GetInfo(building.Def.DiseaseCellVisName);
+		DiseaseVisualization.Info info = Assets.instance.DiseaseVisualization.GetInfo(this.building.Def.DiseaseCellVisName);
 		if (info.name != null)
 		{
-			diseaseSourceSprite = Assets.instance.DiseaseVisualization.overlaySprite;
-			diseaseSourceColour = GlobalAssets.Instance.colorSet.GetColorByName(info.overlayColourName);
+			this.diseaseSourceSprite = Assets.instance.DiseaseVisualization.overlaySprite;
+			this.diseaseSourceColour = GlobalAssets.Instance.colorSet.GetColorByName(info.overlayColourName);
 		}
 	}
 
+	// Token: 0x06002CDB RID: 11483 RVA: 0x001ECF1C File Offset: 0x001EB11C
 	protected override void DefinePorts()
 	{
-		BuildingDef def = building.Def;
+		BuildingDef def = this.building.Def;
 		if (def.CheckRequiresPowerInput())
 		{
-			AddPort(Ports.PowerIn, building.Def.PowerInputOffset, base.Resources.electricityInputColor, Color.gray, 1f);
+			this.AddPort(EntityCellVisualizer.Ports.PowerIn, this.building.Def.PowerInputOffset, base.Resources.electricityInputColor, Color.gray, 1f, false);
 		}
 		if (def.CheckRequiresPowerOutput())
 		{
-			AddPort(Ports.PowerOut, building.Def.PowerOutputOffset, building.Def.UseWhitePowerOutputConnectorColour ? base.Resources.electricityInputColor : base.Resources.electricityOutputColor, Color.gray, 1f);
+			this.AddPort(EntityCellVisualizer.Ports.PowerOut, this.building.Def.PowerOutputOffset, this.building.Def.UseWhitePowerOutputConnectorColour ? base.Resources.electricityInputColor : base.Resources.electricityOutputColor, Color.gray, 1f, false);
 		}
 		if (def.CheckRequiresGasInput())
 		{
-			AddPort(Ports.GasIn, building.Def.UtilityInputOffset, base.Resources.gasIOColours.input.connected, base.Resources.gasIOColours.input.disconnected);
+			this.AddPort(EntityCellVisualizer.Ports.GasIn, this.building.Def.UtilityInputOffset, base.Resources.gasIOColours.input.connected, base.Resources.gasIOColours.input.disconnected, 1.5f, false);
 		}
 		if (def.CheckRequiresGasOutput())
 		{
-			AddPort(Ports.GasOut, building.Def.UtilityOutputOffset, base.Resources.gasIOColours.output.connected, base.Resources.gasIOColours.output.disconnected);
+			this.AddPort(EntityCellVisualizer.Ports.GasOut, this.building.Def.UtilityOutputOffset, base.Resources.gasIOColours.output.connected, base.Resources.gasIOColours.output.disconnected, 1.5f, false);
 		}
 		if (def.CheckRequiresLiquidInput())
 		{
-			AddPort(Ports.LiquidIn, building.Def.UtilityInputOffset, base.Resources.liquidIOColours.input.connected, base.Resources.liquidIOColours.input.disconnected);
+			this.AddPort(EntityCellVisualizer.Ports.LiquidIn, this.building.Def.UtilityInputOffset, base.Resources.liquidIOColours.input.connected, base.Resources.liquidIOColours.input.disconnected, 1.5f, false);
 		}
 		if (def.CheckRequiresLiquidOutput())
 		{
-			AddPort(Ports.LiquidOut, building.Def.UtilityOutputOffset, base.Resources.liquidIOColours.output.connected, base.Resources.liquidIOColours.output.disconnected);
+			this.AddPort(EntityCellVisualizer.Ports.LiquidOut, this.building.Def.UtilityOutputOffset, base.Resources.liquidIOColours.output.connected, base.Resources.liquidIOColours.output.disconnected, 1.5f, false);
 		}
 		if (def.CheckRequiresSolidInput())
 		{
-			AddPort(Ports.SolidIn, building.Def.UtilityInputOffset, base.Resources.liquidIOColours.input.connected, base.Resources.liquidIOColours.input.disconnected);
+			this.AddPort(EntityCellVisualizer.Ports.SolidIn, this.building.Def.UtilityInputOffset, base.Resources.liquidIOColours.input.connected, base.Resources.liquidIOColours.input.disconnected, 1.5f, false);
 		}
 		if (def.CheckRequiresSolidOutput())
 		{
-			AddPort(Ports.SolidOut, building.Def.UtilityOutputOffset, base.Resources.liquidIOColours.output.connected, base.Resources.liquidIOColours.output.disconnected);
+			this.AddPort(EntityCellVisualizer.Ports.SolidOut, this.building.Def.UtilityOutputOffset, base.Resources.liquidIOColours.output.connected, base.Resources.liquidIOColours.output.disconnected, 1.5f, false);
 		}
 		if (def.CheckRequiresHighEnergyParticleInput())
 		{
-			AddPort(Ports.HighEnergyParticleIn, building.Def.HighEnergyParticleInputOffset, base.Resources.highEnergyParticleInputColour, Color.white, 3f);
+			this.AddPort(EntityCellVisualizer.Ports.HighEnergyParticleIn, this.building.Def.HighEnergyParticleInputOffset, base.Resources.highEnergyParticleInputColour, Color.white, 3f, false);
 		}
 		if (def.CheckRequiresHighEnergyParticleOutput())
 		{
-			AddPort(Ports.HighEnergyParticleOut, building.Def.HighEnergyParticleOutputOffset, base.Resources.highEnergyParticleOutputColour, Color.white, 3f);
+			this.AddPort(EntityCellVisualizer.Ports.HighEnergyParticleOut, this.building.Def.HighEnergyParticleOutputOffset, base.Resources.highEnergyParticleOutputColour, Color.white, 3f, false);
 		}
 		if (def.SelfHeatKilowattsWhenActive > 0f || def.ExhaustKilowattsWhenActive > 0f)
 		{
-			AddPort(Ports.HeatSource, default(CellOffset));
+			this.AddPort(EntityCellVisualizer.Ports.HeatSource, default(CellOffset));
 		}
 		if (def.SelfHeatKilowattsWhenActive < 0f || def.ExhaustKilowattsWhenActive < 0f)
 		{
-			AddPort(Ports.HeatSink, default(CellOffset));
+			this.AddPort(EntityCellVisualizer.Ports.HeatSink, default(CellOffset));
 		}
-		if (diseaseSourceSprite != null)
+		if (this.diseaseSourceSprite != null)
 		{
-			AddPort(Ports.DiseaseOut, building.Def.UtilityOutputOffset, diseaseSourceColour);
+			this.AddPort(EntityCellVisualizer.Ports.DiseaseOut, this.building.Def.UtilityOutputOffset, this.diseaseSourceColour);
 		}
-		ISecondaryInput[] components = def.BuildingComplete.GetComponents<ISecondaryInput>();
-		foreach (ISecondaryInput secondaryInput in components)
+		foreach (ISecondaryInput secondaryInput in def.BuildingComplete.GetComponents<ISecondaryInput>())
 		{
-			if (secondaryInput == null)
+			if (secondaryInput != null)
 			{
-				continue;
-			}
-			if (secondaryInput.HasSecondaryConduitType(ConduitType.Gas))
-			{
-				BuildingCellVisualizerResources.ConnectedDisconnectedColours connectedDisconnectedColours = (def.CheckRequiresGasInput() ? base.Resources.alternateIOColours.input : base.Resources.gasIOColours.input);
-				AddPort(Ports.GasIn, secondaryInput.GetSecondaryConduitOffset(ConduitType.Gas), connectedDisconnectedColours.connected, connectedDisconnectedColours.disconnected);
-			}
-			if (secondaryInput.HasSecondaryConduitType(ConduitType.Liquid))
-			{
-				if (!def.CheckRequiresLiquidInput())
+				if (secondaryInput.HasSecondaryConduitType(ConduitType.Gas))
 				{
-					_ = base.Resources.liquidIOColours;
+					BuildingCellVisualizerResources.ConnectedDisconnectedColours connectedDisconnectedColours = def.CheckRequiresGasInput() ? base.Resources.alternateIOColours.input : base.Resources.gasIOColours.input;
+					this.AddPort(EntityCellVisualizer.Ports.GasIn, secondaryInput.GetSecondaryConduitOffset(ConduitType.Gas), connectedDisconnectedColours.connected, connectedDisconnectedColours.disconnected, 1.5f, false);
 				}
-				else
+				if (secondaryInput.HasSecondaryConduitType(ConduitType.Liquid))
 				{
-					_ = base.Resources.alternateIOColours;
+					if (!def.CheckRequiresLiquidInput())
+					{
+						BuildingCellVisualizerResources.IOColours liquidIOColours = base.Resources.liquidIOColours;
+					}
+					else
+					{
+						BuildingCellVisualizerResources.IOColours alternateIOColours = base.Resources.alternateIOColours;
+					}
+					this.AddPort(EntityCellVisualizer.Ports.LiquidIn, secondaryInput.GetSecondaryConduitOffset(ConduitType.Liquid));
 				}
-				AddPort(Ports.LiquidIn, secondaryInput.GetSecondaryConduitOffset(ConduitType.Liquid));
-			}
-			if (secondaryInput.HasSecondaryConduitType(ConduitType.Solid))
-			{
-				if (!def.CheckRequiresSolidInput())
+				if (secondaryInput.HasSecondaryConduitType(ConduitType.Solid))
 				{
-					_ = base.Resources.liquidIOColours;
+					if (!def.CheckRequiresSolidInput())
+					{
+						BuildingCellVisualizerResources.IOColours liquidIOColours2 = base.Resources.liquidIOColours;
+					}
+					else
+					{
+						BuildingCellVisualizerResources.IOColours alternateIOColours2 = base.Resources.alternateIOColours;
+					}
+					this.AddPort(EntityCellVisualizer.Ports.SolidIn, secondaryInput.GetSecondaryConduitOffset(ConduitType.Solid));
 				}
-				else
-				{
-					_ = base.Resources.alternateIOColours;
-				}
-				AddPort(Ports.SolidIn, secondaryInput.GetSecondaryConduitOffset(ConduitType.Solid));
 			}
 		}
-		ISecondaryOutput[] components2 = def.BuildingComplete.GetComponents<ISecondaryOutput>();
-		foreach (ISecondaryOutput secondaryOutput in components2)
+		foreach (ISecondaryOutput secondaryOutput in def.BuildingComplete.GetComponents<ISecondaryOutput>())
 		{
 			if (secondaryOutput != null)
 			{
 				if (secondaryOutput.HasSecondaryConduitType(ConduitType.Gas))
 				{
-					BuildingCellVisualizerResources.ConnectedDisconnectedColours connectedDisconnectedColours2 = (def.CheckRequiresGasOutput() ? base.Resources.alternateIOColours.output : base.Resources.gasIOColours.output);
-					AddPort(Ports.GasOut, secondaryOutput.GetSecondaryConduitOffset(ConduitType.Gas), connectedDisconnectedColours2.connected, connectedDisconnectedColours2.disconnected);
+					BuildingCellVisualizerResources.ConnectedDisconnectedColours connectedDisconnectedColours2 = def.CheckRequiresGasOutput() ? base.Resources.alternateIOColours.output : base.Resources.gasIOColours.output;
+					this.AddPort(EntityCellVisualizer.Ports.GasOut, secondaryOutput.GetSecondaryConduitOffset(ConduitType.Gas), connectedDisconnectedColours2.connected, connectedDisconnectedColours2.disconnected, 1.5f, false);
 				}
 				if (secondaryOutput.HasSecondaryConduitType(ConduitType.Liquid))
 				{
-					BuildingCellVisualizerResources.ConnectedDisconnectedColours connectedDisconnectedColours3 = (def.CheckRequiresLiquidOutput() ? base.Resources.alternateIOColours.output : base.Resources.liquidIOColours.output);
-					AddPort(Ports.LiquidOut, secondaryOutput.GetSecondaryConduitOffset(ConduitType.Liquid), connectedDisconnectedColours3.connected, connectedDisconnectedColours3.disconnected);
+					BuildingCellVisualizerResources.ConnectedDisconnectedColours connectedDisconnectedColours3 = def.CheckRequiresLiquidOutput() ? base.Resources.alternateIOColours.output : base.Resources.liquidIOColours.output;
+					this.AddPort(EntityCellVisualizer.Ports.LiquidOut, secondaryOutput.GetSecondaryConduitOffset(ConduitType.Liquid), connectedDisconnectedColours3.connected, connectedDisconnectedColours3.disconnected, 1.5f, false);
 				}
 				if (secondaryOutput.HasSecondaryConduitType(ConduitType.Solid))
 				{
-					BuildingCellVisualizerResources.ConnectedDisconnectedColours connectedDisconnectedColours4 = (def.CheckRequiresSolidOutput() ? base.Resources.alternateIOColours.output : base.Resources.liquidIOColours.output);
-					AddPort(Ports.SolidOut, secondaryOutput.GetSecondaryConduitOffset(ConduitType.Solid), connectedDisconnectedColours4.connected, connectedDisconnectedColours4.disconnected);
+					BuildingCellVisualizerResources.ConnectedDisconnectedColours connectedDisconnectedColours4 = def.CheckRequiresSolidOutput() ? base.Resources.alternateIOColours.output : base.Resources.liquidIOColours.output;
+					this.AddPort(EntityCellVisualizer.Ports.SolidOut, secondaryOutput.GetSecondaryConduitOffset(ConduitType.Solid), connectedDisconnectedColours4.connected, connectedDisconnectedColours4.disconnected, 1.5f, false);
 				}
 			}
 		}
 	}
 
+	// Token: 0x06002CDC RID: 11484 RVA: 0x000BD0FE File Offset: 0x000BB2FE
 	protected override void OnCmpEnable()
 	{
-		enableRaycast = building as BuildingComplete != null;
+		this.enableRaycast = (this.building as BuildingComplete != null);
 		base.OnCmpEnable();
 	}
+
+	// Token: 0x04001E1E RID: 7710
+	[MyCmpReq]
+	private Building building;
 }

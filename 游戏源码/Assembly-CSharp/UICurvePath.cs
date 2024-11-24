@@ -1,127 +1,152 @@
-using System;
+﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
 
+// Token: 0x02000007 RID: 7
 [AddComponentMenu("KMonoBehaviour/scripts/UICurvePath")]
 public class UICurvePath : KMonoBehaviour
 {
-	public Transform startPoint;
-
-	public Transform endPoint;
-
-	public Transform controlPointStart;
-
-	public Transform controlPointEnd;
-
-	public Image sprite;
-
-	public bool loop = true;
-
-	public bool animateScale;
-
-	public Vector3 initialScale;
-
-	private float startDelay;
-
-	public float initialAlpha = 0.5f;
-
-	public float moveSpeed = 0.1f;
-
-	private float tick;
-
-	private Vector3 A;
-
-	private Vector3 B;
-
-	private Vector3 C;
-
-	private Vector3 D;
-
+	// Token: 0x06000019 RID: 25 RVA: 0x0013D9A0 File Offset: 0x0013BBA0
 	protected override void OnSpawn()
 	{
-		Init();
+		this.Init();
 		ScreenResize instance = ScreenResize.Instance;
-		instance.OnResize = (System.Action)Delegate.Combine(instance.OnResize, new System.Action(OnResize));
-		OnResize();
-		startDelay = UnityEngine.Random.Range(0, 8);
+		instance.OnResize = (System.Action)Delegate.Combine(instance.OnResize, new System.Action(this.OnResize));
+		this.OnResize();
+		this.startDelay = (float)UnityEngine.Random.Range(0, 8);
 	}
 
+	// Token: 0x0600001A RID: 26 RVA: 0x0013D9F0 File Offset: 0x0013BBF0
 	private void OnResize()
 	{
-		A = startPoint.position;
-		B = controlPointStart.position;
-		C = controlPointEnd.position;
-		D = endPoint.position;
+		this.A = this.startPoint.position;
+		this.B = this.controlPointStart.position;
+		this.C = this.controlPointEnd.position;
+		this.D = this.endPoint.position;
 	}
 
+	// Token: 0x0600001B RID: 27 RVA: 0x000A5D3D File Offset: 0x000A3F3D
 	protected override void OnCleanUp()
 	{
 		ScreenResize instance = ScreenResize.Instance;
-		instance.OnResize = (System.Action)Delegate.Remove(instance.OnResize, new System.Action(OnResize));
+		instance.OnResize = (System.Action)Delegate.Remove(instance.OnResize, new System.Action(this.OnResize));
 		base.OnCleanUp();
 	}
 
+	// Token: 0x0600001C RID: 28 RVA: 0x0013DA44 File Offset: 0x0013BC44
 	private void Update()
 	{
-		startDelay -= Time.unscaledDeltaTime;
-		sprite.gameObject.SetActive(startDelay < 0f);
-		if (!(startDelay > 0f))
+		this.startDelay -= Time.unscaledDeltaTime;
+		this.sprite.gameObject.SetActive(this.startDelay < 0f);
+		if (this.startDelay > 0f)
 		{
-			tick += Time.unscaledDeltaTime * moveSpeed;
-			sprite.transform.position = DeCasteljausAlgorithm(tick);
-			sprite.SetAlpha(Mathf.Min(sprite.color.a + tick / 2f, 1f));
-			if (animateScale)
-			{
-				float num = Mathf.Min(sprite.transform.localScale.x + Time.unscaledDeltaTime * moveSpeed, 1f);
-				sprite.transform.localScale = new Vector3(num, num, 1f);
-			}
-			if (loop && tick > 1f)
-			{
-				Init();
-			}
+			return;
+		}
+		this.tick += Time.unscaledDeltaTime * this.moveSpeed;
+		this.sprite.transform.position = this.DeCasteljausAlgorithm(this.tick);
+		this.sprite.SetAlpha(Mathf.Min(this.sprite.color.a + this.tick / 2f, 1f));
+		if (this.animateScale)
+		{
+			float num = Mathf.Min(this.sprite.transform.localScale.x + Time.unscaledDeltaTime * this.moveSpeed, 1f);
+			this.sprite.transform.localScale = new Vector3(num, num, 1f);
+		}
+		if (this.loop && this.tick > 1f)
+		{
+			this.Init();
 		}
 	}
 
+	// Token: 0x0600001D RID: 29 RVA: 0x0013DB64 File Offset: 0x0013BD64
 	private void Init()
 	{
-		sprite.transform.position = startPoint.position;
-		tick = 0f;
-		if (animateScale)
+		this.sprite.transform.position = this.startPoint.position;
+		this.tick = 0f;
+		if (this.animateScale)
 		{
-			sprite.transform.localScale = initialScale;
+			this.sprite.transform.localScale = this.initialScale;
 		}
-		sprite.SetAlpha(initialAlpha);
+		this.sprite.SetAlpha(this.initialAlpha);
 	}
 
+	// Token: 0x0600001E RID: 30 RVA: 0x0013DBC8 File Offset: 0x0013BDC8
 	private void OnDrawGizmos()
 	{
 		if (!Application.isPlaying)
 		{
-			A = startPoint.position;
-			B = controlPointStart.position;
-			C = controlPointEnd.position;
-			D = endPoint.position;
+			this.A = this.startPoint.position;
+			this.B = this.controlPointStart.position;
+			this.C = this.controlPointEnd.position;
+			this.D = this.endPoint.position;
 		}
 		Gizmos.color = Color.white;
-		_ = A;
+		Vector3 a = this.A;
 		float num = 0.02f;
 		int num2 = Mathf.FloorToInt(1f / num);
 		for (int i = 1; i <= num2; i++)
 		{
 			float t = (float)i * num;
-			DeCasteljausAlgorithm(t);
+			this.DeCasteljausAlgorithm(t);
 		}
 		Gizmos.color = Color.green;
 	}
 
+	// Token: 0x0600001F RID: 31 RVA: 0x0013DC68 File Offset: 0x0013BE68
 	private Vector3 DeCasteljausAlgorithm(float t)
 	{
-		float num = 1f - t;
-		Vector3 vector = num * A + t * B;
-		Vector3 vector2 = num * B + t * C;
-		Vector3 vector3 = num * C + t * D;
-		Vector3 vector4 = num * vector + t * vector2;
-		Vector3 vector5 = num * vector2 + t * vector3;
-		return num * vector4 + t * vector5;
+		float d = 1f - t;
+		Vector3 a = d * this.A + t * this.B;
+		Vector3 a2 = d * this.B + t * this.C;
+		Vector3 a3 = d * this.C + t * this.D;
+		Vector3 a4 = d * a + t * a2;
+		Vector3 a5 = d * a2 + t * a3;
+		return d * a4 + t * a5;
 	}
+
+	// Token: 0x04000015 RID: 21
+	public Transform startPoint;
+
+	// Token: 0x04000016 RID: 22
+	public Transform endPoint;
+
+	// Token: 0x04000017 RID: 23
+	public Transform controlPointStart;
+
+	// Token: 0x04000018 RID: 24
+	public Transform controlPointEnd;
+
+	// Token: 0x04000019 RID: 25
+	public Image sprite;
+
+	// Token: 0x0400001A RID: 26
+	public bool loop = true;
+
+	// Token: 0x0400001B RID: 27
+	public bool animateScale;
+
+	// Token: 0x0400001C RID: 28
+	public Vector3 initialScale;
+
+	// Token: 0x0400001D RID: 29
+	private float startDelay;
+
+	// Token: 0x0400001E RID: 30
+	public float initialAlpha = 0.5f;
+
+	// Token: 0x0400001F RID: 31
+	public float moveSpeed = 0.1f;
+
+	// Token: 0x04000020 RID: 32
+	private float tick;
+
+	// Token: 0x04000021 RID: 33
+	private Vector3 A;
+
+	// Token: 0x04000022 RID: 34
+	private Vector3 B;
+
+	// Token: 0x04000023 RID: 35
+	private Vector3 C;
+
+	// Token: 0x04000024 RID: 36
+	private Vector3 D;
 }

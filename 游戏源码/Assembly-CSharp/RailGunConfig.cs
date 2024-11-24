@@ -1,80 +1,77 @@
+﻿using System;
 using System.Collections.Generic;
 using STRINGS;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x02000533 RID: 1331
 public class RailGunConfig : IBuildingConfig
 {
-	public const string ID = "RailGun";
-
-	public const string PORT_ID = "HEP_STORAGE";
-
-	public const int RANGE = 20;
-
-	public const float BASE_PARTICLE_COST = 0f;
-
-	public const float HEX_PARTICLE_COST = 10f;
-
-	public const float HEP_CAPACITY = 200f;
-
-	public const float TAKEOFF_VELOCITY = 35f;
-
-	public const int MAINTENANCE_AFTER_NUM_PAYLOADS = 6;
-
-	public const int MAINTENANCE_COOLDOWN = 30;
-
-	public const float CAPACITY = 1200f;
-
-	private ConduitPortInfo solidInputPort = new ConduitPortInfo(ConduitType.Solid, new CellOffset(-1, 0));
-
-	private ConduitPortInfo liquidInputPort = new ConduitPortInfo(ConduitType.Liquid, new CellOffset(0, 0));
-
-	private ConduitPortInfo gasInputPort = new ConduitPortInfo(ConduitType.Gas, new CellOffset(1, 0));
-
-	public override string[] GetDlcIds()
+	// Token: 0x06001783 RID: 6019 RVA: 0x000A5F1F File Offset: 0x000A411F
+	public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
+	// Token: 0x06001784 RID: 6020 RVA: 0x0019A634 File Offset: 0x00198834
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef("RailGun", 5, 6, "rail_gun_kanim", 250, 30f, TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER4, MATERIALS.ALL_METALS, 1600f, BuildLocationRule.OnFloor, noise: NOISE_POLLUTION.NOISY.TIER5, decor: TUNING.BUILDINGS.DECOR.NONE);
-		obj.Floodable = false;
-		obj.Overheatable = false;
-		obj.AudioCategory = "Metal";
-		obj.BaseTimeUntilRepair = 400f;
-		obj.DefaultAnimState = "off";
-		obj.RequiresPowerInput = true;
-		obj.PowerInputOffset = new CellOffset(-2, 0);
-		obj.EnergyConsumptionWhenActive = 240f;
-		obj.ViewMode = OverlayModes.Power.ID;
-		obj.ExhaustKilowattsWhenActive = 0.5f;
-		obj.SelfHeatKilowattsWhenActive = 2f;
-		obj.UseHighEnergyParticleInputPort = true;
-		obj.HighEnergyParticleInputOffset = new CellOffset(-2, 1);
-		obj.LogicInputPorts = new List<LogicPorts.Port> { LogicPorts.Port.InputPort(RailGun.PORT_ID, new CellOffset(-2, 2), STRINGS.BUILDINGS.PREFABS.RAILGUN.LOGIC_PORT, STRINGS.BUILDINGS.PREFABS.RAILGUN.LOGIC_PORT_ACTIVE, STRINGS.BUILDINGS.PREFABS.RAILGUN.LOGIC_PORT_INACTIVE) };
-		obj.LogicOutputPorts = new List<LogicPorts.Port> { LogicPorts.Port.OutputPort("HEP_STORAGE", new CellOffset(2, 0), STRINGS.BUILDINGS.PREFABS.HEPENGINE.LOGIC_PORT_STORAGE, STRINGS.BUILDINGS.PREFABS.HEPENGINE.LOGIC_PORT_STORAGE_ACTIVE, STRINGS.BUILDINGS.PREFABS.HEPENGINE.LOGIC_PORT_STORAGE_INACTIVE) };
-		return obj;
+		string id = "RailGun";
+		int width = 5;
+		int height = 6;
+		string anim = "rail_gun_kanim";
+		int hitpoints = 250;
+		float construction_time = 30f;
+		float[] tier = TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER4;
+		string[] all_METALS = MATERIALS.ALL_METALS;
+		float melting_point = 1600f;
+		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
+		EffectorValues tier2 = NOISE_POLLUTION.NOISY.TIER5;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, all_METALS, melting_point, build_location_rule, TUNING.BUILDINGS.DECOR.NONE, tier2, 0.2f);
+		buildingDef.Floodable = false;
+		buildingDef.Overheatable = false;
+		buildingDef.AudioCategory = "Metal";
+		buildingDef.BaseTimeUntilRepair = 400f;
+		buildingDef.DefaultAnimState = "off";
+		buildingDef.RequiresPowerInput = true;
+		buildingDef.PowerInputOffset = new CellOffset(-2, 0);
+		buildingDef.EnergyConsumptionWhenActive = 240f;
+		buildingDef.ViewMode = OverlayModes.Power.ID;
+		buildingDef.ExhaustKilowattsWhenActive = 0.5f;
+		buildingDef.SelfHeatKilowattsWhenActive = 2f;
+		buildingDef.UseHighEnergyParticleInputPort = true;
+		buildingDef.HighEnergyParticleInputOffset = new CellOffset(-2, 1);
+		buildingDef.LogicInputPorts = new List<LogicPorts.Port>
+		{
+			LogicPorts.Port.InputPort(RailGun.PORT_ID, new CellOffset(-2, 2), STRINGS.BUILDINGS.PREFABS.RAILGUN.LOGIC_PORT, STRINGS.BUILDINGS.PREFABS.RAILGUN.LOGIC_PORT_ACTIVE, STRINGS.BUILDINGS.PREFABS.RAILGUN.LOGIC_PORT_INACTIVE, false, false)
+		};
+		buildingDef.LogicOutputPorts = new List<LogicPorts.Port>
+		{
+			LogicPorts.Port.OutputPort("HEP_STORAGE", new CellOffset(2, 0), STRINGS.BUILDINGS.PREFABS.HEPENGINE.LOGIC_PORT_STORAGE, STRINGS.BUILDINGS.PREFABS.HEPENGINE.LOGIC_PORT_STORAGE_ACTIVE, STRINGS.BUILDINGS.PREFABS.HEPENGINE.LOGIC_PORT_STORAGE_INACTIVE, false, false)
+		};
+		return buildingDef;
 	}
 
+	// Token: 0x06001785 RID: 6021 RVA: 0x000AFEC1 File Offset: 0x000AE0C1
 	private void AttachPorts(GameObject go)
 	{
-		go.AddComponent<ConduitSecondaryInput>().portInfo = liquidInputPort;
-		go.AddComponent<ConduitSecondaryInput>().portInfo = gasInputPort;
-		go.AddComponent<ConduitSecondaryInput>().portInfo = solidInputPort;
+		go.AddComponent<ConduitSecondaryInput>().portInfo = this.liquidInputPort;
+		go.AddComponent<ConduitSecondaryInput>().portInfo = this.gasInputPort;
+		go.AddComponent<ConduitSecondaryInput>().portInfo = this.solidInputPort;
 	}
 
+	// Token: 0x06001786 RID: 6022 RVA: 0x0019A78C File Offset: 0x0019898C
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		RailGun railGun = go.AddOrGet<RailGun>();
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		go.AddOrGet<LoopingSounds>();
 		ClusterDestinationSelector clusterDestinationSelector = go.AddOrGet<ClusterDestinationSelector>();
 		clusterDestinationSelector.assignable = true;
 		clusterDestinationSelector.requireAsteroidDestination = true;
-		railGun.liquidPortInfo = liquidInputPort;
-		railGun.gasPortInfo = gasInputPort;
-		railGun.solidPortInfo = solidInputPort;
+		railGun.liquidPortInfo = this.liquidInputPort;
+		railGun.gasPortInfo = this.gasInputPort;
+		railGun.solidPortInfo = this.solidInputPort;
 		HighEnergyParticleStorage highEnergyParticleStorage = go.AddOrGet<HighEnergyParticleStorage>();
 		highEnergyParticleStorage.capacity = 200f;
 		highEnergyParticleStorage.autoStore = true;
@@ -83,13 +80,14 @@ public class RailGunConfig : IBuildingConfig
 		highEnergyParticleStorage.showCapacityStatusItem = true;
 	}
 
+	// Token: 0x06001787 RID: 6023 RVA: 0x0019A820 File Offset: 0x00198A20
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		List<Tag> list = new List<Tag>();
 		list.AddRange(STORAGEFILTERS.STORAGE_LOCKERS_STANDARD);
 		list.AddRange(STORAGEFILTERS.GASES);
 		list.AddRange(STORAGEFILTERS.FOOD);
-		Storage storage = BuildingTemplates.CreateDefaultStorage(go);
+		Storage storage = BuildingTemplates.CreateDefaultStorage(go, false);
 		storage.showInUI = true;
 		storage.SetDefaultStoredItemModifiers(Storage.StandardSealedStorage);
 		storage.storageFilters = list;
@@ -97,21 +95,24 @@ public class RailGunConfig : IBuildingConfig
 		storage.fetchCategory = Storage.FetchCategory.GeneralStorage;
 		storage.capacityKg = 1200f;
 		go.GetComponent<HighEnergyParticlePort>().requireOperational = false;
-		AddVisualizer(go);
+		RailGunConfig.AddVisualizer(go);
 	}
 
+	// Token: 0x06001788 RID: 6024 RVA: 0x000AFEF6 File Offset: 0x000AE0F6
 	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
-		AttachPorts(go);
-		AddVisualizer(go);
+		this.AttachPorts(go);
+		RailGunConfig.AddVisualizer(go);
 	}
 
+	// Token: 0x06001789 RID: 6025 RVA: 0x000AFF05 File Offset: 0x000AE105
 	public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
-		AttachPorts(go);
-		AddVisualizer(go);
+		this.AttachPorts(go);
+		RailGunConfig.AddVisualizer(go);
 	}
 
+	// Token: 0x0600178A RID: 6026 RVA: 0x0019A8A0 File Offset: 0x00198AA0
 	private static void AddVisualizer(GameObject prefab)
 	{
 		SkyVisibilityVisualizer skyVisibilityVisualizer = prefab.AddOrGet<SkyVisibilityVisualizer>();
@@ -120,16 +121,17 @@ public class RailGunConfig : IBuildingConfig
 		skyVisibilityVisualizer.AllOrNothingVisibility = true;
 		prefab.GetComponent<KPrefabID>().instantiateFn += delegate(GameObject go)
 		{
-			go.GetComponent<SkyVisibilityVisualizer>().SkyVisibilityCb = RailGunSkyVisibility;
+			go.GetComponent<SkyVisibilityVisualizer>().SkyVisibilityCb = new Func<int, bool>(RailGunConfig.RailGunSkyVisibility);
 		};
 	}
 
+	// Token: 0x0600178B RID: 6027 RVA: 0x0019A8F4 File Offset: 0x00198AF4
 	private static bool RailGunSkyVisibility(int cell)
 	{
-		DebugUtil.DevAssert(ClusterManager.Instance != null, "RailGun assumes DLC");
-		if (Grid.IsValidCell(cell) && Grid.WorldIdx[cell] != byte.MaxValue)
+		DebugUtil.DevAssert(ClusterManager.Instance != null, "RailGun assumes DLC", null);
+		if (Grid.IsValidCell(cell) && Grid.WorldIdx[cell] != 255)
 		{
-			int num = (int)ClusterManager.Instance.GetWorld(Grid.WorldIdx[cell]).maximumBounds.y;
+			int num = (int)ClusterManager.Instance.GetWorld((int)Grid.WorldIdx[cell]).maximumBounds.y;
 			int num2 = cell;
 			while (Grid.CellRow(num2) <= num)
 			{
@@ -143,4 +145,43 @@ public class RailGunConfig : IBuildingConfig
 		}
 		return false;
 	}
+
+	// Token: 0x04000F30 RID: 3888
+	public const string ID = "RailGun";
+
+	// Token: 0x04000F31 RID: 3889
+	public const string PORT_ID = "HEP_STORAGE";
+
+	// Token: 0x04000F32 RID: 3890
+	public const int RANGE = 20;
+
+	// Token: 0x04000F33 RID: 3891
+	public const float BASE_PARTICLE_COST = 0f;
+
+	// Token: 0x04000F34 RID: 3892
+	public const float HEX_PARTICLE_COST = 10f;
+
+	// Token: 0x04000F35 RID: 3893
+	public const float HEP_CAPACITY = 200f;
+
+	// Token: 0x04000F36 RID: 3894
+	public const float TAKEOFF_VELOCITY = 35f;
+
+	// Token: 0x04000F37 RID: 3895
+	public const int MAINTENANCE_AFTER_NUM_PAYLOADS = 6;
+
+	// Token: 0x04000F38 RID: 3896
+	public const int MAINTENANCE_COOLDOWN = 30;
+
+	// Token: 0x04000F39 RID: 3897
+	public const float CAPACITY = 1200f;
+
+	// Token: 0x04000F3A RID: 3898
+	private ConduitPortInfo solidInputPort = new ConduitPortInfo(ConduitType.Solid, new CellOffset(-1, 0));
+
+	// Token: 0x04000F3B RID: 3899
+	private ConduitPortInfo liquidInputPort = new ConduitPortInfo(ConduitType.Liquid, new CellOffset(0, 0));
+
+	// Token: 0x04000F3C RID: 3900
+	private ConduitPortInfo gasInputPort = new ConduitPortInfo(ConduitType.Gas, new CellOffset(1, 0));
 }

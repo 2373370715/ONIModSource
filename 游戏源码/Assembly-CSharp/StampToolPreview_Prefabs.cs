@@ -1,43 +1,45 @@
-using System;
+﻿using System;
 using Database;
 using TemplateClasses;
 using UnityEngine;
 
+// Token: 0x02001461 RID: 5217
 public class StampToolPreview_Prefabs : IStampToolPreviewPlugin
 {
+	// Token: 0x06006C39 RID: 27705 RVA: 0x002E5B9C File Offset: 0x002E3D9C
 	public void Setup(StampToolPreviewContext context)
 	{
 		if (!context.stampTemplate.elementalOres.IsNullOrDestroyed())
 		{
-			foreach (Prefab elementalOre in context.stampTemplate.elementalOres)
+			foreach (Prefab prefabInfo in context.stampTemplate.elementalOres)
 			{
-				SpawnPrefab(context, elementalOre);
+				StampToolPreview_Prefabs.SpawnPrefab(context, prefabInfo);
 			}
 		}
 		if (!context.stampTemplate.otherEntities.IsNullOrDestroyed())
 		{
-			foreach (Prefab otherEntity in context.stampTemplate.otherEntities)
+			foreach (Prefab prefabInfo2 in context.stampTemplate.otherEntities)
 			{
-				SpawnPrefab(context, otherEntity);
+				StampToolPreview_Prefabs.SpawnPrefab(context, prefabInfo2);
 			}
 		}
 		if (!context.stampTemplate.buildings.IsNullOrDestroyed())
 		{
-			foreach (Prefab building in context.stampTemplate.buildings)
+			foreach (Prefab prefabInfo3 in context.stampTemplate.buildings)
 			{
-				SpawnPrefab(context, building);
+				StampToolPreview_Prefabs.SpawnPrefab(context, prefabInfo3);
 			}
 		}
-		if (context.stampTemplate.elementalOres.IsNullOrDestroyed())
+		if (!context.stampTemplate.elementalOres.IsNullOrDestroyed())
 		{
-			return;
-		}
-		foreach (Prefab elementalOre2 in context.stampTemplate.elementalOres)
-		{
-			SpawnPrefab(context, elementalOre2);
+			foreach (Prefab prefabInfo4 in context.stampTemplate.elementalOres)
+			{
+				StampToolPreview_Prefabs.SpawnPrefab(context, prefabInfo4);
+			}
 		}
 	}
 
+	// Token: 0x06006C3A RID: 27706 RVA: 0x002E5D14 File Offset: 0x002E3F14
 	public static void SpawnPrefab(StampToolPreviewContext context, Prefab prefabInfo)
 	{
 		GameObject gameObject = Assets.TryGetPrefab(prefabInfo.id);
@@ -45,24 +47,21 @@ public class StampToolPreview_Prefabs : IStampToolPreviewPlugin
 		{
 			return;
 		}
-		if (!gameObject.GetComponent<Building>().IsNullOrDestroyed())
+		if (gameObject.GetComponent<Building>().IsNullOrDestroyed())
 		{
-			Building component = gameObject.GetComponent<Building>();
-			if (component.Def.IsTilePiece)
-			{
-				SpawnPrefab_Tile(context, prefabInfo, component);
-			}
-			else
-			{
-				SpawnPrefab_Building(context, prefabInfo, component);
-			}
+			StampToolPreview_Prefabs.SpawnPrefab_Default(context, prefabInfo, gameObject);
+			return;
 		}
-		else
+		Building component = gameObject.GetComponent<Building>();
+		if (component.Def.IsTilePiece)
 		{
-			SpawnPrefab_Default(context, prefabInfo, gameObject);
+			StampToolPreview_Prefabs.SpawnPrefab_Tile(context, prefabInfo, component);
+			return;
 		}
+		StampToolPreview_Prefabs.SpawnPrefab_Building(context, prefabInfo, component);
 	}
 
+	// Token: 0x06006C3B RID: 27707 RVA: 0x002E5D78 File Offset: 0x002E3F78
 	public static void SpawnPrefab_Tile(StampToolPreviewContext context, Prefab prefabInfo, Building buildingPrefab)
 	{
 		TextureAtlas textureAtlas = buildingPrefab.Def.BlockTilePlaceAtlas;
@@ -74,14 +73,16 @@ public class StampToolPreview_Prefabs : IStampToolPreviewPlugin
 		{
 			return;
 		}
-		StampToolPreviewUtil.MakeQuad(out var gameObject, out var meshRenderer, 1.5f, textureAtlas.items[0].uvBox);
-		gameObject.name = $"TilePlacer {buildingPrefab.PrefabID()}";
-		gameObject.transform.SetParent(context.previewParent.transform, worldPositionStays: false);
-		gameObject.transform.SetLocalPosition(new Vector2(prefabInfo.location_x, (float)prefabInfo.location_y + Grid.HalfCellSizeInMeters));
+		GameObject gameObject;
+		MeshRenderer meshRenderer;
+		StampToolPreviewUtil.MakeQuad(out gameObject, out meshRenderer, 1.5f, new Vector4?(textureAtlas.items[0].uvBox));
+		gameObject.name = string.Format("TilePlacer {0}", buildingPrefab.PrefabID());
+		gameObject.transform.SetParent(context.previewParent.transform, false);
+		gameObject.transform.SetLocalPosition(new Vector2((float)prefabInfo.location_x, (float)prefabInfo.location_y + Grid.HalfCellSizeInMeters));
 		Material material = StampToolPreviewUtil.MakeMaterial(textureAtlas.texture);
-		material.name = $"Tile ({buildingPrefab.PrefabID()}) ({material.name})";
+		material.name = string.Format("Tile ({0}) ({1})", buildingPrefab.PrefabID(), material.name);
 		meshRenderer.material = material;
-		context.cleanupFn = (System.Action)Delegate.Combine(context.cleanupFn, (System.Action)delegate
+		context.cleanupFn = (System.Action)Delegate.Combine(context.cleanupFn, new System.Action(delegate()
 		{
 			if (!gameObject.IsNullOrDestroyed())
 			{
@@ -91,28 +92,39 @@ public class StampToolPreview_Prefabs : IStampToolPreviewPlugin
 			{
 				UnityEngine.Object.Destroy(material);
 			}
-		});
-		context.onErrorChangeFn = (Action<string>)Delegate.Combine(context.onErrorChangeFn, (Action<string>)delegate(string error)
+		}));
+		context.onErrorChangeFn = (Action<string>)Delegate.Combine(context.onErrorChangeFn, new Action<string>(delegate(string error)
 		{
-			if (!meshRenderer.IsNullOrDestroyed())
+			if (meshRenderer.IsNullOrDestroyed())
 			{
-				meshRenderer.material.color = ((error != null) ? StampToolPreviewUtil.COLOR_ERROR : StampToolPreviewUtil.COLOR_OK);
+				return;
 			}
-		});
+			meshRenderer.material.color = ((error != null) ? StampToolPreviewUtil.COLOR_ERROR : StampToolPreviewUtil.COLOR_OK);
+		}));
 	}
 
+	// Token: 0x06006C3C RID: 27708 RVA: 0x002E5EF4 File Offset: 0x002E40F4
 	public static void SpawnPrefab_Building(StampToolPreviewContext context, Prefab prefabInfo, Building buildingPrefab)
 	{
 		int num = LayerMask.NameToLayer("Place");
-		GameObject original = ((!buildingPrefab.Def.BuildingPreview.IsNullOrDestroyed()) ? buildingPrefab.Def.BuildingPreview : BuildingLoader.Instance.CreateBuildingPreview(buildingPrefab.Def));
-		Building spawn = GameUtil.KInstantiate(original, Vector3.zero, Grid.SceneLayer.Building, null, num).GetComponent<Building>();
-		context.cleanupFn = (System.Action)Delegate.Combine(context.cleanupFn, (System.Action)delegate
+		GameObject original;
+		if (buildingPrefab.Def.BuildingPreview.IsNullOrDestroyed())
 		{
-			if (!spawn.IsNullOrDestroyed())
+			original = BuildingLoader.Instance.CreateBuildingPreview(buildingPrefab.Def);
+		}
+		else
+		{
+			original = buildingPrefab.Def.BuildingPreview;
+		}
+		Building spawn = GameUtil.KInstantiate(original, Vector3.zero, Grid.SceneLayer.Building, null, num).GetComponent<Building>();
+		context.cleanupFn = (System.Action)Delegate.Combine(context.cleanupFn, new System.Action(delegate()
+		{
+			if (spawn.IsNullOrDestroyed())
 			{
-				UnityEngine.Object.Destroy(spawn.gameObject);
+				return;
 			}
-		});
+			UnityEngine.Object.Destroy(spawn.gameObject);
+		}));
 		Rotatable component = spawn.GetComponent<Rotatable>();
 		if (component != null)
 		{
@@ -128,69 +140,73 @@ public class StampToolPreview_Prefabs : IStampToolPreviewPlugin
 			kanim.TintColour = StampToolPreviewUtil.COLOR_OK;
 			kanim.SetLayer(num);
 		}
-		spawn.transform.SetParent(context.previewParent.transform, worldPositionStays: false);
-		spawn.transform.SetLocalPosition(new Vector2(prefabInfo.location_x, prefabInfo.location_y));
-		context.frameAfterSetupFn = (System.Action)Delegate.Combine(context.frameAfterSetupFn, (System.Action)delegate
+		spawn.transform.SetParent(context.previewParent.transform, false);
+		spawn.transform.SetLocalPosition(new Vector2((float)prefabInfo.location_x, (float)prefabInfo.location_y));
+		context.frameAfterSetupFn = (System.Action)Delegate.Combine(context.frameAfterSetupFn, new System.Action(delegate()
 		{
-			if (!spawn.IsNullOrDestroyed())
+			if (spawn.IsNullOrDestroyed())
 			{
-				spawn.gameObject.SetActive(value: false);
-				spawn.gameObject.SetActive(value: true);
-				if (!kanim.IsNullOrDestroyed())
-				{
-					string text = "";
-					if (((uint)prefabInfo.connections & (true ? 1u : 0u)) != 0)
-					{
-						text += "L";
-					}
-					if (((uint)prefabInfo.connections & 2u) != 0)
-					{
-						text += "R";
-					}
-					if (((uint)prefabInfo.connections & 4u) != 0)
-					{
-						text += "U";
-					}
-					if (((uint)prefabInfo.connections & 8u) != 0)
-					{
-						text += "D";
-					}
-					if (text == "")
-					{
-						text = "None";
-					}
-					if (kanim != null && kanim.HasAnimation(text))
-					{
-						string text2 = text + "_place";
-						bool flag = kanim.HasAnimation(text2);
-						kanim.Play(flag ? text2 : text, KAnim.PlayMode.Loop);
-					}
-				}
+				return;
 			}
-		});
-		context.onErrorChangeFn = (Action<string>)Delegate.Combine(context.onErrorChangeFn, (Action<string>)delegate(string error)
+			spawn.gameObject.SetActive(false);
+			spawn.gameObject.SetActive(true);
+			if (kanim.IsNullOrDestroyed())
+			{
+				return;
+			}
+			string text = "";
+			if ((prefabInfo.connections & 1) != 0)
+			{
+				text += "L";
+			}
+			if ((prefabInfo.connections & 2) != 0)
+			{
+				text += "R";
+			}
+			if ((prefabInfo.connections & 4) != 0)
+			{
+				text += "U";
+			}
+			if ((prefabInfo.connections & 8) != 0)
+			{
+				text += "D";
+			}
+			if (text == "")
+			{
+				text = "None";
+			}
+			if (kanim != null && kanim.HasAnimation(text))
+			{
+				string text2 = text + "_place";
+				bool flag = kanim.HasAnimation(text2);
+				kanim.Play(flag ? text2 : text, KAnim.PlayMode.Loop, 1f, 0f);
+			}
+		}));
+		context.onErrorChangeFn = (Action<string>)Delegate.Combine(context.onErrorChangeFn, new Action<string>(delegate(string error)
 		{
-			if (!kanim.IsNullOrDestroyed())
+			if (kanim.IsNullOrDestroyed())
 			{
-				Color color = ((error != null) ? StampToolPreviewUtil.COLOR_ERROR : StampToolPreviewUtil.COLOR_OK);
-				if (buildingPrefab.Def.SceneLayer == Grid.SceneLayer.Backwall)
-				{
-					color.a = 0.2f;
-				}
-				kanim.TintColour = color;
+				return;
 			}
-		});
+			Color c = (error != null) ? StampToolPreviewUtil.COLOR_ERROR : StampToolPreviewUtil.COLOR_OK;
+			if (buildingPrefab.Def.SceneLayer == Grid.SceneLayer.Backwall)
+			{
+				c.a = 0.2f;
+			}
+			kanim.TintColour = c;
+		}));
 		BuildingFacade component2 = spawn.GetComponent<BuildingFacade>();
 		if (component2 != null && !prefabInfo.facadeId.IsNullOrWhiteSpace())
 		{
 			BuildingFacadeResource buildingFacadeResource = Db.GetBuildingFacades().TryGet(prefabInfo.facadeId);
 			if (buildingFacadeResource != null && buildingFacadeResource.IsUnlocked())
 			{
-				component2.ApplyBuildingFacade(buildingFacadeResource);
+				component2.ApplyBuildingFacade(buildingFacadeResource, false);
 			}
 		}
 	}
 
+	// Token: 0x06006C3D RID: 27709 RVA: 0x002E6144 File Offset: 0x002E4344
 	public static void SpawnPrefab_Default(StampToolPreviewContext context, Prefab prefabInfo, GameObject prefab)
 	{
 		KBatchedAnimController component = prefab.GetComponent<KBatchedAnimController>();
@@ -201,7 +217,7 @@ public class StampToolPreview_Prefabs : IStampToolPreviewPlugin
 		string name = prefab.GetComponent<KPrefabID>().GetDebugName() + "_visualizer";
 		int layer = LayerMask.NameToLayer("Place");
 		GameObject spawn = new GameObject(name);
-		spawn.SetActive(value: false);
+		spawn.SetActive(false);
 		KBatchedAnimController kanim = spawn.AddComponent<KBatchedAnimController>();
 		if (!component.IsNullOrDestroyed())
 		{
@@ -212,7 +228,7 @@ public class StampToolPreview_Prefabs : IStampToolPreviewPlugin
 			kanim.TintColour = StampToolPreviewUtil.COLOR_OK;
 			kanim.SetLayer(layer);
 		}
-		spawn.transform.SetParent(context.previewParent.transform, worldPositionStays: false);
+		spawn.transform.SetParent(context.previewParent.transform, false);
 		OccupyArea component2 = prefab.GetComponent<OccupyArea>();
 		int num;
 		if (component2.IsNullOrDestroyed() || component2._UnrotatedOccupiedCellsOffsets.Length == 0)
@@ -223,10 +239,8 @@ public class StampToolPreview_Prefabs : IStampToolPreviewPlugin
 		{
 			int num2 = int.MaxValue;
 			int num3 = int.MinValue;
-			CellOffset[] unrotatedOccupiedCellsOffsets = component2._UnrotatedOccupiedCellsOffsets;
-			for (int i = 0; i < unrotatedOccupiedCellsOffsets.Length; i++)
+			foreach (CellOffset cellOffset in component2._UnrotatedOccupiedCellsOffsets)
 			{
-				CellOffset cellOffset = unrotatedOccupiedCellsOffsets[i];
 				if (cellOffset.x < num2)
 				{
 					num2 = cellOffset.x;
@@ -240,37 +254,41 @@ public class StampToolPreview_Prefabs : IStampToolPreviewPlugin
 		}
 		if (num != 0 && num % 2 == 0)
 		{
-			spawn.transform.SetLocalPosition(new Vector2((float)prefabInfo.location_x + Grid.HalfCellSizeInMeters, prefabInfo.location_y));
+			spawn.transform.SetLocalPosition(new Vector2((float)prefabInfo.location_x + Grid.HalfCellSizeInMeters, (float)prefabInfo.location_y));
 		}
 		else
 		{
-			spawn.transform.SetLocalPosition(new Vector2(prefabInfo.location_x, prefabInfo.location_y));
+			spawn.transform.SetLocalPosition(new Vector2((float)prefabInfo.location_x, (float)prefabInfo.location_y));
 		}
-		context.frameAfterSetupFn = (System.Action)Delegate.Combine(context.frameAfterSetupFn, (System.Action)delegate
+		context.frameAfterSetupFn = (System.Action)Delegate.Combine(context.frameAfterSetupFn, new System.Action(delegate()
 		{
-			if (!spawn.IsNullOrDestroyed())
+			if (spawn.IsNullOrDestroyed())
 			{
-				spawn.gameObject.SetActive(value: false);
-				spawn.gameObject.SetActive(value: true);
-				if (!kanim.IsNullOrDestroyed())
-				{
-					kanim.Play("place", KAnim.PlayMode.Loop);
-				}
+				return;
 			}
-		});
-		context.cleanupFn = (System.Action)Delegate.Combine(context.cleanupFn, (System.Action)delegate
+			spawn.gameObject.SetActive(false);
+			spawn.gameObject.SetActive(true);
+			if (kanim.IsNullOrDestroyed())
+			{
+				return;
+			}
+			kanim.Play("place", KAnim.PlayMode.Loop, 1f, 0f);
+		}));
+		context.cleanupFn = (System.Action)Delegate.Combine(context.cleanupFn, new System.Action(delegate()
 		{
-			if (!spawn.IsNullOrDestroyed())
+			if (spawn.IsNullOrDestroyed())
 			{
-				UnityEngine.Object.Destroy(spawn.gameObject);
+				return;
 			}
-		});
-		context.onErrorChangeFn = (Action<string>)Delegate.Combine(context.onErrorChangeFn, (Action<string>)delegate(string error)
+			UnityEngine.Object.Destroy(spawn.gameObject);
+		}));
+		context.onErrorChangeFn = (Action<string>)Delegate.Combine(context.onErrorChangeFn, new Action<string>(delegate(string error)
 		{
-			if (!kanim.IsNullOrDestroyed())
+			if (kanim.IsNullOrDestroyed())
 			{
-				kanim.TintColour = ((error != null) ? StampToolPreviewUtil.COLOR_ERROR : StampToolPreviewUtil.COLOR_OK);
+				return;
 			}
-		});
+			kanim.TintColour = ((error != null) ? StampToolPreviewUtil.COLOR_ERROR : StampToolPreviewUtil.COLOR_OK);
+		}));
 	}
 }

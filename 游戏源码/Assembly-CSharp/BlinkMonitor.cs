@@ -1,79 +1,40 @@
+﻿using System;
 using UnityEngine;
 
+// Token: 0x0200152A RID: 5418
 public class BlinkMonitor : GameStateMachine<BlinkMonitor, BlinkMonitor.Instance, IStateMachineTarget, BlinkMonitor.Def>
 {
-	public class Def : BaseDef
+	// Token: 0x06007108 RID: 28936 RVA: 0x002F97F0 File Offset: 0x002F79F0
+	public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
+		default_state = this.satisfied;
+		this.root.Enter(new StateMachine<BlinkMonitor, BlinkMonitor.Instance, IStateMachineTarget, BlinkMonitor.Def>.State.Callback(BlinkMonitor.CreateEyes)).Exit(new StateMachine<BlinkMonitor, BlinkMonitor.Instance, IStateMachineTarget, BlinkMonitor.Def>.State.Callback(BlinkMonitor.DestroyEyes));
+		this.satisfied.ScheduleGoTo(new Func<BlinkMonitor.Instance, float>(BlinkMonitor.GetRandomBlinkTime), this.blinking);
+		this.blinking.EnterTransition(this.satisfied, GameStateMachine<BlinkMonitor, BlinkMonitor.Instance, IStateMachineTarget, BlinkMonitor.Def>.Not(new StateMachine<BlinkMonitor, BlinkMonitor.Instance, IStateMachineTarget, BlinkMonitor.Def>.Transition.ConditionCallback(BlinkMonitor.CanBlink))).Enter(new StateMachine<BlinkMonitor, BlinkMonitor.Instance, IStateMachineTarget, BlinkMonitor.Def>.State.Callback(BlinkMonitor.BeginBlinking)).Update(new Action<BlinkMonitor.Instance, float>(BlinkMonitor.UpdateBlinking), UpdateRate.RENDER_EVERY_TICK, false).Target(this.eyes).OnAnimQueueComplete(this.satisfied).Exit(new StateMachine<BlinkMonitor, BlinkMonitor.Instance, IStateMachineTarget, BlinkMonitor.Def>.State.Callback(BlinkMonitor.EndBlinking));
 	}
 
-	public class Tuning : TuningData<Tuning>
+	// Token: 0x06007109 RID: 28937 RVA: 0x000E9F70 File Offset: 0x000E8170
+	private static bool CanBlink(BlinkMonitor.Instance smi)
 	{
-		public float randomBlinkIntervalMin;
-
-		public float randomBlinkIntervalMax;
+		return SpeechMonitor.IsAllowedToPlaySpeech(smi.gameObject) && smi.Get<Navigator>().CurrentNavType != NavType.Ladder;
 	}
 
-	public new class Instance : GameInstance
+	// Token: 0x0600710A RID: 28938 RVA: 0x000E9F92 File Offset: 0x000E8192
+	private static float GetRandomBlinkTime(BlinkMonitor.Instance smi)
 	{
-		public KBatchedAnimController eyes;
-
-		public Instance(IStateMachineTarget master, Def def)
-			: base(master, def)
-		{
-		}
-
-		public bool IsBlinking()
-		{
-			return IsInsideState(base.sm.blinking);
-		}
-
-		public void Blink()
-		{
-			GoTo(base.sm.blinking);
-		}
+		return UnityEngine.Random.Range(TuningData<BlinkMonitor.Tuning>.Get().randomBlinkIntervalMin, TuningData<BlinkMonitor.Tuning>.Get().randomBlinkIntervalMax);
 	}
 
-	public State satisfied;
-
-	public State blinking;
-
-	public TargetParameter eyes;
-
-	private static HashedString HASH_SNAPTO_EYES = "snapto_eyes";
-
-	public override void InitializeStates(out BaseState default_state)
+	// Token: 0x0600710B RID: 28939 RVA: 0x002F98BC File Offset: 0x002F7ABC
+	private static void CreateEyes(BlinkMonitor.Instance smi)
 	{
-		default_state = satisfied;
-		root.Enter(CreateEyes).Exit(DestroyEyes);
-		satisfied.ScheduleGoTo(GetRandomBlinkTime, blinking);
-		blinking.EnterTransition(satisfied, GameStateMachine<BlinkMonitor, Instance, IStateMachineTarget, Def>.Not(CanBlink)).Enter(BeginBlinking).Update(UpdateBlinking, UpdateRate.RENDER_EVERY_TICK)
-			.Target(eyes)
-			.OnAnimQueueComplete(satisfied)
-			.Exit(EndBlinking);
+		smi.eyes = Util.KInstantiate(Assets.GetPrefab(EyeAnimation.ID), null, null).GetComponent<KBatchedAnimController>();
+		smi.eyes.gameObject.SetActive(true);
+		smi.sm.eyes.Set(smi.eyes.gameObject, smi, false);
 	}
 
-	private static bool CanBlink(Instance smi)
-	{
-		if (SpeechMonitor.IsAllowedToPlaySpeech(smi.gameObject))
-		{
-			return smi.Get<Navigator>().CurrentNavType != NavType.Ladder;
-		}
-		return false;
-	}
-
-	private static float GetRandomBlinkTime(Instance smi)
-	{
-		return Random.Range(TuningData<Tuning>.Get().randomBlinkIntervalMin, TuningData<Tuning>.Get().randomBlinkIntervalMax);
-	}
-
-	private static void CreateEyes(Instance smi)
-	{
-		smi.eyes = Util.KInstantiate(Assets.GetPrefab(EyeAnimation.ID)).GetComponent<KBatchedAnimController>();
-		smi.eyes.gameObject.SetActive(value: true);
-		smi.sm.eyes.Set(smi.eyes.gameObject, smi);
-	}
-
-	private static void DestroyEyes(Instance smi)
+	// Token: 0x0600710C RID: 28940 RVA: 0x000E9FAD File Offset: 0x000E81AD
+	private static void DestroyEyes(BlinkMonitor.Instance smi)
 	{
 		if (smi.eyes != null)
 		{
@@ -82,27 +43,34 @@ public class BlinkMonitor : GameStateMachine<BlinkMonitor, BlinkMonitor.Instance
 		}
 	}
 
-	public static void BeginBlinking(Instance smi)
+	// Token: 0x0600710D RID: 28941 RVA: 0x000E9FCF File Offset: 0x000E81CF
+	public static void BeginBlinking(BlinkMonitor.Instance smi)
 	{
-		string text = "eyes1";
-		smi.eyes.Play(text);
-		UpdateBlinking(smi, 0f);
+		smi.eyes.Play(smi.eye_anim, KAnim.PlayMode.Once, 1f, 0f);
+		BlinkMonitor.UpdateBlinking(smi, 0f);
 	}
 
-	public static void EndBlinking(Instance smi)
+	// Token: 0x0600710E RID: 28942 RVA: 0x000E9FFD File Offset: 0x000E81FD
+	public static void EndBlinking(BlinkMonitor.Instance smi)
 	{
-		smi.GetComponent<SymbolOverrideController>().RemoveSymbolOverride(HASH_SNAPTO_EYES, 3);
+		smi.GetComponent<SymbolOverrideController>().RemoveSymbolOverride(BlinkMonitor.HASH_SNAPTO_EYES, 3);
 	}
 
-	public static void UpdateBlinking(Instance smi, float dt)
+	// Token: 0x0600710F RID: 28943 RVA: 0x002F991C File Offset: 0x002F7B1C
+	public static void UpdateBlinking(BlinkMonitor.Instance smi, float dt)
 	{
 		int currentFrameIndex = smi.eyes.GetCurrentFrameIndex();
 		KAnimBatch batch = smi.eyes.GetBatch();
-		if (currentFrameIndex == -1 || batch == null || !smi.eyes.GetBatch().group.data.TryGetFrame(currentFrameIndex, out var frame))
+		if (currentFrameIndex == -1 || batch == null)
 		{
 			return;
 		}
-		HashedString hashedString = HashedString.Invalid;
+		KAnim.Anim.Frame frame;
+		if (!smi.eyes.GetBatch().group.data.TryGetFrame(currentFrameIndex, out frame))
+		{
+			return;
+		}
+		HashedString hash = HashedString.Invalid;
 		for (int i = 0; i < frame.numElements; i++)
 		{
 			int num = frame.firstElementIdx + i;
@@ -111,11 +79,65 @@ public class BlinkMonitor : GameStateMachine<BlinkMonitor, BlinkMonitor.Instance
 				KAnim.Anim.FrameElement frameElement = batch.group.data.frameElements[num];
 				if (!(frameElement.symbol == HashedString.Invalid))
 				{
-					hashedString = frameElement.symbol;
+					hash = frameElement.symbol;
 					break;
 				}
 			}
 		}
-		smi.GetComponent<SymbolOverrideController>().AddSymbolOverride(HASH_SNAPTO_EYES, smi.eyes.AnimFiles[0].GetData().build.GetSymbol(hashedString), 3);
+		smi.GetComponent<SymbolOverrideController>().AddSymbolOverride(BlinkMonitor.HASH_SNAPTO_EYES, smi.eyes.AnimFiles[0].GetData().build.GetSymbol(hash), 3);
+	}
+
+	// Token: 0x0400546D RID: 21613
+	public GameStateMachine<BlinkMonitor, BlinkMonitor.Instance, IStateMachineTarget, BlinkMonitor.Def>.State satisfied;
+
+	// Token: 0x0400546E RID: 21614
+	public GameStateMachine<BlinkMonitor, BlinkMonitor.Instance, IStateMachineTarget, BlinkMonitor.Def>.State blinking;
+
+	// Token: 0x0400546F RID: 21615
+	public StateMachine<BlinkMonitor, BlinkMonitor.Instance, IStateMachineTarget, BlinkMonitor.Def>.TargetParameter eyes;
+
+	// Token: 0x04005470 RID: 21616
+	private static HashedString HASH_SNAPTO_EYES = "snapto_eyes";
+
+	// Token: 0x0200152B RID: 5419
+	public class Def : StateMachine.BaseDef
+	{
+	}
+
+	// Token: 0x0200152C RID: 5420
+	public class Tuning : TuningData<BlinkMonitor.Tuning>
+	{
+		// Token: 0x04005471 RID: 21617
+		public float randomBlinkIntervalMin;
+
+		// Token: 0x04005472 RID: 21618
+		public float randomBlinkIntervalMax;
+	}
+
+	// Token: 0x0200152D RID: 5421
+	public new class Instance : GameStateMachine<BlinkMonitor, BlinkMonitor.Instance, IStateMachineTarget, BlinkMonitor.Def>.GameInstance
+	{
+		// Token: 0x06007114 RID: 28948 RVA: 0x000EA032 File Offset: 0x000E8232
+		public Instance(IStateMachineTarget master, BlinkMonitor.Def def) : base(master, def)
+		{
+		}
+
+		// Token: 0x06007115 RID: 28949 RVA: 0x000EA03C File Offset: 0x000E823C
+		public bool IsBlinking()
+		{
+			return base.IsInsideState(base.sm.blinking);
+		}
+
+		// Token: 0x06007116 RID: 28950 RVA: 0x000EA04F File Offset: 0x000E824F
+		public void Blink()
+		{
+			this.GoTo(base.sm.blinking);
+		}
+
+		// Token: 0x04005473 RID: 21619
+		public KBatchedAnimController eyes;
+
+		// Token: 0x04005474 RID: 21620
+		public string eye_anim;
 	}
 }

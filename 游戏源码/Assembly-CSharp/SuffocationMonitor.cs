@@ -1,147 +1,111 @@
+﻿using System;
 using Klei.AI;
 using STRINGS;
-using UnityEngine;
+using TUNING;
 
+// Token: 0x02001365 RID: 4965
 public class SuffocationMonitor : GameStateMachine<SuffocationMonitor, SuffocationMonitor.Instance>
 {
-	public class NoOxygenState : State
+	// Token: 0x060065FD RID: 26109 RVA: 0x002CDC90 File Offset: 0x002CBE90
+	public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
-		public State holdingbreath;
-
-		public State suffocating;
-	}
-
-	public class SatisfiedState : State
-	{
-		public State normal;
-
-		public State low;
-	}
-
-	public new class Instance : GameInstance
-	{
-		private AmountInstance breath;
-
-		public AttributeModifier breathing;
-
-		public AttributeModifier holdingbreath;
-
-		private static CellOffset[] pressureTestOffsets = new CellOffset[2]
+		default_state = this.satisfied;
+		this.root.TagTransition(GameTags.Dead, this.dead, false);
+		this.satisfied.DefaultState(this.satisfied.normal).ToggleAttributeModifier("Breathing", (SuffocationMonitor.Instance smi) => smi.breathing, null).EventTransition(GameHashes.ExitedBreathableArea, this.noOxygen, (SuffocationMonitor.Instance smi) => !smi.IsInBreathableArea());
+		this.satisfied.normal.Transition(this.satisfied.low, (SuffocationMonitor.Instance smi) => smi.oxygenBreather.IsLowOxygenAtMouthCell(), UpdateRate.SIM_200ms);
+		this.satisfied.low.Transition(this.satisfied.normal, (SuffocationMonitor.Instance smi) => !smi.oxygenBreather.IsLowOxygenAtMouthCell(), UpdateRate.SIM_200ms).Transition(this.noOxygen, (SuffocationMonitor.Instance smi) => !smi.IsInBreathableArea(), UpdateRate.SIM_200ms).ToggleEffect("LowOxygen");
+		this.noOxygen.EventTransition(GameHashes.EnteredBreathableArea, this.satisfied, (SuffocationMonitor.Instance smi) => smi.IsInBreathableArea()).TagTransition(GameTags.RecoveringBreath, this.satisfied, false).ToggleExpression(Db.Get().Expressions.Suffocate, null).ToggleAttributeModifier("Holding Breath", (SuffocationMonitor.Instance smi) => smi.holdingbreath, null).ToggleTag(GameTags.NoOxygen).DefaultState(this.noOxygen.holdingbreath);
+		this.noOxygen.holdingbreath.ToggleCategoryStatusItem(Db.Get().StatusItemCategories.Suffocation, Db.Get().DuplicantStatusItems.HoldingBreath, null).Transition(this.noOxygen.suffocating, (SuffocationMonitor.Instance smi) => smi.IsSuffocating(), UpdateRate.SIM_200ms);
+		this.noOxygen.suffocating.ToggleCategoryStatusItem(Db.Get().StatusItemCategories.Suffocation, Db.Get().DuplicantStatusItems.Suffocating, null).Transition(this.death, (SuffocationMonitor.Instance smi) => smi.HasSuffocated(), UpdateRate.SIM_200ms);
+		this.death.Enter("SuffocationDeath", delegate(SuffocationMonitor.Instance smi)
 		{
-			new CellOffset(0, 0),
-			new CellOffset(0, 1)
-		};
+			smi.Kill();
+		});
+		this.dead.DoNothing();
+	}
 
-		private const float HIGH_PRESSURE_DELAY = 3f;
+	// Token: 0x04004C83 RID: 19587
+	public SuffocationMonitor.SatisfiedState satisfied;
 
-		private bool wasInHighPressure;
+	// Token: 0x04004C84 RID: 19588
+	public SuffocationMonitor.NoOxygenState noOxygen;
 
-		private float highPressureTime;
+	// Token: 0x04004C85 RID: 19589
+	public GameStateMachine<SuffocationMonitor, SuffocationMonitor.Instance, IStateMachineTarget, object>.State death;
 
+	// Token: 0x04004C86 RID: 19590
+	public GameStateMachine<SuffocationMonitor, SuffocationMonitor.Instance, IStateMachineTarget, object>.State dead;
+
+	// Token: 0x02001366 RID: 4966
+	public class NoOxygenState : GameStateMachine<SuffocationMonitor, SuffocationMonitor.Instance, IStateMachineTarget, object>.State
+	{
+		// Token: 0x04004C87 RID: 19591
+		public GameStateMachine<SuffocationMonitor, SuffocationMonitor.Instance, IStateMachineTarget, object>.State holdingbreath;
+
+		// Token: 0x04004C88 RID: 19592
+		public GameStateMachine<SuffocationMonitor, SuffocationMonitor.Instance, IStateMachineTarget, object>.State suffocating;
+	}
+
+	// Token: 0x02001367 RID: 4967
+	public class SatisfiedState : GameStateMachine<SuffocationMonitor, SuffocationMonitor.Instance, IStateMachineTarget, object>.State
+	{
+		// Token: 0x04004C89 RID: 19593
+		public GameStateMachine<SuffocationMonitor, SuffocationMonitor.Instance, IStateMachineTarget, object>.State normal;
+
+		// Token: 0x04004C8A RID: 19594
+		public GameStateMachine<SuffocationMonitor, SuffocationMonitor.Instance, IStateMachineTarget, object>.State low;
+	}
+
+	// Token: 0x02001368 RID: 4968
+	public new class Instance : GameStateMachine<SuffocationMonitor, SuffocationMonitor.Instance, IStateMachineTarget, object>.GameInstance
+	{
+		// Token: 0x17000656 RID: 1622
+		// (get) Token: 0x06006601 RID: 26113 RVA: 0x000E285D File Offset: 0x000E0A5D
+		// (set) Token: 0x06006602 RID: 26114 RVA: 0x000E2865 File Offset: 0x000E0A65
 		public OxygenBreather oxygenBreather { get; private set; }
 
-		public Instance(OxygenBreather oxygen_breather)
-			: base((IStateMachineTarget)oxygen_breather)
+		// Token: 0x06006603 RID: 26115 RVA: 0x002CDF74 File Offset: 0x002CC174
+		public Instance(OxygenBreather oxygen_breather) : base(oxygen_breather)
 		{
-			breath = Db.Get().Amounts.Breath.Lookup(base.master.gameObject);
-			Attribute deltaAttribute = Db.Get().Amounts.Breath.deltaAttribute;
-			float num = 0.90909094f;
-			breathing = new AttributeModifier(deltaAttribute.Id, num, DUPLICANTS.MODIFIERS.BREATHING.NAME);
-			holdingbreath = new AttributeModifier(deltaAttribute.Id, 0f - num, DUPLICANTS.MODIFIERS.HOLDINGBREATH.NAME);
-			oxygenBreather = oxygen_breather;
+			this.breath = Db.Get().Amounts.Breath.Lookup(base.master.gameObject);
+			Klei.AI.Attribute deltaAttribute = Db.Get().Amounts.Breath.deltaAttribute;
+			float breath_RATE = DUPLICANTSTATS.STANDARD.Breath.BREATH_RATE;
+			this.breathing = new AttributeModifier(deltaAttribute.Id, breath_RATE, DUPLICANTS.MODIFIERS.BREATHING.NAME, false, false, true);
+			this.holdingbreath = new AttributeModifier(deltaAttribute.Id, -breath_RATE, DUPLICANTS.MODIFIERS.HOLDINGBREATH.NAME, false, false, true);
+			this.oxygenBreather = oxygen_breather;
 		}
 
+		// Token: 0x06006604 RID: 26116 RVA: 0x002CE018 File Offset: 0x002CC218
 		public bool IsInBreathableArea()
 		{
-			if (!base.master.GetComponent<KPrefabID>().HasTag(GameTags.RecoveringBreath) && !base.master.GetComponent<Sensors>().GetSensor<BreathableAreaSensor>().IsBreathable())
-			{
-				return oxygenBreather.HasTag(GameTags.InTransitTube);
-			}
-			return true;
+			return base.master.GetComponent<KPrefabID>().HasTag(GameTags.RecoveringBreath) || base.master.GetComponent<Sensors>().GetSensor<BreathableAreaSensor>().IsBreathable() || this.oxygenBreather.HasTag(GameTags.InTransitTube);
 		}
 
+		// Token: 0x06006605 RID: 26117 RVA: 0x000E286E File Offset: 0x000E0A6E
 		public bool HasSuffocated()
 		{
-			return breath.value <= 0f;
+			return this.breath.value <= 0f;
 		}
 
+		// Token: 0x06006606 RID: 26118 RVA: 0x000E2885 File Offset: 0x000E0A85
 		public bool IsSuffocating()
 		{
-			if (breath.deltaAttribute.GetTotalValue() <= 0f)
-			{
-				return breath.value <= 45.454548f;
-			}
-			return false;
+			return this.breath.deltaAttribute.GetTotalValue() <= 0f && this.breath.value <= DUPLICANTSTATS.STANDARD.Breath.SUFFOCATE_AMOUNT;
 		}
 
+		// Token: 0x06006607 RID: 26119 RVA: 0x000E28BF File Offset: 0x000E0ABF
 		public void Kill()
 		{
 			base.gameObject.GetSMI<DeathMonitor.Instance>().Kill(Db.Get().Deaths.Suffocation);
 		}
 
-		public void CheckOverPressure()
-		{
-			if (IsInHighPressure())
-			{
-				if (!wasInHighPressure)
-				{
-					wasInHighPressure = true;
-					highPressureTime = Time.time;
-				}
-				else if (Time.time - highPressureTime > 3f)
-				{
-					base.master.GetComponent<Effects>().Add("PoppedEarDrums", should_save: true);
-				}
-			}
-			else
-			{
-				wasInHighPressure = false;
-			}
-		}
+		// Token: 0x04004C8B RID: 19595
+		private AmountInstance breath;
 
-		private bool IsInHighPressure()
-		{
-			int cell = Grid.PosToCell(base.gameObject);
-			for (int i = 0; i < pressureTestOffsets.Length; i++)
-			{
-				int num = Grid.OffsetCell(cell, pressureTestOffsets[i]);
-				if (Grid.IsValidCell(num) && Grid.Element[num].IsGas && Grid.Mass[num] > 4f)
-				{
-					return true;
-				}
-			}
-			return false;
-		}
-	}
+		// Token: 0x04004C8C RID: 19596
+		public AttributeModifier breathing;
 
-	public SatisfiedState satisfied;
-
-	public NoOxygenState nooxygen;
-
-	public State death;
-
-	public State dead;
-
-	public override void InitializeStates(out BaseState default_state)
-	{
-		default_state = satisfied;
-		root.Update("CheckOverPressure", delegate(Instance smi, float dt)
-		{
-			smi.CheckOverPressure();
-		}).TagTransition(GameTags.Dead, dead);
-		satisfied.DefaultState(satisfied.normal).ToggleAttributeModifier("Breathing", (Instance smi) => smi.breathing).EventTransition(GameHashes.ExitedBreathableArea, nooxygen, (Instance smi) => !smi.IsInBreathableArea());
-		satisfied.normal.Transition(satisfied.low, (Instance smi) => smi.oxygenBreather.IsLowOxygenAtMouthCell());
-		satisfied.low.Transition(satisfied.normal, (Instance smi) => !smi.oxygenBreather.IsLowOxygenAtMouthCell()).Transition(nooxygen, (Instance smi) => !smi.IsInBreathableArea()).ToggleEffect("LowOxygen");
-		nooxygen.EventTransition(GameHashes.EnteredBreathableArea, satisfied, (Instance smi) => smi.IsInBreathableArea()).TagTransition(GameTags.RecoveringBreath, satisfied).ToggleExpression(Db.Get().Expressions.Suffocate)
-			.ToggleAttributeModifier("Holding Breath", (Instance smi) => smi.holdingbreath)
-			.ToggleTag(GameTags.NoOxygen)
-			.DefaultState(nooxygen.holdingbreath);
-		nooxygen.holdingbreath.ToggleCategoryStatusItem(Db.Get().StatusItemCategories.Suffocation, Db.Get().DuplicantStatusItems.HoldingBreath).Transition(nooxygen.suffocating, (Instance smi) => smi.IsSuffocating());
-		nooxygen.suffocating.ToggleCategoryStatusItem(Db.Get().StatusItemCategories.Suffocation, Db.Get().DuplicantStatusItems.Suffocating).Transition(death, (Instance smi) => smi.HasSuffocated());
-		death.Enter("SuffocationDeath", delegate(Instance smi)
-		{
-			smi.Kill();
-		});
-		dead.DoNothing();
+		// Token: 0x04004C8D RID: 19597
+		public AttributeModifier holdingbreath;
 	}
 }

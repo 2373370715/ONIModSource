@@ -1,27 +1,38 @@
+﻿using System;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x0200035C RID: 860
 public class GasValveConfig : IBuildingConfig
 {
-	public const string ID = "GasValve";
-
-	private const ConduitType CONDUIT_TYPE = ConduitType.Gas;
-
+	// Token: 0x06000DF4 RID: 3572 RVA: 0x001756A8 File Offset: 0x001738A8
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef("GasValve", 1, 2, "valvegas_kanim", 30, 10f, BUILDINGS.CONSTRUCTION_MASS_KG.TIER1, MATERIALS.RAW_METALS, 1600f, BuildLocationRule.Anywhere, noise: NOISE_POLLUTION.NOISY.TIER1, decor: BUILDINGS.DECOR.PENALTY.TIER0);
-		obj.InputConduitType = ConduitType.Gas;
-		obj.OutputConduitType = ConduitType.Gas;
-		obj.Floodable = false;
-		obj.ViewMode = OverlayModes.GasConduits.ID;
-		obj.AudioCategory = "Metal";
-		obj.PermittedRotations = PermittedRotations.R360;
-		obj.UtilityInputOffset = new CellOffset(0, 0);
-		obj.UtilityOutputOffset = new CellOffset(0, 1);
+		string id = "GasValve";
+		int width = 1;
+		int height = 2;
+		string anim = "valvegas_kanim";
+		int hitpoints = 30;
+		float construction_time = 10f;
+		float[] tier = BUILDINGS.CONSTRUCTION_MASS_KG.TIER1;
+		string[] raw_METALS = MATERIALS.RAW_METALS;
+		float melting_point = 1600f;
+		BuildLocationRule build_location_rule = BuildLocationRule.Anywhere;
+		EffectorValues tier2 = NOISE_POLLUTION.NOISY.TIER1;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, raw_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.PENALTY.TIER0, tier2, 0.2f);
+		buildingDef.InputConduitType = ConduitType.Gas;
+		buildingDef.OutputConduitType = ConduitType.Gas;
+		buildingDef.Floodable = false;
+		buildingDef.ViewMode = OverlayModes.GasConduits.ID;
+		buildingDef.AudioCategory = "Metal";
+		buildingDef.PermittedRotations = PermittedRotations.R360;
+		buildingDef.UtilityInputOffset = new CellOffset(0, 0);
+		buildingDef.UtilityOutputOffset = new CellOffset(0, 1);
 		GeneratedBuildings.RegisterWithOverlay(OverlayScreen.GasVentIDs, "GasValve");
-		return obj;
+		return buildingDef;
 	}
 
+	// Token: 0x06000DF5 RID: 3573 RVA: 0x0017574C File Offset: 0x0017394C
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		GeneratedBuildings.MakeBuildingAlwaysOperational(go);
@@ -29,7 +40,7 @@ public class GasValveConfig : IBuildingConfig
 		ValveBase valveBase = go.AddOrGet<ValveBase>();
 		valveBase.conduitType = ConduitType.Gas;
 		valveBase.maxFlow = 1f;
-		valveBase.animFlowRanges = new ValveBase.AnimRangeInfo[3]
+		valveBase.animFlowRanges = new ValveBase.AnimRangeInfo[]
 		{
 			new ValveBase.AnimRangeInfo(0.25f, "lo"),
 			new ValveBase.AnimRangeInfo(0.5f, "med"),
@@ -39,12 +50,19 @@ public class GasValveConfig : IBuildingConfig
 		go.AddOrGet<Workable>().workTime = 5f;
 	}
 
+	// Token: 0x06000DF6 RID: 3574 RVA: 0x000AC3BF File Offset: 0x000AA5BF
 	public override void DoPostConfigureComplete(GameObject go)
 	{
-		Object.DestroyImmediate(go.GetComponent<RequireInputs>());
-		Object.DestroyImmediate(go.GetComponent<ConduitConsumer>());
-		Object.DestroyImmediate(go.GetComponent<ConduitDispenser>());
+		UnityEngine.Object.DestroyImmediate(go.GetComponent<RequireInputs>());
+		UnityEngine.Object.DestroyImmediate(go.GetComponent<ConduitConsumer>());
+		UnityEngine.Object.DestroyImmediate(go.GetComponent<ConduitDispenser>());
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
-		go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayInFrontOfConduits);
+		go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayInFrontOfConduits, false);
 	}
+
+	// Token: 0x040009F3 RID: 2547
+	public const string ID = "GasValve";
+
+	// Token: 0x040009F4 RID: 2548
+	private const ConduitType CONDUIT_TYPE = ConduitType.Gas;
 }

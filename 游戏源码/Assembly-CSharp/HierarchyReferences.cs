@@ -1,13 +1,14 @@
+﻿using System;
 using UnityEngine;
 
+// Token: 0x02001CFA RID: 7418
 [AddComponentMenu("KMonoBehaviour/scripts/HierarchyReferences")]
 public class HierarchyReferences : KMonoBehaviour
 {
-	public ElementReference[] references;
-
+	// Token: 0x06009ADE RID: 39646 RVA: 0x003BC6CC File Offset: 0x003BA8CC
 	public bool HasReference(string name)
 	{
-		ElementReference[] array = references;
+		ElementReference[] array = this.references;
 		for (int i = 0; i < array.Length; i++)
 		{
 			if (array[i].Name == name)
@@ -18,37 +19,38 @@ public class HierarchyReferences : KMonoBehaviour
 		return false;
 	}
 
+	// Token: 0x06009ADF RID: 39647 RVA: 0x003BC708 File Offset: 0x003BA908
 	public SpecifiedType GetReference<SpecifiedType>(string name) where SpecifiedType : Component
 	{
-		ElementReference[] array = references;
-		for (int i = 0; i < array.Length; i++)
+		foreach (ElementReference elementReference in this.references)
 		{
-			ElementReference elementReference = array[i];
 			if (elementReference.Name == name)
 			{
 				if (elementReference.behaviour is SpecifiedType)
 				{
-					return (SpecifiedType)elementReference.behaviour;
+					return (SpecifiedType)((object)elementReference.behaviour);
 				}
-				Debug.LogError($"Behavior is not specified type");
+				global::Debug.LogError(string.Format("Behavior is not specified type", Array.Empty<object>()));
 			}
 		}
-		Debug.LogError($"Could not find UI reference '{name}' or convert to specified type)");
-		return null;
+		global::Debug.LogError(string.Format("Could not find UI reference '{0}' or convert to specified type)", name));
+		return default(SpecifiedType);
 	}
 
+	// Token: 0x06009AE0 RID: 39648 RVA: 0x003BC788 File Offset: 0x003BA988
 	public Component GetReference(string name)
 	{
-		ElementReference[] array = references;
-		for (int i = 0; i < array.Length; i++)
+		foreach (ElementReference elementReference in this.references)
 		{
-			ElementReference elementReference = array[i];
 			if (elementReference.Name == name)
 			{
 				return elementReference.behaviour;
 			}
 		}
-		Debug.LogWarning("Couldn't find reference to object named {0} Make sure the name matches the field in the inspector.");
+		global::Debug.LogWarning("Couldn't find reference to object named " + name + " Make sure the name matches the field in the inspector.");
 		return null;
 	}
+
+	// Token: 0x04007916 RID: 30998
+	public ElementReference[] references;
 }

@@ -1,106 +1,119 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Steamworks;
 using STRINGS;
 
-namespace KMod;
-
-public class Steam : IDistributionPlatform, SteamUGCService.IClient
+namespace KMod
 {
-	private Mod MakeMod(SteamUGCService.Mod subscribed)
+	// Token: 0x020021D4 RID: 8660
+	public class Steam : IDistributionPlatform, SteamUGCService.IClient
 	{
-		if (subscribed == null)
+		// Token: 0x0600B78A RID: 46986 RVA: 0x004616B4 File Offset: 0x0045F8B4
+		private Mod MakeMod(SteamUGCService.Mod subscribed)
 		{
-			return null;
-		}
-		if ((SteamUGC.GetItemState(subscribed.fileId) & 4) == 0)
-		{
-			return null;
-		}
-		string steamModID = subscribed.fileId.m_PublishedFileId.ToString();
-		Label label = default(Label);
-		label.id = steamModID;
-		label.distribution_platform = Label.DistributionPlatform.Steam;
-		label.version = (long)subscribed.lastUpdateTime;
-		label.title = subscribed.title;
-		Label label2 = label;
-		if (!SteamUGC.GetItemInstallInfo(subscribed.fileId, out var _, out var pchFolder, 1024u, out var _))
-		{
-			Global.Instance.modManager.events.Add(new Event
+			if (subscribed == null)
 			{
-				event_type = EventType.InstallInfoInaccessible,
-				mod = label2
-			});
-			return null;
-		}
-		if (!File.Exists(pchFolder))
-		{
-			KCrashReporter.ReportDevNotification("Steam failed to download mod", Environment.StackTrace, $"Skipping installing mod '{subscribed.title}' (https://steamcommunity.com/sharedfiles/filedetails/?id={subscribed.fileId}) '{pchFolder}'", includeSaveFile: false, new string[1] { KCrashReporter.CRASH_CATEGORY.MODSYSTEM });
-			Global.Instance.modManager.events.Add(new Event
+				return null;
+			}
+			if ((SteamUGC.GetItemState(subscribed.fileId) & 4U) == 0U)
 			{
-				event_type = EventType.DownloadFailed,
-				mod = label2
+				return null;
+			}
+			string steamModID = subscribed.fileId.m_PublishedFileId.ToString();
+			Label label = new Label
+			{
+				id = steamModID,
+				distribution_platform = Label.DistributionPlatform.Steam,
+				version = (long)subscribed.lastUpdateTime,
+				title = subscribed.title
+			};
+			ulong num;
+			string text;
+			uint num2;
+			if (!SteamUGC.GetItemInstallInfo(subscribed.fileId, out num, out text, 1024U, out num2))
+			{
+				Global.Instance.modManager.events.Add(new Event
+				{
+					event_type = EventType.InstallInfoInaccessible,
+					mod = label
+				});
+				return null;
+			}
+			if (!File.Exists(text))
+			{
+				KCrashReporter.ReportDevNotification("Steam failed to download mod", Environment.StackTrace, string.Format("Skipping installing mod '{0}' (https://steamcommunity.com/sharedfiles/filedetails/?id={1}) '{2}'", subscribed.title, subscribed.fileId, text), false, new string[]
+				{
+					KCrashReporter.CRASH_CATEGORY.MODSYSTEM
+				});
+				Global.Instance.modManager.events.Add(new Event
+				{
+					event_type = EventType.DownloadFailed,
+					mod = label
+				});
+				return null;
+			}
+			ZipFile zipFile = new ZipFile(text);
+			KModHeader header = KModUtil.GetHeader(zipFile, label.defaultStaticID, subscribed.title, subscribed.description, false);
+			label.title = header.title;
+			return new Mod(label, header.staticID, header.description, zipFile, UI.FRONTEND.MODS.TOOLTIPS.MANAGE_STEAM_SUBSCRIPTION, delegate()
+			{
+				App.OpenWebURL("https://steamcommunity.com/sharedfiles/filedetails/?id=" + steamModID);
 			});
-			return null;
 		}
-		ZipFile zipFile = new ZipFile(pchFolder);
-		KModHeader header = KModUtil.GetHeader(zipFile, label2.defaultStaticID, subscribed.title, subscribed.description, devMod: false);
-		label2.title = header.title;
-		return new Mod(label2, header.staticID, header.description, zipFile, UI.FRONTEND.MODS.TOOLTIPS.MANAGE_STEAM_SUBSCRIPTION, delegate
-		{
-			App.OpenWebURL("https://steamcommunity.com/sharedfiles/filedetails/?id=" + steamModID);
-		});
-	}
 
-	public void UpdateMods(IEnumerable<PublishedFileId_t> added, IEnumerable<PublishedFileId_t> updated, IEnumerable<PublishedFileId_t> removed, IEnumerable<SteamUGCService.Mod> loaded_previews)
-	{
-		foreach (PublishedFileId_t item in added)
+		// Token: 0x0600B78B RID: 46987 RVA: 0x00461850 File Offset: 0x0045FA50
+		public void UpdateMods(IEnumerable<PublishedFileId_t> added, IEnumerable<PublishedFileId_t> updated, IEnumerable<PublishedFileId_t> removed, IEnumerable<SteamUGCService.Mod> loaded_previews)
 		{
-			SteamUGCService.Mod mod = SteamUGCService.Instance.FindMod(item);
-			if (mod == null)
+			foreach (PublishedFileId_t publishedFileId_t in added)
 			{
-				string details = $"Mod Steam PublishedFileId_t {item}";
-				KCrashReporter.ReportDevNotification($"SteamUGCService just told us ADDED id {item} was valid!", Environment.StackTrace, details);
-				continue;
+				SteamUGCService.Mod mod = SteamUGCService.Instance.FindMod(publishedFileId_t);
+				if (mod == null)
+				{
+					string details = string.Format("Mod Steam PublishedFileId_t {0}", publishedFileId_t);
+					KCrashReporter.ReportDevNotification(string.Format("SteamUGCService just told us ADDED id {0} was valid!", publishedFileId_t), Environment.StackTrace, details, false, null);
+				}
+				else
+				{
+					Mod mod2 = this.MakeMod(mod);
+					if (mod2 != null)
+					{
+						Global.Instance.modManager.Subscribe(mod2, this);
+					}
+				}
 			}
-			Mod mod2 = MakeMod(mod);
-			if (mod2 != null)
+			foreach (PublishedFileId_t publishedFileId_t2 in updated)
 			{
-				Global.Instance.modManager.Subscribe(mod2, this);
+				SteamUGCService.Mod mod3 = SteamUGCService.Instance.FindMod(publishedFileId_t2);
+				if (mod3 == null)
+				{
+					string details2 = string.Format("Mod Steam PublishedFileId_t {0}", publishedFileId_t2.m_PublishedFileId);
+					KCrashReporter.ReportDevNotification("SteamUGCService just told us UPDATED id was valid!", Environment.StackTrace, details2, false, null);
+				}
+				else
+				{
+					Mod mod4 = this.MakeMod(mod3);
+					if (mod4 != null)
+					{
+						Global.Instance.modManager.Update(mod4, this);
+					}
+				}
 			}
-		}
-		foreach (PublishedFileId_t item2 in updated)
-		{
-			SteamUGCService.Mod mod3 = SteamUGCService.Instance.FindMod(item2);
-			if (mod3 == null)
+			foreach (PublishedFileId_t publishedFileId_t3 in removed)
 			{
-				string details2 = $"Mod Steam PublishedFileId_t {item2.m_PublishedFileId}";
-				KCrashReporter.ReportDevNotification("SteamUGCService just told us UPDATED id was valid!", Environment.StackTrace, details2);
-				continue;
+				Manager modManager = Global.Instance.modManager;
+				Label label = default(Label);
+				ulong publishedFileId = publishedFileId_t3.m_PublishedFileId;
+				label.id = publishedFileId.ToString();
+				label.distribution_platform = Label.DistributionPlatform.Steam;
+				modManager.Unsubscribe(label, this);
 			}
-			Mod mod4 = MakeMod(mod3);
-			if (mod4 != null)
+			if (added.Count<PublishedFileId_t>() != 0)
 			{
-				Global.Instance.modManager.Update(mod4, this);
+				Global.Instance.modManager.Sanitize(null);
+				return;
 			}
-		}
-		foreach (PublishedFileId_t item3 in removed)
-		{
-			Manager modManager = Global.Instance.modManager;
-			Label label = default(Label);
-			ulong publishedFileId = item3.m_PublishedFileId;
-			label.id = publishedFileId.ToString();
-			label.distribution_platform = Label.DistributionPlatform.Steam;
-			modManager.Unsubscribe(label, this);
-		}
-		if (added.Count() != 0)
-		{
-			Global.Instance.modManager.Sanitize(null);
-		}
-		else
-		{
 			Global.Instance.modManager.Report(null);
 		}
 	}

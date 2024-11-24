@@ -1,87 +1,51 @@
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Token: 0x02000962 RID: 2402
 public class GameAudioSheets : AudioSheets
 {
-	private class SingleAudioSheetLoader : AsyncLoader
-	{
-		public AudioSheet sheet;
-
-		public string text;
-
-		public string name;
-
-		public override void Run()
-		{
-			sheet.soundInfos = new ResourceLoader<AudioSheet.SoundInfo>(text, name).resources.ToArray();
-		}
-	}
-
-	private class GameAudioSheetLoader : GlobalAsyncLoader<GameAudioSheetLoader>
-	{
-		public override void CollectLoaders(List<AsyncLoader> loaders)
-		{
-			foreach (AudioSheet sheet in GameAudioSheets.Get().sheets)
-			{
-				loaders.Add(new SingleAudioSheetLoader
-				{
-					sheet = sheet,
-					text = sheet.asset.text,
-					name = sheet.asset.name
-				});
-			}
-		}
-
-		public override void Run()
-		{
-		}
-	}
-
-	private static GameAudioSheets _Instance;
-
-	private HashSet<HashedString> validFileNames = new HashSet<HashedString>();
-
-	private Dictionary<HashedString, HashSet<HashedString>> animsNotAllowedToPlaySpeech = new Dictionary<HashedString, HashSet<HashedString>>();
-
+	// Token: 0x06002B48 RID: 11080 RVA: 0x000BC229 File Offset: 0x000BA429
 	public static GameAudioSheets Get()
 	{
-		if (_Instance == null)
+		if (GameAudioSheets._Instance == null)
 		{
-			_Instance = Resources.Load<GameAudioSheets>("GameAudioSheets");
+			GameAudioSheets._Instance = Resources.Load<GameAudioSheets>("GameAudioSheets");
 		}
-		return _Instance;
+		return GameAudioSheets._Instance;
 	}
 
+	// Token: 0x06002B49 RID: 11081 RVA: 0x001DEDD0 File Offset: 0x001DCFD0
 	public override void Initialize()
 	{
-		validFileNames.Add("game_triggered");
-		foreach (KAnimFile animAsset in Assets.instance.AnimAssets)
+		this.validFileNames.Add("game_triggered");
+		foreach (KAnimFile kanimFile in Assets.instance.AnimAssets)
 		{
-			if (!(animAsset == null))
+			if (!(kanimFile == null))
 			{
-				validFileNames.Add(animAsset.name);
+				this.validFileNames.Add(kanimFile.name);
 			}
 		}
 		base.Initialize();
-		foreach (AudioSheet sheet in sheets)
+		foreach (AudioSheet audioSheet in this.sheets)
 		{
-			AudioSheet.SoundInfo[] soundInfos = sheet.soundInfos;
-			foreach (AudioSheet.SoundInfo soundInfo in soundInfos)
+			foreach (AudioSheet.SoundInfo soundInfo in audioSheet.soundInfos)
 			{
 				if (soundInfo.Type == "MouthFlapSoundEvent" || soundInfo.Type == "VoiceSoundEvent")
 				{
-					HashSet<HashedString> value = null;
-					if (!animsNotAllowedToPlaySpeech.TryGetValue(soundInfo.File, out value))
+					HashSet<HashedString> hashSet = null;
+					if (!this.animsNotAllowedToPlaySpeech.TryGetValue(soundInfo.File, out hashSet))
 					{
-						value = new HashSet<HashedString>();
-						animsNotAllowedToPlaySpeech[soundInfo.File] = value;
+						hashSet = new HashSet<HashedString>();
+						this.animsNotAllowedToPlaySpeech[soundInfo.File] = hashSet;
 					}
-					value.Add(soundInfo.Anim);
+					hashSet.Add(soundInfo.Anim);
 				}
 			}
 		}
 	}
 
+	// Token: 0x06002B4A RID: 11082 RVA: 0x001DEF38 File Offset: 0x001DD138
 	protected override AnimEvent CreateSoundOfType(string type, string file_name, string sound_name, int frame, float min_interval, string dlcId)
 	{
 		SoundEvent soundEvent = null;
@@ -91,18 +55,16 @@ public class GameAudioSheets : AudioSheets
 			sound_name = sound_name.Replace(":disable_camera_position_scaling", "");
 			shouldCameraScalePosition = false;
 		}
-		switch (type)
+		if (type == "FloorSoundEvent")
 		{
-		case "FloorSoundEvent":
 			soundEvent = new FloorSoundEvent(file_name, sound_name, frame);
-			break;
-		case "SoundEvent":
-		case "LoopingSoundEvent":
+		}
+		else if (type == "SoundEvent" || type == "LoopingSoundEvent")
 		{
 			bool is_looping = type == "LoopingSoundEvent";
-			string[] array = sound_name.Split(':');
+			string[] array = sound_name.Split(':', StringSplitOptions.None);
 			sound_name = array[0];
-			soundEvent = new SoundEvent(file_name, sound_name, frame, do_load: true, is_looping, min_interval, is_dynamic: false);
+			soundEvent = new SoundEvent(file_name, sound_name, frame, true, is_looping, min_interval, false);
 			for (int i = 1; i < array.Length; i++)
 			{
 				if (array[i] == "IGNORE_PAUSE")
@@ -111,72 +73,89 @@ public class GameAudioSheets : AudioSheets
 				}
 				else
 				{
-					Debug.LogWarning(sound_name + " has unknown parameter " + array[i]);
+					global::Debug.LogWarning(sound_name + " has unknown parameter " + array[i]);
 				}
 			}
-			break;
 		}
-		case "LadderSoundEvent":
+		else if (type == "LadderSoundEvent")
+		{
 			soundEvent = new LadderSoundEvent(file_name, sound_name, frame);
-			break;
-		case "LaserSoundEvent":
+		}
+		else if (type == "LaserSoundEvent")
+		{
 			soundEvent = new LaserSoundEvent(file_name, sound_name, frame, min_interval);
-			break;
-		case "HatchDrillSoundEvent":
+		}
+		else if (type == "HatchDrillSoundEvent")
+		{
 			soundEvent = new HatchDrillSoundEvent(file_name, sound_name, frame, min_interval);
-			break;
-		case "CreatureChewSoundEvent":
+		}
+		else if (type == "CreatureChewSoundEvent")
+		{
 			soundEvent = new CreatureChewSoundEvent(file_name, sound_name, frame, min_interval);
-			break;
-		case "BuildingDamageSoundEvent":
+		}
+		else if (type == "BuildingDamageSoundEvent")
+		{
 			soundEvent = new BuildingDamageSoundEvent(file_name, sound_name, frame);
-			break;
-		case "WallDamageSoundEvent":
+		}
+		else if (type == "WallDamageSoundEvent")
+		{
 			soundEvent = new WallDamageSoundEvent(file_name, sound_name, frame, min_interval);
-			break;
-		case "RemoteSoundEvent":
+		}
+		else if (type == "RemoteSoundEvent")
+		{
 			soundEvent = new RemoteSoundEvent(file_name, sound_name, frame, min_interval);
-			break;
-		case "VoiceSoundEvent":
-		case "LoopingVoiceSoundEvent":
+		}
+		else if (type == "VoiceSoundEvent" || type == "LoopingVoiceSoundEvent")
+		{
 			soundEvent = new VoiceSoundEvent(file_name, sound_name, frame, type == "LoopingVoiceSoundEvent");
-			break;
-		case "MouthFlapSoundEvent":
-			soundEvent = new MouthFlapSoundEvent(file_name, sound_name, frame, is_looping: false);
-			break;
-		case "MainMenuSoundEvent":
+		}
+		else if (type == "MouthFlapSoundEvent")
+		{
+			soundEvent = new MouthFlapSoundEvent(file_name, sound_name, frame, false);
+		}
+		else if (type == "MainMenuSoundEvent")
+		{
 			soundEvent = new MainMenuSoundEvent(file_name, sound_name, frame);
-			break;
-		case "ClusterMapSoundEvent":
-			soundEvent = new ClusterMapSoundEvent(file_name, sound_name, frame, looping: false);
-			break;
-		case "ClusterMapLoopingSoundEvent":
-			soundEvent = new ClusterMapSoundEvent(file_name, sound_name, frame, looping: true);
-			break;
-		case "UIAnimationSoundEvent":
-			soundEvent = new UIAnimationSoundEvent(file_name, sound_name, frame, looping: false);
-			break;
-		case "UIAnimationVoiceSoundEvent":
-			soundEvent = new UIAnimationVoiceSoundEvent(file_name, sound_name, frame, looping: false);
-			break;
-		case "UIAnimationLoopingSoundEvent":
-			soundEvent = new UIAnimationSoundEvent(file_name, sound_name, frame, looping: true);
-			break;
-		case "CreatureVariationSoundEvent":
-			soundEvent = new CreatureVariationSoundEvent(file_name, sound_name, frame, do_load: true, type == "LoopingSoundEvent", min_interval, is_dynamic: false);
-			break;
-		case "CountedSoundEvent":
-			soundEvent = new CountedSoundEvent(file_name, sound_name, frame, do_load: true, is_looping: false, min_interval, is_dynamic: false);
-			break;
-		case "SculptingSoundEvent":
-			soundEvent = new SculptingSoundEvent(file_name, sound_name, frame, do_load: true, is_looping: false, min_interval, is_dynamic: false);
-			break;
-		case "PhonoboxSoundEvent":
+		}
+		else if (type == "ClusterMapSoundEvent")
+		{
+			soundEvent = new ClusterMapSoundEvent(file_name, sound_name, frame, false);
+		}
+		else if (type == "ClusterMapLoopingSoundEvent")
+		{
+			soundEvent = new ClusterMapSoundEvent(file_name, sound_name, frame, true);
+		}
+		else if (type == "UIAnimationSoundEvent")
+		{
+			soundEvent = new UIAnimationSoundEvent(file_name, sound_name, frame, false);
+		}
+		else if (type == "UIAnimationVoiceSoundEvent")
+		{
+			soundEvent = new UIAnimationVoiceSoundEvent(file_name, sound_name, frame, false);
+		}
+		else if (type == "UIAnimationLoopingSoundEvent")
+		{
+			soundEvent = new UIAnimationSoundEvent(file_name, sound_name, frame, true);
+		}
+		else if (type == "CreatureVariationSoundEvent")
+		{
+			soundEvent = new CreatureVariationSoundEvent(file_name, sound_name, frame, true, type == "LoopingSoundEvent", min_interval, false);
+		}
+		else if (type == "CountedSoundEvent")
+		{
+			soundEvent = new CountedSoundEvent(file_name, sound_name, frame, true, false, min_interval, false);
+		}
+		else if (type == "SculptingSoundEvent")
+		{
+			soundEvent = new SculptingSoundEvent(file_name, sound_name, frame, true, false, min_interval, false);
+		}
+		else if (type == "PhonoboxSoundEvent")
+		{
 			soundEvent = new PhonoboxSoundEvent(file_name, sound_name, frame, min_interval);
-			break;
-		case "PlantMutationSoundEvent":
+		}
+		else if (type == "PlantMutationSoundEvent")
+		{
 			soundEvent = new PlantMutationSoundEvent(file_name, sound_name, frame, min_interval);
-			break;
 		}
 		if (soundEvent != null)
 		{
@@ -185,13 +164,61 @@ public class GameAudioSheets : AudioSheets
 		return soundEvent;
 	}
 
+	// Token: 0x06002B4B RID: 11083 RVA: 0x001DF280 File Offset: 0x001DD480
 	public bool IsAnimAllowedToPlaySpeech(KAnim.Anim anim)
 	{
-		HashSet<HashedString> value = null;
-		if (animsNotAllowedToPlaySpeech.TryGetValue(anim.animFile.name, out value))
+		HashSet<HashedString> hashSet = null;
+		return !this.animsNotAllowedToPlaySpeech.TryGetValue(anim.animFile.name, out hashSet) || !hashSet.Contains(anim.hash);
+	}
+
+	// Token: 0x04001D1B RID: 7451
+	private static GameAudioSheets _Instance;
+
+	// Token: 0x04001D1C RID: 7452
+	private HashSet<HashedString> validFileNames = new HashSet<HashedString>();
+
+	// Token: 0x04001D1D RID: 7453
+	private Dictionary<HashedString, HashSet<HashedString>> animsNotAllowedToPlaySpeech = new Dictionary<HashedString, HashSet<HashedString>>();
+
+	// Token: 0x02000963 RID: 2403
+	private class SingleAudioSheetLoader : AsyncLoader
+	{
+		// Token: 0x06002B4D RID: 11085 RVA: 0x000BC26A File Offset: 0x000BA46A
+		public override void Run()
 		{
-			return !value.Contains(anim.hash);
+			this.sheet.soundInfos = new ResourceLoader<AudioSheet.SoundInfo>(this.text, this.name).resources.ToArray();
 		}
-		return true;
+
+		// Token: 0x04001D1E RID: 7454
+		public AudioSheet sheet;
+
+		// Token: 0x04001D1F RID: 7455
+		public string text;
+
+		// Token: 0x04001D20 RID: 7456
+		public string name;
+	}
+
+	// Token: 0x02000964 RID: 2404
+	private class GameAudioSheetLoader : GlobalAsyncLoader<GameAudioSheets.GameAudioSheetLoader>
+	{
+		// Token: 0x06002B4F RID: 11087 RVA: 0x001DF2C0 File Offset: 0x001DD4C0
+		public override void CollectLoaders(List<AsyncLoader> loaders)
+		{
+			foreach (AudioSheet audioSheet in GameAudioSheets.Get().sheets)
+			{
+				loaders.Add(new GameAudioSheets.SingleAudioSheetLoader
+				{
+					sheet = audioSheet,
+					text = audioSheet.asset.text,
+					name = audioSheet.asset.name
+				});
+			}
+		}
+
+		// Token: 0x06002B50 RID: 11088 RVA: 0x000A5E40 File Offset: 0x000A4040
+		public override void Run()
+		{
+		}
 	}
 }

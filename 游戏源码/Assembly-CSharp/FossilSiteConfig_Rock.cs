@@ -1,44 +1,64 @@
+﻿using System;
 using System.Collections.Generic;
 using STRINGS;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x0200034A RID: 842
 public class FossilSiteConfig_Rock : IEntityConfig
 {
-	public static readonly HashedString FossilQuestCriteriaID = "LostRockFossil";
-
-	public const string ID = "FossilRock";
-
+	// Token: 0x06000D99 RID: 3481 RVA: 0x000A6F3E File Offset: 0x000A513E
 	public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
+	// Token: 0x06000D9A RID: 3482 RVA: 0x0017410C File Offset: 0x0017230C
 	public GameObject CreatePrefab()
 	{
-		GameObject obj = EntityTemplates.CreatePlacedEntity("FossilRock", CODEX.STORY_TRAITS.FOSSILHUNT.ENTITIES.FOSSIL_ROCK.NAME, CODEX.STORY_TRAITS.FOSSILHUNT.ENTITIES.FOSSIL_ROCK.DESC, 4000f, decor: TUNING.BUILDINGS.DECOR.BONUS.TIER4, noise: NOISE_POLLUTION.NOISY.TIER3, anim: Assets.GetAnim("fossil_rock_kanim"), initialAnim: "object", sceneLayer: Grid.SceneLayer.BuildingBack, width: 2, height: 2, element: SimHashes.Creature, additionalTags: new List<Tag> { GameTags.Gravitas });
-		PrimaryElement component = obj.GetComponent<PrimaryElement>();
-		component.SetElement(SimHashes.Fossil);
+		string id = "FossilRock";
+		string name = CODEX.STORY_TRAITS.FOSSILHUNT.ENTITIES.FOSSIL_ROCK.NAME;
+		string desc = CODEX.STORY_TRAITS.FOSSILHUNT.ENTITIES.FOSSIL_ROCK.DESC;
+		float mass = 4000f;
+		EffectorValues tier = TUNING.BUILDINGS.DECOR.BONUS.TIER4;
+		EffectorValues tier2 = NOISE_POLLUTION.NOISY.TIER3;
+		GameObject gameObject = EntityTemplates.CreatePlacedEntity(id, name, desc, mass, Assets.GetAnim("fossil_rock_kanim"), "object", Grid.SceneLayer.BuildingBack, 2, 2, tier, tier2, SimHashes.Creature, new List<Tag>
+		{
+			GameTags.Gravitas
+		}, 293f);
+		PrimaryElement component = gameObject.GetComponent<PrimaryElement>();
+		component.SetElement(SimHashes.Fossil, true);
 		component.Temperature = 315f;
-		obj.AddOrGet<Operational>();
-		obj.AddOrGet<EntombVulnerable>();
-		obj.AddOrGet<Demolishable>().allowDemolition = false;
-		obj.AddOrGetDef<MinorFossilDigSite.Def>().fossilQuestCriteriaID = FossilQuestCriteriaID;
-		obj.AddOrGetDef<FossilHuntInitializer.Def>();
-		obj.AddOrGet<MinorDigSiteWorkable>();
-		obj.AddOrGet<Prioritizable>();
-		Prioritizable.AddRef(obj);
-		obj.AddOrGet<LoopingSounds>();
-		return obj;
+		gameObject.AddOrGet<Operational>();
+		gameObject.AddOrGet<EntombVulnerable>();
+		gameObject.AddOrGet<Demolishable>().allowDemolition = false;
+		gameObject.AddOrGetDef<MinorFossilDigSite.Def>().fossilQuestCriteriaID = FossilSiteConfig_Rock.FossilQuestCriteriaID;
+		gameObject.AddOrGetDef<FossilHuntInitializer.Def>();
+		gameObject.AddOrGet<MinorDigSiteWorkable>();
+		gameObject.AddOrGet<Prioritizable>();
+		Prioritizable.AddRef(gameObject);
+		gameObject.AddOrGet<LoopingSounds>();
+		return gameObject;
 	}
 
+	// Token: 0x06000D9B RID: 3483 RVA: 0x000ABF39 File Offset: 0x000AA139
 	public void OnPrefabInit(GameObject inst)
 	{
 		inst.GetComponent<EntombVulnerable>().SetStatusItem(Db.Get().BuildingStatusItems.FossilEntombed);
-		inst.GetComponent<OccupyArea>().objectLayers = new ObjectLayer[1] { ObjectLayer.Building };
+		inst.GetComponent<OccupyArea>().objectLayers = new ObjectLayer[]
+		{
+			ObjectLayer.Building
+		};
 	}
 
+	// Token: 0x06000D9C RID: 3484 RVA: 0x000A5E40 File Offset: 0x000A4040
 	public void OnSpawn(GameObject inst)
 	{
 	}
+
+	// Token: 0x040009CA RID: 2506
+	public static readonly HashedString FossilQuestCriteriaID = "LostRockFossil";
+
+	// Token: 0x040009CB RID: 2507
+	public const string ID = "FossilRock";
 }

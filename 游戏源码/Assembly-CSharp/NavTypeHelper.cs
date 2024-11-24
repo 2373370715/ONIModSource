@@ -1,24 +1,36 @@
+﻿using System;
 using UnityEngine;
 
+// Token: 0x020007E0 RID: 2016
 public static class NavTypeHelper
 {
+	// Token: 0x06002411 RID: 9233 RVA: 0x001C89B4 File Offset: 0x001C6BB4
 	public static Vector3 GetNavPos(int cell, NavType nav_type)
 	{
 		Vector3 zero = Vector3.zero;
-		return nav_type switch
+		switch (nav_type)
 		{
-			NavType.Floor => Grid.CellToPosCBC(cell, Grid.SceneLayer.Move), 
-			NavType.LeftWall => Grid.CellToPosLCC(cell, Grid.SceneLayer.Move), 
-			NavType.RightWall => Grid.CellToPosRCC(cell, Grid.SceneLayer.Move), 
-			NavType.Ceiling => Grid.CellToPosCTC(cell, Grid.SceneLayer.Move), 
-			NavType.Ladder => Grid.CellToPosCCC(cell, Grid.SceneLayer.Move), 
-			NavType.Pole => Grid.CellToPosCCC(cell, Grid.SceneLayer.Move), 
-			NavType.Tube => Grid.CellToPosCCC(cell, Grid.SceneLayer.Move), 
-			NavType.Solid => Grid.CellToPosCCC(cell, Grid.SceneLayer.Move), 
-			_ => Grid.CellToPosCCC(cell, Grid.SceneLayer.Move), 
-		};
+		case NavType.Floor:
+			return Grid.CellToPosCBC(cell, Grid.SceneLayer.Move);
+		case NavType.LeftWall:
+			return Grid.CellToPosLCC(cell, Grid.SceneLayer.Move);
+		case NavType.RightWall:
+			return Grid.CellToPosRCC(cell, Grid.SceneLayer.Move);
+		case NavType.Ceiling:
+			return Grid.CellToPosCTC(cell, Grid.SceneLayer.Move);
+		case NavType.Ladder:
+			return Grid.CellToPosCCC(cell, Grid.SceneLayer.Move);
+		case NavType.Pole:
+			return Grid.CellToPosCCC(cell, Grid.SceneLayer.Move);
+		case NavType.Tube:
+			return Grid.CellToPosCCC(cell, Grid.SceneLayer.Move);
+		case NavType.Solid:
+			return Grid.CellToPosCCC(cell, Grid.SceneLayer.Move);
+		}
+		return Grid.CellToPosCCC(cell, Grid.SceneLayer.Move);
 	}
 
+	// Token: 0x06002412 RID: 9234 RVA: 0x001C8A5C File Offset: 0x001C6C5C
 	public static int GetAnchorCell(NavType nav_type, int cell)
 	{
 		int result = Grid.InvalidCell;
@@ -38,8 +50,11 @@ public static class NavTypeHelper
 			case NavType.Ceiling:
 				result = Grid.CellAbove(cell);
 				break;
-			case NavType.Solid:
-				result = cell;
+			default:
+				if (nav_type == NavType.Solid)
+				{
+					result = cell;
+				}
 				break;
 			}
 		}

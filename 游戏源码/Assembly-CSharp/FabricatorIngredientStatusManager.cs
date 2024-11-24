@@ -1,124 +1,129 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Token: 0x02000D63 RID: 3427
 [AddComponentMenu("KMonoBehaviour/scripts/FabricatorIngredientStatusManager")]
 public class FabricatorIngredientStatusManager : KMonoBehaviour, ISim1000ms
 {
-	private KSelectable selectable;
-
-	private ComplexFabricator fabricator;
-
-	private Dictionary<ComplexRecipe, Guid> statusItems = new Dictionary<ComplexRecipe, Guid>();
-
-	private Dictionary<ComplexRecipe, Dictionary<Tag, float>> recipeRequiredResourceBalances = new Dictionary<ComplexRecipe, Dictionary<Tag, float>>();
-
-	private List<ComplexRecipe> deadOrderKeys = new List<ComplexRecipe>();
-
+	// Token: 0x06004323 RID: 17187 RVA: 0x000CB633 File Offset: 0x000C9833
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		selectable = GetComponent<KSelectable>();
-		fabricator = GetComponent<ComplexFabricator>();
-		InitializeBalances();
+		this.selectable = base.GetComponent<KSelectable>();
+		this.fabricator = base.GetComponent<ComplexFabricator>();
+		this.InitializeBalances();
 	}
 
+	// Token: 0x06004324 RID: 17188 RVA: 0x00243BD8 File Offset: 0x00241DD8
 	private void InitializeBalances()
 	{
-		ComplexRecipe[] recipes = fabricator.GetRecipes();
-		foreach (ComplexRecipe complexRecipe in recipes)
+		foreach (ComplexRecipe complexRecipe in this.fabricator.GetRecipes())
 		{
-			recipeRequiredResourceBalances.Add(complexRecipe, new Dictionary<Tag, float>());
-			ComplexRecipe.RecipeElement[] ingredients = complexRecipe.ingredients;
-			foreach (ComplexRecipe.RecipeElement recipeElement in ingredients)
+			this.recipeRequiredResourceBalances.Add(complexRecipe, new Dictionary<Tag, float>());
+			foreach (ComplexRecipe.RecipeElement recipeElement in complexRecipe.ingredients)
 			{
-				recipeRequiredResourceBalances[complexRecipe].Add(recipeElement.material, 0f);
+				this.recipeRequiredResourceBalances[complexRecipe].Add(recipeElement.material, 0f);
 			}
 		}
 	}
 
+	// Token: 0x06004325 RID: 17189 RVA: 0x000CB659 File Offset: 0x000C9859
 	public void Sim1000ms(float dt)
 	{
-		RefreshStatusItems();
+		this.RefreshStatusItems();
 	}
 
+	// Token: 0x06004326 RID: 17190 RVA: 0x00243C50 File Offset: 0x00241E50
 	private void RefreshStatusItems()
 	{
-		foreach (KeyValuePair<ComplexRecipe, Guid> statusItem in statusItems)
+		foreach (KeyValuePair<ComplexRecipe, Guid> keyValuePair in this.statusItems)
 		{
-			if (!fabricator.IsRecipeQueued(statusItem.Key))
+			if (!this.fabricator.IsRecipeQueued(keyValuePair.Key))
 			{
-				deadOrderKeys.Add(statusItem.Key);
+				this.deadOrderKeys.Add(keyValuePair.Key);
 			}
 		}
-		foreach (ComplexRecipe deadOrderKey in deadOrderKeys)
+		foreach (ComplexRecipe complexRecipe in this.deadOrderKeys)
 		{
-			recipeRequiredResourceBalances[deadOrderKey].Clear();
-			ComplexRecipe.RecipeElement[] ingredients = deadOrderKey.ingredients;
-			foreach (ComplexRecipe.RecipeElement recipeElement in ingredients)
+			this.recipeRequiredResourceBalances[complexRecipe].Clear();
+			foreach (ComplexRecipe.RecipeElement recipeElement in complexRecipe.ingredients)
 			{
-				recipeRequiredResourceBalances[deadOrderKey].Add(recipeElement.material, 0f);
+				this.recipeRequiredResourceBalances[complexRecipe].Add(recipeElement.material, 0f);
 			}
-			selectable.RemoveStatusItem(statusItems[deadOrderKey]);
-			statusItems.Remove(deadOrderKey);
+			this.selectable.RemoveStatusItem(this.statusItems[complexRecipe], false);
+			this.statusItems.Remove(complexRecipe);
 		}
-		deadOrderKeys.Clear();
-		ComplexRecipe[] recipes = fabricator.GetRecipes();
-		foreach (ComplexRecipe complexRecipe in recipes)
+		this.deadOrderKeys.Clear();
+		foreach (ComplexRecipe complexRecipe2 in this.fabricator.GetRecipes())
 		{
-			if (!fabricator.IsRecipeQueued(complexRecipe))
+			if (this.fabricator.IsRecipeQueued(complexRecipe2))
 			{
-				continue;
-			}
-			bool flag = false;
-			ComplexRecipe.RecipeElement[] ingredients = complexRecipe.ingredients;
-			foreach (ComplexRecipe.RecipeElement recipeElement2 in ingredients)
-			{
-				float newBalance = fabricator.inStorage.GetAmountAvailable(recipeElement2.material) + fabricator.buildStorage.GetAmountAvailable(recipeElement2.material) + fabricator.GetMyWorld().worldInventory.GetTotalAmount(recipeElement2.material, includeRelatedWorlds: true) - recipeElement2.amount;
-				flag = flag || ChangeRecipeRequiredResourceBalance(complexRecipe, recipeElement2.material, newBalance) || (statusItems.ContainsKey(complexRecipe) && fabricator.GetRecipeQueueCount(complexRecipe) == 0);
-			}
-			if (!flag)
-			{
-				continue;
-			}
-			if (statusItems.ContainsKey(complexRecipe))
-			{
-				selectable.RemoveStatusItem(statusItems[complexRecipe]);
-				statusItems.Remove(complexRecipe);
-			}
-			if (!fabricator.IsRecipeQueued(complexRecipe))
-			{
-				continue;
-			}
-			foreach (float value2 in recipeRequiredResourceBalances[complexRecipe].Values)
-			{
-				if (!(value2 < 0f))
+				bool flag = false;
+				foreach (ComplexRecipe.RecipeElement recipeElement2 in complexRecipe2.ingredients)
 				{
-					continue;
+					float newBalance = this.fabricator.inStorage.GetAmountAvailable(recipeElement2.material) + this.fabricator.buildStorage.GetAmountAvailable(recipeElement2.material) + this.fabricator.GetMyWorld().worldInventory.GetTotalAmount(recipeElement2.material, true) - recipeElement2.amount;
+					flag = (flag || this.ChangeRecipeRequiredResourceBalance(complexRecipe2, recipeElement2.material, newBalance) || (this.statusItems.ContainsKey(complexRecipe2) && this.fabricator.GetRecipeQueueCount(complexRecipe2) == 0));
 				}
-				Dictionary<Tag, float> dictionary = new Dictionary<Tag, float>();
-				foreach (KeyValuePair<Tag, float> item in recipeRequiredResourceBalances[complexRecipe])
+				if (flag)
 				{
-					if (item.Value < 0f)
+					if (this.statusItems.ContainsKey(complexRecipe2))
 					{
-						dictionary.Add(item.Key, 0f - item.Value);
+						this.selectable.RemoveStatusItem(this.statusItems[complexRecipe2], false);
+						this.statusItems.Remove(complexRecipe2);
+					}
+					if (this.fabricator.IsRecipeQueued(complexRecipe2))
+					{
+						using (Dictionary<Tag, float>.ValueCollection.Enumerator enumerator3 = this.recipeRequiredResourceBalances[complexRecipe2].Values.GetEnumerator())
+						{
+							while (enumerator3.MoveNext())
+							{
+								if (enumerator3.Current < 0f)
+								{
+									Dictionary<Tag, float> dictionary = new Dictionary<Tag, float>();
+									foreach (KeyValuePair<Tag, float> keyValuePair2 in this.recipeRequiredResourceBalances[complexRecipe2])
+									{
+										if (keyValuePair2.Value < 0f)
+										{
+											dictionary.Add(keyValuePair2.Key, -keyValuePair2.Value);
+										}
+									}
+									Guid value = this.selectable.AddStatusItem(Db.Get().BuildingStatusItems.MaterialsUnavailable, dictionary);
+									this.statusItems.Add(complexRecipe2, value);
+									break;
+								}
+							}
+						}
 					}
 				}
-				Guid value = selectable.AddStatusItem(Db.Get().BuildingStatusItems.MaterialsUnavailable, dictionary);
-				statusItems.Add(complexRecipe, value);
-				break;
 			}
 		}
 	}
 
+	// Token: 0x06004327 RID: 17191 RVA: 0x00243FD0 File Offset: 0x002421D0
 	private bool ChangeRecipeRequiredResourceBalance(ComplexRecipe recipe, Tag tag, float newBalance)
 	{
 		bool result = false;
-		if (recipeRequiredResourceBalances[recipe][tag] >= 0f != newBalance >= 0f)
+		if (this.recipeRequiredResourceBalances[recipe][tag] >= 0f != newBalance >= 0f)
 		{
 			result = true;
 		}
-		recipeRequiredResourceBalances[recipe][tag] = newBalance;
+		this.recipeRequiredResourceBalances[recipe][tag] = newBalance;
 		return result;
 	}
+
+	// Token: 0x04002DF3 RID: 11763
+	private KSelectable selectable;
+
+	// Token: 0x04002DF4 RID: 11764
+	private ComplexFabricator fabricator;
+
+	// Token: 0x04002DF5 RID: 11765
+	private Dictionary<ComplexRecipe, Guid> statusItems = new Dictionary<ComplexRecipe, Guid>();
+
+	// Token: 0x04002DF6 RID: 11766
+	private Dictionary<ComplexRecipe, Dictionary<Tag, float>> recipeRequiredResourceBalances = new Dictionary<ComplexRecipe, Dictionary<Tag, float>>();
+
+	// Token: 0x04002DF7 RID: 11767
+	private List<ComplexRecipe> deadOrderKeys = new List<ComplexRecipe>();
 }

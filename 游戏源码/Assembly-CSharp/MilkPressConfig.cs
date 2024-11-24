@@ -1,40 +1,40 @@
+﻿using System;
 using System.Collections.Generic;
 using STRINGS;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x02000420 RID: 1056
 public class MilkPressConfig : IBuildingConfig
 {
-	public const string ID = "MilkPress";
-
-	private static readonly List<Storage.StoredItemModifier> RefineryStoredItemModifiers = new List<Storage.StoredItemModifier>
-	{
-		Storage.StoredItemModifier.Hide,
-		Storage.StoredItemModifier.Preserve,
-		Storage.StoredItemModifier.Insulate,
-		Storage.StoredItemModifier.Seal
-	};
-
-	public override string[] GetDlcIds()
-	{
-		return DlcManager.AVAILABLE_ALL_VERSIONS;
-	}
-
+	// Token: 0x060011EC RID: 4588 RVA: 0x00186990 File Offset: 0x00184B90
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef("MilkPress", 2, 3, "milkpress_kanim", 100, 30f, TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER4, MATERIALS.ALL_MINERALS, 1600f, BuildLocationRule.OnFloor, noise: NOISE_POLLUTION.NOISY.TIER4, decor: TUNING.BUILDINGS.DECOR.PENALTY.TIER1);
-		obj.RequiresPowerInput = false;
-		obj.EnergyConsumptionWhenActive = 0f;
-		obj.SelfHeatKilowattsWhenActive = 2f;
-		obj.OutputConduitType = ConduitType.Liquid;
-		obj.UtilityOutputOffset = new CellOffset(1, 0);
-		obj.LogicInputPorts = LogicOperationalController.CreateSingleInputPortList(new CellOffset(1, 0));
-		obj.ViewMode = OverlayModes.LiquidConduits.ID;
-		obj.AudioCategory = "HollowMetal";
-		obj.AudioSize = "Metal";
-		return obj;
+		string id = "MilkPress";
+		int width = 2;
+		int height = 3;
+		string anim = "milkpress_kanim";
+		int hitpoints = 100;
+		float construction_time = 30f;
+		float[] tier = TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER4;
+		string[] all_MINERALS = MATERIALS.ALL_MINERALS;
+		float melting_point = 1600f;
+		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
+		EffectorValues tier2 = NOISE_POLLUTION.NOISY.TIER4;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, all_MINERALS, melting_point, build_location_rule, TUNING.BUILDINGS.DECOR.PENALTY.TIER1, tier2, 0.2f);
+		buildingDef.RequiresPowerInput = false;
+		buildingDef.EnergyConsumptionWhenActive = 0f;
+		buildingDef.SelfHeatKilowattsWhenActive = 2f;
+		buildingDef.OutputConduitType = ConduitType.Liquid;
+		buildingDef.UtilityOutputOffset = new CellOffset(1, 0);
+		buildingDef.LogicInputPorts = LogicOperationalController.CreateSingleInputPortList(new CellOffset(1, 0));
+		buildingDef.ViewMode = OverlayModes.LiquidConduits.ID;
+		buildingDef.AudioCategory = "HollowMetal";
+		buildingDef.AudioSize = "medium";
+		return buildingDef;
 	}
 
+	// Token: 0x060011ED RID: 4589 RVA: 0x00186A3C File Offset: 0x00184C3C
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<LogicOperationalController>();
@@ -47,72 +47,103 @@ public class MilkPressConfig : IBuildingConfig
 		go.AddOrGet<CopyBuildingSettings>();
 		ComplexFabricatorWorkable complexFabricatorWorkable = go.AddOrGet<ComplexFabricatorWorkable>();
 		BuildingTemplates.CreateComplexFabricatorStorage(go, complexFabricator);
-		complexFabricatorWorkable.overrideAnims = new KAnimFile[1] { Assets.GetAnim("anim_interacts_milkpress_kanim") };
-		complexFabricatorWorkable.workingPstComplete = new HashedString[1] { "working_pst_complete" };
+		complexFabricatorWorkable.overrideAnims = new KAnimFile[]
+		{
+			Assets.GetAnim("anim_interacts_milkpress_kanim")
+		};
+		complexFabricatorWorkable.workingPstComplete = new HashedString[]
+		{
+			"working_pst_complete"
+		};
 		complexFabricator.storeProduced = true;
-		complexFabricator.inStorage.SetDefaultStoredItemModifiers(RefineryStoredItemModifiers);
-		complexFabricator.outStorage.SetDefaultStoredItemModifiers(RefineryStoredItemModifiers);
+		complexFabricator.inStorage.SetDefaultStoredItemModifiers(MilkPressConfig.RefineryStoredItemModifiers);
+		complexFabricator.outStorage.SetDefaultStoredItemModifiers(MilkPressConfig.RefineryStoredItemModifiers);
 		ConduitDispenser conduitDispenser = go.AddOrGet<ConduitDispenser>();
 		conduitDispenser.conduitType = ConduitType.Liquid;
 		conduitDispenser.alwaysDispense = true;
 		conduitDispenser.elementFilter = null;
 		conduitDispenser.storage = go.GetComponent<ComplexFabricator>().outStorage;
-		AddRecipes(go);
+		this.AddRecipes(go);
 		Prioritizable.AddRef(go);
 	}
 
+	// Token: 0x060011EE RID: 4590 RVA: 0x00186B30 File Offset: 0x00184D30
 	private void AddRecipes(GameObject go)
 	{
-		ComplexRecipe.RecipeElement[] array = new ComplexRecipe.RecipeElement[2]
+		ComplexRecipe.RecipeElement[] array = new ComplexRecipe.RecipeElement[]
 		{
 			new ComplexRecipe.RecipeElement("ColdWheatSeed", 10f),
 			new ComplexRecipe.RecipeElement(SimHashes.Water.CreateTag(), 15f)
 		};
-		ComplexRecipe.RecipeElement[] array2 = new ComplexRecipe.RecipeElement[1]
+		ComplexRecipe.RecipeElement[] array2 = new ComplexRecipe.RecipeElement[]
 		{
-			new ComplexRecipe.RecipeElement(SimHashes.Milk.CreateTag(), 20f, ComplexRecipe.RecipeElement.TemperatureOperation.AverageTemperature)
+			new ComplexRecipe.RecipeElement(SimHashes.Milk.CreateTag(), 20f, ComplexRecipe.RecipeElement.TemperatureOperation.AverageTemperature, false)
 		};
-		new ComplexRecipe(ComplexRecipeManager.MakeRecipeID("MilkPress", array, array2), array, array2, 0, 0)
+		ComplexRecipe complexRecipe = new ComplexRecipe(ComplexRecipeManager.MakeRecipeID("MilkPress", array, array2), array, array2, 0, 0);
+		complexRecipe.time = 40f;
+		complexRecipe.description = string.Format(STRINGS.BUILDINGS.PREFABS.MILKPRESS.WHEAT_MILK_RECIPE_DESCRIPTION, STRINGS.ITEMS.FOOD.COLDWHEATSEED.NAME, SimHashes.Milk.CreateTag().ProperName());
+		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.IngredientToResult;
+		complexRecipe.fabricators = new List<Tag>
 		{
-			time = 40f,
-			description = string.Format(STRINGS.BUILDINGS.PREFABS.MILKPRESS.WHEAT_MILK_RECIPE_DESCRIPTION, ITEMS.FOOD.COLDWHEATSEED.NAME, SimHashes.Milk.CreateTag().ProperName()),
-			nameDisplay = ComplexRecipe.RecipeNameDisplay.IngredientToResult,
-			fabricators = new List<Tag> { TagManager.Create("MilkPress") }
+			TagManager.Create("MilkPress")
 		};
-		ComplexRecipe.RecipeElement[] array3 = new ComplexRecipe.RecipeElement[2]
+		ComplexRecipe.RecipeElement[] array3 = new ComplexRecipe.RecipeElement[]
 		{
 			new ComplexRecipe.RecipeElement(SpiceNutConfig.ID, 3f),
 			new ComplexRecipe.RecipeElement(SimHashes.Water.CreateTag(), 17f)
 		};
-		ComplexRecipe.RecipeElement[] array4 = new ComplexRecipe.RecipeElement[1]
+		ComplexRecipe.RecipeElement[] array4 = new ComplexRecipe.RecipeElement[]
 		{
-			new ComplexRecipe.RecipeElement(SimHashes.Milk.CreateTag(), 20f, ComplexRecipe.RecipeElement.TemperatureOperation.AverageTemperature)
+			new ComplexRecipe.RecipeElement(SimHashes.Milk.CreateTag(), 20f, ComplexRecipe.RecipeElement.TemperatureOperation.AverageTemperature, false)
 		};
-		new ComplexRecipe(ComplexRecipeManager.MakeRecipeID("MilkPress", array3, array4), array3, array4, 0, 0)
+		ComplexRecipe complexRecipe2 = new ComplexRecipe(ComplexRecipeManager.MakeRecipeID("MilkPress", array3, array4), array3, array4, 0, 0);
+		complexRecipe2.time = 40f;
+		complexRecipe2.description = string.Format(STRINGS.BUILDINGS.PREFABS.MILKPRESS.NUT_MILK_RECIPE_DESCRIPTION, STRINGS.ITEMS.FOOD.SPICENUT.NAME, SimHashes.Milk.CreateTag().ProperName());
+		complexRecipe2.nameDisplay = ComplexRecipe.RecipeNameDisplay.IngredientToResult;
+		complexRecipe2.fabricators = new List<Tag>
 		{
-			time = 40f,
-			description = string.Format(STRINGS.BUILDINGS.PREFABS.MILKPRESS.NUT_MILK_RECIPE_DESCRIPTION, ITEMS.FOOD.SPICENUT.NAME, SimHashes.Milk.CreateTag().ProperName()),
-			nameDisplay = ComplexRecipe.RecipeNameDisplay.IngredientToResult,
-			fabricators = new List<Tag> { TagManager.Create("MilkPress") }
+			TagManager.Create("MilkPress")
 		};
-		ComplexRecipe.RecipeElement[] array5 = new ComplexRecipe.RecipeElement[2]
+		ComplexRecipe.RecipeElement[] array5 = new ComplexRecipe.RecipeElement[]
 		{
 			new ComplexRecipe.RecipeElement("BeanPlantSeed", 2f),
 			new ComplexRecipe.RecipeElement(SimHashes.Water.CreateTag(), 18f)
 		};
-		ComplexRecipe.RecipeElement[] array6 = new ComplexRecipe.RecipeElement[1]
+		ComplexRecipe.RecipeElement[] array6 = new ComplexRecipe.RecipeElement[]
 		{
-			new ComplexRecipe.RecipeElement(SimHashes.Milk.CreateTag(), 20f, ComplexRecipe.RecipeElement.TemperatureOperation.AverageTemperature)
+			new ComplexRecipe.RecipeElement(SimHashes.Milk.CreateTag(), 20f, ComplexRecipe.RecipeElement.TemperatureOperation.AverageTemperature, false)
 		};
-		new ComplexRecipe(ComplexRecipeManager.MakeRecipeID("MilkPress", array5, array6), array5, array6, 0, 0)
+		ComplexRecipe complexRecipe3 = new ComplexRecipe(ComplexRecipeManager.MakeRecipeID("MilkPress", array5, array6), array5, array6, 0, 0);
+		complexRecipe3.time = 40f;
+		complexRecipe3.description = string.Format(STRINGS.BUILDINGS.PREFABS.MILKPRESS.NUT_MILK_RECIPE_DESCRIPTION, STRINGS.ITEMS.FOOD.BEANPLANTSEED.NAME, SimHashes.Milk.CreateTag().ProperName());
+		complexRecipe3.nameDisplay = ComplexRecipe.RecipeNameDisplay.IngredientToResult;
+		complexRecipe3.fabricators = new List<Tag>
 		{
-			time = 40f,
-			description = string.Format(STRINGS.BUILDINGS.PREFABS.MILKPRESS.NUT_MILK_RECIPE_DESCRIPTION, ITEMS.FOOD.BEANPLANTSEED.NAME, SimHashes.Milk.CreateTag().ProperName()),
-			nameDisplay = ComplexRecipe.RecipeNameDisplay.IngredientToResult,
-			fabricators = new List<Tag> { TagManager.Create("MilkPress") }
+			TagManager.Create("MilkPress")
 		};
+		if (DlcManager.IsContentSubscribed("DLC3_ID"))
+		{
+			ComplexRecipe.RecipeElement[] array7 = new ComplexRecipe.RecipeElement[]
+			{
+				new ComplexRecipe.RecipeElement(SimHashes.SlimeMold.CreateTag(), 100f)
+			};
+			ComplexRecipe.RecipeElement[] array8 = new ComplexRecipe.RecipeElement[]
+			{
+				new ComplexRecipe.RecipeElement(SimHashes.PhytoOil.CreateTag(), 70f, ComplexRecipe.RecipeElement.TemperatureOperation.AverageTemperature, false),
+				new ComplexRecipe.RecipeElement(SimHashes.Dirt.CreateTag(), 30f, ComplexRecipe.RecipeElement.TemperatureOperation.AverageTemperature, false)
+			};
+			ComplexRecipe complexRecipe4 = new ComplexRecipe(ComplexRecipeManager.MakeRecipeID("MilkPress", array7, array8), array7, array8, 0, 0, DlcManager.DLC3);
+			complexRecipe4.time = 40f;
+			complexRecipe4.description = string.Format(STRINGS.BUILDINGS.PREFABS.MILKPRESS.PHYTO_OIL_RECIPE_DESCRIPTION, ELEMENTS.SLIMEMOLD.NAME, SimHashes.PhytoOil.CreateTag().ProperName(), SimHashes.Dirt.CreateTag().ProperName());
+			complexRecipe4.nameDisplay = ComplexRecipe.RecipeNameDisplay.IngredientToResult;
+			complexRecipe4.fabricators = new List<Tag>
+			{
+				TagManager.Create("MilkPress")
+			};
+		}
 	}
 
+	// Token: 0x060011EF RID: 4591 RVA: 0x000ADF6C File Offset: 0x000AC16C
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		SymbolOverrideControllerUtil.AddToPrefab(go);
@@ -126,4 +157,16 @@ public class MilkPressConfig : IBuildingConfig
 			component.SkillExperienceMultiplier = SKILLS.PART_DAY_EXPERIENCE;
 		};
 	}
+
+	// Token: 0x04000C44 RID: 3140
+	public const string ID = "MilkPress";
+
+	// Token: 0x04000C45 RID: 3141
+	private static readonly List<Storage.StoredItemModifier> RefineryStoredItemModifiers = new List<Storage.StoredItemModifier>
+	{
+		Storage.StoredItemModifier.Hide,
+		Storage.StoredItemModifier.Preserve,
+		Storage.StoredItemModifier.Insulate,
+		Storage.StoredItemModifier.Seal
+	};
 }

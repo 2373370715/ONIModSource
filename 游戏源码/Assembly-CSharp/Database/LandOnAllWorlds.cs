@@ -1,36 +1,41 @@
+﻿using System;
 using STRINGS;
 
-namespace Database;
-
-public class LandOnAllWorlds : ColonyAchievementRequirement
+namespace Database
 {
-	public override string GetProgress(bool complete)
+	// Token: 0x020021B5 RID: 8629
+	public class LandOnAllWorlds : ColonyAchievementRequirement
 	{
-		int num = 0;
-		int num2 = 0;
-		foreach (WorldContainer worldContainer in ClusterManager.Instance.WorldContainers)
+		// Token: 0x0600B731 RID: 46897 RVA: 0x0045BF5C File Offset: 0x0045A15C
+		public override string GetProgress(bool complete)
 		{
-			if (!worldContainer.IsModuleInterior)
+			int num = 0;
+			int num2 = 0;
+			foreach (WorldContainer worldContainer in ClusterManager.Instance.WorldContainers)
 			{
-				num++;
-				if (worldContainer.IsDupeVisited || worldContainer.IsRoverVisted)
+				if (!worldContainer.IsModuleInterior)
 				{
-					num2++;
+					num++;
+					if (worldContainer.IsDupeVisited || worldContainer.IsRoverVisted)
+					{
+						num2++;
+					}
 				}
 			}
+			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.LAND_DUPES_ON_ALL_WORLDS, num2, num);
 		}
-		return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.LAND_DUPES_ON_ALL_WORLDS, num2, num);
-	}
 
-	public override bool Success()
-	{
-		foreach (WorldContainer worldContainer in ClusterManager.Instance.WorldContainers)
+		// Token: 0x0600B732 RID: 46898 RVA: 0x0045BFE8 File Offset: 0x0045A1E8
+		public override bool Success()
 		{
-			if (!worldContainer.IsModuleInterior && !worldContainer.IsDupeVisited && !worldContainer.IsRoverVisted)
+			foreach (WorldContainer worldContainer in ClusterManager.Instance.WorldContainers)
 			{
-				return false;
+				if (!worldContainer.IsModuleInterior && !worldContainer.IsDupeVisited && !worldContainer.IsRoverVisted)
+				{
+					return false;
+				}
 			}
+			return true;
 		}
-		return true;
 	}
 }

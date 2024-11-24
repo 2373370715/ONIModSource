@@ -1,18 +1,20 @@
+﻿using System;
 using STRINGS;
 using UnityEngine;
 
+// Token: 0x02000452 RID: 1106
 public class GassyMooCometConfig : IEntityConfig
 {
-	public static string ID = "GassyMoo";
-
+	// Token: 0x06001338 RID: 4920 RVA: 0x000A6F3E File Offset: 0x000A513E
 	public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
+	// Token: 0x06001339 RID: 4921 RVA: 0x0018D208 File Offset: 0x0018B408
 	public GameObject CreatePrefab()
 	{
-		GameObject gameObject = EntityTemplates.CreateEntity(ID, UI.SPACEDESTINATIONS.COMETS.GASSYMOOCOMET.NAME);
+		GameObject gameObject = EntityTemplates.CreateEntity(GassyMooCometConfig.ID, UI.SPACEDESTINATIONS.COMETS.GASSYMOOCOMET.NAME, true);
 		gameObject.AddOrGet<SaveLoadRoot>();
 		gameObject.AddOrGet<LoopingSounds>();
 		GassyMooComet gassyMooComet = gameObject.AddOrGet<GassyMooComet>();
@@ -28,28 +30,44 @@ public class GassyMooCometConfig : IEntityConfig
 		gassyMooComet.explosionEffectHash = SpawnFXHashes.MeteorImpactDust;
 		gassyMooComet.addTiles = 0;
 		gassyMooComet.affectedByDifficulty = false;
-		gassyMooComet.lootOnDestroyedByMissile = new string[3] { "Meat", "Meat", "Meat" };
+		gassyMooComet.lootOnDestroyedByMissile = new string[]
+		{
+			"Meat",
+			"Meat",
+			"Meat"
+		};
 		gassyMooComet.destroyOnExplode = false;
-		gassyMooComet.craterPrefabs = new string[1] { "Moo" };
+		gassyMooComet.craterPrefabs = new string[]
+		{
+			"Moo"
+		};
 		PrimaryElement primaryElement = gameObject.AddOrGet<PrimaryElement>();
-		primaryElement.SetElement(SimHashes.Creature);
+		primaryElement.SetElement(SimHashes.Creature, true);
 		primaryElement.Temperature = (gassyMooComet.temperatureRange.x + gassyMooComet.temperatureRange.y) / 2f;
-		KBatchedAnimController kBatchedAnimController = gameObject.AddOrGet<KBatchedAnimController>();
-		kBatchedAnimController.AnimFiles = new KAnimFile[1] { Assets.GetAnim("meteor_gassymoo_kanim") };
-		kBatchedAnimController.isMovable = true;
-		kBatchedAnimController.initialAnim = "fall_loop";
-		kBatchedAnimController.initialMode = KAnim.PlayMode.Loop;
-		kBatchedAnimController.visibilityType = KAnimControllerBase.VisibilityType.OffscreenUpdate;
+		KBatchedAnimController kbatchedAnimController = gameObject.AddOrGet<KBatchedAnimController>();
+		kbatchedAnimController.AnimFiles = new KAnimFile[]
+		{
+			Assets.GetAnim("meteor_gassymoo_kanim")
+		};
+		kbatchedAnimController.isMovable = true;
+		kbatchedAnimController.initialAnim = "fall_loop";
+		kbatchedAnimController.initialMode = KAnim.PlayMode.Loop;
+		kbatchedAnimController.visibilityType = KAnimControllerBase.VisibilityType.OffscreenUpdate;
 		gameObject.AddOrGet<KCircleCollider2D>().radius = 0.5f;
 		gameObject.AddTag(GameTags.Comet);
 		return gameObject;
 	}
 
+	// Token: 0x0600133A RID: 4922 RVA: 0x000A5E40 File Offset: 0x000A4040
 	public void OnPrefabInit(GameObject go)
 	{
 	}
 
+	// Token: 0x0600133B RID: 4923 RVA: 0x000A5E40 File Offset: 0x000A4040
 	public void OnSpawn(GameObject go)
 	{
 	}
+
+	// Token: 0x04000D1D RID: 3357
+	public static string ID = "GassyMoo";
 }

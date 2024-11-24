@@ -1,75 +1,27 @@
+﻿using System;
+
+// Token: 0x02000E16 RID: 3606
 public class LandingBeacon : GameStateMachine<LandingBeacon, LandingBeacon.Instance>
 {
-	public class Def : BaseDef
+	// Token: 0x060046F3 RID: 18163 RVA: 0x00250B14 File Offset: 0x0024ED14
+	public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
-	}
-
-	public class WorkingStates : State
-	{
-		public State pre;
-
-		public State loop;
-
-		public State pst;
-	}
-
-	public new class Instance : GameInstance
-	{
-		public Operational operational;
-
-		public KSelectable selectable;
-
-		public bool skyLastVisible = true;
-
-		public Instance(IStateMachineTarget master, Def def)
-			: base(master, (object)def)
+		default_state = this.off;
+		this.root.Update(new Action<LandingBeacon.Instance, float>(LandingBeacon.UpdateLineOfSight), UpdateRate.SIM_200ms, false);
+		this.off.PlayAnim("off").EventTransition(GameHashes.OperationalChanged, this.working, (LandingBeacon.Instance smi) => smi.operational.IsOperational);
+		this.working.DefaultState(this.working.pre).EventTransition(GameHashes.OperationalChanged, this.off, (LandingBeacon.Instance smi) => !smi.operational.IsOperational);
+		this.working.pre.PlayAnim("working_pre").OnAnimQueueComplete(this.working.loop);
+		this.working.loop.PlayAnim("working_loop", KAnim.PlayMode.Loop).Enter("SetActive", delegate(LandingBeacon.Instance smi)
 		{
-			Components.LandingBeacons.Add(this);
-			operational = GetComponent<Operational>();
-			selectable = GetComponent<KSelectable>();
-		}
-
-		public override void StartSM()
+			smi.operational.SetActive(true, false);
+		}).Exit("SetActive", delegate(LandingBeacon.Instance smi)
 		{
-			base.StartSM();
-			UpdateLineOfSight(this, 0f);
-		}
-
-		protected override void OnCleanUp()
-		{
-			base.OnCleanUp();
-			Components.LandingBeacons.Remove(this);
-		}
-
-		public bool CanBeTargeted()
-		{
-			return IsInsideState(base.sm.working);
-		}
-	}
-
-	public State off;
-
-	public WorkingStates working;
-
-	public static readonly Operational.Flag noSurfaceSight = new Operational.Flag("noSurfaceSight", Operational.Flag.Type.Requirement);
-
-	public override void InitializeStates(out BaseState default_state)
-	{
-		default_state = off;
-		root.Update(UpdateLineOfSight);
-		off.PlayAnim("off").EventTransition(GameHashes.OperationalChanged, working, (Instance smi) => smi.operational.IsOperational);
-		working.DefaultState(working.pre).EventTransition(GameHashes.OperationalChanged, off, (Instance smi) => !smi.operational.IsOperational);
-		working.pre.PlayAnim("working_pre").OnAnimQueueComplete(working.loop);
-		working.loop.PlayAnim("working_loop", KAnim.PlayMode.Loop).Enter("SetActive", delegate(Instance smi)
-		{
-			smi.operational.SetActive(value: true);
-		}).Exit("SetActive", delegate(Instance smi)
-		{
-			smi.operational.SetActive(value: false);
+			smi.operational.SetActive(false, false);
 		});
 	}
 
-	public static void UpdateLineOfSight(Instance smi, float dt)
+	// Token: 0x060046F4 RID: 18164 RVA: 0x00250C58 File Offset: 0x0024EE58
+	public static void UpdateLineOfSight(LandingBeacon.Instance smi, float dt)
 	{
 		WorldContainer myWorld = smi.GetMyWorld();
 		bool flag = true;
@@ -86,9 +38,77 @@ public class LandingBeacon : GameStateMachine<LandingBeacon, LandingBeacon.Insta
 		}
 		if (smi.skyLastVisible != flag)
 		{
-			smi.selectable.ToggleStatusItem(Db.Get().BuildingStatusItems.NoSurfaceSight, !flag);
-			smi.operational.SetFlag(noSurfaceSight, flag);
+			smi.selectable.ToggleStatusItem(Db.Get().BuildingStatusItems.NoSurfaceSight, !flag, null);
+			smi.operational.SetFlag(LandingBeacon.noSurfaceSight, flag);
 			smi.skyLastVisible = flag;
 		}
+	}
+
+	// Token: 0x0400312D RID: 12589
+	public GameStateMachine<LandingBeacon, LandingBeacon.Instance, IStateMachineTarget, object>.State off;
+
+	// Token: 0x0400312E RID: 12590
+	public LandingBeacon.WorkingStates working;
+
+	// Token: 0x0400312F RID: 12591
+	public static readonly Operational.Flag noSurfaceSight = new Operational.Flag("noSurfaceSight", Operational.Flag.Type.Requirement);
+
+	// Token: 0x02000E17 RID: 3607
+	public class Def : StateMachine.BaseDef
+	{
+	}
+
+	// Token: 0x02000E18 RID: 3608
+	public class WorkingStates : GameStateMachine<LandingBeacon, LandingBeacon.Instance, IStateMachineTarget, object>.State
+	{
+		// Token: 0x04003130 RID: 12592
+		public GameStateMachine<LandingBeacon, LandingBeacon.Instance, IStateMachineTarget, object>.State pre;
+
+		// Token: 0x04003131 RID: 12593
+		public GameStateMachine<LandingBeacon, LandingBeacon.Instance, IStateMachineTarget, object>.State loop;
+
+		// Token: 0x04003132 RID: 12594
+		public GameStateMachine<LandingBeacon, LandingBeacon.Instance, IStateMachineTarget, object>.State pst;
+	}
+
+	// Token: 0x02000E19 RID: 3609
+	public new class Instance : GameStateMachine<LandingBeacon, LandingBeacon.Instance, IStateMachineTarget, object>.GameInstance
+	{
+		// Token: 0x060046F9 RID: 18169 RVA: 0x000CE039 File Offset: 0x000CC239
+		public Instance(IStateMachineTarget master, LandingBeacon.Def def) : base(master, def)
+		{
+			Components.LandingBeacons.Add(this);
+			this.operational = base.GetComponent<Operational>();
+			this.selectable = base.GetComponent<KSelectable>();
+		}
+
+		// Token: 0x060046FA RID: 18170 RVA: 0x000CE06D File Offset: 0x000CC26D
+		public override void StartSM()
+		{
+			base.StartSM();
+			LandingBeacon.UpdateLineOfSight(this, 0f);
+		}
+
+		// Token: 0x060046FB RID: 18171 RVA: 0x000CE080 File Offset: 0x000CC280
+		protected override void OnCleanUp()
+		{
+			base.OnCleanUp();
+			Components.LandingBeacons.Remove(this);
+		}
+
+		// Token: 0x060046FC RID: 18172 RVA: 0x000CE093 File Offset: 0x000CC293
+		public bool CanBeTargeted()
+		{
+			return base.IsInsideState(base.sm.working);
+		}
+
+		// Token: 0x04003133 RID: 12595
+		public Operational operational;
+
+		// Token: 0x04003134 RID: 12596
+		public KSelectable selectable;
+
+		// Token: 0x04003135 RID: 12597
+		public bool skyLastVisible = true;
 	}
 }

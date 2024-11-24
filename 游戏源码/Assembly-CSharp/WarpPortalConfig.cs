@@ -1,47 +1,63 @@
+﻿using System;
 using STRINGS;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x020005DF RID: 1503
 public class WarpPortalConfig : IEntityConfig
 {
-	public const string ID = "WarpPortal";
-
+	// Token: 0x06001B22 RID: 6946 RVA: 0x000A6566 File Offset: 0x000A4766
 	public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
 	}
 
+	// Token: 0x06001B23 RID: 6947 RVA: 0x001AA680 File Offset: 0x001A8880
 	public GameObject CreatePrefab()
 	{
-		GameObject obj = EntityTemplates.CreatePlacedEntity("WarpPortal", STRINGS.BUILDINGS.PREFABS.WARPPORTAL.NAME, STRINGS.BUILDINGS.PREFABS.WARPPORTAL.DESC, 2000f, decor: TUNING.BUILDINGS.DECOR.BONUS.TIER0, noise: NOISE_POLLUTION.NOISY.TIER0, anim: Assets.GetAnim("warp_portal_sender_kanim"), initialAnim: "idle", sceneLayer: Grid.SceneLayer.Building, width: 3, height: 3);
-		obj.AddTag(GameTags.NotRoomAssignable);
-		obj.AddTag(GameTags.WarpTech);
-		obj.AddTag(GameTags.Gravitas);
-		PrimaryElement component = obj.GetComponent<PrimaryElement>();
-		component.SetElement(SimHashes.Unobtanium);
+		string id = "WarpPortal";
+		string name = STRINGS.BUILDINGS.PREFABS.WARPPORTAL.NAME;
+		string desc = STRINGS.BUILDINGS.PREFABS.WARPPORTAL.DESC;
+		float mass = 2000f;
+		EffectorValues tier = TUNING.BUILDINGS.DECOR.BONUS.TIER0;
+		EffectorValues tier2 = NOISE_POLLUTION.NOISY.TIER0;
+		GameObject gameObject = EntityTemplates.CreatePlacedEntity(id, name, desc, mass, Assets.GetAnim("warp_portal_sender_kanim"), "idle", Grid.SceneLayer.Building, 3, 3, tier, tier2, SimHashes.Creature, null, 293f);
+		gameObject.AddTag(GameTags.NotRoomAssignable);
+		gameObject.AddTag(GameTags.WarpTech);
+		gameObject.AddTag(GameTags.Gravitas);
+		PrimaryElement component = gameObject.GetComponent<PrimaryElement>();
+		component.SetElement(SimHashes.Unobtanium, true);
 		component.Temperature = 294.15f;
-		obj.AddOrGet<Operational>();
-		obj.AddOrGet<Notifier>();
-		obj.AddOrGet<WarpPortal>();
-		obj.AddOrGet<LoopingSounds>();
-		obj.AddOrGet<Ownable>().tintWhenUnassigned = false;
-		LoreBearerUtil.AddLoreTo(obj, LoreBearerUtil.UnlockSpecificEntry("notes_teleportation", UI.USERMENUACTIONS.READLORE.SEARCH_TELEPORTER_SENDER));
-		obj.AddOrGet<Prioritizable>();
-		KBatchedAnimController kBatchedAnimController = obj.AddOrGet<KBatchedAnimController>();
-		kBatchedAnimController.sceneLayer = Grid.SceneLayer.BuildingBack;
-		kBatchedAnimController.fgLayer = Grid.SceneLayer.BuildingFront;
-		return obj;
+		gameObject.AddOrGet<Operational>();
+		gameObject.AddOrGet<Notifier>();
+		gameObject.AddOrGet<WarpPortal>();
+		gameObject.AddOrGet<LoopingSounds>();
+		gameObject.AddOrGet<Ownable>().tintWhenUnassigned = false;
+		LoreBearerUtil.AddLoreTo(gameObject, LoreBearerUtil.UnlockSpecificEntry("notes_teleportation", UI.USERMENUACTIONS.READLORE.SEARCH_TELEPORTER_SENDER));
+		gameObject.AddOrGet<Prioritizable>();
+		KBatchedAnimController kbatchedAnimController = gameObject.AddOrGet<KBatchedAnimController>();
+		kbatchedAnimController.sceneLayer = Grid.SceneLayer.BuildingBack;
+		kbatchedAnimController.fgLayer = Grid.SceneLayer.BuildingFront;
+		return gameObject;
 	}
 
+	// Token: 0x06001B24 RID: 6948 RVA: 0x001AA77C File Offset: 0x001A897C
 	public void OnPrefabInit(GameObject inst)
 	{
 		inst.GetComponent<WarpPortal>().workLayer = Grid.SceneLayer.Building;
 		inst.GetComponent<Ownable>().slotID = Db.Get().AssignableSlots.WarpPortal.Id;
-		inst.GetComponent<OccupyArea>().objectLayers = new ObjectLayer[1] { ObjectLayer.Building };
+		inst.GetComponent<OccupyArea>().objectLayers = new ObjectLayer[]
+		{
+			ObjectLayer.Building
+		};
 		inst.GetComponent<Deconstructable>();
 	}
 
+	// Token: 0x06001B25 RID: 6949 RVA: 0x000A5E40 File Offset: 0x000A4040
 	public void OnSpawn(GameObject inst)
 	{
 	}
+
+	// Token: 0x04001124 RID: 4388
+	public const string ID = "WarpPortal";
 }

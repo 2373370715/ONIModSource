@@ -1,127 +1,150 @@
-using System;
+﻿using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+// Token: 0x02002029 RID: 8233
 public class TextLinkHandler : MonoBehaviour, IPointerClickHandler, IEventSystemHandler, IPointerEnterHandler, IPointerExitHandler
 {
-	private static TextLinkHandler hoveredText;
-
-	[MyCmpGet]
-	private LocText text;
-
-	private bool hoverLink;
-
-	public Func<string, bool> overrideLinkAction;
-
+	// Token: 0x0600AF45 RID: 44869 RVA: 0x0041F634 File Offset: 0x0041D834
 	public void OnPointerClick(PointerEventData eventData)
 	{
-		if (eventData.button != 0 || !this.text.AllowLinks)
+		if (eventData.button != PointerEventData.InputButton.Left)
+		{
+			return;
+		}
+		if (!this.text.AllowLinks)
 		{
 			return;
 		}
 		int num = TMP_TextUtilities.FindIntersectingLink(this.text, KInputManager.GetMousePos(), null);
-		if (num == -1)
+		if (num != -1)
 		{
-			return;
-		}
-		string text = CodexCache.FormatLinkID(this.text.textInfo.linkInfo[num].GetLinkID());
-		if (overrideLinkAction != null && !overrideLinkAction(text))
-		{
-			return;
-		}
-		if (!CodexCache.entries.ContainsKey(text))
-		{
-			SubEntry subEntry = CodexCache.FindSubEntry(text);
-			if (subEntry == null || subEntry.disabled)
+			string text = CodexCache.FormatLinkID(this.text.textInfo.linkInfo[num].GetLinkID());
+			if (this.overrideLinkAction == null || this.overrideLinkAction(text))
 			{
-				text = "PAGENOTFOUND";
+				if (!CodexCache.entries.ContainsKey(text))
+				{
+					SubEntry subEntry = CodexCache.FindSubEntry(text);
+					if (subEntry == null || subEntry.disabled)
+					{
+						text = "PAGENOTFOUND";
+					}
+				}
+				else if (CodexCache.entries[text].disabled)
+				{
+					text = "PAGENOTFOUND";
+				}
+				if (!ManagementMenu.Instance.codexScreen.gameObject.activeInHierarchy)
+				{
+					ManagementMenu.Instance.ToggleCodex();
+				}
+				ManagementMenu.Instance.codexScreen.ChangeArticle(text, true, default(Vector3), CodexScreen.HistoryDirection.NewArticle);
 			}
 		}
-		else if (CodexCache.entries[text].disabled)
-		{
-			text = "PAGENOTFOUND";
-		}
-		if (!ManagementMenu.Instance.codexScreen.gameObject.activeInHierarchy)
-		{
-			ManagementMenu.Instance.ToggleCodex();
-		}
-		ManagementMenu.Instance.codexScreen.ChangeArticle(text, playClickSound: true);
 	}
 
+	// Token: 0x0600AF46 RID: 44870 RVA: 0x00111EA9 File Offset: 0x001100A9
 	private void Update()
 	{
-		CheckMouseOver();
-		if (hoveredText == this && text.AllowLinks)
+		this.CheckMouseOver();
+		if (TextLinkHandler.hoveredText == this && this.text.AllowLinks)
 		{
-			PlayerController.Instance.ActiveTool.SetLinkCursor(hoverLink);
+			PlayerController.Instance.ActiveTool.SetLinkCursor(this.hoverLink);
 		}
 	}
 
+	// Token: 0x0600AF47 RID: 44871 RVA: 0x00111EE0 File Offset: 0x001100E0
 	private void OnEnable()
 	{
-		CheckMouseOver();
+		this.CheckMouseOver();
 	}
 
+	// Token: 0x0600AF48 RID: 44872 RVA: 0x00111EE8 File Offset: 0x001100E8
 	private void OnDisable()
 	{
-		ClearState();
+		this.ClearState();
 	}
 
+	// Token: 0x0600AF49 RID: 44873 RVA: 0x00111EF0 File Offset: 0x001100F0
 	private void Awake()
 	{
-		text = GetComponent<LocText>();
-		if (text.AllowLinks && !text.raycastTarget)
+		this.text = base.GetComponent<LocText>();
+		if (this.text.AllowLinks && !this.text.raycastTarget)
 		{
-			text.raycastTarget = true;
+			this.text.raycastTarget = true;
 		}
 	}
 
+	// Token: 0x0600AF4A RID: 44874 RVA: 0x00111F24 File Offset: 0x00110124
 	public void OnPointerEnter(PointerEventData eventData)
 	{
-		SetMouseOver();
+		this.SetMouseOver();
 	}
 
+	// Token: 0x0600AF4B RID: 44875 RVA: 0x00111EE8 File Offset: 0x001100E8
 	public void OnPointerExit(PointerEventData eventData)
 	{
-		ClearState();
+		this.ClearState();
 	}
 
+	// Token: 0x0600AF4C RID: 44876 RVA: 0x0041F724 File Offset: 0x0041D924
 	private void ClearState()
 	{
-		if (!(this == null) && !Equals(null) && hoveredText == this)
+		if (this == null || this.Equals(null))
 		{
-			if (hoverLink && PlayerController.Instance != null && PlayerController.Instance.ActiveTool != null)
+			return;
+		}
+		if (TextLinkHandler.hoveredText == this)
+		{
+			if (this.hoverLink && PlayerController.Instance != null && PlayerController.Instance.ActiveTool != null)
 			{
-				PlayerController.Instance.ActiveTool.SetLinkCursor(set: false);
+				PlayerController.Instance.ActiveTool.SetLinkCursor(false);
 			}
-			hoveredText = null;
-			hoverLink = false;
+			TextLinkHandler.hoveredText = null;
+			this.hoverLink = false;
 		}
 	}
 
+	// Token: 0x0600AF4D RID: 44877 RVA: 0x0041F798 File Offset: 0x0041D998
 	public void CheckMouseOver()
 	{
-		if (!(text == null))
+		if (this.text == null)
 		{
-			if (TMP_TextUtilities.FindIntersectingLink(text, KInputManager.GetMousePos(), null) != -1)
-			{
-				SetMouseOver();
-				hoverLink = true;
-			}
-			else if (hoveredText == this)
-			{
-				hoverLink = false;
-			}
+			return;
+		}
+		if (TMP_TextUtilities.FindIntersectingLink(this.text, KInputManager.GetMousePos(), null) != -1)
+		{
+			this.SetMouseOver();
+			this.hoverLink = true;
+			return;
+		}
+		if (TextLinkHandler.hoveredText == this)
+		{
+			this.hoverLink = false;
 		}
 	}
 
+	// Token: 0x0600AF4E RID: 44878 RVA: 0x00111F2C File Offset: 0x0011012C
 	private void SetMouseOver()
 	{
-		if (hoveredText != null && hoveredText != this)
+		if (TextLinkHandler.hoveredText != null && TextLinkHandler.hoveredText != this)
 		{
-			hoveredText.hoverLink = false;
+			TextLinkHandler.hoveredText.hoverLink = false;
 		}
-		hoveredText = this;
+		TextLinkHandler.hoveredText = this;
 	}
+
+	// Token: 0x040089F8 RID: 35320
+	private static TextLinkHandler hoveredText;
+
+	// Token: 0x040089F9 RID: 35321
+	[MyCmpGet]
+	private LocText text;
+
+	// Token: 0x040089FA RID: 35322
+	private bool hoverLink;
+
+	// Token: 0x040089FB RID: 35323
+	public Func<string, bool> overrideLinkAction;
 }

@@ -1,57 +1,55 @@
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Token: 0x02001AB8 RID: 6840
 public class ClusterMapSelectToolHoverTextCard : HoverTextConfiguration
 {
-	private Sprite m_iconWarning;
-
-	private Sprite m_iconDash;
-
-	private Sprite m_iconHighlighted;
-
+	// Token: 0x06008F55 RID: 36693 RVA: 0x00375958 File Offset: 0x00373B58
 	public override void ConfigureHoverScreen()
 	{
 		base.ConfigureHoverScreen();
 		HoverTextScreen instance = HoverTextScreen.Instance;
-		m_iconWarning = instance.GetSprite("iconWarning");
-		m_iconDash = instance.GetSprite("dash");
-		m_iconHighlighted = instance.GetSprite("dash_arrow");
+		this.m_iconWarning = instance.GetSprite("iconWarning");
+		this.m_iconDash = instance.GetSprite("dash");
+		this.m_iconHighlighted = instance.GetSprite("dash_arrow");
 	}
 
+	// Token: 0x06008F56 RID: 36694 RVA: 0x003759A4 File Offset: 0x00373BA4
 	public override void UpdateHoverElements(List<KSelectable> hoverObjects)
 	{
-		if (m_iconWarning == null)
+		if (this.m_iconWarning == null)
 		{
-			ConfigureHoverScreen();
+			this.ConfigureHoverScreen();
 		}
 		HoverTextDrawer hoverTextDrawer = HoverTextScreen.Instance.BeginDrawing();
-		foreach (KSelectable hoverObject in hoverObjects)
+		foreach (KSelectable kselectable in hoverObjects)
 		{
-			hoverTextDrawer.BeginShadowBar(ClusterMapSelectTool.Instance.GetSelected() == hoverObject);
-			string unitFormattedName = GameUtil.GetUnitFormattedName(hoverObject.gameObject, upperName: true);
-			hoverTextDrawer.DrawText(unitFormattedName, Styles_Title.Standard);
-			foreach (StatusItemGroup.Entry item in hoverObject.GetStatusItemGroup())
+			hoverTextDrawer.BeginShadowBar(ClusterMapSelectTool.Instance.GetSelected() == kselectable);
+			string unitFormattedName = GameUtil.GetUnitFormattedName(kselectable.gameObject, true);
+			hoverTextDrawer.DrawText(unitFormattedName, this.Styles_Title.Standard);
+			foreach (StatusItemGroup.Entry entry in kselectable.GetStatusItemGroup())
 			{
-				if (item.category != null && item.category.Id == "Main")
+				if (entry.category != null && entry.category.Id == "Main")
 				{
-					TextStyleSetting style = (IsStatusItemWarning(item) ? Styles_Warning.Standard : Styles_BodyText.Standard);
-					Sprite icon = ((item.item.sprite != null) ? item.item.sprite.sprite : m_iconWarning);
-					Color color = (IsStatusItemWarning(item) ? Styles_Warning.Standard.textColor : Styles_BodyText.Standard.textColor);
-					hoverTextDrawer.NewLine();
-					hoverTextDrawer.DrawIcon(icon, color);
-					hoverTextDrawer.DrawText(item.GetName(), style);
+					TextStyleSetting style = this.IsStatusItemWarning(entry) ? this.Styles_Warning.Standard : this.Styles_BodyText.Standard;
+					Sprite icon = (entry.item.sprite != null) ? entry.item.sprite.sprite : this.m_iconWarning;
+					Color color = this.IsStatusItemWarning(entry) ? this.Styles_Warning.Standard.textColor : this.Styles_BodyText.Standard.textColor;
+					hoverTextDrawer.NewLine(26);
+					hoverTextDrawer.DrawIcon(icon, color, 18, 2);
+					hoverTextDrawer.DrawText(entry.GetName(), style);
 				}
 			}
-			foreach (StatusItemGroup.Entry item2 in hoverObject.GetStatusItemGroup())
+			foreach (StatusItemGroup.Entry entry2 in kselectable.GetStatusItemGroup())
 			{
-				if (item2.category == null || item2.category.Id != "Main")
+				if (entry2.category == null || entry2.category.Id != "Main")
 				{
-					TextStyleSetting style2 = (IsStatusItemWarning(item2) ? Styles_Warning.Standard : Styles_BodyText.Standard);
-					Sprite icon2 = ((item2.item.sprite != null) ? item2.item.sprite.sprite : m_iconWarning);
-					Color color2 = (IsStatusItemWarning(item2) ? Styles_Warning.Standard.textColor : Styles_BodyText.Standard.textColor);
-					hoverTextDrawer.NewLine();
-					hoverTextDrawer.DrawIcon(icon2, color2);
-					hoverTextDrawer.DrawText(item2.GetName(), style2);
+					TextStyleSetting style2 = this.IsStatusItemWarning(entry2) ? this.Styles_Warning.Standard : this.Styles_BodyText.Standard;
+					Sprite icon2 = (entry2.item.sprite != null) ? entry2.item.sprite.sprite : this.m_iconWarning;
+					Color color2 = this.IsStatusItemWarning(entry2) ? this.Styles_Warning.Standard.textColor : this.Styles_BodyText.Standard.textColor;
+					hoverTextDrawer.NewLine(26);
+					hoverTextDrawer.DrawIcon(icon2, color2, 18, 2);
+					hoverTextDrawer.DrawText(entry2.GetName(), style2);
 				}
 			}
 			hoverTextDrawer.EndShadowBar();
@@ -59,12 +57,18 @@ public class ClusterMapSelectToolHoverTextCard : HoverTextConfiguration
 		hoverTextDrawer.EndDrawing();
 	}
 
+	// Token: 0x06008F57 RID: 36695 RVA: 0x000FDA30 File Offset: 0x000FBC30
 	private bool IsStatusItemWarning(StatusItemGroup.Entry item)
 	{
-		if (item.item.notificationType == NotificationType.Bad || item.item.notificationType == NotificationType.BadMinor || item.item.notificationType == NotificationType.DuplicantThreatening)
-		{
-			return true;
-		}
-		return false;
+		return item.item.notificationType == NotificationType.Bad || item.item.notificationType == NotificationType.BadMinor || item.item.notificationType == NotificationType.DuplicantThreatening;
 	}
+
+	// Token: 0x04006C0C RID: 27660
+	private Sprite m_iconWarning;
+
+	// Token: 0x04006C0D RID: 27661
+	private Sprite m_iconDash;
+
+	// Token: 0x04006C0E RID: 27662
+	private Sprite m_iconHighlighted;
 }

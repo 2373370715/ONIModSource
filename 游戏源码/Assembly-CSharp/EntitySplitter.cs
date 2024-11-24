@@ -1,66 +1,65 @@
-using System;
+﻿using System;
 using Klei;
 using UnityEngine;
 
+// Token: 0x02000A4E RID: 2638
 [SkipSaveFileSerialization]
 [AddComponentMenu("KMonoBehaviour/scripts/EntitySplitter")]
 public class EntitySplitter : KMonoBehaviour
 {
-	public float maxStackSize = PrimaryElement.MAX_MASS;
-
-	private static readonly EventSystem.IntraObjectHandler<EntitySplitter> OnAbsorbDelegate = new EventSystem.IntraObjectHandler<EntitySplitter>(delegate(EntitySplitter component, object data)
-	{
-		component.OnAbsorb(data);
-	});
-
+	// Token: 0x0600307E RID: 12414 RVA: 0x000BF87E File Offset: 0x000BDA7E
 	protected static Pickupable OnTakeBehavior(Pickupable p, float a)
 	{
-		return Split(p, a);
+		return EntitySplitter.Split(p, a, null);
 	}
 
+	// Token: 0x0600307F RID: 12415 RVA: 0x001FC470 File Offset: 0x001FA670
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		Pickupable pickupable = GetComponent<Pickupable>();
+		Pickupable pickupable = base.GetComponent<Pickupable>();
 		if (pickupable == null)
 		{
-			Debug.LogError(base.name + " does not have a pickupable component!");
+			global::Debug.LogError(base.name + " does not have a pickupable component!");
 		}
 		Pickupable pickupable2 = pickupable;
-		pickupable2.OnTake = (Func<Pickupable, float, Pickupable>)Delegate.Combine(pickupable2.OnTake, new Func<Pickupable, float, Pickupable>(OnTakeBehavior));
+		pickupable2.OnTake = (Func<Pickupable, float, Pickupable>)Delegate.Combine(pickupable2.OnTake, new Func<Pickupable, float, Pickupable>(EntitySplitter.OnTakeBehavior));
 		Rottable.Instance rottable = base.gameObject.GetSMI<Rottable.Instance>();
 		pickupable.absorbable = true;
-		pickupable.CanAbsorb = (Pickupable other) => CanFirstAbsorbSecond(pickupable, rottable, other, maxStackSize);
-		Subscribe(-2064133523, OnAbsorbDelegate);
+		pickupable.CanAbsorb = ((Pickupable other) => EntitySplitter.CanFirstAbsorbSecond(pickupable, rottable, other, this.maxStackSize));
+		base.Subscribe<EntitySplitter>(-2064133523, EntitySplitter.OnAbsorbDelegate);
 	}
 
+	// Token: 0x06003080 RID: 12416 RVA: 0x001FC52C File Offset: 0x001FA72C
 	protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
-		Pickupable component = GetComponent<Pickupable>();
+		Pickupable component = base.GetComponent<Pickupable>();
 		if (component != null)
 		{
-			component.OnTake = (Func<Pickupable, float, Pickupable>)Delegate.Remove(component.OnTake, new Func<Pickupable, float, Pickupable>(OnTakeBehavior));
+			Pickupable pickupable = component;
+			pickupable.OnTake = (Func<Pickupable, float, Pickupable>)Delegate.Remove(pickupable.OnTake, new Func<Pickupable, float, Pickupable>(EntitySplitter.OnTakeBehavior));
 		}
 	}
 
+	// Token: 0x06003081 RID: 12417 RVA: 0x001FC574 File Offset: 0x001FA774
 	public static bool CanFirstAbsorbSecond(Pickupable pickupable, Rottable.Instance rottable, Pickupable other, float maxStackSize)
 	{
 		if (other == null)
 		{
 			return false;
 		}
-		KPrefabID kPrefabID = pickupable.KPrefabID;
-		KPrefabID kPrefabID2 = other.KPrefabID;
-		if (kPrefabID == null)
+		KPrefabID kprefabID = pickupable.KPrefabID;
+		KPrefabID kprefabID2 = other.KPrefabID;
+		if (kprefabID == null)
 		{
 			return false;
 		}
-		if (kPrefabID2 == null)
+		if (kprefabID2 == null)
 		{
 			return false;
 		}
-		if (kPrefabID.PrefabTag != kPrefabID2.PrefabTag)
+		if (kprefabID.PrefabTag != kprefabID2.PrefabTag)
 		{
 			return false;
 		}
@@ -68,7 +67,7 @@ public class EntitySplitter : KMonoBehaviour
 		{
 			return false;
 		}
-		if (kPrefabID.HasTag(GameTags.MarkedForMove) || kPrefabID2.HasTag(GameTags.MarkedForMove))
+		if (kprefabID.HasTag(GameTags.MarkedForMove) || kprefabID2.HasTag(GameTags.MarkedForMove))
 		{
 			return false;
 		}
@@ -78,28 +77,28 @@ public class EntitySplitter : KMonoBehaviour
 		}
 		if (rottable != null)
 		{
-			Rottable.Instance sMI = other.GetSMI<Rottable.Instance>();
-			if (sMI == null)
+			Rottable.Instance smi = other.GetSMI<Rottable.Instance>();
+			if (smi == null)
 			{
 				return false;
 			}
-			if (!rottable.IsRotLevelStackable(sMI))
+			if (!rottable.IsRotLevelStackable(smi))
 			{
 				return false;
 			}
 		}
-		bool flag = kPrefabID.HasTag(GameTags.SpicedFood);
-		if (flag != kPrefabID2.HasTag(GameTags.SpicedFood))
+		bool flag = kprefabID.HasTag(GameTags.SpicedFood);
+		if (flag != kprefabID2.HasTag(GameTags.SpicedFood))
 		{
 			return false;
 		}
-		Edible component = kPrefabID.GetComponent<Edible>();
-		Edible component2 = kPrefabID2.GetComponent<Edible>();
+		Edible component = kprefabID.GetComponent<Edible>();
+		Edible component2 = kprefabID2.GetComponent<Edible>();
 		if (flag && !component.CanAbsorb(component2))
 		{
 			return false;
 		}
-		if (kPrefabID.HasTag(GameTags.Seed) || kPrefabID.HasTag(GameTags.CropSeed) || kPrefabID.HasTag(GameTags.Compostable))
+		if (kprefabID.HasTag(GameTags.Seed) || kprefabID.HasTag(GameTags.CropSeed) || kprefabID.HasTag(GameTags.Compostable))
 		{
 			MutantPlant component3 = pickupable.GetComponent<MutantPlant>();
 			MutantPlant component4 = other.GetComponent<MutantPlant>();
@@ -109,7 +108,7 @@ public class EntitySplitter : KMonoBehaviour
 				{
 					return false;
 				}
-				if (kPrefabID.HasTag(GameTags.UnidentifiedSeed) != kPrefabID2.HasTag(GameTags.UnidentifiedSeed))
+				if (kprefabID.HasTag(GameTags.UnidentifiedSeed) != kprefabID2.HasTag(GameTags.UnidentifiedSeed))
 				{
 					return false;
 				}
@@ -122,6 +121,7 @@ public class EntitySplitter : KMonoBehaviour
 		return true;
 	}
 
+	// Token: 0x06003082 RID: 12418 RVA: 0x001FC6F8 File Offset: 0x001FA8F8
 	public static Pickupable Split(Pickupable pickupable, float amount, GameObject prefab = null)
 	{
 		if (amount >= pickupable.TotalAmount && prefab == null)
@@ -138,14 +138,14 @@ public class EntitySplitter : KMonoBehaviour
 		{
 			parent = pickupable.transform.parent.gameObject;
 		}
-		GameObject gameObject = GameUtil.KInstantiate(prefab, pickupable.transform.GetPosition(), Grid.SceneLayer.Ore, parent);
-		Debug.Assert(gameObject != null, "WTH, the GO is null, shouldn't happen on instantiate");
+		GameObject gameObject = GameUtil.KInstantiate(prefab, pickupable.transform.GetPosition(), Grid.SceneLayer.Ore, parent, null, 0);
+		global::Debug.Assert(gameObject != null, "WTH, the GO is null, shouldn't happen on instantiate");
 		Pickupable component = gameObject.GetComponent<Pickupable>();
 		if (component == null)
 		{
-			Debug.LogError("Edible::OnTake() No Pickupable component for " + gameObject.name, gameObject);
+			global::Debug.LogError("Edible::OnTake() No Pickupable component for " + gameObject.name, gameObject);
 		}
-		gameObject.SetActive(value: true);
+		gameObject.SetActive(true);
 		component.TotalAmount = Mathf.Min(amount, pickupable.TotalAmount);
 		component.PrimaryElement.Temperature = pickupable.PrimaryElement.Temperature;
 		bool keepZeroMassObject = pickupable.PrimaryElement.KeepZeroMassObject;
@@ -170,40 +170,48 @@ public class EntitySplitter : KMonoBehaviour
 		return component;
 	}
 
+	// Token: 0x06003083 RID: 12419 RVA: 0x001FC884 File Offset: 0x001FAA84
 	private void OnAbsorb(object data)
 	{
 		Pickupable pickupable = (Pickupable)data;
-		if (!(pickupable != null))
+		if (pickupable != null)
 		{
-			return;
-		}
-		PrimaryElement component = GetComponent<PrimaryElement>();
-		PrimaryElement primaryElement = pickupable.PrimaryElement;
-		if (!(primaryElement != null))
-		{
-			return;
-		}
-		float temperature = 0f;
-		float mass = component.Mass;
-		float mass2 = primaryElement.Mass;
-		if (mass > 0f && mass2 > 0f)
-		{
-			temperature = SimUtil.CalculateFinalTemperature(mass, component.Temperature, mass2, primaryElement.Temperature);
-		}
-		else if (primaryElement.Mass > 0f)
-		{
-			temperature = primaryElement.Temperature;
-		}
-		component.SetMassTemperature(mass + mass2, temperature);
-		if (CameraController.Instance != null)
-		{
-			string sound = GlobalAssets.GetSound("Ore_absorb");
-			Vector3 position = pickupable.transform.GetPosition();
-			position.z = 0f;
-			if (sound != null && CameraController.Instance.IsAudibleSound(position, sound))
+			PrimaryElement component = base.GetComponent<PrimaryElement>();
+			PrimaryElement primaryElement = pickupable.PrimaryElement;
+			if (primaryElement != null)
 			{
-				KFMOD.PlayOneShot(sound, position);
+				float temperature = 0f;
+				float mass = component.Mass;
+				float mass2 = primaryElement.Mass;
+				if (mass > 0f && mass2 > 0f)
+				{
+					temperature = SimUtil.CalculateFinalTemperature(mass, component.Temperature, mass2, primaryElement.Temperature);
+				}
+				else if (primaryElement.Mass > 0f)
+				{
+					temperature = primaryElement.Temperature;
+				}
+				component.SetMassTemperature(mass + mass2, temperature);
+				if (CameraController.Instance != null)
+				{
+					string sound = GlobalAssets.GetSound("Ore_absorb", false);
+					Vector3 position = pickupable.transform.GetPosition();
+					position.z = 0f;
+					if (sound != null && CameraController.Instance.IsAudibleSound(position, sound))
+					{
+						KFMOD.PlayOneShot(sound, position, 1f);
+					}
+				}
 			}
 		}
 	}
+
+	// Token: 0x040020C4 RID: 8388
+	public float maxStackSize = PrimaryElement.MAX_MASS;
+
+	// Token: 0x040020C5 RID: 8389
+	private static readonly EventSystem.IntraObjectHandler<EntitySplitter> OnAbsorbDelegate = new EventSystem.IntraObjectHandler<EntitySplitter>(delegate(EntitySplitter component, object data)
+	{
+		component.OnAbsorb(data);
+	});
 }

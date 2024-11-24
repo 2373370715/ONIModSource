@@ -1,104 +1,97 @@
+﻿using System;
 using System.Collections.Generic;
 using STRINGS;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+// Token: 0x0200200A RID: 8202
 public class SpacePOISimpleInfoPanel : SimpleInfoPanel
 {
-	private Dictionary<Tag, GameObject> elementRows = new Dictionary<Tag, GameObject>();
-
-	private Dictionary<Clustercraft, GameObject> rocketRows = new Dictionary<Clustercraft, GameObject>();
-
-	private GameObject massHeader;
-
-	private GameObject rocketsSpacer;
-
-	private GameObject rocketsHeader;
-
-	private GameObject artifactsSpacer;
-
-	private GameObject artifactRow;
-
-	public SpacePOISimpleInfoPanel(SimpleInfoScreen simpleInfoScreen)
-		: base(simpleInfoScreen)
+	// Token: 0x0600AE69 RID: 44649 RVA: 0x001117E9 File Offset: 0x0010F9E9
+	public SpacePOISimpleInfoPanel(SimpleInfoScreen simpleInfoScreen) : base(simpleInfoScreen)
 	{
 	}
 
+	// Token: 0x0600AE6A RID: 44650 RVA: 0x00419000 File Offset: 0x00417200
 	public override void Refresh(CollapsibleDetailContentPanel spacePOIPanel, GameObject selectedTarget)
 	{
 		spacePOIPanel.SetTitle(UI.CLUSTERMAP.POI.TITLE);
 		if (selectedTarget == null)
 		{
-			spacePOIPanel.gameObject.SetActive(value: false);
+			spacePOIPanel.gameObject.SetActive(false);
 			return;
 		}
-		HarvestablePOIClusterGridEntity harvestablePOIClusterGridEntity = ((selectedTarget == null) ? null : selectedTarget.GetComponent<HarvestablePOIClusterGridEntity>());
-		Clustercraft clusterCraft = selectedTarget.GetComponent<Clustercraft>();
-		ArtifactPOIConfigurator component = selectedTarget.GetComponent<ArtifactPOIConfigurator>();
-		if (harvestablePOIClusterGridEntity == null && clusterCraft == null && component == null)
+		HarvestablePOIClusterGridEntity harvestablePOIClusterGridEntity = (selectedTarget == null) ? null : selectedTarget.GetComponent<HarvestablePOIClusterGridEntity>();
+		Clustercraft component = selectedTarget.GetComponent<Clustercraft>();
+		ArtifactPOIConfigurator component2 = selectedTarget.GetComponent<ArtifactPOIConfigurator>();
+		if (harvestablePOIClusterGridEntity == null && component == null && component2 == null)
 		{
-			spacePOIPanel.gameObject.SetActive(value: false);
+			spacePOIPanel.gameObject.SetActive(false);
 			return;
 		}
-		if (harvestablePOIClusterGridEntity == null && component == null && clusterCraft != null)
+		if (harvestablePOIClusterGridEntity == null && component2 == null && component != null)
 		{
 			RocketModuleCluster rocketModuleCluster = null;
 			CraftModuleInterface craftModuleInterface = null;
-			RocketSimpleInfoPanel.GetRocketStuffFromTarget(selectedTarget, ref rocketModuleCluster, ref clusterCraft, ref craftModuleInterface);
-			if (clusterCraft != null)
+			RocketSimpleInfoPanel.GetRocketStuffFromTarget(selectedTarget, ref rocketModuleCluster, ref component, ref craftModuleInterface);
+			if (component != null)
 			{
-				foreach (ClusterGridEntity item in ClusterGrid.Instance.GetEntitiesOnCell(clusterCraft.GetMyWorldLocation()))
+				foreach (ClusterGridEntity clusterGridEntity in ClusterGrid.Instance.GetEntitiesOnCell(component.GetMyWorldLocation()))
 				{
-					HarvestablePOIClusterGridEntity harvestablePOIClusterGridEntity2 = item as HarvestablePOIClusterGridEntity;
+					HarvestablePOIClusterGridEntity harvestablePOIClusterGridEntity2 = clusterGridEntity as HarvestablePOIClusterGridEntity;
 					if (harvestablePOIClusterGridEntity2 != null)
 					{
 						harvestablePOIClusterGridEntity = harvestablePOIClusterGridEntity2;
-						component = harvestablePOIClusterGridEntity2.GetComponent<ArtifactPOIConfigurator>();
+						component2 = harvestablePOIClusterGridEntity2.GetComponent<ArtifactPOIConfigurator>();
 						break;
 					}
 				}
 			}
 		}
-		bool flag = harvestablePOIClusterGridEntity != null || component != null;
+		bool flag = harvestablePOIClusterGridEntity != null || component2 != null;
 		spacePOIPanel.gameObject.SetActive(flag);
-		if (flag)
+		if (!flag)
 		{
-			HarvestablePOIStates.Instance harvestable = ((harvestablePOIClusterGridEntity == null) ? null : harvestablePOIClusterGridEntity.GetSMI<HarvestablePOIStates.Instance>());
-			RefreshMassHeader(harvestable, selectedTarget, spacePOIPanel);
-			RefreshElements(harvestable, selectedTarget, spacePOIPanel);
-			RefreshArtifacts(component, selectedTarget, spacePOIPanel);
+			return;
 		}
+		HarvestablePOIStates.Instance harvestable = (harvestablePOIClusterGridEntity == null) ? null : harvestablePOIClusterGridEntity.GetSMI<HarvestablePOIStates.Instance>();
+		this.RefreshMassHeader(harvestable, selectedTarget, spacePOIPanel);
+		this.RefreshElements(harvestable, selectedTarget, spacePOIPanel);
+		this.RefreshArtifacts(component2, selectedTarget, spacePOIPanel);
 	}
 
+	// Token: 0x0600AE6B RID: 44651 RVA: 0x00419174 File Offset: 0x00417374
 	private void RefreshMassHeader(HarvestablePOIStates.Instance harvestable, GameObject selectedTarget, CollapsibleDetailContentPanel spacePOIPanel)
 	{
-		if (massHeader == null)
+		if (this.massHeader == null)
 		{
-			massHeader = Util.KInstantiateUI(simpleInfoRoot.iconLabelRow, spacePOIPanel.Content.gameObject, force_active: true);
+			this.massHeader = Util.KInstantiateUI(this.simpleInfoRoot.iconLabelRow, spacePOIPanel.Content.gameObject, true);
 		}
-		massHeader.SetActive(harvestable != null);
-		if (harvestable != null)
+		this.massHeader.SetActive(harvestable != null);
+		if (harvestable == null)
 		{
-			HierarchyReferences component = massHeader.GetComponent<HierarchyReferences>();
-			Sprite sprite = Assets.GetSprite("icon_asteroid_type");
-			if (sprite != null)
-			{
-				component.GetReference<Image>("Icon").sprite = sprite;
-			}
-			component.GetReference<LocText>("NameLabel").text = UI.CLUSTERMAP.POI.MASS_REMAINING;
-			component.GetReference<LocText>("ValueLabel").text = GameUtil.GetFormattedMass(harvestable.poiCapacity);
-			component.GetReference<LocText>("ValueLabel").alignment = TextAlignmentOptions.MidlineRight;
+			return;
 		}
+		HierarchyReferences component = this.massHeader.GetComponent<HierarchyReferences>();
+		Sprite sprite = Assets.GetSprite("icon_asteroid_type");
+		if (sprite != null)
+		{
+			component.GetReference<Image>("Icon").sprite = sprite;
+		}
+		component.GetReference<LocText>("NameLabel").text = UI.CLUSTERMAP.POI.MASS_REMAINING;
+		component.GetReference<LocText>("ValueLabel").text = GameUtil.GetFormattedMass(harvestable.poiCapacity, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}");
+		component.GetReference<LocText>("ValueLabel").alignment = TextAlignmentOptions.MidlineRight;
 	}
 
+	// Token: 0x0600AE6C RID: 44652 RVA: 0x0041924C File Offset: 0x0041744C
 	private void RefreshElements(HarvestablePOIStates.Instance harvestable, GameObject selectedTarget, CollapsibleDetailContentPanel spacePOIPanel)
 	{
-		foreach (KeyValuePair<Tag, GameObject> elementRow in elementRows)
+		foreach (KeyValuePair<Tag, GameObject> keyValuePair in this.elementRows)
 		{
-			if (elementRow.Value != null)
+			if (keyValuePair.Value != null)
 			{
-				elementRow.Value.SetActive(value: false);
+				keyValuePair.Value.SetActive(false);
 			}
 		}
 		if (harvestable == null)
@@ -114,32 +107,33 @@ public class SpacePOISimpleInfoPanel : SimpleInfoPanel
 			list.Add(item);
 		}
 		list.Sort((KeyValuePair<SimHashes, float> a, KeyValuePair<SimHashes, float> b) => b.Value.CompareTo(a.Value));
-		foreach (KeyValuePair<SimHashes, float> item2 in list)
+		foreach (KeyValuePair<SimHashes, float> keyValuePair2 in list)
 		{
-			SimHashes key = item2.Key;
+			SimHashes key = keyValuePair2.Key;
 			Tag tag = key.CreateTag();
-			if (!elementRows.ContainsKey(key.CreateTag()))
+			if (!this.elementRows.ContainsKey(key.CreateTag()))
 			{
-				elementRows.Add(tag, Util.KInstantiateUI(simpleInfoRoot.iconLabelRow, spacePOIPanel.Content.gameObject, force_active: true));
+				this.elementRows.Add(tag, Util.KInstantiateUI(this.simpleInfoRoot.iconLabelRow, spacePOIPanel.Content.gameObject, true));
 			}
-			elementRows[tag].SetActive(value: true);
-			HierarchyReferences component = elementRows[tag].GetComponent<HierarchyReferences>();
-			Tuple<Sprite, Color> uISprite = Def.GetUISprite(tag);
-			component.GetReference<Image>("Icon").sprite = uISprite.first;
-			component.GetReference<Image>("Icon").color = uISprite.second;
+			this.elementRows[tag].SetActive(true);
+			HierarchyReferences component = this.elementRows[tag].GetComponent<HierarchyReferences>();
+			global::Tuple<Sprite, Color> uisprite = Def.GetUISprite(tag, "ui", false);
+			component.GetReference<Image>("Icon").sprite = uisprite.first;
+			component.GetReference<Image>("Icon").color = uisprite.second;
 			component.GetReference<LocText>("NameLabel").text = ElementLoader.GetElement(tag).name;
-			component.GetReference<LocText>("ValueLabel").text = GameUtil.GetFormattedPercent(item2.Value / num * 100f);
+			component.GetReference<LocText>("ValueLabel").text = GameUtil.GetFormattedPercent(keyValuePair2.Value / num * 100f, GameUtil.TimeSlice.None);
 			component.GetReference<LocText>("ValueLabel").alignment = TextAlignmentOptions.MidlineRight;
 		}
 	}
 
+	// Token: 0x0600AE6D RID: 44653 RVA: 0x004194AC File Offset: 0x004176AC
 	private void RefreshRocketsAtThisLocation(HarvestablePOIStates.Instance harvestable, GameObject selectedTarget, CollapsibleDetailContentPanel spacePOIPanel)
 	{
-		if (rocketsHeader == null)
+		if (this.rocketsHeader == null)
 		{
-			rocketsSpacer = Util.KInstantiateUI(simpleInfoRoot.spacerRow, spacePOIPanel.Content.gameObject, force_active: true);
-			rocketsHeader = Util.KInstantiateUI(simpleInfoRoot.iconLabelRow, spacePOIPanel.Content.gameObject, force_active: true);
-			HierarchyReferences component = rocketsHeader.GetComponent<HierarchyReferences>();
+			this.rocketsSpacer = Util.KInstantiateUI(this.simpleInfoRoot.spacerRow, spacePOIPanel.Content.gameObject, true);
+			this.rocketsHeader = Util.KInstantiateUI(this.simpleInfoRoot.iconLabelRow, spacePOIPanel.Content.gameObject, true);
+			HierarchyReferences component = this.rocketsHeader.GetComponent<HierarchyReferences>();
 			Sprite sprite = Assets.GetSprite("ic_rocket");
 			if (sprite != null)
 			{
@@ -149,62 +143,82 @@ public class SpacePOISimpleInfoPanel : SimpleInfoPanel
 			component.GetReference<LocText>("NameLabel").text = UI.CLUSTERMAP.POI.ROCKETS_AT_THIS_LOCATION;
 			component.GetReference<LocText>("ValueLabel").text = "";
 		}
-		rocketsSpacer.rectTransform().SetAsLastSibling();
-		rocketsHeader.rectTransform().SetAsLastSibling();
-		foreach (KeyValuePair<Clustercraft, GameObject> rocketRow in rocketRows)
+		this.rocketsSpacer.rectTransform().SetAsLastSibling();
+		this.rocketsHeader.rectTransform().SetAsLastSibling();
+		foreach (KeyValuePair<Clustercraft, GameObject> keyValuePair in this.rocketRows)
 		{
-			rocketRow.Value.SetActive(value: false);
+			keyValuePair.Value.SetActive(false);
 		}
 		bool flag = true;
 		for (int i = 0; i < Components.Clustercrafts.Count; i++)
 		{
 			Clustercraft clustercraft = Components.Clustercrafts[i];
-			if (!rocketRows.ContainsKey(clustercraft))
+			if (!this.rocketRows.ContainsKey(clustercraft))
 			{
-				GameObject value = Util.KInstantiateUI(simpleInfoRoot.iconLabelRow, spacePOIPanel.Content.gameObject, force_active: true);
-				rocketRows.Add(clustercraft, value);
+				GameObject value = Util.KInstantiateUI(this.simpleInfoRoot.iconLabelRow, spacePOIPanel.Content.gameObject, true);
+				this.rocketRows.Add(clustercraft, value);
 			}
 			bool flag2 = clustercraft.Location == selectedTarget.GetComponent<KMonoBehaviour>().GetMyWorldLocation();
-			flag = flag && !flag2;
-			rocketRows[clustercraft].SetActive(flag2);
+			flag = (flag && !flag2);
+			this.rocketRows[clustercraft].SetActive(flag2);
 			if (flag2)
 			{
-				HierarchyReferences component2 = rocketRows[clustercraft].GetComponent<HierarchyReferences>();
+				HierarchyReferences component2 = this.rocketRows[clustercraft].GetComponent<HierarchyReferences>();
 				component2.GetReference<Image>("Icon").sprite = clustercraft.GetUISprite();
 				component2.GetReference<Image>("Icon").color = Color.grey;
 				component2.GetReference<LocText>("NameLabel").text = clustercraft.Name;
 				component2.GetReference<LocText>("ValueLabel").text = "";
 				component2.GetReference<LocText>("ValueLabel").alignment = TextAlignmentOptions.MidlineRight;
-				rocketRows[clustercraft].rectTransform().SetAsLastSibling();
+				this.rocketRows[clustercraft].rectTransform().SetAsLastSibling();
 			}
 		}
-		rocketsHeader.SetActive(!flag);
-		rocketsSpacer.SetActive(rocketsHeader.activeSelf);
+		this.rocketsHeader.SetActive(!flag);
+		this.rocketsSpacer.SetActive(this.rocketsHeader.activeSelf);
 	}
 
+	// Token: 0x0600AE6E RID: 44654 RVA: 0x0041975C File Offset: 0x0041795C
 	private void RefreshArtifacts(ArtifactPOIConfigurator artifactConfigurator, GameObject selectedTarget, CollapsibleDetailContentPanel spacePOIPanel)
 	{
-		if (artifactsSpacer == null)
+		if (this.artifactsSpacer == null)
 		{
-			artifactsSpacer = Util.KInstantiateUI(simpleInfoRoot.spacerRow, spacePOIPanel.Content.gameObject, force_active: true);
-			artifactRow = Util.KInstantiateUI(simpleInfoRoot.iconLabelRow, spacePOIPanel.Content.gameObject, force_active: true);
+			this.artifactsSpacer = Util.KInstantiateUI(this.simpleInfoRoot.spacerRow, spacePOIPanel.Content.gameObject, true);
+			this.artifactRow = Util.KInstantiateUI(this.simpleInfoRoot.iconLabelRow, spacePOIPanel.Content.gameObject, true);
 		}
-		artifactsSpacer.rectTransform().SetAsLastSibling();
-		artifactRow.rectTransform().SetAsLastSibling();
-		ArtifactPOIStates.Instance sMI = artifactConfigurator.GetSMI<ArtifactPOIStates.Instance>();
-		sMI.configuration.GetArtifactID();
-		HierarchyReferences component = artifactRow.GetComponent<HierarchyReferences>();
+		this.artifactsSpacer.rectTransform().SetAsLastSibling();
+		this.artifactRow.rectTransform().SetAsLastSibling();
+		ArtifactPOIStates.Instance smi = artifactConfigurator.GetSMI<ArtifactPOIStates.Instance>();
+		smi.configuration.GetArtifactID();
+		HierarchyReferences component = this.artifactRow.GetComponent<HierarchyReferences>();
 		component.GetReference<LocText>("NameLabel").text = UI.CLUSTERMAP.POI.ARTIFACTS;
 		component.GetReference<LocText>("ValueLabel").alignment = TextAlignmentOptions.MidlineRight;
 		component.GetReference<Image>("Icon").sprite = Assets.GetSprite("ic_artifacts");
 		component.GetReference<Image>("Icon").color = Color.black;
-		if (sMI.CanHarvestArtifact())
+		if (smi.CanHarvestArtifact())
 		{
 			component.GetReference<LocText>("ValueLabel").text = UI.CLUSTERMAP.POI.ARTIFACTS_AVAILABLE;
+			return;
 		}
-		else
-		{
-			component.GetReference<LocText>("ValueLabel").text = string.Format(UI.CLUSTERMAP.POI.ARTIFACTS_DEPLETED, GameUtil.GetFormattedCycles(sMI.RechargeTimeRemaining(), "F1", forceCycles: true));
-		}
+		component.GetReference<LocText>("ValueLabel").text = string.Format(UI.CLUSTERMAP.POI.ARTIFACTS_DEPLETED, GameUtil.GetFormattedCycles(smi.RechargeTimeRemaining(), "F1", true));
 	}
+
+	// Token: 0x04008929 RID: 35113
+	private Dictionary<Tag, GameObject> elementRows = new Dictionary<Tag, GameObject>();
+
+	// Token: 0x0400892A RID: 35114
+	private Dictionary<Clustercraft, GameObject> rocketRows = new Dictionary<Clustercraft, GameObject>();
+
+	// Token: 0x0400892B RID: 35115
+	private GameObject massHeader;
+
+	// Token: 0x0400892C RID: 35116
+	private GameObject rocketsSpacer;
+
+	// Token: 0x0400892D RID: 35117
+	private GameObject rocketsHeader;
+
+	// Token: 0x0400892E RID: 35118
+	private GameObject artifactsSpacer;
+
+	// Token: 0x0400892F RID: 35119
+	private GameObject artifactRow;
 }

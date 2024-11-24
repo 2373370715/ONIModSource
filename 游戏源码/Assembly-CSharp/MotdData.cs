@@ -1,53 +1,63 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
+// Token: 0x02001E41 RID: 7745
 public class MotdData
 {
-	public int liveVersion;
-
-	public List<MotdData_Box> boxesLive = new List<MotdData_Box>();
-
+	// Token: 0x0600A23E RID: 41534 RVA: 0x003DC634 File Offset: 0x003DA834
 	public static MotdData Parse(string inputStr)
 	{
+		MotdData result;
 		try
 		{
 			MotdData motdData = new MotdData();
-			JObject jObject = JObject.Parse(inputStr);
-			motdData.liveVersion = int.Parse(jObject["live-version"].Value<string>());
-			foreach (JProperty item in (IEnumerable<JToken>)jObject["boxes-live"][0]["Category"])
+			JObject jobject = JObject.Parse(inputStr);
+			motdData.liveVersion = int.Parse(jobject["live-version"].Value<string>());
+			foreach (JToken jtoken in ((IEnumerable<JToken>)jobject["boxes-live"][0]["Category"]))
 			{
-				string name = item.Name;
-				foreach (JObject item2 in (IEnumerable<JToken>)item.Value)
+				JProperty jproperty = (JProperty)jtoken;
+				string name = jproperty.Name;
+				foreach (JToken jtoken2 in ((IEnumerable<JToken>)jproperty.Value))
 				{
+					JObject jobject2 = (JObject)jtoken2;
 					MotdData_Box motdData_Box = new MotdData_Box
 					{
 						category = name,
-						guid = item2.Value<string>("guid"),
+						guid = jobject2.Value<string>("guid"),
 						startTime = 0L,
 						finishTime = 0L,
-						title = item2.Value<string>("title"),
-						text = item2.Value<string>("text"),
-						image = item2.Value<string>("image"),
-						href = item2.Value<string>("href")
+						title = jobject2.Value<string>("title"),
+						text = jobject2.Value<string>("text"),
+						image = jobject2.Value<string>("image"),
+						href = jobject2.Value<string>("href")
 					};
-					if (long.TryParse(item2.Value<string>("start-time"), out var result))
+					long startTime;
+					if (long.TryParse(jobject2.Value<string>("start-time"), out startTime))
 					{
-						motdData_Box.startTime = result;
+						motdData_Box.startTime = startTime;
 					}
-					if (long.TryParse(item2.Value<string>("finish-time"), out var result2))
+					long finishTime;
+					if (long.TryParse(jobject2.Value<string>("finish-time"), out finishTime))
 					{
-						motdData_Box.finishTime = result2;
+						motdData_Box.finishTime = finishTime;
 					}
 					motdData.boxesLive.Add(motdData_Box);
 				}
 			}
-			return motdData;
+			result = motdData;
 		}
 		catch (Exception arg)
 		{
-			Debug.LogWarning($"Motd Parse Error:\n--------------------\n{inputStr}\n--------------------\n{arg}");
-			return null;
+			Debug.LogWarning(string.Format("Motd Parse Error:\n--------------------\n{0}\n--------------------\n{1}", inputStr, arg));
+			result = null;
 		}
+		return result;
 	}
+
+	// Token: 0x04007E9D RID: 32413
+	public int liveVersion;
+
+	// Token: 0x04007E9E RID: 32414
+	public List<MotdData_Box> boxesLive = new List<MotdData_Box>();
 }

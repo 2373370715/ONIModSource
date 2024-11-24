@@ -1,68 +1,85 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Klei;
 using UnityEngine;
 
+// Token: 0x02001381 RID: 4993
 [AddComponentMenu("KMonoBehaviour/scripts/GeyserConfigurator")]
 public class GeyserConfigurator : KMonoBehaviour
 {
+	// Token: 0x0600669D RID: 26269 RVA: 0x002D0000 File Offset: 0x002CE200
+	public static GeyserConfigurator.GeyserType FindType(HashedString typeId)
+	{
+		GeyserConfigurator.GeyserType geyserType = null;
+		if (typeId != HashedString.Invalid)
+		{
+			geyserType = GeyserConfigurator.geyserTypes.Find((GeyserConfigurator.GeyserType t) => t.id == typeId);
+		}
+		if (geyserType == null)
+		{
+			global::Debug.LogError(string.Format("Tried finding a geyser with id {0} but it doesn't exist!", typeId.ToString()));
+		}
+		return geyserType;
+	}
+
+	// Token: 0x0600669E RID: 26270 RVA: 0x000E308F File Offset: 0x000E128F
+	public GeyserConfigurator.GeyserInstanceConfiguration MakeConfiguration()
+	{
+		return this.CreateRandomInstance(this.presetType, this.presetMin, this.presetMax);
+	}
+
+	// Token: 0x0600669F RID: 26271 RVA: 0x002D006C File Offset: 0x002CE26C
+	private GeyserConfigurator.GeyserInstanceConfiguration CreateRandomInstance(HashedString typeId, float min, float max)
+	{
+		KRandom randomSource = new KRandom(SaveLoader.Instance.clusterDetailSave.globalWorldSeed + (int)base.transform.GetPosition().x + (int)base.transform.GetPosition().y);
+		return new GeyserConfigurator.GeyserInstanceConfiguration
+		{
+			typeId = typeId,
+			rateRoll = this.Roll(randomSource, min, max),
+			iterationLengthRoll = this.Roll(randomSource, 0f, 1f),
+			iterationPercentRoll = this.Roll(randomSource, min, max),
+			yearLengthRoll = this.Roll(randomSource, 0f, 1f),
+			yearPercentRoll = this.Roll(randomSource, min, max)
+		};
+	}
+
+	// Token: 0x060066A0 RID: 26272 RVA: 0x000E30A9 File Offset: 0x000E12A9
+	private float Roll(KRandom randomSource, float min, float max)
+	{
+		return (float)(randomSource.NextDouble() * (double)(max - min)) + min;
+	}
+
+	// Token: 0x04004D0C RID: 19724
+	private static List<GeyserConfigurator.GeyserType> geyserTypes;
+
+	// Token: 0x04004D0D RID: 19725
+	public HashedString presetType;
+
+	// Token: 0x04004D0E RID: 19726
+	public float presetMin;
+
+	// Token: 0x04004D0F RID: 19727
+	public float presetMax = 1f;
+
+	// Token: 0x02001382 RID: 4994
 	public enum GeyserShape
 	{
+		// Token: 0x04004D11 RID: 19729
 		Gas,
+		// Token: 0x04004D12 RID: 19730
 		Liquid,
+		// Token: 0x04004D13 RID: 19731
 		Molten
 	}
 
+	// Token: 0x02001383 RID: 4995
 	public class GeyserType
 	{
-		public string id;
-
-		public HashedString idHash;
-
-		public SimHashes element;
-
-		public GeyserShape shape;
-
-		public float temperature;
-
-		public float minRatePerCycle;
-
-		public float maxRatePerCycle;
-
-		public float maxPressure;
-
-		public SimUtil.DiseaseInfo diseaseInfo = SimUtil.DiseaseInfo.Invalid;
-
-		public float minIterationLength;
-
-		public float maxIterationLength;
-
-		public float minIterationPercent;
-
-		public float maxIterationPercent;
-
-		public float minYearLength;
-
-		public float maxYearLength;
-
-		public float minYearPercent;
-
-		public float maxYearPercent;
-
-		public float geyserTemperature;
-
-		public string DlcID;
-
-		public const string BLANK_ID = "Blank";
-
-		public const SimHashes BLANK_ELEMENT = SimHashes.Void;
-
-		public const string BLANK_DLCID = "";
-
-		public GeyserType(string id, SimHashes element, GeyserShape shape, float temperature, float minRatePerCycle, float maxRatePerCycle, float maxPressure, float minIterationLength = 60f, float maxIterationLength = 1140f, float minIterationPercent = 0.1f, float maxIterationPercent = 0.9f, float minYearLength = 15000f, float maxYearLength = 135000f, float minYearPercent = 0.4f, float maxYearPercent = 0.8f, float geyserTemperature = 372.15f, string DlcID = "")
+		// Token: 0x060066A2 RID: 26274 RVA: 0x002D011C File Offset: 0x002CE31C
+		public GeyserType(string id, SimHashes element, GeyserConfigurator.GeyserShape shape, float temperature, float minRatePerCycle, float maxRatePerCycle, float maxPressure, float minIterationLength = 60f, float maxIterationLength = 1140f, float minIterationPercent = 0.1f, float maxIterationPercent = 0.9f, float minYearLength = 15000f, float maxYearLength = 135000f, float minYearPercent = 0.4f, float maxYearPercent = 0.8f, float geyserTemperature = 372.15f, string DlcID = "")
 		{
 			this.id = id;
-			idHash = id;
+			this.idHash = id;
 			this.element = element;
 			this.shape = shape;
 			this.temperature = temperature;
@@ -79,252 +96,320 @@ public class GeyserConfigurator : KMonoBehaviour
 			this.maxYearPercent = maxYearPercent;
 			this.DlcID = DlcID;
 			this.geyserTemperature = geyserTemperature;
-			if (geyserTypes == null)
+			if (GeyserConfigurator.geyserTypes == null)
 			{
-				geyserTypes = new List<GeyserType>();
+				GeyserConfigurator.geyserTypes = new List<GeyserConfigurator.GeyserType>();
 			}
-			geyserTypes.Add(this);
+			GeyserConfigurator.geyserTypes.Add(this);
 		}
 
-		public GeyserType AddDisease(SimUtil.DiseaseInfo diseaseInfo)
+		// Token: 0x060066A3 RID: 26275 RVA: 0x000E30CC File Offset: 0x000E12CC
+		public GeyserConfigurator.GeyserType AddDisease(SimUtil.DiseaseInfo diseaseInfo)
 		{
 			this.diseaseInfo = diseaseInfo;
 			return this;
 		}
 
+		// Token: 0x060066A4 RID: 26276 RVA: 0x002D01E8 File Offset: 0x002CE3E8
 		public GeyserType()
 		{
-			id = "Blank";
-			element = SimHashes.Void;
-			temperature = 0f;
-			minRatePerCycle = 0f;
-			maxRatePerCycle = 0f;
-			maxPressure = 0f;
-			minIterationLength = 0f;
-			maxIterationLength = 0f;
-			minIterationPercent = 0f;
-			maxIterationPercent = 0f;
-			minYearLength = 0f;
-			maxYearLength = 0f;
-			minYearPercent = 0f;
-			maxYearPercent = 0f;
-			geyserTemperature = 0f;
-			DlcID = "";
+			this.id = "Blank";
+			this.element = SimHashes.Void;
+			this.temperature = 0f;
+			this.minRatePerCycle = 0f;
+			this.maxRatePerCycle = 0f;
+			this.maxPressure = 0f;
+			this.minIterationLength = 0f;
+			this.maxIterationLength = 0f;
+			this.minIterationPercent = 0f;
+			this.maxIterationPercent = 0f;
+			this.minYearLength = 0f;
+			this.maxYearLength = 0f;
+			this.minYearPercent = 0f;
+			this.maxYearPercent = 0f;
+			this.geyserTemperature = 0f;
+			this.DlcID = "";
 		}
+
+		// Token: 0x04004D14 RID: 19732
+		public string id;
+
+		// Token: 0x04004D15 RID: 19733
+		public HashedString idHash;
+
+		// Token: 0x04004D16 RID: 19734
+		public SimHashes element;
+
+		// Token: 0x04004D17 RID: 19735
+		public GeyserConfigurator.GeyserShape shape;
+
+		// Token: 0x04004D18 RID: 19736
+		public float temperature;
+
+		// Token: 0x04004D19 RID: 19737
+		public float minRatePerCycle;
+
+		// Token: 0x04004D1A RID: 19738
+		public float maxRatePerCycle;
+
+		// Token: 0x04004D1B RID: 19739
+		public float maxPressure;
+
+		// Token: 0x04004D1C RID: 19740
+		public SimUtil.DiseaseInfo diseaseInfo = SimUtil.DiseaseInfo.Invalid;
+
+		// Token: 0x04004D1D RID: 19741
+		public float minIterationLength;
+
+		// Token: 0x04004D1E RID: 19742
+		public float maxIterationLength;
+
+		// Token: 0x04004D1F RID: 19743
+		public float minIterationPercent;
+
+		// Token: 0x04004D20 RID: 19744
+		public float maxIterationPercent;
+
+		// Token: 0x04004D21 RID: 19745
+		public float minYearLength;
+
+		// Token: 0x04004D22 RID: 19746
+		public float maxYearLength;
+
+		// Token: 0x04004D23 RID: 19747
+		public float minYearPercent;
+
+		// Token: 0x04004D24 RID: 19748
+		public float maxYearPercent;
+
+		// Token: 0x04004D25 RID: 19749
+		public float geyserTemperature;
+
+		// Token: 0x04004D26 RID: 19750
+		public string DlcID;
+
+		// Token: 0x04004D27 RID: 19751
+		public const string BLANK_ID = "Blank";
+
+		// Token: 0x04004D28 RID: 19752
+		public const SimHashes BLANK_ELEMENT = SimHashes.Void;
+
+		// Token: 0x04004D29 RID: 19753
+		public const string BLANK_DLCID = "";
 	}
 
+	// Token: 0x02001384 RID: 4996
 	[Serializable]
 	public class GeyserInstanceConfiguration
 	{
-		public HashedString typeId;
-
-		public float rateRoll;
-
-		public float iterationLengthRoll;
-
-		public float iterationPercentRoll;
-
-		public float yearLengthRoll;
-
-		public float yearPercentRoll;
-
-		public float scaledRate;
-
-		public float scaledIterationLength;
-
-		public float scaledIterationPercent;
-
-		public float scaledYearLength;
-
-		public float scaledYearPercent;
-
-		private bool didInit;
-
-		private Geyser.GeyserModification modifier;
-
-		public GeyserType geyserType => FindType(typeId);
-
+		// Token: 0x060066A5 RID: 26277 RVA: 0x000E30D6 File Offset: 0x000E12D6
 		public Geyser.GeyserModification GetModifier()
 		{
-			return modifier;
+			return this.modifier;
 		}
 
+		// Token: 0x060066A6 RID: 26278 RVA: 0x002D02B8 File Offset: 0x002CE4B8
 		public void Init(bool reinit = false)
 		{
-			if (!didInit || reinit)
+			if (this.didInit && !reinit)
 			{
-				didInit = true;
-				scaledRate = Resample(rateRoll, geyserType.minRatePerCycle, geyserType.maxRatePerCycle);
-				scaledIterationLength = Resample(iterationLengthRoll, geyserType.minIterationLength, geyserType.maxIterationLength);
-				scaledIterationPercent = Resample(iterationPercentRoll, geyserType.minIterationPercent, geyserType.maxIterationPercent);
-				scaledYearLength = Resample(yearLengthRoll, geyserType.minYearLength, geyserType.maxYearLength);
-				scaledYearPercent = Resample(yearPercentRoll, geyserType.minYearPercent, geyserType.maxYearPercent);
+				return;
 			}
+			this.didInit = true;
+			this.scaledRate = this.Resample(this.rateRoll, this.geyserType.minRatePerCycle, this.geyserType.maxRatePerCycle);
+			this.scaledIterationLength = this.Resample(this.iterationLengthRoll, this.geyserType.minIterationLength, this.geyserType.maxIterationLength);
+			this.scaledIterationPercent = this.Resample(this.iterationPercentRoll, this.geyserType.minIterationPercent, this.geyserType.maxIterationPercent);
+			this.scaledYearLength = this.Resample(this.yearLengthRoll, this.geyserType.minYearLength, this.geyserType.maxYearLength);
+			this.scaledYearPercent = this.Resample(this.yearPercentRoll, this.geyserType.minYearPercent, this.geyserType.maxYearPercent);
 		}
 
+		// Token: 0x060066A7 RID: 26279 RVA: 0x000E30DE File Offset: 0x000E12DE
 		public void SetModifier(Geyser.GeyserModification modifier)
 		{
 			this.modifier = modifier;
 		}
 
+		// Token: 0x17000665 RID: 1637
+		// (get) Token: 0x060066A8 RID: 26280 RVA: 0x000E30E7 File Offset: 0x000E12E7
+		public GeyserConfigurator.GeyserType geyserType
+		{
+			get
+			{
+				return GeyserConfigurator.FindType(this.typeId);
+			}
+		}
+
+		// Token: 0x060066A9 RID: 26281 RVA: 0x002D03A0 File Offset: 0x002CE5A0
 		private float GetModifiedValue(float geyserVariable, float modifier, Geyser.ModificationMethod method)
 		{
 			float num = geyserVariable;
-			switch (method)
+			if (method != Geyser.ModificationMethod.Values)
 			{
-			case Geyser.ModificationMethod.Percentages:
-				num += geyserVariable * modifier;
-				break;
-			case Geyser.ModificationMethod.Values:
+				if (method == Geyser.ModificationMethod.Percentages)
+				{
+					num += geyserVariable * modifier;
+				}
+			}
+			else
+			{
 				num += modifier;
-				break;
 			}
 			return num;
 		}
 
+		// Token: 0x060066AA RID: 26282 RVA: 0x000E30F4 File Offset: 0x000E12F4
 		public float GetMaxPressure()
 		{
-			return GetModifiedValue(geyserType.maxPressure, modifier.maxPressureModifier, Geyser.maxPressureModificationMethod);
+			return this.GetModifiedValue(this.geyserType.maxPressure, this.modifier.maxPressureModifier, Geyser.maxPressureModificationMethod);
 		}
 
+		// Token: 0x060066AB RID: 26283 RVA: 0x000E3117 File Offset: 0x000E1317
 		public float GetIterationLength()
 		{
-			Init();
-			return GetModifiedValue(scaledIterationLength, modifier.iterationDurationModifier, Geyser.IterationDurationModificationMethod);
+			this.Init(false);
+			return this.GetModifiedValue(this.scaledIterationLength, this.modifier.iterationDurationModifier, Geyser.IterationDurationModificationMethod);
 		}
 
+		// Token: 0x060066AC RID: 26284 RVA: 0x000E313C File Offset: 0x000E133C
 		public float GetIterationPercent()
 		{
-			Init();
-			return Mathf.Clamp(GetModifiedValue(scaledIterationPercent, modifier.iterationPercentageModifier, Geyser.IterationPercentageModificationMethod), 0f, 1f);
+			this.Init(false);
+			return Mathf.Clamp(this.GetModifiedValue(this.scaledIterationPercent, this.modifier.iterationPercentageModifier, Geyser.IterationPercentageModificationMethod), 0f, 1f);
 		}
 
+		// Token: 0x060066AD RID: 26285 RVA: 0x000E3170 File Offset: 0x000E1370
 		public float GetOnDuration()
 		{
-			return GetIterationLength() * GetIterationPercent();
+			return this.GetIterationLength() * this.GetIterationPercent();
 		}
 
+		// Token: 0x060066AE RID: 26286 RVA: 0x000E317F File Offset: 0x000E137F
 		public float GetOffDuration()
 		{
-			return GetIterationLength() * (1f - GetIterationPercent());
+			return this.GetIterationLength() * (1f - this.GetIterationPercent());
 		}
 
+		// Token: 0x060066AF RID: 26287 RVA: 0x000E3194 File Offset: 0x000E1394
 		public float GetMassPerCycle()
 		{
-			Init();
-			return GetModifiedValue(scaledRate, modifier.massPerCycleModifier, Geyser.massModificationMethod);
+			this.Init(false);
+			return this.GetModifiedValue(this.scaledRate, this.modifier.massPerCycleModifier, Geyser.massModificationMethod);
 		}
 
+		// Token: 0x060066B0 RID: 26288 RVA: 0x002D03C4 File Offset: 0x002CE5C4
 		public float GetEmitRate()
 		{
-			float num = 600f / GetIterationLength();
-			return GetMassPerCycle() / num / GetOnDuration();
+			float num = 600f / this.GetIterationLength();
+			return this.GetMassPerCycle() / num / this.GetOnDuration();
 		}
 
+		// Token: 0x060066B1 RID: 26289 RVA: 0x000E31B9 File Offset: 0x000E13B9
 		public float GetYearLength()
 		{
-			Init();
-			return GetModifiedValue(scaledYearLength, modifier.yearDurationModifier, Geyser.yearDurationModificationMethod);
+			this.Init(false);
+			return this.GetModifiedValue(this.scaledYearLength, this.modifier.yearDurationModifier, Geyser.yearDurationModificationMethod);
 		}
 
+		// Token: 0x060066B2 RID: 26290 RVA: 0x000E31DE File Offset: 0x000E13DE
 		public float GetYearPercent()
 		{
-			Init();
-			return Mathf.Clamp(GetModifiedValue(scaledYearPercent, modifier.yearPercentageModifier, Geyser.yearPercentageModificationMethod), 0f, 1f);
+			this.Init(false);
+			return Mathf.Clamp(this.GetModifiedValue(this.scaledYearPercent, this.modifier.yearPercentageModifier, Geyser.yearPercentageModificationMethod), 0f, 1f);
 		}
 
+		// Token: 0x060066B3 RID: 26291 RVA: 0x000E3212 File Offset: 0x000E1412
 		public float GetYearOnDuration()
 		{
-			return GetYearLength() * GetYearPercent();
+			return this.GetYearLength() * this.GetYearPercent();
 		}
 
+		// Token: 0x060066B4 RID: 26292 RVA: 0x000E3221 File Offset: 0x000E1421
 		public float GetYearOffDuration()
 		{
-			return GetYearLength() * (1f - GetYearPercent());
+			return this.GetYearLength() * (1f - this.GetYearPercent());
 		}
 
+		// Token: 0x060066B5 RID: 26293 RVA: 0x000E3236 File Offset: 0x000E1436
 		public SimHashes GetElement()
 		{
-			if (!modifier.modifyElement || modifier.newElement == (SimHashes)0)
+			if (!this.modifier.modifyElement || this.modifier.newElement == (SimHashes)0)
 			{
-				return geyserType.element;
+				return this.geyserType.element;
 			}
-			return modifier.newElement;
+			return this.modifier.newElement;
 		}
 
+		// Token: 0x060066B6 RID: 26294 RVA: 0x000E3269 File Offset: 0x000E1469
 		public float GetTemperature()
 		{
-			return GetModifiedValue(geyserType.temperature, modifier.temperatureModifier, Geyser.temperatureModificationMethod);
+			return this.GetModifiedValue(this.geyserType.temperature, this.modifier.temperatureModifier, Geyser.temperatureModificationMethod);
 		}
 
+		// Token: 0x060066B7 RID: 26295 RVA: 0x000E328C File Offset: 0x000E148C
 		public byte GetDiseaseIdx()
 		{
-			return geyserType.diseaseInfo.idx;
+			return this.geyserType.diseaseInfo.idx;
 		}
 
+		// Token: 0x060066B8 RID: 26296 RVA: 0x000E329E File Offset: 0x000E149E
 		public int GetDiseaseCount()
 		{
-			return geyserType.diseaseInfo.count;
+			return this.geyserType.diseaseInfo.count;
 		}
 
+		// Token: 0x060066B9 RID: 26297 RVA: 0x002D03F0 File Offset: 0x002CE5F0
 		public float GetAverageEmission()
 		{
-			float num = GetEmitRate() * GetOnDuration();
-			return GetYearOnDuration() / GetIterationLength() * num / GetYearLength();
+			float num = this.GetEmitRate() * this.GetOnDuration();
+			return this.GetYearOnDuration() / this.GetIterationLength() * num / this.GetYearLength();
 		}
 
+		// Token: 0x060066BA RID: 26298 RVA: 0x002D0424 File Offset: 0x002CE624
 		private float Resample(float t, float min, float max)
 		{
 			float num = 6f;
 			float num2 = 0.002472623f;
 			float num3 = t * (1f - num2 * 2f) + num2;
-			return (0f - Mathf.Log(1f / num3 - 1f) + num) / (num * 2f) * (max - min) + min;
+			return (-Mathf.Log(1f / num3 - 1f) + num) / (num * 2f) * (max - min) + min;
 		}
-	}
 
-	private static List<GeyserType> geyserTypes;
+		// Token: 0x04004D2A RID: 19754
+		public HashedString typeId;
 
-	public HashedString presetType;
+		// Token: 0x04004D2B RID: 19755
+		public float rateRoll;
 
-	public float presetMin;
+		// Token: 0x04004D2C RID: 19756
+		public float iterationLengthRoll;
 
-	public float presetMax = 1f;
+		// Token: 0x04004D2D RID: 19757
+		public float iterationPercentRoll;
 
-	public static GeyserType FindType(HashedString typeId)
-	{
-		GeyserType geyserType = null;
-		if (typeId != HashedString.Invalid)
-		{
-			geyserType = geyserTypes.Find((GeyserType t) => t.id == typeId);
-		}
-		if (geyserType == null)
-		{
-			Debug.LogError($"Tried finding a geyser with id {typeId.ToString()} but it doesn't exist!");
-		}
-		return geyserType;
-	}
+		// Token: 0x04004D2E RID: 19758
+		public float yearLengthRoll;
 
-	public GeyserInstanceConfiguration MakeConfiguration()
-	{
-		return CreateRandomInstance(presetType, presetMin, presetMax);
-	}
+		// Token: 0x04004D2F RID: 19759
+		public float yearPercentRoll;
 
-	private GeyserInstanceConfiguration CreateRandomInstance(HashedString typeId, float min, float max)
-	{
-		KRandom randomSource = new KRandom(SaveLoader.Instance.clusterDetailSave.globalWorldSeed + (int)base.transform.GetPosition().x + (int)base.transform.GetPosition().y);
-		return new GeyserInstanceConfiguration
-		{
-			typeId = typeId,
-			rateRoll = Roll(randomSource, min, max),
-			iterationLengthRoll = Roll(randomSource, 0f, 1f),
-			iterationPercentRoll = Roll(randomSource, min, max),
-			yearLengthRoll = Roll(randomSource, 0f, 1f),
-			yearPercentRoll = Roll(randomSource, min, max)
-		};
-	}
+		// Token: 0x04004D30 RID: 19760
+		public float scaledRate;
 
-	private float Roll(KRandom randomSource, float min, float max)
-	{
-		return (float)(randomSource.NextDouble() * (double)(max - min)) + min;
+		// Token: 0x04004D31 RID: 19761
+		public float scaledIterationLength;
+
+		// Token: 0x04004D32 RID: 19762
+		public float scaledIterationPercent;
+
+		// Token: 0x04004D33 RID: 19763
+		public float scaledYearLength;
+
+		// Token: 0x04004D34 RID: 19764
+		public float scaledYearPercent;
+
+		// Token: 0x04004D35 RID: 19765
+		private bool didInit;
+
+		// Token: 0x04004D36 RID: 19766
+		private Geyser.GeyserModification modifier;
 	}
 }

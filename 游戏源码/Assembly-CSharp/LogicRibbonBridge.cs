@@ -1,23 +1,29 @@
+﻿using System;
+
+// Token: 0x02000E60 RID: 3680
 public class LogicRibbonBridge : KMonoBehaviour
 {
+	// Token: 0x06004993 RID: 18835 RVA: 0x00258B6C File Offset: 0x00256D6C
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		KBatchedAnimController component = GetComponent<KBatchedAnimController>();
-		switch (GetComponent<Rotatable>().GetOrientation())
+		KBatchedAnimController component = base.GetComponent<KBatchedAnimController>();
+		switch (base.GetComponent<Rotatable>().GetOrientation())
 		{
 		case Orientation.Neutral:
-			component.Play("0");
-			break;
+			component.Play("0", KAnim.PlayMode.Once, 1f, 0f);
+			return;
 		case Orientation.R90:
-			component.Play("90");
-			break;
+			component.Play("90", KAnim.PlayMode.Once, 1f, 0f);
+			return;
 		case Orientation.R180:
-			component.Play("180");
-			break;
+			component.Play("180", KAnim.PlayMode.Once, 1f, 0f);
+			return;
 		case Orientation.R270:
-			component.Play("270");
-			break;
+			component.Play("270", KAnim.PlayMode.Once, 1f, 0f);
+			return;
+		default:
+			return;
 		}
 	}
 }

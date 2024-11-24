@@ -1,18 +1,20 @@
+﻿using System;
 using STRINGS;
 using UnityEngine;
 
+// Token: 0x0200044F RID: 1103
 public class SatelliteCometConfig : IEntityConfig
 {
-	public static string ID = "SatelliteCometComet";
-
+	// Token: 0x0600132A RID: 4906 RVA: 0x000A6F3E File Offset: 0x000A513E
 	public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
+	// Token: 0x0600132B RID: 4907 RVA: 0x0018CE18 File Offset: 0x0018B018
 	public GameObject CreatePrefab()
 	{
-		GameObject gameObject = EntityTemplates.CreateEntity(ID, UI.SPACEDESTINATIONS.COMETS.SATELLITE.NAME);
+		GameObject gameObject = EntityTemplates.CreateEntity(SatelliteCometConfig.ID, UI.SPACEDESTINATIONS.COMETS.SATELLITE.NAME, true);
 		gameObject.AddOrGet<SaveLoadRoot>();
 		gameObject.AddOrGet<LoopingSounds>();
 		Comet comet = gameObject.AddOrGet<Comet>();
@@ -27,21 +29,24 @@ public class SatelliteCometConfig : IEntityConfig
 		comet.flyingSoundID = 1;
 		comet.explosionEffectHash = SpawnFXHashes.MeteorImpactDust;
 		comet.addTiles = 0;
-		comet.craterPrefabs = new string[3]
+		comet.craterPrefabs = new string[]
 		{
 			"PropSurfaceSatellite1",
 			PropSurfaceSatellite2Config.ID,
 			PropSurfaceSatellite3Config.ID
 		};
 		PrimaryElement primaryElement = gameObject.AddOrGet<PrimaryElement>();
-		primaryElement.SetElement(SimHashes.Aluminum);
+		primaryElement.SetElement(SimHashes.Aluminum, true);
 		primaryElement.Temperature = (comet.temperatureRange.x + comet.temperatureRange.y) / 2f;
-		KBatchedAnimController kBatchedAnimController = gameObject.AddOrGet<KBatchedAnimController>();
-		kBatchedAnimController.AnimFiles = new KAnimFile[1] { Assets.GetAnim("meteor_rock_kanim") };
-		kBatchedAnimController.isMovable = true;
-		kBatchedAnimController.initialAnim = "fall_loop";
-		kBatchedAnimController.initialMode = KAnim.PlayMode.Loop;
-		kBatchedAnimController.visibilityType = KAnimControllerBase.VisibilityType.OffscreenUpdate;
+		KBatchedAnimController kbatchedAnimController = gameObject.AddOrGet<KBatchedAnimController>();
+		kbatchedAnimController.AnimFiles = new KAnimFile[]
+		{
+			Assets.GetAnim("meteor_rock_kanim")
+		};
+		kbatchedAnimController.isMovable = true;
+		kbatchedAnimController.initialAnim = "fall_loop";
+		kbatchedAnimController.initialMode = KAnim.PlayMode.Loop;
+		kbatchedAnimController.visibilityType = KAnimControllerBase.VisibilityType.OffscreenUpdate;
 		gameObject.AddOrGet<KCircleCollider2D>().radius = 0.5f;
 		gameObject.transform.localScale = new Vector3(1.5f, 1.5f, 1f);
 		gameObject.AddTag(GameTags.Comet);
@@ -49,11 +54,16 @@ public class SatelliteCometConfig : IEntityConfig
 		return gameObject;
 	}
 
+	// Token: 0x0600132C RID: 4908 RVA: 0x000A5E40 File Offset: 0x000A4040
 	public void OnPrefabInit(GameObject go)
 	{
 	}
 
+	// Token: 0x0600132D RID: 4909 RVA: 0x000A5E40 File Offset: 0x000A4040
 	public void OnSpawn(GameObject go)
 	{
 	}
+
+	// Token: 0x04000D1A RID: 3354
+	public static string ID = "SatelliteCometComet";
 }

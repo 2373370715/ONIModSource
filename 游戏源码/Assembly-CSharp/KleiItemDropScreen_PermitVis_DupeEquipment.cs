@@ -1,34 +1,39 @@
+﻿using System;
 using UnityEngine;
 
+// Token: 0x02001D4D RID: 7501
 public class KleiItemDropScreen_PermitVis_DupeEquipment : KMonoBehaviour
 {
-	[SerializeField]
-	private KBatchedAnimController droppedItemKAnim;
-
-	[SerializeField]
-	private KBatchedAnimController dupeKAnim;
-
+	// Token: 0x06009CB0 RID: 40112 RVA: 0x003C510C File Offset: 0x003C330C
 	public void ConfigureWith(DropScreenPresentationInfo info)
 	{
-		dupeKAnim.GetComponent<UIDupeRandomizer>().Randomize();
+		this.dupeKAnim.GetComponent<UIDupeRandomizer>().Randomize();
 		KAnimFile anim = Assets.GetAnim(info.BuildOverride);
-		dupeKAnim.AddAnimOverrides(anim);
-		KAnimHashedString kAnimHashedString = new KAnimHashedString("snapto_neck");
-		KAnim.Build.Symbol symbol = anim.GetData().build.GetSymbol(kAnimHashedString);
+		this.dupeKAnim.AddAnimOverrides(anim, 0f);
+		KAnimHashedString kanimHashedString = new KAnimHashedString("snapto_neck");
+		KAnim.Build.Symbol symbol = anim.GetData().build.GetSymbol(kanimHashedString);
 		if (symbol != null)
 		{
-			dupeKAnim.GetComponent<SymbolOverrideController>().AddSymbolOverride(kAnimHashedString, symbol, 6);
-			dupeKAnim.SetSymbolVisiblity(kAnimHashedString, is_visible: true);
+			this.dupeKAnim.GetComponent<SymbolOverrideController>().AddSymbolOverride(kanimHashedString, symbol, 6);
+			this.dupeKAnim.SetSymbolVisiblity(kanimHashedString, true);
 		}
 		else
 		{
-			dupeKAnim.GetComponent<SymbolOverrideController>().RemoveSymbolOverride(kAnimHashedString, 6);
-			dupeKAnim.SetSymbolVisiblity(kAnimHashedString, is_visible: false);
+			this.dupeKAnim.GetComponent<SymbolOverrideController>().RemoveSymbolOverride(kanimHashedString, 6);
+			this.dupeKAnim.SetSymbolVisiblity(kanimHashedString, false);
 		}
-		dupeKAnim.Play("idle_default", KAnim.PlayMode.Loop);
-		dupeKAnim.Queue("cheer_pre");
-		dupeKAnim.Queue("cheer_loop");
-		dupeKAnim.Queue("cheer_pst");
-		dupeKAnim.Queue("idle_default", KAnim.PlayMode.Loop);
+		this.dupeKAnim.Play("idle_default", KAnim.PlayMode.Loop, 1f, 0f);
+		this.dupeKAnim.Queue("cheer_pre", KAnim.PlayMode.Once, 1f, 0f);
+		this.dupeKAnim.Queue("cheer_loop", KAnim.PlayMode.Once, 1f, 0f);
+		this.dupeKAnim.Queue("cheer_pst", KAnim.PlayMode.Once, 1f, 0f);
+		this.dupeKAnim.Queue("idle_default", KAnim.PlayMode.Loop, 1f, 0f);
 	}
+
+	// Token: 0x04007ADB RID: 31451
+	[SerializeField]
+	private KBatchedAnimController droppedItemKAnim;
+
+	// Token: 0x04007ADC RID: 31452
+	[SerializeField]
+	private KBatchedAnimController dupeKAnim;
 }

@@ -1,74 +1,47 @@
+﻿using System;
 using UnityEngine;
 
+// Token: 0x02001EB9 RID: 7865
 public class QuickLayout : KMonoBehaviour
 {
-	private enum LayoutDirection
-	{
-		TopToBottom,
-		BottomToTop,
-		LeftToRight,
-		RightToLeft
-	}
-
-	[Header("Configuration")]
-	[SerializeField]
-	private int elementSize;
-
-	[SerializeField]
-	private int spacing;
-
-	[SerializeField]
-	private LayoutDirection layoutDirection;
-
-	[SerializeField]
-	private Vector2 offset;
-
-	[SerializeField]
-	private RectTransform driveParentRectSize;
-
-	private int _elementSize;
-
-	private int _spacing;
-
-	private LayoutDirection _layoutDirection;
-
-	private Vector2 _offset;
-
-	private int oldActiveChildCount;
-
+	// Token: 0x0600A544 RID: 42308 RVA: 0x0010B3B3 File Offset: 0x001095B3
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		ForceUpdate();
+		this.ForceUpdate();
 	}
 
+	// Token: 0x0600A545 RID: 42309 RVA: 0x0010B3C1 File Offset: 0x001095C1
 	private void OnEnable()
 	{
-		ForceUpdate();
+		this.ForceUpdate();
 	}
 
+	// Token: 0x0600A546 RID: 42310 RVA: 0x0010B3C9 File Offset: 0x001095C9
 	private void LateUpdate()
 	{
-		Run();
+		this.Run(false);
 	}
 
+	// Token: 0x0600A547 RID: 42311 RVA: 0x0010B3D2 File Offset: 0x001095D2
 	public void ForceUpdate()
 	{
-		Run(forceUpdate: true);
+		this.Run(true);
 	}
 
+	// Token: 0x0600A548 RID: 42312 RVA: 0x003EBDC4 File Offset: 0x003E9FC4
 	private void Run(bool forceUpdate = false)
 	{
-		forceUpdate = forceUpdate || _elementSize != elementSize;
-		forceUpdate = forceUpdate || _spacing != spacing;
-		forceUpdate = forceUpdate || _layoutDirection != layoutDirection;
-		forceUpdate = forceUpdate || _offset != offset;
+		forceUpdate = (forceUpdate || this._elementSize != this.elementSize);
+		forceUpdate = (forceUpdate || this._spacing != this.spacing);
+		forceUpdate = (forceUpdate || this._layoutDirection != this.layoutDirection);
+		forceUpdate = (forceUpdate || this._offset != this.offset);
 		if (forceUpdate)
 		{
-			_elementSize = elementSize;
-			_spacing = spacing;
-			_layoutDirection = layoutDirection;
-			_offset = offset;
+			this._elementSize = this.elementSize;
+			this._spacing = this.spacing;
+			this._layoutDirection = this.layoutDirection;
+			this._offset = this.offset;
 		}
 		int num = 0;
 		for (int i = 0; i < base.transform.childCount; i++)
@@ -78,16 +51,17 @@ public class QuickLayout : KMonoBehaviour
 				num++;
 			}
 		}
-		if (num != oldActiveChildCount || forceUpdate)
+		if (num != this.oldActiveChildCount || forceUpdate)
 		{
-			Layout();
-			oldActiveChildCount = num;
+			this.Layout();
+			this.oldActiveChildCount = num;
 		}
 	}
 
+	// Token: 0x0600A549 RID: 42313 RVA: 0x003EBEBC File Offset: 0x003EA0BC
 	public void Layout()
 	{
-		Vector3 vector = _offset;
+		Vector3 vector = this._offset;
 		bool flag = false;
 		for (int i = 0; i < base.transform.childCount; i++)
 		{
@@ -95,52 +69,107 @@ public class QuickLayout : KMonoBehaviour
 			{
 				flag = true;
 				base.transform.GetChild(i).rectTransform().anchoredPosition = vector;
-				vector += (Vector3)((_elementSize + _spacing) * GetDirectionVector());
+				vector += (float)(this._elementSize + this._spacing) * this.GetDirectionVector();
 			}
 		}
-		if (!(driveParentRectSize != null))
+		if (this.driveParentRectSize != null)
 		{
-			return;
-		}
-		if (!flag)
-		{
-			if (_layoutDirection == LayoutDirection.BottomToTop || _layoutDirection == LayoutDirection.TopToBottom)
+			if (!flag)
 			{
-				driveParentRectSize.sizeDelta = new Vector2(Mathf.Abs(driveParentRectSize.sizeDelta.x), 0f);
+				if (this._layoutDirection == QuickLayout.LayoutDirection.BottomToTop || this._layoutDirection == QuickLayout.LayoutDirection.TopToBottom)
+				{
+					this.driveParentRectSize.sizeDelta = new Vector2(Mathf.Abs(this.driveParentRectSize.sizeDelta.x), 0f);
+					return;
+				}
+				if (this._layoutDirection == QuickLayout.LayoutDirection.LeftToRight || this._layoutDirection == QuickLayout.LayoutDirection.LeftToRight)
+				{
+					this.driveParentRectSize.sizeDelta = new Vector2(0f, Mathf.Abs(this.driveParentRectSize.sizeDelta.y));
+					return;
+				}
 			}
-			else if (_layoutDirection == LayoutDirection.LeftToRight || _layoutDirection == LayoutDirection.LeftToRight)
+			else
 			{
-				driveParentRectSize.sizeDelta = new Vector2(0f, Mathf.Abs(driveParentRectSize.sizeDelta.y));
+				if (this._layoutDirection == QuickLayout.LayoutDirection.BottomToTop || this._layoutDirection == QuickLayout.LayoutDirection.TopToBottom)
+				{
+					this.driveParentRectSize.sizeDelta = new Vector2(this.driveParentRectSize.sizeDelta.x, Mathf.Abs(vector.y));
+					return;
+				}
+				if (this._layoutDirection == QuickLayout.LayoutDirection.LeftToRight || this._layoutDirection == QuickLayout.LayoutDirection.LeftToRight)
+				{
+					this.driveParentRectSize.sizeDelta = new Vector2(Mathf.Abs(vector.x), this.driveParentRectSize.sizeDelta.y);
+				}
 			}
-		}
-		else if (_layoutDirection == LayoutDirection.BottomToTop || _layoutDirection == LayoutDirection.TopToBottom)
-		{
-			driveParentRectSize.sizeDelta = new Vector2(driveParentRectSize.sizeDelta.x, Mathf.Abs(vector.y));
-		}
-		else if (_layoutDirection == LayoutDirection.LeftToRight || _layoutDirection == LayoutDirection.LeftToRight)
-		{
-			driveParentRectSize.sizeDelta = new Vector2(Mathf.Abs(vector.x), driveParentRectSize.sizeDelta.y);
 		}
 	}
 
+	// Token: 0x0600A54A RID: 42314 RVA: 0x003EC054 File Offset: 0x003EA254
 	private Vector2 GetDirectionVector()
 	{
 		Vector2 result = Vector3.zero;
-		switch (_layoutDirection)
+		switch (this._layoutDirection)
 		{
-		case LayoutDirection.TopToBottom:
+		case QuickLayout.LayoutDirection.TopToBottom:
 			result = Vector2.down;
 			break;
-		case LayoutDirection.BottomToTop:
+		case QuickLayout.LayoutDirection.BottomToTop:
 			result = Vector2.up;
 			break;
-		case LayoutDirection.LeftToRight:
+		case QuickLayout.LayoutDirection.LeftToRight:
 			result = Vector2.right;
 			break;
-		case LayoutDirection.RightToLeft:
+		case QuickLayout.LayoutDirection.RightToLeft:
 			result = Vector2.left;
 			break;
 		}
 		return result;
+	}
+
+	// Token: 0x04008167 RID: 33127
+	[Header("Configuration")]
+	[SerializeField]
+	private int elementSize;
+
+	// Token: 0x04008168 RID: 33128
+	[SerializeField]
+	private int spacing;
+
+	// Token: 0x04008169 RID: 33129
+	[SerializeField]
+	private QuickLayout.LayoutDirection layoutDirection;
+
+	// Token: 0x0400816A RID: 33130
+	[SerializeField]
+	private Vector2 offset;
+
+	// Token: 0x0400816B RID: 33131
+	[SerializeField]
+	private RectTransform driveParentRectSize;
+
+	// Token: 0x0400816C RID: 33132
+	private int _elementSize;
+
+	// Token: 0x0400816D RID: 33133
+	private int _spacing;
+
+	// Token: 0x0400816E RID: 33134
+	private QuickLayout.LayoutDirection _layoutDirection;
+
+	// Token: 0x0400816F RID: 33135
+	private Vector2 _offset;
+
+	// Token: 0x04008170 RID: 33136
+	private int oldActiveChildCount;
+
+	// Token: 0x02001EBA RID: 7866
+	private enum LayoutDirection
+	{
+		// Token: 0x04008172 RID: 33138
+		TopToBottom,
+		// Token: 0x04008173 RID: 33139
+		BottomToTop,
+		// Token: 0x04008174 RID: 33140
+		LeftToRight,
+		// Token: 0x04008175 RID: 33141
+		RightToLeft
 	}
 }

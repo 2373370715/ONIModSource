@@ -1,85 +1,94 @@
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Token: 0x020010C5 RID: 4293
 [AddComponentMenu("KMonoBehaviour/scripts/Weapon")]
 public class Weapon : KMonoBehaviour
 {
-	[MyCmpReq]
-	private FactionAlignment alignment;
-
-	public AttackProperties properties;
-
+	// Token: 0x060057FE RID: 22526 RVA: 0x002897A0 File Offset: 0x002879A0
 	public void Configure(float base_damage_min, float base_damage_max, AttackProperties.DamageType attackType = AttackProperties.DamageType.Standard, AttackProperties.TargetType targetType = AttackProperties.TargetType.Single, int maxHits = 1, float aoeRadius = 0f)
 	{
-		properties = new AttackProperties();
-		properties.base_damage_min = base_damage_min;
-		properties.base_damage_max = base_damage_max;
-		properties.maxHits = maxHits;
-		properties.damageType = attackType;
-		properties.aoe_radius = aoeRadius;
-		properties.attacker = this;
+		this.properties = new AttackProperties();
+		this.properties.base_damage_min = base_damage_min;
+		this.properties.base_damage_max = base_damage_max;
+		this.properties.maxHits = maxHits;
+		this.properties.damageType = attackType;
+		this.properties.aoe_radius = aoeRadius;
+		this.properties.attacker = this;
 	}
 
+	// Token: 0x060057FF RID: 22527 RVA: 0x000D961B File Offset: 0x000D781B
 	public void AddEffect(string effectID = "WasAttacked", float probability = 1f)
 	{
-		if (properties.effects == null)
+		if (this.properties.effects == null)
 		{
-			properties.effects = new List<AttackEffect>();
+			this.properties.effects = new List<AttackEffect>();
 		}
-		properties.effects.Add(new AttackEffect(effectID, probability));
+		this.properties.effects.Add(new AttackEffect(effectID, probability));
 	}
 
+	// Token: 0x06005800 RID: 22528 RVA: 0x00289804 File Offset: 0x00287A04
 	public int AttackArea(Vector3 centerPoint)
 	{
-		Vector3 a = centerPoint;
-		Vector3 zero = Vector3.zero;
-		alignment = GetComponent<FactionAlignment>();
-		if (alignment == null)
+		Vector3 b = Vector3.zero;
+		this.alignment = base.GetComponent<FactionAlignment>();
+		if (this.alignment == null)
 		{
 			return 0;
 		}
 		List<GameObject> list = new List<GameObject>();
-		foreach (Health item in Components.Health.Items)
+		foreach (Health health in Components.Health.Items)
 		{
-			if (item.gameObject == base.gameObject || item.IsDefeated())
+			if (!(health.gameObject == base.gameObject) && !health.IsDefeated())
 			{
-				continue;
-			}
-			FactionAlignment component = item.GetComponent<FactionAlignment>();
-			if (!(component == null) && component.IsAlignmentActive() && FactionManager.Instance.GetDisposition(alignment.Alignment, component.Alignment) == FactionManager.Disposition.Attack)
-			{
-				zero = item.transform.GetPosition();
-				zero.z = a.z;
-				if (Vector3.Distance(a, zero) <= properties.aoe_radius)
+				FactionAlignment component = health.GetComponent<FactionAlignment>();
+				if (!(component == null) && component.IsAlignmentActive() && FactionManager.Instance.GetDisposition(this.alignment.Alignment, component.Alignment) == FactionManager.Disposition.Attack)
 				{
-					list.Add(item.gameObject);
+					b = health.transform.GetPosition();
+					b.z = centerPoint.z;
+					if (Vector3.Distance(centerPoint, b) <= this.properties.aoe_radius)
+					{
+						list.Add(health.gameObject);
+					}
 				}
 			}
 		}
-		AttackTargets(list.ToArray());
+		this.AttackTargets(list.ToArray());
 		return list.Count;
 	}
 
+	// Token: 0x06005801 RID: 22529 RVA: 0x000D9651 File Offset: 0x000D7851
 	public void AttackTarget(GameObject target)
 	{
-		AttackTargets(new GameObject[1] { target });
+		this.AttackTargets(new GameObject[]
+		{
+			target
+		});
 	}
 
+	// Token: 0x06005802 RID: 22530 RVA: 0x000D9663 File Offset: 0x000D7863
 	public void AttackTargets(GameObject[] targets)
 	{
-		if (properties == null)
+		if (this.properties == null)
 		{
-			Debug.LogWarning($"Attack properties not configured. {base.gameObject.name} cannot attack with weapon.");
+			global::Debug.LogWarning(string.Format("Attack properties not configured. {0} cannot attack with weapon.", base.gameObject.name));
+			return;
 		}
-		else
-		{
-			new Attack(properties, targets);
-		}
+		new Attack(this.properties, targets);
 	}
 
+	// Token: 0x06005803 RID: 22531 RVA: 0x000D9695 File Offset: 0x000D7895
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		properties.attacker = this;
+		this.properties.attacker = this;
 	}
+
+	// Token: 0x04003D84 RID: 15748
+	[MyCmpReq]
+	private FactionAlignment alignment;
+
+	// Token: 0x04003D85 RID: 15749
+	public AttackProperties properties;
 }

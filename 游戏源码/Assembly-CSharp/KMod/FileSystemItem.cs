@@ -1,14 +1,23 @@
-namespace KMod;
+﻿using System;
 
-public struct FileSystemItem
+namespace KMod
 {
-	public enum ItemType
+	// Token: 0x020021D6 RID: 8662
+	public struct FileSystemItem
 	{
-		Directory,
-		File
+		// Token: 0x04009628 RID: 38440
+		public string name;
+
+		// Token: 0x04009629 RID: 38441
+		public FileSystemItem.ItemType type;
+
+		// Token: 0x020021D7 RID: 8663
+		public enum ItemType
+		{
+			// Token: 0x0400962B RID: 38443
+			Directory,
+			// Token: 0x0400962C RID: 38444
+			File
+		}
 	}
-
-	public string name;
-
-	public ItemType type;
 }

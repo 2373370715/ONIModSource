@@ -1,35 +1,44 @@
+﻿using System;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x0200040A RID: 1034
 public class MassiveHeatSinkConfig : IBuildingConfig
 {
-	public const string ID = "MassiveHeatSink";
-
-	private const float CONSUMPTION_RATE = 0.01f;
-
-	private const float STORAGE_CAPACITY = 0.099999994f;
-
+	// Token: 0x0600117E RID: 4478 RVA: 0x00184060 File Offset: 0x00182260
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef("MassiveHeatSink", 4, 4, "massiveheatsink_kanim", 100, 120f, BUILDINGS.CONSTRUCTION_MASS_KG.TIER5, MATERIALS.RAW_METALS, 2400f, BuildLocationRule.OnFloor, noise: NOISE_POLLUTION.NOISY.TIER5, decor: BUILDINGS.DECOR.BONUS.TIER2);
-		obj.ExhaustKilowattsWhenActive = -16f;
-		obj.SelfHeatKilowattsWhenActive = -64f;
-		obj.Floodable = true;
-		obj.Entombable = false;
-		obj.AudioCategory = "Metal";
-		obj.UtilityInputOffset = new CellOffset(0, 0);
-		obj.InputConduitType = ConduitType.Gas;
-		obj.ShowInBuildMenu = false;
-		return obj;
+		string id = "MassiveHeatSink";
+		int width = 4;
+		int height = 4;
+		string anim = "massiveheatsink_kanim";
+		int hitpoints = 100;
+		float construction_time = 120f;
+		float[] tier = BUILDINGS.CONSTRUCTION_MASS_KG.TIER5;
+		string[] raw_METALS = MATERIALS.RAW_METALS;
+		float melting_point = 2400f;
+		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
+		EffectorValues tier2 = NOISE_POLLUTION.NOISY.TIER5;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, raw_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.BONUS.TIER2, tier2, 0.2f);
+		buildingDef.ExhaustKilowattsWhenActive = -16f;
+		buildingDef.SelfHeatKilowattsWhenActive = -64f;
+		buildingDef.Floodable = true;
+		buildingDef.Entombable = false;
+		buildingDef.AudioCategory = "Metal";
+		buildingDef.UtilityInputOffset = new CellOffset(0, 0);
+		buildingDef.InputConduitType = ConduitType.Gas;
+		buildingDef.ShowInBuildMenu = false;
+		return buildingDef;
 	}
 
+	// Token: 0x0600117F RID: 4479 RVA: 0x001840F0 File Offset: 0x001822F0
 	public override void DoPostConfigureComplete(GameObject go)
 	{
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		go.AddOrGet<MassiveHeatSink>();
 		go.AddOrGet<MinimumOperatingTemperature>().minimumTemperature = 100f;
 		PrimaryElement component = go.GetComponent<PrimaryElement>();
-		component.SetElement(SimHashes.Iron);
+		component.SetElement(SimHashes.Iron, true);
 		component.Temperature = 294.15f;
 		go.AddOrGet<LoopingSounds>();
 		go.AddOrGet<Storage>().capacityKg = 0.099999994f;
@@ -40,12 +49,21 @@ public class MassiveHeatSinkConfig : IBuildingConfig
 		conduitConsumer.capacityKG = 0.099999994f;
 		conduitConsumer.forceAlwaysSatisfied = true;
 		conduitConsumer.wrongElementResult = ConduitConsumer.WrongElementResult.Dump;
-		go.AddOrGet<ElementConverter>().consumedElements = new ElementConverter.ConsumedElement[1]
+		go.AddOrGet<ElementConverter>().consumedElements = new ElementConverter.ConsumedElement[]
 		{
-			new ElementConverter.ConsumedElement(ElementLoader.FindElementByHash(SimHashes.Hydrogen).tag, 0.01f)
+			new ElementConverter.ConsumedElement(ElementLoader.FindElementByHash(SimHashes.Hydrogen).tag, 0.01f, true)
 		};
 		go.AddOrGetDef<PoweredActiveController.Def>();
 		go.GetComponent<Deconstructable>().allowDeconstruction = false;
 		go.AddOrGet<Demolishable>();
 	}
+
+	// Token: 0x04000BE7 RID: 3047
+	public const string ID = "MassiveHeatSink";
+
+	// Token: 0x04000BE8 RID: 3048
+	private const float CONSUMPTION_RATE = 0.01f;
+
+	// Token: 0x04000BE9 RID: 3049
+	private const float STORAGE_CAPACITY = 0.099999994f;
 }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,350 +7,326 @@ using KSerialization;
 using STRINGS;
 using UnityEngine;
 
+// Token: 0x020010A7 RID: 4263
 [AddComponentMenu("KMonoBehaviour/scripts/ColonyAchievementTracker")]
 public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails, IRenderEveryTick
 {
-	public Dictionary<string, ColonyAchievementStatus> achievements = new Dictionary<string, ColonyAchievementStatus>();
-
-	[Serialize]
-	public Dictionary<int, int> fetchAutomatedChoreDeliveries = new Dictionary<int, int>();
-
-	[Serialize]
-	public Dictionary<int, int> fetchDupeChoreDeliveries = new Dictionary<int, int>();
-
-	[Serialize]
-	public Dictionary<int, List<int>> dupesCompleteChoresInSuits = new Dictionary<int, List<int>>();
-
-	[Serialize]
-	public HashSet<Tag> tamedCritterTypes = new HashSet<Tag>();
-
-	[Serialize]
-	public bool defrostedDuplicant;
-
-	[Serialize]
-	public HashSet<Tag> analyzedSeeds = new HashSet<Tag>();
-
-	[Serialize]
-	public float totalMaterialsHarvestFromPOI;
-
-	[Serialize]
-	public float radBoltTravelDistance;
-
-	[Serialize]
-	public bool harvestAHiveWithoutGettingStung;
-
-	[Serialize]
-	public Dictionary<int, int> cyclesRocketDupeMoraleAboveRequirement = new Dictionary<int, int>();
-
-	[Serialize]
-	private int geothermalProgress;
-
-	private const int GEO_DISCOVERED_BIT = 1;
-
-	private const int GEO_CONTROLLER_REPAIRED_BIT = 2;
-
-	private const int GEO_CONTROLLER_VENTED_BIT = 4;
-
-	private const int GEO_CLEARED_ENTOMBED_BIT = 8;
-
-	private const int GEO_VICTORY_ACK_BIT = 16;
-
-	private SchedulerHandle checkAchievementsHandle;
-
-	private int forceCheckAchievementHandle = -1;
-
-	[Serialize]
-	private int updatingAchievement;
-
-	[Serialize]
-	private List<string> completedAchievementsToDisplay = new List<string>();
-
-	private SchedulerHandle victorySchedulerHandle;
-
-	public static readonly string UnlockedAchievementKey = "UnlockedAchievement";
-
-	private Dictionary<string, object> unlockedAchievementMetric = new Dictionary<string, object> { { UnlockedAchievementKey, null } };
-
-	private static readonly Tag[] SuitTags = new Tag[3]
-	{
-		GameTags.AtmoSuit,
-		GameTags.JetSuit,
-		GameTags.LeadSuit
-	};
-
-	private static readonly EventSystem.IntraObjectHandler<ColonyAchievementTracker> OnNewDayDelegate = new EventSystem.IntraObjectHandler<ColonyAchievementTracker>(delegate(ColonyAchievementTracker component, object data)
-	{
-		component.OnNewDay(data);
-	});
-
+	// Token: 0x1700051D RID: 1309
+	// (get) Token: 0x06005773 RID: 22387 RVA: 0x000D911F File Offset: 0x000D731F
+	// (set) Token: 0x06005774 RID: 22388 RVA: 0x000D912C File Offset: 0x000D732C
 	public bool GeothermalFacilityDiscovered
 	{
 		get
 		{
-			return (geothermalProgress & 1) == 1;
+			return (this.geothermalProgress & 1) == 1;
 		}
 		set
 		{
 			if (value)
 			{
-				geothermalProgress |= 1;
+				this.geothermalProgress |= 1;
 				return;
 			}
-			DebugUtil.DevAssert(value, "unsetting progress? why");
-			geothermalProgress &= -2;
+			DebugUtil.DevAssert(value, "unsetting progress? why", null);
+			this.geothermalProgress &= -2;
 		}
 	}
 
+	// Token: 0x1700051E RID: 1310
+	// (get) Token: 0x06005775 RID: 22389 RVA: 0x000D915B File Offset: 0x000D735B
+	// (set) Token: 0x06005776 RID: 22390 RVA: 0x000D9168 File Offset: 0x000D7368
 	public bool GeothermalControllerRepaired
 	{
 		get
 		{
-			return (geothermalProgress & 2) == 2;
+			return (this.geothermalProgress & 2) == 2;
 		}
 		set
 		{
 			if (value)
 			{
-				geothermalProgress |= 2;
+				this.geothermalProgress |= 2;
 				return;
 			}
-			DebugUtil.DevAssert(value, "unsetting progress? why");
-			geothermalProgress &= -3;
+			DebugUtil.DevAssert(value, "unsetting progress? why", null);
+			this.geothermalProgress &= -3;
 		}
 	}
 
+	// Token: 0x1700051F RID: 1311
+	// (get) Token: 0x06005777 RID: 22391 RVA: 0x000D9197 File Offset: 0x000D7397
+	// (set) Token: 0x06005778 RID: 22392 RVA: 0x000D91A4 File Offset: 0x000D73A4
 	public bool GeothermalControllerHasVented
 	{
 		get
 		{
-			return (geothermalProgress & 4) == 4;
+			return (this.geothermalProgress & 4) == 4;
 		}
 		set
 		{
 			if (value)
 			{
-				geothermalProgress |= 4;
+				this.geothermalProgress |= 4;
 				return;
 			}
-			DebugUtil.DevAssert(value, "unsetting progress? why");
-			geothermalProgress &= -5;
+			DebugUtil.DevAssert(value, "unsetting progress? why", null);
+			this.geothermalProgress &= -5;
 		}
 	}
 
+	// Token: 0x17000520 RID: 1312
+	// (get) Token: 0x06005779 RID: 22393 RVA: 0x000D91D3 File Offset: 0x000D73D3
+	// (set) Token: 0x0600577A RID: 22394 RVA: 0x000D91E0 File Offset: 0x000D73E0
 	public bool GeothermalClearedEntombedVent
 	{
 		get
 		{
-			return (geothermalProgress & 8) == 8;
+			return (this.geothermalProgress & 8) == 8;
 		}
 		set
 		{
 			if (value)
 			{
-				geothermalProgress |= 8;
+				this.geothermalProgress |= 8;
 				return;
 			}
-			DebugUtil.DevAssert(value, "unsetting progress? why");
-			geothermalProgress &= -9;
+			DebugUtil.DevAssert(value, "unsetting progress? why", null);
+			this.geothermalProgress &= -9;
 		}
 	}
 
+	// Token: 0x17000521 RID: 1313
+	// (get) Token: 0x0600577B RID: 22395 RVA: 0x000D920F File Offset: 0x000D740F
+	// (set) Token: 0x0600577C RID: 22396 RVA: 0x000D921E File Offset: 0x000D741E
 	public bool GeothermalVictoryPopupDismissed
 	{
 		get
 		{
-			return (geothermalProgress & 0x10) == 16;
+			return (this.geothermalProgress & 16) == 16;
 		}
 		set
 		{
 			if (value)
 			{
-				geothermalProgress |= 16;
+				this.geothermalProgress |= 16;
 				return;
 			}
-			DebugUtil.DevAssert(value, "unsetting progress? why");
-			geothermalProgress &= -17;
+			DebugUtil.DevAssert(value, "unsetting progress? why", null);
+			this.geothermalProgress &= -17;
 		}
 	}
 
-	public List<string> achievementsToDisplay => completedAchievementsToDisplay;
-
-	public void ClearDisplayAchievements()
+	// Token: 0x17000522 RID: 1314
+	// (get) Token: 0x0600577D RID: 22397 RVA: 0x000D924E File Offset: 0x000D744E
+	public List<string> achievementsToDisplay
 	{
-		achievementsToDisplay.Clear();
+		get
+		{
+			return this.completedAchievementsToDisplay;
+		}
 	}
 
+	// Token: 0x0600577E RID: 22398 RVA: 0x000D9256 File Offset: 0x000D7456
+	public void ClearDisplayAchievements()
+	{
+		this.achievementsToDisplay.Clear();
+	}
+
+	// Token: 0x0600577F RID: 22399 RVA: 0x00286340 File Offset: 0x00284540
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		foreach (ColonyAchievement resource in Db.Get().ColonyAchievements.resources)
+		foreach (ColonyAchievement colonyAchievement in Db.Get().ColonyAchievements.resources)
 		{
-			if (!achievements.ContainsKey(resource.Id))
+			if (!this.achievements.ContainsKey(colonyAchievement.Id))
 			{
-				ColonyAchievementStatus value = new ColonyAchievementStatus(resource.Id);
-				achievements.Add(resource.Id, value);
+				ColonyAchievementStatus value = new ColonyAchievementStatus(colonyAchievement.Id);
+				this.achievements.Add(colonyAchievement.Id, value);
 			}
 		}
-		forceCheckAchievementHandle = Game.Instance.Subscribe(395452326, CheckAchievements);
-		Subscribe(631075836, OnNewDayDelegate);
-		UpgradeTamedCritterAchievements();
+		this.forceCheckAchievementHandle = Game.Instance.Subscribe(395452326, new Action<object>(this.CheckAchievements));
+		base.Subscribe<ColonyAchievementTracker>(631075836, ColonyAchievementTracker.OnNewDayDelegate);
+		this.UpgradeTamedCritterAchievements();
 	}
 
+	// Token: 0x06005780 RID: 22400 RVA: 0x00286404 File Offset: 0x00284604
 	private void UpgradeTamedCritterAchievements()
 	{
-		foreach (ColonyAchievementRequirement item in Db.Get().ColonyAchievements.TameAllBasicCritters.requirementChecklist)
+		foreach (ColonyAchievementRequirement colonyAchievementRequirement in Db.Get().ColonyAchievements.TameAllBasicCritters.requirementChecklist)
 		{
-			if (item is CritterTypesWithTraits critterTypesWithTraits)
+			CritterTypesWithTraits critterTypesWithTraits = colonyAchievementRequirement as CritterTypesWithTraits;
+			if (critterTypesWithTraits != null)
 			{
 				critterTypesWithTraits.UpdateSavedState();
 			}
 		}
-		foreach (ColonyAchievementRequirement item2 in Db.Get().ColonyAchievements.TameAGassyMoo.requirementChecklist)
+		foreach (ColonyAchievementRequirement colonyAchievementRequirement2 in Db.Get().ColonyAchievements.TameAGassyMoo.requirementChecklist)
 		{
-			if (item2 is CritterTypesWithTraits critterTypesWithTraits2)
+			CritterTypesWithTraits critterTypesWithTraits2 = colonyAchievementRequirement2 as CritterTypesWithTraits;
+			if (critterTypesWithTraits2 != null)
 			{
 				critterTypesWithTraits2.UpdateSavedState();
 			}
 		}
 	}
 
+	// Token: 0x06005781 RID: 22401 RVA: 0x002864C4 File Offset: 0x002846C4
 	public void RenderEveryTick(float dt)
 	{
-		if (updatingAchievement >= achievements.Count)
+		if (this.updatingAchievement >= this.achievements.Count)
 		{
-			updatingAchievement = 0;
+			this.updatingAchievement = 0;
 		}
-		KeyValuePair<string, ColonyAchievementStatus> keyValuePair = achievements.ElementAt(updatingAchievement);
-		updatingAchievement++;
+		KeyValuePair<string, ColonyAchievementStatus> keyValuePair = this.achievements.ElementAt(this.updatingAchievement);
+		this.updatingAchievement++;
 		if (!keyValuePair.Value.success && !keyValuePair.Value.failed)
 		{
 			keyValuePair.Value.UpdateAchievement();
 			if (keyValuePair.Value.success && !keyValuePair.Value.failed)
 			{
-				UnlockPlatformAchievement(keyValuePair.Key);
-				completedAchievementsToDisplay.Add(keyValuePair.Key);
-				TriggerNewAchievementCompleted(keyValuePair.Key);
+				ColonyAchievementTracker.UnlockPlatformAchievement(keyValuePair.Key);
+				this.completedAchievementsToDisplay.Add(keyValuePair.Key);
+				this.TriggerNewAchievementCompleted(keyValuePair.Key, null);
 				RetireColonyUtility.SaveColonySummaryData();
 			}
 		}
 	}
 
+	// Token: 0x06005782 RID: 22402 RVA: 0x00286584 File Offset: 0x00284784
 	private void CheckAchievements(object data = null)
 	{
-		foreach (KeyValuePair<string, ColonyAchievementStatus> achievement in achievements)
+		foreach (KeyValuePair<string, ColonyAchievementStatus> keyValuePair in this.achievements)
 		{
-			if (!achievement.Value.success && !achievement.Value.failed)
+			if (!keyValuePair.Value.success && !keyValuePair.Value.failed)
 			{
-				achievement.Value.UpdateAchievement();
-				if (achievement.Value.success && !achievement.Value.failed)
+				keyValuePair.Value.UpdateAchievement();
+				if (keyValuePair.Value.success && !keyValuePair.Value.failed)
 				{
-					UnlockPlatformAchievement(achievement.Key);
-					completedAchievementsToDisplay.Add(achievement.Key);
-					TriggerNewAchievementCompleted(achievement.Key);
+					ColonyAchievementTracker.UnlockPlatformAchievement(keyValuePair.Key);
+					this.completedAchievementsToDisplay.Add(keyValuePair.Key);
+					this.TriggerNewAchievementCompleted(keyValuePair.Key, null);
 				}
 			}
 		}
 		RetireColonyUtility.SaveColonySummaryData();
 	}
 
+	// Token: 0x06005783 RID: 22403 RVA: 0x0028664C File Offset: 0x0028484C
 	private static void UnlockPlatformAchievement(string achievement_id)
 	{
 		if (DebugHandler.InstantBuildMode)
 		{
-			Debug.LogWarningFormat("UnlockPlatformAchievement {0} skipping: instant build mode", achievement_id);
+			global::Debug.LogWarningFormat("UnlockPlatformAchievement {0} skipping: instant build mode", new object[]
+			{
+				achievement_id
+			});
 			return;
 		}
 		if (SaveGame.Instance.sandboxEnabled)
 		{
-			Debug.LogWarningFormat("UnlockPlatformAchievement {0} skipping: sandbox mode", achievement_id);
+			global::Debug.LogWarningFormat("UnlockPlatformAchievement {0} skipping: sandbox mode", new object[]
+			{
+				achievement_id
+			});
 			return;
 		}
 		if (Game.Instance.debugWasUsed)
 		{
-			Debug.LogWarningFormat("UnlockPlatformAchievement {0} skipping: debug was used.", achievement_id);
+			global::Debug.LogWarningFormat("UnlockPlatformAchievement {0} skipping: debug was used.", new object[]
+			{
+				achievement_id
+			});
 			return;
 		}
 		ColonyAchievement colonyAchievement = Db.Get().ColonyAchievements.Get(achievement_id);
 		if (colonyAchievement != null && !string.IsNullOrEmpty(colonyAchievement.platformAchievementId))
 		{
-			if ((bool)SteamAchievementService.Instance)
+			if (SteamAchievementService.Instance)
 			{
 				SteamAchievementService.Instance.Unlock(colonyAchievement.platformAchievementId);
 				return;
 			}
-			Debug.LogWarningFormat("Steam achievement [{0}] was achieved, but achievement service was null", colonyAchievement.platformAchievementId);
+			global::Debug.LogWarningFormat("Steam achievement [{0}] was achieved, but achievement service was null", new object[]
+			{
+				colonyAchievement.platformAchievementId
+			});
 		}
 	}
 
+	// Token: 0x06005784 RID: 22404 RVA: 0x000D9263 File Offset: 0x000D7463
 	public void DebugTriggerAchievement(string id)
 	{
-		achievements[id].failed = false;
-		achievements[id].success = true;
+		this.achievements[id].failed = false;
+		this.achievements[id].success = true;
 	}
 
+	// Token: 0x06005785 RID: 22405 RVA: 0x00286710 File Offset: 0x00284910
 	private void BeginVictorySequence(string achievementID)
 	{
 		RootMenu.Instance.canTogglePauseScreen = false;
 		CameraController.Instance.DisableUserCameraControl = true;
 		if (!SpeedControlScreen.Instance.IsPaused)
 		{
-			SpeedControlScreen.Instance.Pause(playSound: false);
+			SpeedControlScreen.Instance.Pause(false, false);
 		}
 		AudioMixer.instance.Start(AudioMixerSnapshots.Get().VictoryMessageSnapshot);
 		AudioMixer.instance.Start(AudioMixerSnapshots.Get().MuteDynamicMusicSnapshot);
-		ToggleVictoryUI(victoryUIActive: true);
-		StoryMessageScreen component = GameScreenManager.Instance.StartScreen(ScreenPrefabs.Instance.StoryMessageScreen.gameObject).GetComponent<StoryMessageScreen>();
+		this.ToggleVictoryUI(true);
+		StoryMessageScreen component = GameScreenManager.Instance.StartScreen(ScreenPrefabs.Instance.StoryMessageScreen.gameObject, null, GameScreenManager.UIRenderTarget.ScreenSpaceOverlay).GetComponent<StoryMessageScreen>();
 		component.restoreInterfaceOnClose = false;
 		component.title = COLONY_ACHIEVEMENTS.PRE_VICTORY_MESSAGE_HEADER;
 		component.body = string.Format(COLONY_ACHIEVEMENTS.PRE_VICTORY_MESSAGE_BODY, "<b>" + Db.Get().ColonyAchievements.Get(achievementID).Name + "</b>\n" + Db.Get().ColonyAchievements.Get(achievementID).description);
-		component.Show();
-		CameraController.Instance.SetWorldInteractive(state: false);
-		component.OnClose = (System.Action)Delegate.Combine(component.OnClose, (System.Action)delegate
+		component.Show(true);
+		CameraController.Instance.SetWorldInteractive(false);
+		component.OnClose = (System.Action)Delegate.Combine(component.OnClose, new System.Action(delegate()
 		{
 			SpeedControlScreen.Instance.SetSpeed(1);
 			if (!SpeedControlScreen.Instance.IsPaused)
 			{
-				SpeedControlScreen.Instance.Pause(playSound: false);
+				SpeedControlScreen.Instance.Pause(false, false);
 			}
-			CameraController.Instance.SetWorldInteractive(state: true);
+			CameraController.Instance.SetWorldInteractive(true);
 			Db.Get().ColonyAchievements.Get(achievementID).victorySequence(this);
-		});
+		}));
 	}
 
+	// Token: 0x06005786 RID: 22406 RVA: 0x00286854 File Offset: 0x00284A54
 	public bool IsAchievementUnlocked(ColonyAchievement achievement)
 	{
-		foreach (KeyValuePair<string, ColonyAchievementStatus> achievement2 in achievements)
+		foreach (KeyValuePair<string, ColonyAchievementStatus> keyValuePair in this.achievements)
 		{
-			if (achievement2.Key == achievement.Id)
+			if (keyValuePair.Key == achievement.Id)
 			{
-				if (achievement2.Value.success)
+				if (keyValuePair.Value.success)
 				{
 					return true;
 				}
-				achievement2.Value.UpdateAchievement();
-				return achievement2.Value.success;
+				keyValuePair.Value.UpdateAchievement();
+				return keyValuePair.Value.success;
 			}
 		}
 		return false;
 	}
 
+	// Token: 0x06005787 RID: 22407 RVA: 0x000D9289 File Offset: 0x000D7489
 	protected override void OnCleanUp()
 	{
-		victorySchedulerHandle.ClearScheduler();
-		Game.Instance.Unsubscribe(forceCheckAchievementHandle);
-		checkAchievementsHandle.ClearScheduler();
+		this.victorySchedulerHandle.ClearScheduler();
+		Game.Instance.Unsubscribe(this.forceCheckAchievementHandle);
+		this.checkAchievementsHandle.ClearScheduler();
 		base.OnCleanUp();
 	}
 
+	// Token: 0x06005788 RID: 22408 RVA: 0x002868E4 File Offset: 0x00284AE4
 	private void TriggerNewAchievementCompleted(string achievement, GameObject cameraTarget = null)
 	{
-		unlockedAchievementMetric[UnlockedAchievementKey] = achievement;
-		ThreadedHttps<KleiMetrics>.Instance.SendEvent(unlockedAchievementMetric, "TriggerNewAchievementCompleted");
+		this.unlockedAchievementMetric[ColonyAchievementTracker.UnlockedAchievementKey] = achievement;
+		ThreadedHttps<KleiMetrics>.Instance.SendEvent(this.unlockedAchievementMetric, "TriggerNewAchievementCompleted");
 		bool flag = false;
 		if (Db.Get().ColonyAchievements.Get(achievement).isVictoryCondition)
 		{
 			flag = true;
-			BeginVictorySequence(achievement);
+			this.BeginVictorySequence(achievement);
 		}
 		if (!flag)
 		{
@@ -359,6 +335,7 @@ public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails, IR
 		}
 	}
 
+	// Token: 0x06005789 RID: 22409 RVA: 0x00286950 File Offset: 0x00284B50
 	private void ToggleVictoryUI(bool victoryUIActive)
 	{
 		List<KScreen> list = new List<KScreen>();
@@ -377,32 +354,34 @@ public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails, IR
 		list.Add(ToolMenu.Instance.PriorityScreen);
 		list.Add(ResourceCategoryScreen.Instance);
 		list.Add(TopLeftControlScreen.Instance);
-		list.Add(DateTime.Instance);
+		list.Add(global::DateTime.Instance);
 		list.Add(BuildWatermark.Instance);
 		list.Add(HoverTextScreen.Instance);
 		list.Add(DetailsScreen.Instance);
 		list.Add(DebugPaintElementScreen.Instance);
 		list.Add(DebugBaseTemplateButton.Instance);
 		list.Add(StarmapScreen.Instance);
-		foreach (KScreen item in list)
+		foreach (KScreen kscreen in list)
 		{
-			if (item != null)
+			if (kscreen != null)
 			{
-				item.Show(!victoryUIActive);
+				kscreen.Show(!victoryUIActive);
 			}
 		}
 	}
 
+	// Token: 0x0600578A RID: 22410 RVA: 0x00286A80 File Offset: 0x00284C80
 	public void Serialize(BinaryWriter writer)
 	{
-		writer.Write(achievements.Count);
-		foreach (KeyValuePair<string, ColonyAchievementStatus> achievement in achievements)
+		writer.Write(this.achievements.Count);
+		foreach (KeyValuePair<string, ColonyAchievementStatus> keyValuePair in this.achievements)
 		{
-			writer.WriteKleiString(achievement.Key);
-			achievement.Value.Serialize(writer);
+			writer.WriteKleiString(keyValuePair.Key);
+			keyValuePair.Value.Serialize(writer);
 		}
 	}
 
+	// Token: 0x0600578B RID: 22411 RVA: 0x00286AF8 File Offset: 0x00284CF8
 	public void Deserialize(IReader reader)
 	{
 		if (SaveLoader.Instance.GameInfo.IsVersionOlderThan(7, 10))
@@ -416,11 +395,12 @@ public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails, IR
 			ColonyAchievementStatus value = ColonyAchievementStatus.Deserialize(reader, text);
 			if (Db.Get().ColonyAchievements.Exists(text))
 			{
-				achievements.Add(text, value);
+				this.achievements.Add(text, value);
 			}
 		}
 	}
 
+	// Token: 0x0600578C RID: 22412 RVA: 0x00286B60 File Offset: 0x00284D60
 	public void LogFetchChore(GameObject fetcher, ChoreType choreType)
 	{
 		if (choreType == Db.Get().ChoreTypes.StorageFetch || choreType == Db.Get().ChoreTypes.BuildFetch || choreType == Db.Get().ChoreTypes.RepairFetch || choreType == Db.Get().ChoreTypes.FoodFetch || choreType == Db.Get().ChoreTypes.Transport)
@@ -430,11 +410,11 @@ public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails, IR
 		Dictionary<int, int> dictionary = null;
 		if (fetcher.GetComponent<SolidTransferArm>() != null)
 		{
-			dictionary = fetchAutomatedChoreDeliveries;
+			dictionary = this.fetchAutomatedChoreDeliveries;
 		}
 		else if (fetcher.GetComponent<MinionIdentity>() != null)
 		{
-			dictionary = fetchDupeChoreDeliveries;
+			dictionary = this.fetchDupeChoreDeliveries;
 		}
 		if (dictionary != null)
 		{
@@ -443,15 +423,20 @@ public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails, IR
 			{
 				dictionary.Add(cycle, 0);
 			}
-			dictionary[cycle]++;
+			Dictionary<int, int> dictionary2 = dictionary;
+			int key = cycle;
+			int num = dictionary2[key];
+			dictionary2[key] = num + 1;
 		}
 	}
 
+	// Token: 0x0600578D RID: 22413 RVA: 0x000D92B7 File Offset: 0x000D74B7
 	public void LogCritterTamed(Tag prefabId)
 	{
-		tamedCritterTypes.Add(prefabId);
+		this.tamedCritterTypes.Add(prefabId);
 	}
 
+	// Token: 0x0600578E RID: 22414 RVA: 0x00286C2C File Offset: 0x00284E2C
 	public void LogSuitChore(ChoreDriver driver)
 	{
 		if (driver == null || driver.GetComponent<MinionIdentity>() == null)
@@ -459,10 +444,10 @@ public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails, IR
 			return;
 		}
 		bool flag = false;
-		foreach (EquipmentSlotInstance slot in driver.GetComponent<MinionIdentity>().GetEquipment().Slots)
+		foreach (AssignableSlotInstance assignableSlotInstance in driver.GetComponent<MinionIdentity>().GetEquipment().Slots)
 		{
-			Equippable equippable = slot.assignable as Equippable;
-			if ((bool)equippable && equippable.GetComponent<KPrefabID>().IsAnyPrefabID(SuitTags))
+			Equippable equippable = ((EquipmentSlotInstance)assignableSlotInstance).assignable as Equippable;
+			if (equippable && equippable.GetComponent<KPrefabID>().IsAnyPrefabID(ColonyAchievementTracker.SuitTags))
 			{
 				flag = true;
 				break;
@@ -472,81 +457,194 @@ public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails, IR
 		{
 			int cycle = GameClock.Instance.GetCycle();
 			int instanceID = driver.GetComponent<KPrefabID>().InstanceID;
-			if (!dupesCompleteChoresInSuits.ContainsKey(cycle))
+			if (!this.dupesCompleteChoresInSuits.ContainsKey(cycle))
 			{
-				dupesCompleteChoresInSuits.Add(cycle, new List<int> { instanceID });
+				this.dupesCompleteChoresInSuits.Add(cycle, new List<int>
+				{
+					instanceID
+				});
+				return;
 			}
-			else if (!dupesCompleteChoresInSuits[cycle].Contains(instanceID))
+			if (!this.dupesCompleteChoresInSuits[cycle].Contains(instanceID))
 			{
-				dupesCompleteChoresInSuits[cycle].Add(instanceID);
+				this.dupesCompleteChoresInSuits[cycle].Add(instanceID);
 			}
 		}
 	}
 
+	// Token: 0x0600578F RID: 22415 RVA: 0x000D92C6 File Offset: 0x000D74C6
 	public void LogAnalyzedSeed(Tag seed)
 	{
-		analyzedSeeds.Add(seed);
+		this.analyzedSeeds.Add(seed);
 	}
 
+	// Token: 0x06005790 RID: 22416 RVA: 0x00286D34 File Offset: 0x00284F34
 	public void OnNewDay(object data)
 	{
-		foreach (MinionStorage item in Components.MinionStorages.Items)
+		foreach (MinionStorage minionStorage in Components.MinionStorages.Items)
 		{
-			if (!(item.GetComponent<CommandModule>() != null))
+			if (minionStorage.GetComponent<CommandModule>() != null)
 			{
-				continue;
-			}
-			List<MinionStorage.Info> storedMinionInfo = item.GetStoredMinionInfo();
-			if (storedMinionInfo.Count <= 0)
-			{
-				continue;
-			}
-			int cycle = GameClock.Instance.GetCycle();
-			if (!dupesCompleteChoresInSuits.ContainsKey(cycle))
-			{
-				dupesCompleteChoresInSuits.Add(cycle, new List<int>());
-			}
-			for (int i = 0; i < storedMinionInfo.Count; i++)
-			{
-				KPrefabID kPrefabID = storedMinionInfo[i].serializedMinion.Get();
-				if (kPrefabID != null)
+				List<MinionStorage.Info> storedMinionInfo = minionStorage.GetStoredMinionInfo();
+				if (storedMinionInfo.Count > 0)
 				{
-					dupesCompleteChoresInSuits[cycle].Add(kPrefabID.InstanceID);
-				}
-			}
-		}
-		if (!DlcManager.IsExpansion1Active() || !(Db.Get().ColonyAchievements.SurviveInARocket.requirementChecklist[0] is SurviveARocketWithMinimumMorale { minimumMorale: var minimumMorale, numberOfCycles: var numberOfCycles }))
-		{
-			return;
-		}
-		foreach (WorldContainer worldContainer in ClusterManager.Instance.WorldContainers)
-		{
-			if (!worldContainer.IsModuleInterior)
-			{
-				continue;
-			}
-			if (!cyclesRocketDupeMoraleAboveRequirement.ContainsKey(worldContainer.id))
-			{
-				cyclesRocketDupeMoraleAboveRequirement.Add(worldContainer.id, 0);
-			}
-			if (worldContainer.GetComponent<Clustercraft>().Status != 0)
-			{
-				List<MinionIdentity> worldItems = Components.MinionIdentities.GetWorldItems(worldContainer.id);
-				bool flag = worldItems.Count > 0;
-				foreach (MinionIdentity item2 in worldItems)
-				{
-					if (Db.Get().Attributes.QualityOfLife.Lookup(item2).GetTotalValue() < minimumMorale)
+					int cycle = GameClock.Instance.GetCycle();
+					if (!this.dupesCompleteChoresInSuits.ContainsKey(cycle))
 					{
-						flag = false;
-						break;
+						this.dupesCompleteChoresInSuits.Add(cycle, new List<int>());
+					}
+					for (int i = 0; i < storedMinionInfo.Count; i++)
+					{
+						KPrefabID kprefabID = storedMinionInfo[i].serializedMinion.Get();
+						if (kprefabID != null)
+						{
+							this.dupesCompleteChoresInSuits[cycle].Add(kprefabID.InstanceID);
+						}
 					}
 				}
-				cyclesRocketDupeMoraleAboveRequirement[worldContainer.id] = (flag ? (cyclesRocketDupeMoraleAboveRequirement[worldContainer.id] + 1) : 0);
 			}
-			else if (cyclesRocketDupeMoraleAboveRequirement[worldContainer.id] < numberOfCycles)
+		}
+		if (DlcManager.IsExpansion1Active())
+		{
+			SurviveARocketWithMinimumMorale surviveARocketWithMinimumMorale = Db.Get().ColonyAchievements.SurviveInARocket.requirementChecklist[0] as SurviveARocketWithMinimumMorale;
+			if (surviveARocketWithMinimumMorale != null)
 			{
-				cyclesRocketDupeMoraleAboveRequirement[worldContainer.id] = 0;
+				float minimumMorale = surviveARocketWithMinimumMorale.minimumMorale;
+				int numberOfCycles = surviveARocketWithMinimumMorale.numberOfCycles;
+				foreach (WorldContainer worldContainer in ClusterManager.Instance.WorldContainers)
+				{
+					if (worldContainer.IsModuleInterior)
+					{
+						if (!this.cyclesRocketDupeMoraleAboveRequirement.ContainsKey(worldContainer.id))
+						{
+							this.cyclesRocketDupeMoraleAboveRequirement.Add(worldContainer.id, 0);
+						}
+						if (worldContainer.GetComponent<Clustercraft>().Status != Clustercraft.CraftStatus.Grounded)
+						{
+							List<MinionIdentity> worldItems = Components.MinionIdentities.GetWorldItems(worldContainer.id, false);
+							bool flag = worldItems.Count > 0;
+							foreach (MinionIdentity cmp in worldItems)
+							{
+								if (Db.Get().Attributes.QualityOfLife.Lookup(cmp).GetTotalValue() < minimumMorale)
+								{
+									flag = false;
+									break;
+								}
+							}
+							this.cyclesRocketDupeMoraleAboveRequirement[worldContainer.id] = (flag ? (this.cyclesRocketDupeMoraleAboveRequirement[worldContainer.id] + 1) : 0);
+						}
+						else if (this.cyclesRocketDupeMoraleAboveRequirement[worldContainer.id] < numberOfCycles)
+						{
+							this.cyclesRocketDupeMoraleAboveRequirement[worldContainer.id] = 0;
+						}
+					}
+				}
 			}
 		}
 	}
+
+	// Token: 0x04003D0B RID: 15627
+	public Dictionary<string, ColonyAchievementStatus> achievements = new Dictionary<string, ColonyAchievementStatus>();
+
+	// Token: 0x04003D0C RID: 15628
+	[Serialize]
+	public Dictionary<int, int> fetchAutomatedChoreDeliveries = new Dictionary<int, int>();
+
+	// Token: 0x04003D0D RID: 15629
+	[Serialize]
+	public Dictionary<int, int> fetchDupeChoreDeliveries = new Dictionary<int, int>();
+
+	// Token: 0x04003D0E RID: 15630
+	[Serialize]
+	public Dictionary<int, List<int>> dupesCompleteChoresInSuits = new Dictionary<int, List<int>>();
+
+	// Token: 0x04003D0F RID: 15631
+	[Serialize]
+	public HashSet<Tag> tamedCritterTypes = new HashSet<Tag>();
+
+	// Token: 0x04003D10 RID: 15632
+	[Serialize]
+	public bool defrostedDuplicant;
+
+	// Token: 0x04003D11 RID: 15633
+	[Serialize]
+	public HashSet<Tag> analyzedSeeds = new HashSet<Tag>();
+
+	// Token: 0x04003D12 RID: 15634
+	[Serialize]
+	public float totalMaterialsHarvestFromPOI;
+
+	// Token: 0x04003D13 RID: 15635
+	[Serialize]
+	public float radBoltTravelDistance;
+
+	// Token: 0x04003D14 RID: 15636
+	[Serialize]
+	public bool harvestAHiveWithoutGettingStung;
+
+	// Token: 0x04003D15 RID: 15637
+	[Serialize]
+	public Dictionary<int, int> cyclesRocketDupeMoraleAboveRequirement = new Dictionary<int, int>();
+
+	// Token: 0x04003D16 RID: 15638
+	[Serialize]
+	private int geothermalProgress;
+
+	// Token: 0x04003D17 RID: 15639
+	private const int GEO_DISCOVERED_BIT = 1;
+
+	// Token: 0x04003D18 RID: 15640
+	private const int GEO_CONTROLLER_REPAIRED_BIT = 2;
+
+	// Token: 0x04003D19 RID: 15641
+	private const int GEO_CONTROLLER_VENTED_BIT = 4;
+
+	// Token: 0x04003D1A RID: 15642
+	private const int GEO_CLEARED_ENTOMBED_BIT = 8;
+
+	// Token: 0x04003D1B RID: 15643
+	private const int GEO_VICTORY_ACK_BIT = 16;
+
+	// Token: 0x04003D1C RID: 15644
+	private SchedulerHandle checkAchievementsHandle;
+
+	// Token: 0x04003D1D RID: 15645
+	private int forceCheckAchievementHandle = -1;
+
+	// Token: 0x04003D1E RID: 15646
+	[Serialize]
+	private int updatingAchievement;
+
+	// Token: 0x04003D1F RID: 15647
+	[Serialize]
+	private List<string> completedAchievementsToDisplay = new List<string>();
+
+	// Token: 0x04003D20 RID: 15648
+	private SchedulerHandle victorySchedulerHandle;
+
+	// Token: 0x04003D21 RID: 15649
+	public static readonly string UnlockedAchievementKey = "UnlockedAchievement";
+
+	// Token: 0x04003D22 RID: 15650
+	private Dictionary<string, object> unlockedAchievementMetric = new Dictionary<string, object>
+	{
+		{
+			ColonyAchievementTracker.UnlockedAchievementKey,
+			null
+		}
+	};
+
+	// Token: 0x04003D23 RID: 15651
+	private static readonly Tag[] SuitTags = new Tag[]
+	{
+		GameTags.AtmoSuit,
+		GameTags.JetSuit,
+		GameTags.LeadSuit
+	};
+
+	// Token: 0x04003D24 RID: 15652
+	private static readonly EventSystem.IntraObjectHandler<ColonyAchievementTracker> OnNewDayDelegate = new EventSystem.IntraObjectHandler<ColonyAchievementTracker>(delegate(ColonyAchievementTracker component, object data)
+	{
+		component.OnNewDay(data);
+	});
 }

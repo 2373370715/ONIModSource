@@ -1,467 +1,554 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using ImGuiNET;
 using STRINGS;
 using UnityEngine;
 
+// Token: 0x02000BB4 RID: 2996
 public class DevToolGeyserModifiers : DevTool
 {
-	private const string DEV_MODIFIER_ID = "DEV MODIFIER";
+	// Token: 0x1700029F RID: 671
+	// (get) Token: 0x0600395B RID: 14683 RVA: 0x000C5203 File Offset: 0x000C3403
+	private float GraphHeight
+	{
+		get
+		{
+			return 26f;
+		}
+	}
 
-	private const string NO_SELECTED_STR = "No Geyser Selected";
-
-	private int DevModifierID;
-
-	private const float ITERATION_BAR_HEIGHT = 10f;
-
-	private const float YEAR_BAR_HEIGHT = 10f;
-
-	private const float BAR_SPACING = 2f;
-
-	private const float CURRENT_TIME_PADDING = 2f;
-
-	private const float CURRENT_TIME_LINE_WIDTH = 2f;
-
-	private uint YEAR_ACTIVE_COLOR = Color(220, 15, 65, 175);
-
-	private uint YEAR_DORMANT_COLOR = Color(byte.MaxValue, 0, 65, 60);
-
-	private uint ITERATION_ERUPTION_COLOR = Color(60, 80, byte.MaxValue, 200);
-
-	private uint ITERATION_QUIET_COLOR = Color(60, 80, byte.MaxValue, 80);
-
-	private uint CURRENT_TIME_COLOR = Color(byte.MaxValue, 0, 0, byte.MaxValue);
-
-	private Vector4 MODFIED_VALUE_TEXT_COLOR = new Vector4(0.8f, 0.7f, 0.1f, 1f);
-
-	private Vector4 COMMENT_COLOR = new Vector4(0.1f, 0.5f, 0.1f, 1f);
-
-	private Vector4 SUBTITLE_SLEEP_COLOR = new Vector4(0.15f, 0.35f, 0.7f, 1f);
-
-	private Vector4 SUBTITLE_OVERPRESSURE_COLOR = new Vector4(0.7f, 0f, 0f, 1f);
-
-	private Vector4 SUBTITLE_ERUPTING_COLOR = new Vector4(1f, 0.7f, 0f, 1f);
-
-	private Vector4 ALT_COLOR = new Vector4(0.5f, 0.5f, 0.5f, 1f);
-
-	private List<bool> modificationListUnfold = new List<bool>();
-
-	private GameObject lastSelectedGameObject;
-
-	private Geyser selectedGeyser;
-
-	private Geyser.GeyserModification dev_modification;
-
-	private string[] modifiers_FormatedList_Titles = new string[9] { "Mass per cycle", "Temperature", "Max Pressure", "Iteration duration", "Iteration percentage", "Year duration", "Year percentage", "Using secondary element", "Secondary element" };
-
-	private string[] modifiers_FormatedList = new string[9];
-
-	private string[] modifiers_FormatedList_Tooltip = new string[9];
-
-	private string[] AllSimHashesValues;
-
-	private int modifierSelected = -1;
-
-	private int modifierFormatting_ValuePadding = -1;
-
-	private float GraphHeight => 26f;
-
+	// Token: 0x0600395C RID: 14684 RVA: 0x0021F244 File Offset: 0x0021D444
 	private void DrawGeyserVariable(string variableTitle, float currentValue, float modifier, string modifierFormating = "+0.##; -0.##; +0", string unit = "", string modifierUnit = "", float altValue = 0f, string altUnit = "")
 	{
-		ImGui.BulletText(variableTitle + ": " + currentValue + unit);
+		ImGui.BulletText(variableTitle + ": " + currentValue.ToString() + unit);
 		if (modifier != 0f)
 		{
 			ImGui.SameLine();
-			ImGui.TextColored(MODFIED_VALUE_TEXT_COLOR, "(" + modifier.ToString(modifierFormating) + modifierUnit + ")");
+			ImGui.TextColored(this.MODFIED_VALUE_TEXT_COLOR, "(" + modifier.ToString(modifierFormating) + modifierUnit + ")");
 		}
 		if (!altUnit.IsNullOrWhiteSpace())
 		{
 			ImGui.SameLine();
-			ImGui.TextColored(ALT_COLOR, "(" + altValue + altUnit + ")");
+			ImGui.TextColored(this.ALT_COLOR, "(" + altValue.ToString() + altUnit + ")");
 		}
 	}
 
+	// Token: 0x0600395D RID: 14685 RVA: 0x000C520A File Offset: 0x000C340A
 	public static uint Color(byte r, byte g, byte b, byte a)
 	{
-		return (uint)((a << 24) | (b << 16) | (g << 8) | r);
+		return (uint)((int)a << 24 | (int)b << 16 | (int)g << 8 | (int)r);
 	}
 
+	// Token: 0x0600395E RID: 14686 RVA: 0x0021F2D0 File Offset: 0x0021D4D0
 	private void DrawYearAndIterationsGraph(Geyser geyser)
 	{
 		Vector2 windowContentRegionMin = ImGui.GetWindowContentRegionMin();
 		Vector2 windowContentRegionMax = ImGui.GetWindowContentRegionMax();
 		float num = windowContentRegionMax.x - windowContentRegionMin.x;
-		ImGui.Dummy(new Vector2(num, GraphHeight));
-		if (ImGui.IsItemVisible())
-		{
-			Vector2 itemRectMin = ImGui.GetItemRectMin();
-			Vector2 itemRectMax = ImGui.GetItemRectMax();
-			windowContentRegionMin.x += ImGui.GetWindowPos().x;
-			windowContentRegionMin.y += ImGui.GetWindowPos().y;
-			windowContentRegionMax.x += ImGui.GetWindowPos().x;
-			windowContentRegionMax.y += ImGui.GetWindowPos().y;
-			Vector2 vector = windowContentRegionMin;
-			Vector2 vector2 = windowContentRegionMax;
-			vector.y = itemRectMin.y;
-			vector2.y = itemRectMax.y;
-			float iterationLength = selectedGeyser.configuration.GetIterationLength();
-			float iterationPercent = selectedGeyser.configuration.GetIterationPercent();
-			float yearLength = selectedGeyser.configuration.GetYearLength();
-			float yearPercent = selectedGeyser.configuration.GetYearPercent();
-			Vector2 vector3 = vector;
-			Vector2 vector4 = vector2;
-			vector4.x = vector.x + num * yearPercent;
-			vector4.y = vector3.y + 10f;
-			ImGui.GetForegroundDrawList().AddRectFilled(vector3, vector4, YEAR_ACTIVE_COLOR);
-			vector3.x = vector4.x;
-			vector4.x = vector2.x;
-			ImGui.GetForegroundDrawList().AddRectFilled(vector3, vector4, YEAR_DORMANT_COLOR);
-			float f = yearLength / iterationLength;
-			float num2 = iterationLength / yearLength;
-			vector3.y = vector4.y + 2f;
-			vector4.y = vector3.y + 10f;
-			float num3 = (float)Mathf.FloorToInt(geyser.GetCurrentLifeTime() / yearLength) * yearLength % iterationLength / iterationLength;
-			int num4 = Mathf.CeilToInt(f) + 1;
-			for (int i = 0; i < num4; i++)
-			{
-				float x = vector.x - num2 * num3 * num + num2 * (float)i * num;
-				vector3.x = x;
-				vector4.x = vector3.x + iterationPercent * num2 * num;
-				Vector2 p_min = vector3;
-				Vector2 p_max = vector4;
-				p_min.x = Mathf.Clamp(p_min.x, vector.x, vector2.x);
-				p_max.x = Mathf.Clamp(p_max.x, vector.x, vector2.x);
-				ImGui.GetForegroundDrawList().AddRectFilled(p_min, p_max, ITERATION_ERUPTION_COLOR);
-				vector3.x = vector4.x;
-				vector4.x += (1f - iterationPercent) * num2 * num;
-				p_min = vector3;
-				p_max = vector4;
-				p_min.x = Mathf.Clamp(p_min.x, vector.x, vector2.x);
-				p_max.x = Mathf.Clamp(p_max.x, vector.x, vector2.x);
-				ImGui.GetForegroundDrawList().AddRectFilled(p_min, p_max, ITERATION_QUIET_COLOR);
-			}
-			float num5 = selectedGeyser.RemainingActiveTime();
-			float num6 = selectedGeyser.RemainingDormantTime();
-			float num7 = ((num6 > 0f) ? (yearLength - num6) : (yearLength * yearPercent - num5)) / yearLength;
-			vector3.x = vector.x + num7 * num - 1f;
-			vector4.x = vector.x + num7 * num + 1f;
-			vector3.y = vector.y - 2f;
-			vector4.y += 2f;
-			ImGui.GetForegroundDrawList().AddRectFilled(vector3, vector4, CURRENT_TIME_COLOR);
-		}
-	}
-
-	protected override void RenderTo(DevPanel panel)
-	{
-		Update();
-		string fmt = ((selectedGeyser == null) ? "No Geyser Selected" : (UI.StripLinkFormatting(selectedGeyser.gameObject.GetProperName()) + " -"));
-		uint num = 0u;
-		ImGui.AlignTextToFramePadding();
-		ImGui.Text(fmt);
-		if (!(selectedGeyser != null))
+		ImGui.Dummy(new Vector2(num, this.GraphHeight));
+		if (!ImGui.IsItemVisible())
 		{
 			return;
 		}
-		StateMachine.BaseState currentState = selectedGeyser.smi.GetCurrentState();
-		string fmt2 = "zZ";
-		string tooltip = "Current State: " + currentState.name;
-		Vector4 col = SUBTITLE_SLEEP_COLOR;
-		if (currentState == selectedGeyser.smi.sm.erupt.erupting)
+		Vector2 itemRectMin = ImGui.GetItemRectMin();
+		Vector2 itemRectMax = ImGui.GetItemRectMax();
+		windowContentRegionMin.x += ImGui.GetWindowPos().x;
+		windowContentRegionMin.y += ImGui.GetWindowPos().y;
+		windowContentRegionMax.x += ImGui.GetWindowPos().x;
+		windowContentRegionMax.y += ImGui.GetWindowPos().y;
+		Vector2 vector = windowContentRegionMin;
+		Vector2 vector2 = windowContentRegionMax;
+		vector.y = itemRectMin.y;
+		vector2.y = itemRectMax.y;
+		float iterationLength = this.selectedGeyser.configuration.GetIterationLength();
+		float iterationPercent = this.selectedGeyser.configuration.GetIterationPercent();
+		float yearLength = this.selectedGeyser.configuration.GetYearLength();
+		float yearPercent = this.selectedGeyser.configuration.GetYearPercent();
+		Vector2 vector3 = vector;
+		Vector2 vector4 = vector2;
+		vector4.x = vector.x + num * yearPercent;
+		vector4.y = vector3.y + 10f;
+		ImGui.GetForegroundDrawList().AddRectFilled(vector3, vector4, this.YEAR_ACTIVE_COLOR);
+		vector3.x = vector4.x;
+		vector4.x = vector2.x;
+		ImGui.GetForegroundDrawList().AddRectFilled(vector3, vector4, this.YEAR_DORMANT_COLOR);
+		float f = yearLength / iterationLength;
+		float num2 = iterationLength / yearLength;
+		vector3.y = vector4.y + 2f;
+		vector4.y = vector3.y + 10f;
+		float num3 = (float)Mathf.FloorToInt(geyser.GetCurrentLifeTime() / yearLength) * yearLength % iterationLength / iterationLength;
+		int num4 = Mathf.CeilToInt(f) + 1;
+		for (int i = 0; i < num4; i++)
 		{
-			fmt2 = "Erupting";
-			col = SUBTITLE_ERUPTING_COLOR;
+			float x = vector.x - num2 * num3 * num + num2 * (float)i * num;
+			vector3.x = x;
+			vector4.x = vector3.x + iterationPercent * num2 * num;
+			Vector2 vector5 = vector3;
+			Vector2 vector6 = vector4;
+			vector5.x = Mathf.Clamp(vector5.x, vector.x, vector2.x);
+			vector6.x = Mathf.Clamp(vector6.x, vector.x, vector2.x);
+			ImGui.GetForegroundDrawList().AddRectFilled(vector5, vector6, this.ITERATION_ERUPTION_COLOR);
+			vector3.x = vector4.x;
+			vector4.x += (1f - iterationPercent) * num2 * num;
+			vector5 = vector3;
+			vector6 = vector4;
+			vector5.x = Mathf.Clamp(vector5.x, vector.x, vector2.x);
+			vector6.x = Mathf.Clamp(vector6.x, vector.x, vector2.x);
+			ImGui.GetForegroundDrawList().AddRectFilled(vector5, vector6, this.ITERATION_QUIET_COLOR);
 		}
-		else if (currentState == selectedGeyser.smi.sm.erupt.overpressure)
+		float num5 = this.selectedGeyser.RemainingActiveTime();
+		float num6 = this.selectedGeyser.RemainingDormantTime();
+		float num7 = ((num6 > 0f) ? (yearLength - num6) : (yearLength * yearPercent - num5)) / yearLength;
+		vector3.x = vector.x + num7 * num - 1f;
+		vector4.x = vector.x + num7 * num + 1f;
+		vector3.y = vector.y - 2f;
+		vector4.y += 2f;
+		ImGui.GetForegroundDrawList().AddRectFilled(vector3, vector4, this.CURRENT_TIME_COLOR);
+	}
+
+	// Token: 0x0600395F RID: 14687 RVA: 0x0021F690 File Offset: 0x0021D890
+	protected override void RenderTo(DevPanel panel)
+	{
+		this.Update();
+		string fmt = (this.selectedGeyser == null) ? "No Geyser Selected" : (UI.StripLinkFormatting(this.selectedGeyser.gameObject.GetProperName()) + " -");
+		uint num = 0U;
+		ImGui.AlignTextToFramePadding();
+		ImGui.Text(fmt);
+		if (this.selectedGeyser != null)
 		{
-			fmt2 = "Overpressure";
-			col = SUBTITLE_OVERPRESSURE_COLOR;
-		}
-		ImGui.SameLine();
-		ImGui.TextColored(col, fmt2);
-		if (ImGui.IsItemHovered())
-		{
-			ImGui.SetTooltip(tooltip);
-		}
-		ImGui.Separator();
-		ImGui.Spacing();
-		Geyser.GeyserModification modifier = selectedGeyser.configuration.GetModifier();
-		PrepareSummaryForModification(selectedGeyser.configuration.GetModifier());
-		float currentLifeTime = selectedGeyser.GetCurrentLifeTime();
-		float yearLength = selectedGeyser.configuration.GetYearLength();
-		ImGui.Text("Time Settings: \t");
-		ImGui.SameLine();
-		bool flag = ImGui.Button("Active");
-		ImGui.SameLine();
-		bool flag2 = ImGui.Button("Dormant");
-		ImGui.SameLine();
-		bool flag3 = ImGui.Button("<");
-		ImGui.SameLine();
-		bool flag4 = ImGui.Button(">");
-		ImGui.SameLine();
-		ImGui.Text("\tLifetime: " + currentLifeTime.ToString("00.0") + " sec (" + (currentLifeTime / yearLength).ToString("0.00") + " Years)\t");
-		bool flag5 = false;
-		if (selectedGeyser.timeShift != 0f)
-		{
+			StateMachine.BaseState currentState = this.selectedGeyser.smi.GetCurrentState();
+			string fmt2 = "zZ";
+			string tooltip = "Current State: " + currentState.name;
+			Vector4 col = this.SUBTITLE_SLEEP_COLOR;
+			if (currentState == this.selectedGeyser.smi.sm.erupt.erupting)
+			{
+				fmt2 = "Erupting";
+				col = this.SUBTITLE_ERUPTING_COLOR;
+			}
+			else if (currentState == this.selectedGeyser.smi.sm.erupt.overpressure)
+			{
+				fmt2 = "Overpressure";
+				col = this.SUBTITLE_OVERPRESSURE_COLOR;
+			}
 			ImGui.SameLine();
-			flag5 = ImGui.Button("Restore");
+			ImGui.TextColored(col, fmt2);
 			if (ImGui.IsItemHovered())
 			{
-				ImGui.SetTooltip("Restore lifetime to match with current game time");
+				ImGui.SetTooltip(tooltip);
 			}
-		}
-		ImGui.SliderFloat("rateRoll", ref selectedGeyser.configuration.rateRoll, 0f, 1f);
-		ImGui.SliderFloat("iterationLengthRoll", ref selectedGeyser.configuration.iterationLengthRoll, 0f, 1f);
-		ImGui.SliderFloat("iterationPercentRoll", ref selectedGeyser.configuration.iterationPercentRoll, 0f, 1f);
-		ImGui.SliderFloat("yearLengthRoll", ref selectedGeyser.configuration.yearLengthRoll, 0f, 1f);
-		ImGui.SliderFloat("yearPercentRoll", ref selectedGeyser.configuration.yearPercentRoll, 0f, 1f);
-		selectedGeyser.configuration.Init(reinit: true);
-		if (flag)
-		{
-			selectedGeyser.ShiftTimeTo(Geyser.TimeShiftStep.ActiveState);
-		}
-		if (flag2)
-		{
-			selectedGeyser.ShiftTimeTo(Geyser.TimeShiftStep.DormantState);
-		}
-		if (flag3)
-		{
-			selectedGeyser.ShiftTimeTo(Geyser.TimeShiftStep.PreviousIteration);
-		}
-		if (flag4)
-		{
-			selectedGeyser.ShiftTimeTo(Geyser.TimeShiftStep.NextIteration);
-		}
-		if (flag5)
-		{
-			selectedGeyser.AlterTime(0f);
-		}
-		DrawYearAndIterationsGraph(selectedGeyser);
-		ImGui.Indent();
-		bool flag6 = true;
-		float num2 = ((!flag6) ? 1 : 100);
-		string modifierUnit = (flag6 ? "%%" : "");
-		float convertedTemperature = GameUtil.GetConvertedTemperature(selectedGeyser.configuration.GetTemperature());
-		string temperatureUnitSuffix = GameUtil.GetTemperatureUnitSuffix();
-		Element element = ElementLoader.FindElementByHash(selectedGeyser.configuration.GetElement());
-		Element element2 = ElementLoader.FindElementByHash(selectedGeyser.configuration.geyserType.element);
-		string text = ((element2.lowTempTransitionTarget == (SimHashes)0) ? "" : (GameUtil.GetConvertedTemperature(element2.lowTemp) + " -> " + element2.lowTempTransitionTarget));
-		string text2 = ((element2.highTempTransitionTarget == (SimHashes)0) ? "" : (GameUtil.GetConvertedTemperature(element2.highTemp) + " -> " + element2.highTempTransitionTarget));
-		ImGui.BulletText("Element:");
-		ImGui.SameLine();
-		if (element2 != element)
-		{
-			string text3 = ((element.lowTempTransitionTarget == (SimHashes)0) ? "" : (GameUtil.GetConvertedTemperature(element.lowTemp) + " " + element.lowTempTransitionTarget));
-			string text4 = ((element.highTempTransitionTarget == (SimHashes)0) ? "" : (GameUtil.GetConvertedTemperature(element.highTemp) + " " + element.highTempTransitionTarget));
-			ImGui.TextColored(MODFIED_VALUE_TEXT_COLOR, element.ToString());
-			ImGui.SameLine();
-			ImGui.TextColored(MODFIED_VALUE_TEXT_COLOR, "(Original element: " + element2.id.ToString() + ")");
-			ImGui.SameLine();
-			ImGui.Text(" [original low: " + text + ", " + text2 + ", current low: " + text3 + ", " + text4 + "]");
-		}
-		else
-		{
-			ImGui.Text($"{element2.id} [low: {text}, high: {text2}]");
-		}
-		float altValue = Mathf.Max(0f, GameUtil.GetConvertedTemperature(element2.highTemp) - convertedTemperature);
-		DrawGeyserVariable("Emit Rate", selectedGeyser.configuration.GetEmitRate(), 0f, "+0.##; -0.##; +0", " Kg/s");
-		DrawGeyserVariable("Average Output", selectedGeyser.configuration.GetAverageEmission(), 0f, "+0.##; -0.##; +0", " Kg/s");
-		DrawGeyserVariable("Mass per cycle", selectedGeyser.configuration.GetMassPerCycle(), modifier.massPerCycleModifier * num2, "+0.##; -0.##; +0", "", modifierUnit);
-		DrawGeyserVariable("Temperature", convertedTemperature, modifier.temperatureModifier, "+0.##; -0.##; +0", temperatureUnitSuffix, temperatureUnitSuffix, altValue, temperatureUnitSuffix + " before state change");
-		DrawGeyserVariable("Max Pressure", selectedGeyser.configuration.GetMaxPressure(), modifier.maxPressureModifier * num2, "+0.##; -0.##; +0", " Kg", modifierUnit);
-		DrawGeyserVariable("Iteration duration", selectedGeyser.configuration.GetIterationLength(), modifier.iterationDurationModifier * num2, "+0.##; -0.##; +0", " sec", modifierUnit);
-		DrawGeyserVariable("Iteration percentage", selectedGeyser.configuration.GetIterationPercent(), modifier.iterationPercentageModifier * num2, "+0.##; -0.##; +0", "", modifierUnit, selectedGeyser.configuration.GetIterationLength() * selectedGeyser.configuration.GetIterationPercent(), " sec");
-		DrawGeyserVariable("Year duration", selectedGeyser.configuration.GetYearLength(), modifier.yearDurationModifier * num2, "+0.##; -0.##; +0", " sec", modifierUnit, selectedGeyser.configuration.GetYearLength() / 600f, " cycles");
-		DrawGeyserVariable("Year percentage", selectedGeyser.configuration.GetYearPercent(), modifier.yearPercentageModifier * num2, "+0.##; -0.##; +0", "", modifierUnit, selectedGeyser.configuration.GetYearPercent() * selectedGeyser.configuration.GetYearLength() / 600f, " cycles");
-		ImGui.Unindent();
-		ImGui.Spacing();
-		ImGui.Separator();
-		ImGui.Spacing();
-		ImGui.Text("Create Modification");
-		ImGui.SameLine();
-		bool num3 = ImGui.Button("Clear");
-		if (flag6)
-		{
-			ImGui.TextColored(COMMENT_COLOR, "Units specified in the inputs bellow are percentages E.g. 0.1 represents 10%%\nTemperature is measured in kelvins and percentages affect the kelvin value");
+			ImGui.Separator();
 			ImGui.Spacing();
-		}
-		if (num3)
-		{
-			dev_modification.Clear();
-		}
-		ImGui.Indent();
-		ImGui.BeginGroup();
-		dev_modification.newElement.ToString();
-		float num4 = 0.05f;
-		float num5 = 0.15f;
-		string text5 = "%.2f";
-		ImGui.InputFloat(modifiers_FormatedList_Titles[0], ref dev_modification.massPerCycleModifier, flag6 ? num4 : 1f, flag6 ? num5 : 5f, flag6 ? text5 : "%.0f");
-		ImGui.InputFloat(modifiers_FormatedList_Titles[1], ref dev_modification.temperatureModifier, flag6 ? num4 : 1f, flag6 ? num5 : 5f, flag6 ? text5 : "%.0f");
-		ImGui.InputFloat(modifiers_FormatedList_Titles[2], ref dev_modification.maxPressureModifier, flag6 ? num4 : 0.1f, flag6 ? num5 : 0.5f, flag6 ? text5 : "%.1f");
-		ImGui.InputFloat(modifiers_FormatedList_Titles[3], ref dev_modification.iterationDurationModifier, flag6 ? num4 : 1f, flag6 ? num5 : 5f, flag6 ? text5 : "%.0f");
-		ImGui.InputFloat(modifiers_FormatedList_Titles[4], ref dev_modification.iterationPercentageModifier, flag6 ? num4 : 0.01f, flag6 ? num5 : 0.1f, flag6 ? text5 : "%.2f");
-		ImGui.InputFloat(modifiers_FormatedList_Titles[5], ref dev_modification.yearDurationModifier, flag6 ? num4 : 1f, flag6 ? num5 : 5f, flag6 ? text5 : "%.0f");
-		ImGui.InputFloat(modifiers_FormatedList_Titles[6], ref dev_modification.yearPercentageModifier, flag6 ? num4 : 0.01f, flag6 ? num5 : 0.1f, flag6 ? text5 : "%.2f");
-		ImGui.Checkbox(modifiers_FormatedList_Titles[7], ref dev_modification.modifyElement);
-		string text6 = "None";
-		string text7 = ((dev_modification.modifyElement && dev_modification.newElement != 0) ? dev_modification.newElement.ToString() : text6);
-		if (ImGui.BeginCombo(modifiers_FormatedList_Titles[8], text7))
-		{
-			bool flag7 = false;
-			for (int i = 0; i < AllSimHashesValues.Length; i++)
+			Geyser.GeyserModification modifier = this.selectedGeyser.configuration.GetModifier();
+			this.PrepareSummaryForModification(this.selectedGeyser.configuration.GetModifier());
+			float currentLifeTime = this.selectedGeyser.GetCurrentLifeTime();
+			float yearLength = this.selectedGeyser.configuration.GetYearLength();
+			ImGui.Text("Time Settings: \t");
+			ImGui.SameLine();
+			bool flag = ImGui.Button("Active");
+			ImGui.SameLine();
+			bool flag2 = ImGui.Button("Dormant");
+			ImGui.SameLine();
+			bool flag3 = ImGui.Button("<");
+			ImGui.SameLine();
+			bool flag4 = ImGui.Button(">");
+			ImGui.SameLine();
+			ImGui.Text(string.Concat(new string[]
 			{
-				flag7 = dev_modification.newElement.ToString() == text7;
-				if (ImGui.Selectable(AllSimHashesValues[i], flag7))
+				"\tLifetime: ",
+				currentLifeTime.ToString("00.0"),
+				" sec (",
+				(currentLifeTime / yearLength).ToString("0.00"),
+				" Years)\t"
+			}));
+			bool flag5 = false;
+			if (this.selectedGeyser.timeShift != 0f)
+			{
+				ImGui.SameLine();
+				flag5 = ImGui.Button("Restore");
+				if (ImGui.IsItemHovered())
 				{
-					text7 = AllSimHashesValues[i];
-					dev_modification.newElement = (SimHashes)Enum.Parse(typeof(SimHashes), text7);
-				}
-				if (flag7)
-				{
-					ImGui.SetItemDefaultFocus();
+					ImGui.SetTooltip("Restore lifetime to match with current game time");
 				}
 			}
-			ImGui.EndCombo();
-		}
-		if (ImGui.Button("Add Modification"))
-		{
-			dev_modification.originID = "DEV MODIFIER#" + DevModifierID++;
-			selectedGeyser.AddModification(dev_modification);
-		}
-		ImGui.SameLine();
-		if (ImGui.Button("Remove Last") && selectedGeyser.modifications.Count > 0)
-		{
-			int num6 = -1;
-			for (int num7 = selectedGeyser.modifications.Count - 1; num7 >= 0; num7--)
+			ImGui.SliderFloat("rateRoll", ref this.selectedGeyser.configuration.rateRoll, 0f, 1f);
+			ImGui.SliderFloat("iterationLengthRoll", ref this.selectedGeyser.configuration.iterationLengthRoll, 0f, 1f);
+			ImGui.SliderFloat("iterationPercentRoll", ref this.selectedGeyser.configuration.iterationPercentRoll, 0f, 1f);
+			ImGui.SliderFloat("yearLengthRoll", ref this.selectedGeyser.configuration.yearLengthRoll, 0f, 1f);
+			ImGui.SliderFloat("yearPercentRoll", ref this.selectedGeyser.configuration.yearPercentRoll, 0f, 1f);
+			this.selectedGeyser.configuration.Init(true);
+			if (flag)
 			{
-				if (selectedGeyser.modifications[num7].originID.Contains("DEV MODIFIER"))
+				this.selectedGeyser.ShiftTimeTo(Geyser.TimeShiftStep.ActiveState);
+			}
+			if (flag2)
+			{
+				this.selectedGeyser.ShiftTimeTo(Geyser.TimeShiftStep.DormantState);
+			}
+			if (flag3)
+			{
+				this.selectedGeyser.ShiftTimeTo(Geyser.TimeShiftStep.PreviousIteration);
+			}
+			if (flag4)
+			{
+				this.selectedGeyser.ShiftTimeTo(Geyser.TimeShiftStep.NextIteration);
+			}
+			if (flag5)
+			{
+				this.selectedGeyser.AlterTime(0f);
+			}
+			this.DrawYearAndIterationsGraph(this.selectedGeyser);
+			ImGui.Indent();
+			bool flag6 = true;
+			float num2 = (float)(flag6 ? 100 : 1);
+			string modifierUnit = flag6 ? "%%" : "";
+			float convertedTemperature = GameUtil.GetConvertedTemperature(this.selectedGeyser.configuration.GetTemperature(), false);
+			string temperatureUnitSuffix = GameUtil.GetTemperatureUnitSuffix();
+			Element element = ElementLoader.FindElementByHash(this.selectedGeyser.configuration.GetElement());
+			Element element2 = ElementLoader.FindElementByHash(this.selectedGeyser.configuration.geyserType.element);
+			string text = (element2.lowTempTransitionTarget == (SimHashes)0) ? "" : (GameUtil.GetConvertedTemperature(element2.lowTemp, false).ToString() + " -> " + element2.lowTempTransitionTarget.ToString());
+			string text2 = (element2.highTempTransitionTarget == (SimHashes)0) ? "" : (GameUtil.GetConvertedTemperature(element2.highTemp, false).ToString() + " -> " + element2.highTempTransitionTarget.ToString());
+			ImGui.BulletText("Element:");
+			ImGui.SameLine();
+			if (element2 != element)
+			{
+				string text3 = (element.lowTempTransitionTarget == (SimHashes)0) ? "" : (GameUtil.GetConvertedTemperature(element.lowTemp, false).ToString() + " " + element.lowTempTransitionTarget.ToString());
+				string text4 = (element.highTempTransitionTarget == (SimHashes)0) ? "" : (GameUtil.GetConvertedTemperature(element.highTemp, false).ToString() + " " + element.highTempTransitionTarget.ToString());
+				ImGui.TextColored(this.MODFIED_VALUE_TEXT_COLOR, element.ToString());
+				ImGui.SameLine();
+				ImGui.TextColored(this.MODFIED_VALUE_TEXT_COLOR, "(Original element: " + element2.id.ToString() + ")");
+				ImGui.SameLine();
+				ImGui.Text(string.Concat(new string[]
 				{
-					num6 = num7;
+					" [original low: ",
+					text,
+					", ",
+					text2,
+					", current low: ",
+					text3,
+					", ",
+					text4,
+					"]"
+				}));
+			}
+			else
+			{
+				ImGui.Text(string.Format("{0} [low: {1}, high: {2}]", element2.id, text, text2));
+			}
+			float altValue = Mathf.Max(0f, GameUtil.GetConvertedTemperature(element2.highTemp, false) - convertedTemperature);
+			this.DrawGeyserVariable("Emit Rate", this.selectedGeyser.configuration.GetEmitRate(), 0f, "+0.##; -0.##; +0", " Kg/s", "", 0f, "");
+			this.DrawGeyserVariable("Average Output", this.selectedGeyser.configuration.GetAverageEmission(), 0f, "+0.##; -0.##; +0", " Kg/s", "", 0f, "");
+			this.DrawGeyserVariable("Mass per cycle", this.selectedGeyser.configuration.GetMassPerCycle(), modifier.massPerCycleModifier * num2, "+0.##; -0.##; +0", "", modifierUnit, 0f, "");
+			this.DrawGeyserVariable("Temperature", convertedTemperature, modifier.temperatureModifier, "+0.##; -0.##; +0", temperatureUnitSuffix, temperatureUnitSuffix, altValue, temperatureUnitSuffix + " before state change");
+			this.DrawGeyserVariable("Max Pressure", this.selectedGeyser.configuration.GetMaxPressure(), modifier.maxPressureModifier * num2, "+0.##; -0.##; +0", " Kg", modifierUnit, 0f, "");
+			this.DrawGeyserVariable("Iteration duration", this.selectedGeyser.configuration.GetIterationLength(), modifier.iterationDurationModifier * num2, "+0.##; -0.##; +0", " sec", modifierUnit, 0f, "");
+			this.DrawGeyserVariable("Iteration percentage", this.selectedGeyser.configuration.GetIterationPercent(), modifier.iterationPercentageModifier * num2, "+0.##; -0.##; +0", "", modifierUnit, this.selectedGeyser.configuration.GetIterationLength() * this.selectedGeyser.configuration.GetIterationPercent(), " sec");
+			this.DrawGeyserVariable("Year duration", this.selectedGeyser.configuration.GetYearLength(), modifier.yearDurationModifier * num2, "+0.##; -0.##; +0", " sec", modifierUnit, this.selectedGeyser.configuration.GetYearLength() / 600f, " cycles");
+			this.DrawGeyserVariable("Year percentage", this.selectedGeyser.configuration.GetYearPercent(), modifier.yearPercentageModifier * num2, "+0.##; -0.##; +0", "", modifierUnit, this.selectedGeyser.configuration.GetYearPercent() * this.selectedGeyser.configuration.GetYearLength() / 600f, " cycles");
+			ImGui.Unindent();
+			ImGui.Spacing();
+			ImGui.Separator();
+			ImGui.Spacing();
+			ImGui.Text("Create Modification");
+			ImGui.SameLine();
+			bool flag7 = ImGui.Button("Clear");
+			if (flag6)
+			{
+				ImGui.TextColored(this.COMMENT_COLOR, "Units specified in the inputs bellow are percentages E.g. 0.1 represents 10%%\nTemperature is measured in kelvins and percentages affect the kelvin value");
+				ImGui.Spacing();
+			}
+			if (flag7)
+			{
+				this.dev_modification.Clear();
+			}
+			ImGui.Indent();
+			ImGui.BeginGroup();
+			this.dev_modification.newElement.ToString();
+			float num3 = 0.05f;
+			float num4 = 0.15f;
+			string text5 = "%.2f";
+			ImGui.InputFloat(this.modifiers_FormatedList_Titles[0], ref this.dev_modification.massPerCycleModifier, flag6 ? num3 : 1f, flag6 ? num4 : 5f, flag6 ? text5 : "%.0f");
+			ImGui.InputFloat(this.modifiers_FormatedList_Titles[1], ref this.dev_modification.temperatureModifier, flag6 ? num3 : 1f, flag6 ? num4 : 5f, flag6 ? text5 : "%.0f");
+			ImGui.InputFloat(this.modifiers_FormatedList_Titles[2], ref this.dev_modification.maxPressureModifier, flag6 ? num3 : 0.1f, flag6 ? num4 : 0.5f, flag6 ? text5 : "%.1f");
+			ImGui.InputFloat(this.modifiers_FormatedList_Titles[3], ref this.dev_modification.iterationDurationModifier, flag6 ? num3 : 1f, flag6 ? num4 : 5f, flag6 ? text5 : "%.0f");
+			ImGui.InputFloat(this.modifiers_FormatedList_Titles[4], ref this.dev_modification.iterationPercentageModifier, flag6 ? num3 : 0.01f, flag6 ? num4 : 0.1f, flag6 ? text5 : "%.2f");
+			ImGui.InputFloat(this.modifiers_FormatedList_Titles[5], ref this.dev_modification.yearDurationModifier, flag6 ? num3 : 1f, flag6 ? num4 : 5f, flag6 ? text5 : "%.0f");
+			ImGui.InputFloat(this.modifiers_FormatedList_Titles[6], ref this.dev_modification.yearPercentageModifier, flag6 ? num3 : 0.01f, flag6 ? num4 : 0.1f, flag6 ? text5 : "%.2f");
+			ImGui.Checkbox(this.modifiers_FormatedList_Titles[7], ref this.dev_modification.modifyElement);
+			string text6 = "None";
+			string text7 = (this.dev_modification.modifyElement && this.dev_modification.newElement != (SimHashes)0) ? this.dev_modification.newElement.ToString() : text6;
+			if (ImGui.BeginCombo(this.modifiers_FormatedList_Titles[8], text7))
+			{
+				for (int i = 0; i < this.AllSimHashesValues.Length; i++)
+				{
+					bool flag8 = this.dev_modification.newElement.ToString() == text7;
+					if (ImGui.Selectable(this.AllSimHashesValues[i], flag8))
+					{
+						text7 = this.AllSimHashesValues[i];
+						this.dev_modification.newElement = (SimHashes)Enum.Parse(typeof(SimHashes), text7);
+					}
+					if (flag8)
+					{
+						ImGui.SetItemDefaultFocus();
+					}
+				}
+				ImGui.EndCombo();
+			}
+			if (ImGui.Button("Add Modification"))
+			{
+				string str = "DEV MODIFIER#";
+				int devModifierID = this.DevModifierID;
+				this.DevModifierID = devModifierID + 1;
+				this.dev_modification.originID = str + devModifierID.ToString();
+				this.selectedGeyser.AddModification(this.dev_modification);
+			}
+			ImGui.SameLine();
+			if (ImGui.Button("Remove Last") && this.selectedGeyser.modifications.Count > 0)
+			{
+				int num5 = -1;
+				for (int j = this.selectedGeyser.modifications.Count - 1; j >= 0; j--)
+				{
+					if (this.selectedGeyser.modifications[j].originID.Contains("DEV MODIFIER"))
+					{
+						num5 = j;
+						break;
+					}
+				}
+				if (num5 >= 0)
+				{
+					this.selectedGeyser.RemoveModification(this.selectedGeyser.modifications[num5]);
+				}
+			}
+			ImGui.EndGroup();
+			ImGui.Unindent();
+			ImGui.Spacing();
+			ImGui.Separator();
+			ImGui.Spacing();
+			while (this.modificationListUnfold.Count < this.selectedGeyser.modifications.Count)
+			{
+				this.modificationListUnfold.Add(false);
+			}
+			ImGui.Text("Modifications: " + this.selectedGeyser.modifications.Count.ToString());
+			ImGui.Indent();
+			for (int k = 0; k < this.selectedGeyser.modifications.Count; k++)
+			{
+				bool flag9 = this.selectedGeyser.modifications[k].originID.Contains("DEV MODIFIER");
+				bool flag10 = false;
+				bool flag11 = false;
+				if (this.modificationListUnfold[k] = ImGui.CollapsingHeader(k.ToString() + ". " + this.selectedGeyser.modifications[k].originID, ImGuiTreeNodeFlags.SpanAvailWidth))
+				{
+					this.PrepareSummaryForModification(this.selectedGeyser.modifications[k]);
+					Vector2 itemRectSize = ImGui.GetItemRectSize();
+					itemRectSize.y *= (float)Mathf.Max(this.modifiers_FormatedList.Length + (flag9 ? 1 : 0) + 1, 1);
+					if (ImGui.BeginChild(num += 1U, itemRectSize, false, ImGuiWindowFlags.NoBackground))
+					{
+						ImGui.Indent();
+						for (int l = 0; l < this.modifiers_FormatedList.Length; l++)
+						{
+							ImGui.Text(this.modifiers_FormatedList[l]);
+							if (ImGui.IsItemHovered())
+							{
+								this.modifierSelected = l;
+								ImGui.SetTooltip(this.modifiers_FormatedList_Tooltip[this.modifierSelected]);
+							}
+						}
+						flag11 = ImGui.Button("Copy");
+						if (flag9)
+						{
+							flag10 = ImGui.Button("Remove");
+						}
+						ImGui.Unindent();
+					}
+					ImGui.EndChild();
+				}
+				if (flag11)
+				{
+					this.dev_modification = this.selectedGeyser.modifications[k];
+				}
+				if (flag10)
+				{
+					this.selectedGeyser.RemoveModification(this.selectedGeyser.modifications[k]);
 					break;
 				}
 			}
-			if (num6 >= 0)
-			{
-				selectedGeyser.RemoveModification(selectedGeyser.modifications[num6]);
-			}
+			ImGui.Unindent();
 		}
-		ImGui.EndGroup();
-		ImGui.Unindent();
-		ImGui.Spacing();
-		ImGui.Separator();
-		ImGui.Spacing();
-		while (modificationListUnfold.Count < selectedGeyser.modifications.Count)
-		{
-			modificationListUnfold.Add(item: false);
-		}
-		ImGui.Text("Modifications: " + selectedGeyser.modifications.Count);
-		ImGui.Indent();
-		for (int j = 0; j < selectedGeyser.modifications.Count; j++)
-		{
-			bool flag8 = selectedGeyser.modifications[j].originID.Contains("DEV MODIFIER");
-			bool flag9 = false;
-			bool flag10 = false;
-			if (modificationListUnfold[j] = ImGui.CollapsingHeader(j + ". " + selectedGeyser.modifications[j].originID, ImGuiTreeNodeFlags.SpanAvailWidth))
-			{
-				PrepareSummaryForModification(selectedGeyser.modifications[j]);
-				Vector2 itemRectSize = ImGui.GetItemRectSize();
-				itemRectSize.y *= Mathf.Max(modifiers_FormatedList.Length + (flag8 ? 1 : 0) + 1, 1);
-				if (ImGui.BeginChild(++num, itemRectSize, border: false, ImGuiWindowFlags.NoBackground))
-				{
-					ImGui.Indent();
-					for (int k = 0; k < modifiers_FormatedList.Length; k++)
-					{
-						ImGui.Text(modifiers_FormatedList[k]);
-						if (ImGui.IsItemHovered())
-						{
-							modifierSelected = k;
-							ImGui.SetTooltip(modifiers_FormatedList_Tooltip[modifierSelected]);
-						}
-					}
-					flag10 = ImGui.Button("Copy");
-					if (flag8)
-					{
-						flag9 = ImGui.Button("Remove");
-					}
-					ImGui.Unindent();
-				}
-				ImGui.EndChild();
-			}
-			if (flag10)
-			{
-				dev_modification = selectedGeyser.modifications[j];
-			}
-			if (flag9)
-			{
-				selectedGeyser.RemoveModification(selectedGeyser.modifications[j]);
-				break;
-			}
-		}
-		ImGui.Unindent();
 	}
 
+	// Token: 0x06003960 RID: 14688 RVA: 0x002204D8 File Offset: 0x0021E6D8
 	private void PrepareSummaryForModification(Geyser.GeyserModification modification)
 	{
-		float num = ((Geyser.massModificationMethod != Geyser.ModificationMethod.Percentages) ? 1 : 100);
-		float num2 = ((Geyser.temperatureModificationMethod != Geyser.ModificationMethod.Percentages) ? 1 : 100);
-		float num3 = ((Geyser.maxPressureModificationMethod != Geyser.ModificationMethod.Percentages) ? 1 : 100);
-		float num4 = ((Geyser.IterationDurationModificationMethod != Geyser.ModificationMethod.Percentages) ? 1 : 100);
-		float num5 = ((Geyser.IterationPercentageModificationMethod != Geyser.ModificationMethod.Percentages) ? 1 : 100);
-		float num6 = ((Geyser.yearDurationModificationMethod != Geyser.ModificationMethod.Percentages) ? 1 : 100);
-		float num7 = ((Geyser.yearPercentageModificationMethod != Geyser.ModificationMethod.Percentages) ? 1 : 100);
-		string text = ((num == 100f) ? "%%" : "");
-		string text2 = ((num2 == 100f) ? "%%" : "");
-		string text3 = ((num3 == 100f) ? "%%" : "");
-		string text4 = ((num4 == 100f) ? "%%" : "");
-		string text5 = ((num5 == 100f) ? "%%" : "");
-		string text6 = ((num6 == 100f) ? "%%" : "");
-		string text7 = ((num7 == 100f) ? "%%" : "");
-		modifiers_FormatedList[0] = modifiers_FormatedList_Titles[0] + ": " + (modification.massPerCycleModifier * num).ToString("+0.##; -0.##; +0") + text;
-		modifiers_FormatedList[1] = modifiers_FormatedList_Titles[1] + ": " + (modification.temperatureModifier * num2).ToString("+0.##; -0.##; +0") + text2;
-		modifiers_FormatedList[2] = modifiers_FormatedList_Titles[2] + ": " + (modification.maxPressureModifier * num3).ToString("+0.##; -0.##; +0") + ((num3 == 100f) ? text3 : "Kg");
-		modifiers_FormatedList[3] = modifiers_FormatedList_Titles[3] + ": " + (modification.iterationDurationModifier * num4).ToString("+0.##; -0.##; +0") + ((num4 == 100f) ? text4 : "s");
-		modifiers_FormatedList[4] = modifiers_FormatedList_Titles[4] + ": " + (modification.iterationPercentageModifier * num5).ToString("+0.##; -0.##; +0") + text5;
-		modifiers_FormatedList[5] = modifiers_FormatedList_Titles[5] + ": " + (modification.yearDurationModifier * num6).ToString("+0.##; -0.##; +0") + ((num6 == 100f) ? text6 : "s");
-		modifiers_FormatedList[6] = modifiers_FormatedList_Titles[6] + ": " + (modification.yearPercentageModifier * num7).ToString("+0.##; -0.##; +0") + text7;
-		modifiers_FormatedList[7] = modifiers_FormatedList_Titles[7] + ": " + modification.modifyElement;
-		modifiers_FormatedList[8] = modifiers_FormatedList_Titles[8] + ": " + (modification.IsNewElementInUse() ? modification.newElement.ToString() : "None");
+		float num = (float)((Geyser.massModificationMethod == Geyser.ModificationMethod.Percentages) ? 100 : 1);
+		float num2 = (float)((Geyser.temperatureModificationMethod == Geyser.ModificationMethod.Percentages) ? 100 : 1);
+		float num3 = (float)((Geyser.maxPressureModificationMethod == Geyser.ModificationMethod.Percentages) ? 100 : 1);
+		float num4 = (float)((Geyser.IterationDurationModificationMethod == Geyser.ModificationMethod.Percentages) ? 100 : 1);
+		float num5 = (float)((Geyser.IterationPercentageModificationMethod == Geyser.ModificationMethod.Percentages) ? 100 : 1);
+		float num6 = (float)((Geyser.yearDurationModificationMethod == Geyser.ModificationMethod.Percentages) ? 100 : 1);
+		float num7 = (float)((Geyser.yearPercentageModificationMethod == Geyser.ModificationMethod.Percentages) ? 100 : 1);
+		string str = (num == 100f) ? "%%" : "";
+		string str2 = (num2 == 100f) ? "%%" : "";
+		string text = (num3 == 100f) ? "%%" : "";
+		string text2 = (num4 == 100f) ? "%%" : "";
+		string str3 = (num5 == 100f) ? "%%" : "";
+		string text3 = (num6 == 100f) ? "%%" : "";
+		string str4 = (num7 == 100f) ? "%%" : "";
+		this.modifiers_FormatedList[0] = this.modifiers_FormatedList_Titles[0] + ": " + (modification.massPerCycleModifier * num).ToString("+0.##; -0.##; +0") + str;
+		this.modifiers_FormatedList[1] = this.modifiers_FormatedList_Titles[1] + ": " + (modification.temperatureModifier * num2).ToString("+0.##; -0.##; +0") + str2;
+		this.modifiers_FormatedList[2] = this.modifiers_FormatedList_Titles[2] + ": " + (modification.maxPressureModifier * num3).ToString("+0.##; -0.##; +0") + ((num3 == 100f) ? text : "Kg");
+		this.modifiers_FormatedList[3] = this.modifiers_FormatedList_Titles[3] + ": " + (modification.iterationDurationModifier * num4).ToString("+0.##; -0.##; +0") + ((num4 == 100f) ? text2 : "s");
+		this.modifiers_FormatedList[4] = this.modifiers_FormatedList_Titles[4] + ": " + (modification.iterationPercentageModifier * num5).ToString("+0.##; -0.##; +0") + str3;
+		this.modifiers_FormatedList[5] = this.modifiers_FormatedList_Titles[5] + ": " + (modification.yearDurationModifier * num6).ToString("+0.##; -0.##; +0") + ((num6 == 100f) ? text3 : "s");
+		this.modifiers_FormatedList[6] = this.modifiers_FormatedList_Titles[6] + ": " + (modification.yearPercentageModifier * num7).ToString("+0.##; -0.##; +0") + str4;
+		this.modifiers_FormatedList[7] = this.modifiers_FormatedList_Titles[7] + ": " + modification.modifyElement.ToString();
+		this.modifiers_FormatedList[8] = this.modifiers_FormatedList_Titles[8] + ": " + (modification.IsNewElementInUse() ? modification.newElement.ToString() : "None");
 	}
 
+	// Token: 0x06003961 RID: 14689 RVA: 0x002207E0 File Offset: 0x0021E9E0
 	private void Update()
 	{
-		Setup();
-		GameObject gameObject = SelectTool.Instance?.selected?.gameObject;
-		if (lastSelectedGameObject != gameObject && gameObject != null)
+		this.Setup();
+		SelectTool instance = SelectTool.Instance;
+		GameObject gameObject;
+		if (instance == null)
 		{
-			Geyser component = gameObject.GetComponent<Geyser>();
-			selectedGeyser = ((component == null) ? selectedGeyser : component);
+			gameObject = null;
 		}
-		lastSelectedGameObject = gameObject;
+		else
+		{
+			KSelectable selected = instance.selected;
+			gameObject = ((selected != null) ? selected.gameObject : null);
+		}
+		GameObject gameObject2 = gameObject;
+		if (this.lastSelectedGameObject != gameObject2 && gameObject2 != null)
+		{
+			Geyser component = gameObject2.GetComponent<Geyser>();
+			this.selectedGeyser = ((component == null) ? this.selectedGeyser : component);
+		}
+		this.lastSelectedGameObject = gameObject2;
 	}
 
+	// Token: 0x06003962 RID: 14690 RVA: 0x00220850 File Offset: 0x0021EA50
 	private void Setup()
 	{
-		if (AllSimHashesValues == null)
+		if (this.AllSimHashesValues == null)
 		{
-			AllSimHashesValues = Enum.GetNames(typeof(SimHashes));
+			this.AllSimHashesValues = Enum.GetNames(typeof(SimHashes));
 		}
-		if (modifierFormatting_ValuePadding < 0)
+		if (this.modifierFormatting_ValuePadding < 0)
 		{
-			for (int i = 0; i < modifiers_FormatedList_Titles.Length; i++)
+			for (int i = 0; i < this.modifiers_FormatedList_Titles.Length; i++)
 			{
-				modifierFormatting_ValuePadding = Mathf.Max(modifierFormatting_ValuePadding, modifiers_FormatedList_Titles[i].Length);
+				this.modifierFormatting_ValuePadding = Mathf.Max(this.modifierFormatting_ValuePadding, this.modifiers_FormatedList_Titles[i].Length);
 			}
 		}
-		if (string.IsNullOrEmpty(modifiers_FormatedList_Tooltip[0]))
+		if (string.IsNullOrEmpty(this.modifiers_FormatedList_Tooltip[0]))
 		{
-			modifiers_FormatedList_Tooltip[0] = "Mass per cycle is not mass per iteration, mass per iteration gets calculated out of this";
-			modifiers_FormatedList_Tooltip[1] = "Temperature modifier of the emitted element, does not refer to the temperature of the geyser itself";
-			modifiers_FormatedList_Tooltip[2] = "Refering to the max pressure allowed in the environment surrounding the geyser before it stops emitting";
-			modifiers_FormatedList_Tooltip[3] = "An iteration is a chunk of time that has 2 sections, one section is the erupting time while the other is the non erupting time";
-			modifiers_FormatedList_Tooltip[4] = "Represents what percentage out of the iteration duration will be used for 'Erupting' period and the remaining will be the 'Quiet' period";
-			modifiers_FormatedList_Tooltip[5] = "A year is a chunk of time that has 2 sections, one section is the Active section while the other is the Dormant section. While active, there could be many Iterations. While Dormant, there is no activity at all.";
-			modifiers_FormatedList_Tooltip[6] = "Represents what percentage out of the year duration will be used for 'Active' period and the remaining will be the 'Dormant' period";
-			modifiers_FormatedList_Tooltip[7] = "Whether to use or not to use the specified element";
-			modifiers_FormatedList_Tooltip[8] = "Extra element to emit";
+			this.modifiers_FormatedList_Tooltip[0] = "Mass per cycle is not mass per iteration, mass per iteration gets calculated out of this";
+			this.modifiers_FormatedList_Tooltip[1] = "Temperature modifier of the emitted element, does not refer to the temperature of the geyser itself";
+			this.modifiers_FormatedList_Tooltip[2] = "Refering to the max pressure allowed in the environment surrounding the geyser before it stops emitting";
+			this.modifiers_FormatedList_Tooltip[3] = "An iteration is a chunk of time that has 2 sections, one section is the erupting time while the other is the non erupting time";
+			this.modifiers_FormatedList_Tooltip[4] = "Represents what percentage out of the iteration duration will be used for 'Erupting' period and the remaining will be the 'Quiet' period";
+			this.modifiers_FormatedList_Tooltip[5] = "A year is a chunk of time that has 2 sections, one section is the Active section while the other is the Dormant section. While active, there could be many Iterations. While Dormant, there is no activity at all.";
+			this.modifiers_FormatedList_Tooltip[6] = "Represents what percentage out of the year duration will be used for 'Active' period and the remaining will be the 'Dormant' period";
+			this.modifiers_FormatedList_Tooltip[7] = "Whether to use or not to use the specified element";
+			this.modifiers_FormatedList_Tooltip[8] = "Extra element to emit";
 		}
 	}
+
+	// Token: 0x040026F9 RID: 9977
+	private const string DEV_MODIFIER_ID = "DEV MODIFIER";
+
+	// Token: 0x040026FA RID: 9978
+	private const string NO_SELECTED_STR = "No Geyser Selected";
+
+	// Token: 0x040026FB RID: 9979
+	private int DevModifierID;
+
+	// Token: 0x040026FC RID: 9980
+	private const float ITERATION_BAR_HEIGHT = 10f;
+
+	// Token: 0x040026FD RID: 9981
+	private const float YEAR_BAR_HEIGHT = 10f;
+
+	// Token: 0x040026FE RID: 9982
+	private const float BAR_SPACING = 2f;
+
+	// Token: 0x040026FF RID: 9983
+	private const float CURRENT_TIME_PADDING = 2f;
+
+	// Token: 0x04002700 RID: 9984
+	private const float CURRENT_TIME_LINE_WIDTH = 2f;
+
+	// Token: 0x04002701 RID: 9985
+	private uint YEAR_ACTIVE_COLOR = DevToolGeyserModifiers.Color(220, 15, 65, 175);
+
+	// Token: 0x04002702 RID: 9986
+	private uint YEAR_DORMANT_COLOR = DevToolGeyserModifiers.Color(byte.MaxValue, 0, 65, 60);
+
+	// Token: 0x04002703 RID: 9987
+	private uint ITERATION_ERUPTION_COLOR = DevToolGeyserModifiers.Color(60, 80, byte.MaxValue, 200);
+
+	// Token: 0x04002704 RID: 9988
+	private uint ITERATION_QUIET_COLOR = DevToolGeyserModifiers.Color(60, 80, byte.MaxValue, 80);
+
+	// Token: 0x04002705 RID: 9989
+	private uint CURRENT_TIME_COLOR = DevToolGeyserModifiers.Color(byte.MaxValue, 0, 0, byte.MaxValue);
+
+	// Token: 0x04002706 RID: 9990
+	private Vector4 MODFIED_VALUE_TEXT_COLOR = new Vector4(0.8f, 0.7f, 0.1f, 1f);
+
+	// Token: 0x04002707 RID: 9991
+	private Vector4 COMMENT_COLOR = new Vector4(0.1f, 0.5f, 0.1f, 1f);
+
+	// Token: 0x04002708 RID: 9992
+	private Vector4 SUBTITLE_SLEEP_COLOR = new Vector4(0.15f, 0.35f, 0.7f, 1f);
+
+	// Token: 0x04002709 RID: 9993
+	private Vector4 SUBTITLE_OVERPRESSURE_COLOR = new Vector4(0.7f, 0f, 0f, 1f);
+
+	// Token: 0x0400270A RID: 9994
+	private Vector4 SUBTITLE_ERUPTING_COLOR = new Vector4(1f, 0.7f, 0f, 1f);
+
+	// Token: 0x0400270B RID: 9995
+	private Vector4 ALT_COLOR = new Vector4(0.5f, 0.5f, 0.5f, 1f);
+
+	// Token: 0x0400270C RID: 9996
+	private List<bool> modificationListUnfold = new List<bool>();
+
+	// Token: 0x0400270D RID: 9997
+	private GameObject lastSelectedGameObject;
+
+	// Token: 0x0400270E RID: 9998
+	private Geyser selectedGeyser;
+
+	// Token: 0x0400270F RID: 9999
+	private Geyser.GeyserModification dev_modification;
+
+	// Token: 0x04002710 RID: 10000
+	private string[] modifiers_FormatedList_Titles = new string[]
+	{
+		"Mass per cycle",
+		"Temperature",
+		"Max Pressure",
+		"Iteration duration",
+		"Iteration percentage",
+		"Year duration",
+		"Year percentage",
+		"Using secondary element",
+		"Secondary element"
+	};
+
+	// Token: 0x04002711 RID: 10001
+	private string[] modifiers_FormatedList = new string[9];
+
+	// Token: 0x04002712 RID: 10002
+	private string[] modifiers_FormatedList_Tooltip = new string[9];
+
+	// Token: 0x04002713 RID: 10003
+	private string[] AllSimHashesValues;
+
+	// Token: 0x04002714 RID: 10004
+	private int modifierSelected = -1;
+
+	// Token: 0x04002715 RID: 10005
+	private int modifierFormatting_ValuePadding = -1;
 }

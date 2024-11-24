@@ -1,134 +1,152 @@
+﻿using System;
 using STRINGS;
 using UnityEngine;
+using UnityEngine.Events;
 
+// Token: 0x02001F22 RID: 7970
 public class ActiveRangeSideScreen : SideScreenContent
 {
-	private IActivationRangeTarget target;
-
-	[SerializeField]
-	private KSlider activateValueSlider;
-
-	[SerializeField]
-	private KSlider deactivateValueSlider;
-
-	[SerializeField]
-	private LocText activateLabel;
-
-	[SerializeField]
-	private LocText deactivateLabel;
-
-	[Header("Number Input")]
-	[SerializeField]
-	private KNumberInputField activateValueLabel;
-
-	[SerializeField]
-	private KNumberInputField deactivateValueLabel;
-
+	// Token: 0x0600A819 RID: 43033 RVA: 0x0010D160 File Offset: 0x0010B360
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 	}
 
+	// Token: 0x0600A81A RID: 43034 RVA: 0x003FB774 File Offset: 0x003F9974
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		activateValueLabel.maxValue = target.MaxValue;
-		activateValueLabel.minValue = target.MinValue;
-		deactivateValueLabel.maxValue = target.MaxValue;
-		deactivateValueLabel.minValue = target.MinValue;
-		activateValueSlider.onValueChanged.AddListener(OnActivateValueChanged);
-		deactivateValueSlider.onValueChanged.AddListener(OnDeactivateValueChanged);
+		this.activateValueLabel.maxValue = this.target.MaxValue;
+		this.activateValueLabel.minValue = this.target.MinValue;
+		this.deactivateValueLabel.maxValue = this.target.MaxValue;
+		this.deactivateValueLabel.minValue = this.target.MinValue;
+		this.activateValueSlider.onValueChanged.AddListener(new UnityAction<float>(this.OnActivateValueChanged));
+		this.deactivateValueSlider.onValueChanged.AddListener(new UnityAction<float>(this.OnDeactivateValueChanged));
 	}
 
+	// Token: 0x0600A81B RID: 43035 RVA: 0x003FB818 File Offset: 0x003F9A18
 	private void OnActivateValueChanged(float new_value)
 	{
-		target.ActivateValue = new_value;
-		if (target.ActivateValue < target.DeactivateValue)
+		this.target.ActivateValue = new_value;
+		if (this.target.ActivateValue < this.target.DeactivateValue)
 		{
-			target.ActivateValue = target.DeactivateValue;
-			activateValueSlider.value = target.ActivateValue;
+			this.target.ActivateValue = this.target.DeactivateValue;
+			this.activateValueSlider.value = this.target.ActivateValue;
 		}
-		activateValueLabel.SetDisplayValue(target.ActivateValue.ToString());
-		RefreshTooltips();
+		this.activateValueLabel.SetDisplayValue(this.target.ActivateValue.ToString());
+		this.RefreshTooltips();
 	}
 
+	// Token: 0x0600A81C RID: 43036 RVA: 0x003FB89C File Offset: 0x003F9A9C
 	private void OnDeactivateValueChanged(float new_value)
 	{
-		target.DeactivateValue = new_value;
-		if (target.DeactivateValue > target.ActivateValue)
+		this.target.DeactivateValue = new_value;
+		if (this.target.DeactivateValue > this.target.ActivateValue)
 		{
-			target.DeactivateValue = activateValueSlider.value;
-			deactivateValueSlider.value = target.DeactivateValue;
+			this.target.DeactivateValue = this.activateValueSlider.value;
+			this.deactivateValueSlider.value = this.target.DeactivateValue;
 		}
-		deactivateValueLabel.SetDisplayValue(target.DeactivateValue.ToString());
-		RefreshTooltips();
+		this.deactivateValueLabel.SetDisplayValue(this.target.DeactivateValue.ToString());
+		this.RefreshTooltips();
 	}
 
+	// Token: 0x0600A81D RID: 43037 RVA: 0x003FB920 File Offset: 0x003F9B20
 	private void RefreshTooltips()
 	{
-		activateValueSlider.GetComponentInChildren<ToolTip>().SetSimpleTooltip(string.Format(target.ActivateTooltip, activateValueSlider.value, deactivateValueSlider.value));
-		deactivateValueSlider.GetComponentInChildren<ToolTip>().SetSimpleTooltip(string.Format(target.DeactivateTooltip, deactivateValueSlider.value, activateValueSlider.value));
+		this.activateValueSlider.GetComponentInChildren<ToolTip>().SetSimpleTooltip(string.Format(this.target.ActivateTooltip, this.activateValueSlider.value, this.deactivateValueSlider.value));
+		this.deactivateValueSlider.GetComponentInChildren<ToolTip>().SetSimpleTooltip(string.Format(this.target.DeactivateTooltip, this.deactivateValueSlider.value, this.activateValueSlider.value));
 	}
 
+	// Token: 0x0600A81E RID: 43038 RVA: 0x0010D168 File Offset: 0x0010B368
 	public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetComponent<IActivationRangeTarget>() != null;
 	}
 
+	// Token: 0x0600A81F RID: 43039 RVA: 0x003FB9B0 File Offset: 0x003F9BB0
 	public override void SetTarget(GameObject new_target)
 	{
 		if (new_target == null)
 		{
-			Debug.LogError("Invalid gameObject received");
+			global::Debug.LogError("Invalid gameObject received");
 			return;
 		}
-		target = new_target.GetComponent<IActivationRangeTarget>();
-		if (target == null)
+		this.target = new_target.GetComponent<IActivationRangeTarget>();
+		if (this.target == null)
 		{
-			Debug.LogError("The gameObject received does not contain a IActivationRangeTarget component");
+			global::Debug.LogError("The gameObject received does not contain a IActivationRangeTarget component");
 			return;
 		}
-		activateLabel.text = target.ActivateSliderLabelText;
-		deactivateLabel.text = target.DeactivateSliderLabelText;
-		activateValueLabel.Activate();
-		deactivateValueLabel.Activate();
-		activateValueSlider.onValueChanged.RemoveListener(OnActivateValueChanged);
-		activateValueSlider.minValue = target.MinValue;
-		activateValueSlider.maxValue = target.MaxValue;
-		activateValueSlider.value = target.ActivateValue;
-		activateValueSlider.wholeNumbers = target.UseWholeNumbers;
-		activateValueSlider.onValueChanged.AddListener(OnActivateValueChanged);
-		activateValueLabel.SetDisplayValue(target.ActivateValue.ToString());
-		activateValueLabel.onEndEdit += delegate
+		this.activateLabel.text = this.target.ActivateSliderLabelText;
+		this.deactivateLabel.text = this.target.DeactivateSliderLabelText;
+		this.activateValueLabel.Activate();
+		this.deactivateValueLabel.Activate();
+		this.activateValueSlider.onValueChanged.RemoveListener(new UnityAction<float>(this.OnActivateValueChanged));
+		this.activateValueSlider.minValue = this.target.MinValue;
+		this.activateValueSlider.maxValue = this.target.MaxValue;
+		this.activateValueSlider.value = this.target.ActivateValue;
+		this.activateValueSlider.wholeNumbers = this.target.UseWholeNumbers;
+		this.activateValueSlider.onValueChanged.AddListener(new UnityAction<float>(this.OnActivateValueChanged));
+		this.activateValueLabel.SetDisplayValue(this.target.ActivateValue.ToString());
+		this.activateValueLabel.onEndEdit += delegate()
 		{
-			float result2 = target.ActivateValue;
-			float.TryParse(activateValueLabel.field.text, out result2);
-			OnActivateValueChanged(result2);
-			activateValueSlider.value = result2;
+			float activateValue = this.target.ActivateValue;
+			float.TryParse(this.activateValueLabel.field.text, out activateValue);
+			this.OnActivateValueChanged(activateValue);
+			this.activateValueSlider.value = activateValue;
 		};
-		deactivateValueSlider.onValueChanged.RemoveListener(OnDeactivateValueChanged);
-		deactivateValueSlider.minValue = target.MinValue;
-		deactivateValueSlider.maxValue = target.MaxValue;
-		deactivateValueSlider.value = target.DeactivateValue;
-		deactivateValueSlider.wholeNumbers = target.UseWholeNumbers;
-		deactivateValueSlider.onValueChanged.AddListener(OnDeactivateValueChanged);
-		deactivateValueLabel.SetDisplayValue(target.DeactivateValue.ToString());
-		deactivateValueLabel.onEndEdit += delegate
+		this.deactivateValueSlider.onValueChanged.RemoveListener(new UnityAction<float>(this.OnDeactivateValueChanged));
+		this.deactivateValueSlider.minValue = this.target.MinValue;
+		this.deactivateValueSlider.maxValue = this.target.MaxValue;
+		this.deactivateValueSlider.value = this.target.DeactivateValue;
+		this.deactivateValueSlider.wholeNumbers = this.target.UseWholeNumbers;
+		this.deactivateValueSlider.onValueChanged.AddListener(new UnityAction<float>(this.OnDeactivateValueChanged));
+		this.deactivateValueLabel.SetDisplayValue(this.target.DeactivateValue.ToString());
+		this.deactivateValueLabel.onEndEdit += delegate()
 		{
-			float result = target.DeactivateValue;
-			float.TryParse(deactivateValueLabel.field.text, out result);
-			OnDeactivateValueChanged(result);
-			deactivateValueSlider.value = result;
+			float deactivateValue = this.target.DeactivateValue;
+			float.TryParse(this.deactivateValueLabel.field.text, out deactivateValue);
+			this.OnDeactivateValueChanged(deactivateValue);
+			this.deactivateValueSlider.value = deactivateValue;
 		};
-		RefreshTooltips();
+		this.RefreshTooltips();
 	}
 
+	// Token: 0x0600A820 RID: 43040 RVA: 0x0010D173 File Offset: 0x0010B373
 	public override string GetTitle()
 	{
-		if (target != null)
+		if (this.target != null)
 		{
-			return target.ActivationRangeTitleText;
+			return this.target.ActivationRangeTitleText;
 		}
 		return UI.UISIDESCREENS.ACTIVATION_RANGE_SIDE_SCREEN.NAME;
 	}
+
+	// Token: 0x04008426 RID: 33830
+	private IActivationRangeTarget target;
+
+	// Token: 0x04008427 RID: 33831
+	[SerializeField]
+	private KSlider activateValueSlider;
+
+	// Token: 0x04008428 RID: 33832
+	[SerializeField]
+	private KSlider deactivateValueSlider;
+
+	// Token: 0x04008429 RID: 33833
+	[SerializeField]
+	private LocText activateLabel;
+
+	// Token: 0x0400842A RID: 33834
+	[SerializeField]
+	private LocText deactivateLabel;
+
+	// Token: 0x0400842B RID: 33835
+	[Header("Number Input")]
+	[SerializeField]
+	private KNumberInputField activateValueLabel;
+
+	// Token: 0x0400842C RID: 33836
+	[SerializeField]
+	private KNumberInputField deactivateValueLabel;
 }

@@ -1,52 +1,72 @@
+﻿using System;
 using System.Collections.Generic;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x020005B4 RID: 1460
 public class SteamEngineConfig : IBuildingConfig
 {
-	public const string ID = "SteamEngine";
-
-	public override string[] GetDlcIds()
+	// Token: 0x06001A23 RID: 6691 RVA: 0x000A5F1F File Offset: 0x000A411F
+	public override string[] GetForbiddenDlcIds()
 	{
-		return DlcManager.AVAILABLE_VANILLA_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
+	// Token: 0x06001A24 RID: 6692 RVA: 0x001A5DD0 File Offset: 0x001A3FD0
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef("SteamEngine", 7, 5, "rocket_steam_engine_kanim", 1000, 480f, BUILDINGS.CONSTRUCTION_MASS_KG.TIER7, new string[1] { SimHashes.Steel.ToString() }, 9999f, BuildLocationRule.OnFloor, noise: NOISE_POLLUTION.NOISY.TIER2, decor: BUILDINGS.DECOR.NONE);
-		BuildingTemplates.CreateRocketBuildingDef(obj);
-		obj.SceneLayer = Grid.SceneLayer.BuildingFront;
-		obj.OverheatTemperature = 2273.15f;
-		obj.Floodable = false;
-		obj.AttachmentSlotTag = GameTags.Rocket;
-		obj.attachablePosition = new CellOffset(0, 0);
-		obj.ObjectLayer = ObjectLayer.Building;
-		obj.UtilityInputOffset = new CellOffset(2, 3);
-		obj.InputConduitType = ConduitType.Gas;
-		obj.RequiresPowerInput = false;
-		obj.CanMove = true;
-		return obj;
+		string id = "SteamEngine";
+		int width = 7;
+		int height = 5;
+		string anim = "rocket_steam_engine_kanim";
+		int hitpoints = 1000;
+		float construction_time = 480f;
+		float[] tier = BUILDINGS.CONSTRUCTION_MASS_KG.TIER7;
+		string[] construction_materials = new string[]
+		{
+			SimHashes.Steel.ToString()
+		};
+		float melting_point = 9999f;
+		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
+		EffectorValues tier2 = NOISE_POLLUTION.NOISY.TIER2;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, construction_materials, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, tier2, 0.2f);
+		BuildingTemplates.CreateRocketBuildingDef(buildingDef);
+		buildingDef.SceneLayer = Grid.SceneLayer.BuildingFront;
+		buildingDef.OverheatTemperature = 2273.15f;
+		buildingDef.Floodable = false;
+		buildingDef.AttachmentSlotTag = GameTags.Rocket;
+		buildingDef.attachablePosition = new CellOffset(0, 0);
+		buildingDef.ObjectLayer = ObjectLayer.Building;
+		buildingDef.UtilityInputOffset = new CellOffset(2, 3);
+		buildingDef.InputConduitType = ConduitType.Gas;
+		buildingDef.RequiresPowerInput = false;
+		buildingDef.CanMove = true;
+		return buildingDef;
 	}
 
+	// Token: 0x06001A25 RID: 6693 RVA: 0x00174590 File Offset: 0x00172790
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
 		go.AddOrGet<LoopingSounds>();
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery);
-		go.AddOrGet<BuildingAttachPoint>().points = new BuildingAttachPoint.HardPoint[1]
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
+		go.AddOrGet<BuildingAttachPoint>().points = new BuildingAttachPoint.HardPoint[]
 		{
 			new BuildingAttachPoint.HardPoint(new CellOffset(0, 5), GameTags.Rocket, null)
 		};
 	}
 
+	// Token: 0x06001A26 RID: 6694 RVA: 0x000A5E40 File Offset: 0x000A4040
 	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
 	}
 
+	// Token: 0x06001A27 RID: 6695 RVA: 0x000A5E40 File Offset: 0x000A4040
 	public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 	}
 
+	// Token: 0x06001A28 RID: 6696 RVA: 0x001A5E94 File Offset: 0x001A4094
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		RocketEngine rocketEngine = go.AddOrGet<RocketEngine>();
@@ -77,6 +97,9 @@ public class SteamEngineConfig : IBuildingConfig
 		conduitConsumer.capacityKG = storage.capacityKg;
 		conduitConsumer.forceAlwaysSatisfied = true;
 		conduitConsumer.wrongElementResult = ConduitConsumer.WrongElementResult.Dump;
-		BuildingTemplates.ExtendBuildingToRocketModule(go, "rocket_steam_engine_bg_kanim");
+		BuildingTemplates.ExtendBuildingToRocketModule(go, "rocket_steam_engine_bg_kanim", false);
 	}
+
+	// Token: 0x040010A6 RID: 4262
+	public const string ID = "SteamEngine";
 }

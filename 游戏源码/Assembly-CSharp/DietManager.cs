@@ -1,73 +1,76 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Token: 0x0200123A RID: 4666
 [AddComponentMenu("KMonoBehaviour/scripts/DietManager")]
 public class DietManager : KMonoBehaviour
 {
-	private Dictionary<Tag, Diet> diets;
-
-	public static DietManager Instance;
-
+	// Token: 0x06005F7D RID: 24445 RVA: 0x000DE459 File Offset: 0x000DC659
 	public static void DestroyInstance()
 	{
-		Instance = null;
+		DietManager.Instance = null;
 	}
 
+	// Token: 0x06005F7E RID: 24446 RVA: 0x000DE461 File Offset: 0x000DC661
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		diets = CollectSaveDiets(null);
-		Instance = this;
+		this.diets = DietManager.CollectSaveDiets(null);
+		DietManager.Instance = this;
 	}
 
+	// Token: 0x06005F7F RID: 24447 RVA: 0x002AA300 File Offset: 0x002A8500
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		foreach (Tag item in DiscoveredResources.Instance.GetDiscovered())
+		foreach (Tag tag in DiscoveredResources.Instance.GetDiscovered())
 		{
-			Discover(item);
+			this.Discover(tag);
 		}
-		foreach (KeyValuePair<Tag, Diet> diet in diets)
+		foreach (KeyValuePair<Tag, Diet> keyValuePair in this.diets)
 		{
-			Diet.Info[] infos = diet.Value.infos;
+			Diet.Info[] infos = keyValuePair.Value.infos;
 			for (int i = 0; i < infos.Length; i++)
 			{
-				foreach (Tag consumedTag in infos[i].consumedTags)
+				foreach (Tag tag2 in infos[i].consumedTags)
 				{
-					if (Assets.GetPrefab(consumedTag) == null)
+					if (Assets.GetPrefab(tag2) == null)
 					{
-						Debug.LogError($"Could not find prefab {consumedTag}, required by diet for {diet.Key}");
+						global::Debug.LogError(string.Format("Could not find prefab {0}, required by diet for {1}", tag2, keyValuePair.Key));
 					}
 				}
 			}
 		}
-		DiscoveredResources.Instance.OnDiscover += OnWorldInventoryDiscover;
+		DiscoveredResources.Instance.OnDiscover += this.OnWorldInventoryDiscover;
 	}
 
+	// Token: 0x06005F80 RID: 24448 RVA: 0x002AA448 File Offset: 0x002A8648
 	private void Discover(Tag tag)
 	{
-		foreach (KeyValuePair<Tag, Diet> diet in diets)
+		foreach (KeyValuePair<Tag, Diet> keyValuePair in this.diets)
 		{
-			if (diet.Value.GetDietInfo(tag) != null)
+			if (keyValuePair.Value.GetDietInfo(tag) != null)
 			{
-				DiscoveredResources.Instance.Discover(tag, diet.Key);
+				DiscoveredResources.Instance.Discover(tag, keyValuePair.Key);
 			}
 		}
 	}
 
+	// Token: 0x06005F81 RID: 24449 RVA: 0x000DE47B File Offset: 0x000DC67B
 	private void OnWorldInventoryDiscover(Tag category_tag, Tag tag)
 	{
-		Discover(tag);
+		this.Discover(tag);
 	}
 
+	// Token: 0x06005F82 RID: 24450 RVA: 0x002AA4B8 File Offset: 0x002A86B8
 	public static Dictionary<Tag, Diet> CollectDiets(Tag[] target_species)
 	{
 		Dictionary<Tag, Diet> dictionary = new Dictionary<Tag, Diet>();
-		foreach (KPrefabID prefab in Assets.Prefabs)
+		foreach (KPrefabID kprefabID in Assets.Prefabs)
 		{
-			CreatureCalorieMonitor.Def def = prefab.GetDef<CreatureCalorieMonitor.Def>();
-			BeehiveCalorieMonitor.Def def2 = prefab.GetDef<BeehiveCalorieMonitor.Def>();
+			CreatureCalorieMonitor.Def def = kprefabID.GetDef<CreatureCalorieMonitor.Def>();
+			BeehiveCalorieMonitor.Def def2 = kprefabID.GetDef<BeehiveCalorieMonitor.Def>();
 			Diet diet = null;
 			if (def != null)
 			{
@@ -77,21 +80,22 @@ public class DietManager : KMonoBehaviour
 			{
 				diet = def2.diet;
 			}
-			if (diet != null && (target_species == null || Array.IndexOf(target_species, prefab.GetComponent<CreatureBrain>().species) >= 0))
+			if (diet != null && (target_species == null || Array.IndexOf<Tag>(target_species, kprefabID.GetComponent<CreatureBrain>().species) >= 0))
 			{
-				dictionary[prefab.PrefabTag] = diet;
+				dictionary[kprefabID.PrefabTag] = diet;
 			}
 		}
 		return dictionary;
 	}
 
+	// Token: 0x06005F83 RID: 24451 RVA: 0x002AA560 File Offset: 0x002A8760
 	public static Dictionary<Tag, Diet> CollectSaveDiets(Tag[] target_species)
 	{
 		Dictionary<Tag, Diet> dictionary = new Dictionary<Tag, Diet>();
-		foreach (KPrefabID prefab in Assets.Prefabs)
+		foreach (KPrefabID kprefabID in Assets.Prefabs)
 		{
-			CreatureCalorieMonitor.Def def = prefab.GetDef<CreatureCalorieMonitor.Def>();
-			BeehiveCalorieMonitor.Def def2 = prefab.GetDef<BeehiveCalorieMonitor.Def>();
+			CreatureCalorieMonitor.Def def = kprefabID.GetDef<CreatureCalorieMonitor.Def>();
+			BeehiveCalorieMonitor.Def def2 = kprefabID.GetDef<BeehiveCalorieMonitor.Def>();
 			Diet diet = null;
 			if (def != null)
 			{
@@ -101,21 +105,29 @@ public class DietManager : KMonoBehaviour
 			{
 				diet = def2.diet;
 			}
-			if (diet != null && (target_species == null || Array.IndexOf(target_species, prefab.GetComponent<CreatureBrain>().species) >= 0))
+			if (diet != null && (target_species == null || Array.IndexOf<Tag>(target_species, kprefabID.GetComponent<CreatureBrain>().species) >= 0))
 			{
-				dictionary[prefab.PrefabTag] = new Diet(diet);
-				dictionary[prefab.PrefabTag].FilterDLC();
+				dictionary[kprefabID.PrefabTag] = new Diet(diet);
+				dictionary[kprefabID.PrefabTag].FilterDLC();
 			}
 		}
 		return dictionary;
 	}
 
+	// Token: 0x06005F84 RID: 24452 RVA: 0x002AA620 File Offset: 0x002A8820
 	public Diet GetPrefabDiet(GameObject owner)
 	{
-		if (diets.TryGetValue(owner.GetComponent<KPrefabID>().PrefabTag, out var value))
+		Diet result;
+		if (this.diets.TryGetValue(owner.GetComponent<KPrefabID>().PrefabTag, out result))
 		{
-			return value;
+			return result;
 		}
 		return null;
 	}
+
+	// Token: 0x040043C5 RID: 17349
+	private Dictionary<Tag, Diet> diets;
+
+	// Token: 0x040043C6 RID: 17350
+	public static DietManager Instance;
 }

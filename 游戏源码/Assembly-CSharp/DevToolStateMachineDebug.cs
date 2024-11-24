@@ -1,42 +1,43 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using ImGuiNET;
 using UnityEngine;
 
+// Token: 0x02000BD0 RID: 3024
 public class DevToolStateMachineDebug : DevTool
 {
-	private int selectedStateMachine;
-
-	private int selectedLog;
-
-	private GameObject selectedGameObject;
-
-	private Vector2 scrollPos;
-
-	private bool lockSelection;
-
-	private bool showSettings;
-
-	private string stateMachineFilter = "";
-
+	// Token: 0x060039D3 RID: 14803 RVA: 0x00224F1C File Offset: 0x0022311C
 	private void Update()
 	{
-		if (Application.isPlaying)
+		if (!Application.isPlaying)
 		{
-			if (selectedGameObject == null)
-			{
-				lockSelection = false;
-			}
-			GameObject gameObject = SelectTool.Instance?.selected?.gameObject;
-			if (!lockSelection && selectedGameObject != gameObject && gameObject != null && gameObject.GetComponentsInChildren<StateMachineController>().Length != 0)
-			{
-				selectedGameObject = gameObject;
-				selectedStateMachine = 0;
-			}
+			return;
+		}
+		if (this.selectedGameObject == null)
+		{
+			this.lockSelection = false;
+		}
+		SelectTool instance = SelectTool.Instance;
+		GameObject gameObject;
+		if (instance == null)
+		{
+			gameObject = null;
+		}
+		else
+		{
+			KSelectable selected = instance.selected;
+			gameObject = ((selected != null) ? selected.gameObject : null);
+		}
+		GameObject gameObject2 = gameObject;
+		if (!this.lockSelection && this.selectedGameObject != gameObject2 && gameObject2 != null && gameObject2.GetComponentsInChildren<StateMachineController>().Length != 0)
+		{
+			this.selectedGameObject = gameObject2;
+			this.selectedStateMachine = 0;
 		}
 	}
 
+	// Token: 0x060039D4 RID: 14804 RVA: 0x00224F9C File Offset: 0x0022319C
 	public void ShowEditor(StateMachineDebuggerSettings.Entry entry)
 	{
 		ImGui.Text(entry.typeName);
@@ -56,11 +57,12 @@ public class DevToolStateMachineDebug : DevTool
 		ImGui.PopID();
 	}
 
+	// Token: 0x060039D5 RID: 14805 RVA: 0x00225028 File Offset: 0x00223228
 	protected override void RenderTo(DevPanel panel)
 	{
-		Update();
-		ImGui.InputText("Filter:", ref stateMachineFilter, 256u);
-		if (showSettings = ImGui.CollapsingHeader("Debug Settings:"))
+		this.Update();
+		ImGui.InputText("Filter:", ref this.stateMachineFilter, 256U);
+		if (this.showSettings = ImGui.CollapsingHeader("Debug Settings:"))
 		{
 			if (ImGui.Button("Reset"))
 			{
@@ -68,89 +70,117 @@ public class DevToolStateMachineDebug : DevTool
 			}
 			ImGui.Text("EnableConsoleLogging / BreakOnGoTo / SaveHistory");
 			int num = 0;
-			foreach (StateMachineDebuggerSettings.Entry item in StateMachineDebuggerSettings.Get())
+			foreach (StateMachineDebuggerSettings.Entry entry in StateMachineDebuggerSettings.Get())
 			{
-				if (string.IsNullOrEmpty(stateMachineFilter) || item.typeName.ToLower().IndexOf(stateMachineFilter) >= 0)
+				if (string.IsNullOrEmpty(this.stateMachineFilter) || entry.typeName.ToLower().IndexOf(this.stateMachineFilter) >= 0)
 				{
-					ShowEditor(item);
+					this.ShowEditor(entry);
 					num++;
 				}
 			}
 		}
-		if (!Application.isPlaying || !(selectedGameObject != null))
+		if (Application.isPlaying && this.selectedGameObject != null)
 		{
-			return;
-		}
-		StateMachineController[] componentsInChildren = selectedGameObject.GetComponentsInChildren<StateMachineController>();
-		if (componentsInChildren.Length == 0)
-		{
-			return;
-		}
-		List<string> list = new List<string>();
-		List<StateMachine.Instance> list2 = new List<StateMachine.Instance>();
-		List<StateMachine.BaseDef> list3 = new List<StateMachine.BaseDef>();
-		StateMachineController[] array = componentsInChildren;
-		foreach (StateMachineController stateMachineController in array)
-		{
-			foreach (StateMachine.Instance item2 in stateMachineController)
+			StateMachineController[] componentsInChildren = this.selectedGameObject.GetComponentsInChildren<StateMachineController>();
+			if (componentsInChildren.Length == 0)
 			{
-				string text = stateMachineController.name + "." + item2.ToString();
-				if (item2.isCrashed)
-				{
-					text = "(ERROR)" + text;
-				}
-				list.Add(text);
+				return;
 			}
-		}
-		List<string> list4 = ((stateMachineFilter != null && !(stateMachineFilter == "")) ? (from name in list
-			where name.ToLower().Contains(stateMachineFilter)
-			select name.ToLower()).ToList() : list.Select((string name) => name.ToLower()).ToList());
-		array = componentsInChildren;
-		foreach (StateMachineController stateMachineController2 in array)
-		{
-			foreach (StateMachine.Instance item3 in stateMachineController2)
+			List<string> list = new List<string>();
+			List<StateMachine.Instance> list2 = new List<StateMachine.Instance>();
+			List<StateMachine.BaseDef> list3 = new List<StateMachine.BaseDef>();
+			foreach (StateMachineController stateMachineController in componentsInChildren)
 			{
-				string text2 = stateMachineController2.name + "." + item3.ToString();
-				if (item3.isCrashed)
+				foreach (StateMachine.Instance instance in stateMachineController)
 				{
-					text2 = "(ERROR)" + text2;
-				}
-				if (list4.Contains(text2.ToLower()))
-				{
-					list2.Add(item3);
+					string text = stateMachineController.name + "." + instance.ToString();
+					if (instance.isCrashed)
+					{
+						text = "(ERROR)" + text;
+					}
+					list.Add(text);
 				}
 			}
-			foreach (StateMachine.BaseDef def in stateMachineController2.GetDefs<StateMachine.BaseDef>())
+			List<string> list4;
+			if (this.stateMachineFilter == null || this.stateMachineFilter == "")
 			{
-				list3.Add(def);
+				list4 = (from name in list
+				select name.ToLower()).ToList<string>();
 			}
-		}
-		if (list4.Count == 0)
-		{
-			ImGui.LabelText("Defs", (list3.Count == 0) ? "(none)" : string.Join(", ", list3.Select((StateMachine.BaseDef d) => d.GetType().ToString())));
-			array = componentsInChildren;
-			foreach (StateMachineController controller in array)
+			else
 			{
-				ShowControllerLog(controller);
+				list4 = (from name in list
+				where name.ToLower().Contains(this.stateMachineFilter)
+				select name.ToLower()).ToList<string>();
 			}
-			return;
+			foreach (StateMachineController stateMachineController2 in componentsInChildren)
+			{
+				foreach (StateMachine.Instance instance2 in stateMachineController2)
+				{
+					string text2 = stateMachineController2.name + "." + instance2.ToString();
+					if (instance2.isCrashed)
+					{
+						text2 = "(ERROR)" + text2;
+					}
+					if (list4.Contains(text2.ToLower()))
+					{
+						list2.Add(instance2);
+					}
+				}
+				foreach (StateMachine.BaseDef item in stateMachineController2.GetDefs<StateMachine.BaseDef>())
+				{
+					list3.Add(item);
+				}
+			}
+			if (list4.Count == 0)
+			{
+				string label = "Defs";
+				string fmt;
+				if (list3.Count != 0)
+				{
+					fmt = string.Join(", ", from d in list3
+					select d.GetType().ToString());
+				}
+				else
+				{
+					fmt = "(none)";
+				}
+				ImGui.LabelText(label, fmt);
+				foreach (StateMachineController controller in componentsInChildren)
+				{
+					this.ShowControllerLog(controller);
+				}
+				return;
+			}
+			this.selectedStateMachine = Math.Min(this.selectedStateMachine, list4.Count - 1);
+			string label2 = "Defs";
+			string fmt2;
+			if (list3.Count != 0)
+			{
+				fmt2 = string.Join(", ", from d in list3
+				select d.GetType().ToString());
+			}
+			else
+			{
+				fmt2 = "(none)";
+			}
+			ImGui.LabelText(label2, fmt2);
+			ImGui.Checkbox("Lock selection", ref this.lockSelection);
+			ImGui.Indent();
+			ImGui.Combo("Select state machine", ref this.selectedStateMachine, list4.ToArray(), list4.Count);
+			ImGui.Unindent();
+			StateMachine.Instance instance3 = list2[this.selectedStateMachine];
+			this.ShowStates(instance3);
+			this.ShowTags(instance3);
+			this.ShowDetails(instance3);
+			this.ShowLog(instance3);
+			this.ShowControllerLog(instance3);
+			this.ShowHistory(instance3.GetMaster().GetComponent<StateMachineController>());
+			this.ShowKAnimControllerLog();
 		}
-		selectedStateMachine = Math.Min(selectedStateMachine, list4.Count - 1);
-		ImGui.LabelText("Defs", (list3.Count == 0) ? "(none)" : string.Join(", ", list3.Select((StateMachine.BaseDef d) => d.GetType().ToString())));
-		ImGui.Checkbox("Lock selection", ref lockSelection);
-		ImGui.Indent();
-		ImGui.Combo("Select state machine", ref selectedStateMachine, list4.ToArray(), list4.Count);
-		ImGui.Unindent();
-		StateMachine.Instance instance = list2[selectedStateMachine];
-		ShowStates(instance);
-		ShowTags(instance);
-		ShowDetails(instance);
-		ShowLog(instance);
-		ShowControllerLog(instance);
-		ShowHistory(instance.GetMaster().GetComponent<StateMachineController>());
-		ShowKAnimControllerLog();
 	}
 
+	// Token: 0x060039D6 RID: 14806 RVA: 0x002254A0 File Offset: 0x002236A0
 	private void ShowStates(StateMachine.Instance state_machine_instance)
 	{
 		StateMachine stateMachine = state_machine_instance.GetStateMachine();
@@ -165,25 +195,24 @@ public class DevToolStateMachineDebug : DevTool
 		}
 		string[] array = stateMachine.GetStateNames().Append("None");
 		array[0] = array[0];
-		int num = Array.IndexOf(array, value);
-		int v = num;
+		int num = Array.IndexOf<string>(array, value);
+		int num2 = num;
 		for (int i = 0; i < array.Length; i++)
 		{
-			ImGui.RadioButton(array[i], ref v, i);
+			ImGui.RadioButton(array[i], ref num2, i);
 		}
-		if (v != num)
+		if (num2 != num)
 		{
-			if (array[v] == "None")
+			if (array[num2] == "None")
 			{
 				state_machine_instance.StopSM("StateMachineEditor.StopSM");
+				return;
 			}
-			else
-			{
-				state_machine_instance.GoTo(array[v]);
-			}
+			state_machine_instance.GoTo(array[num2]);
 		}
 	}
 
+	// Token: 0x060039D7 RID: 14807 RVA: 0x00225570 File Offset: 0x00223770
 	public void ShowTags(StateMachine.Instance state_machine_instance)
 	{
 		ImGui.Text("Tags:");
@@ -199,25 +228,27 @@ public class DevToolStateMachineDebug : DevTool
 		ImGui.Unindent();
 	}
 
+	// Token: 0x060039D8 RID: 14808 RVA: 0x002255EC File Offset: 0x002237EC
 	private void ShowDetails(StateMachine.Instance state_machine_instance)
 	{
 		state_machine_instance.GetStateMachine();
-		string text = "None";
+		string str = "None";
 		StateMachine.BaseState currentState = state_machine_instance.GetCurrentState();
 		if (currentState != null)
 		{
-			text = currentState.name;
+			str = currentState.name;
 		}
-		ImGui.Text(text + ": ");
+		ImGui.Text(str + ": ");
 		ImGui.Indent();
-		ShowParameters(state_machine_instance);
-		ShowEvents(state_machine_instance);
-		ShowTransitions(state_machine_instance);
-		ShowEnterActions(state_machine_instance);
-		ShowExitActions(state_machine_instance);
+		this.ShowParameters(state_machine_instance);
+		this.ShowEvents(state_machine_instance);
+		this.ShowTransitions(state_machine_instance);
+		this.ShowEnterActions(state_machine_instance);
+		this.ShowExitActions(state_machine_instance);
 		ImGui.Unindent();
 	}
 
+	// Token: 0x060039D9 RID: 14809 RVA: 0x00225654 File Offset: 0x00223854
 	private void ShowParameters(StateMachine.Instance state_machine_instance)
 	{
 		ImGui.Text("Parameters:");
@@ -230,6 +261,7 @@ public class DevToolStateMachineDebug : DevTool
 		ImGui.Unindent();
 	}
 
+	// Token: 0x060039DA RID: 14810 RVA: 0x00225694 File Offset: 0x00223894
 	private void ShowEvents(StateMachine.Instance state_machine_instance)
 	{
 		StateMachine.BaseState currentState = state_machine_instance.GetCurrentState();
@@ -242,18 +274,18 @@ public class DevToolStateMachineDebug : DevTool
 		for (int i = 0; i < currentState.GetStateCount(); i++)
 		{
 			StateMachine.BaseState state = currentState.GetState(i);
-			if (state.events == null)
+			if (state.events != null)
 			{
-				continue;
-			}
-			foreach (StateEvent @event in state.events)
-			{
-				ImGui.Text(@event.GetName());
+				foreach (StateEvent stateEvent in state.events)
+				{
+					ImGui.Text(stateEvent.GetName());
+				}
 			}
 		}
 		ImGui.Unindent();
 	}
 
+	// Token: 0x060039DB RID: 14811 RVA: 0x0022572C File Offset: 0x0022392C
 	private void ShowTransitions(StateMachine.Instance state_machine_instance)
 	{
 		StateMachine.BaseState currentState = state_machine_instance.GetCurrentState();
@@ -277,6 +309,7 @@ public class DevToolStateMachineDebug : DevTool
 		ImGui.Unindent();
 	}
 
+	// Token: 0x060039DC RID: 14812 RVA: 0x002257A8 File Offset: 0x002239A8
 	private void ShowExitActions(StateMachine.Instance state_machine_instance)
 	{
 		StateMachine.BaseState currentState = state_machine_instance.GetCurrentState();
@@ -289,18 +322,18 @@ public class DevToolStateMachineDebug : DevTool
 		for (int i = 0; i < currentState.GetStateCount(); i++)
 		{
 			StateMachine.BaseState state = currentState.GetState(i);
-			if (state.exitActions == null)
+			if (state.exitActions != null)
 			{
-				continue;
-			}
-			foreach (StateMachine.Action exitAction in state.exitActions)
-			{
-				ImGui.Text(exitAction.name);
+				foreach (StateMachine.Action action in state.exitActions)
+				{
+					ImGui.Text(action.name);
+				}
 			}
 		}
 		ImGui.Unindent();
 	}
 
+	// Token: 0x060039DD RID: 14813 RVA: 0x00225840 File Offset: 0x00223A40
 	private void ShowEnterActions(StateMachine.Instance state_machine_instance)
 	{
 		StateMachine.BaseState currentState = state_machine_instance.GetCurrentState();
@@ -313,43 +346,68 @@ public class DevToolStateMachineDebug : DevTool
 		for (int i = 0; i < currentState.GetStateCount(); i++)
 		{
 			StateMachine.BaseState state = currentState.GetState(i);
-			if (state.enterActions == null)
+			if (state.enterActions != null)
 			{
-				continue;
-			}
-			foreach (StateMachine.Action enterAction in state.enterActions)
-			{
-				ImGui.Text(enterAction.name);
+				foreach (StateMachine.Action action in state.enterActions)
+				{
+					ImGui.Text(action.name);
+				}
 			}
 		}
 		ImGui.Unindent();
 	}
 
+	// Token: 0x060039DE RID: 14814 RVA: 0x000C5590 File Offset: 0x000C3790
 	private void ShowLog(StateMachine.Instance state_machine_instance)
 	{
 		ImGui.Text("Machine Log:");
 	}
 
+	// Token: 0x060039DF RID: 14815 RVA: 0x000C559C File Offset: 0x000C379C
 	private void ShowKAnimControllerLog()
 	{
-		_ = selectedGameObject.GetComponentInChildren<KAnimControllerBase>() == null;
+		this.selectedGameObject.GetComponentInChildren<KAnimControllerBase>() == null;
 	}
 
+	// Token: 0x060039E0 RID: 14816 RVA: 0x000C55B0 File Offset: 0x000C37B0
 	private void ShowHistory(StateMachineController controller)
 	{
 		ImGui.Text("Logger disabled");
 	}
 
+	// Token: 0x060039E1 RID: 14817 RVA: 0x000C55BC File Offset: 0x000C37BC
 	private void ShowControllerLog(StateMachineController controller)
 	{
 		ImGui.Text("Object Log:");
 	}
 
+	// Token: 0x060039E2 RID: 14818 RVA: 0x000C55C8 File Offset: 0x000C37C8
 	private void ShowControllerLog(StateMachine.Instance state_machine)
 	{
 		if (!state_machine.GetMaster().isNull)
 		{
-			ShowControllerLog(state_machine.GetMaster().GetComponent<StateMachineController>());
+			this.ShowControllerLog(state_machine.GetMaster().GetComponent<StateMachineController>());
 		}
 	}
+
+	// Token: 0x0400277D RID: 10109
+	private int selectedStateMachine;
+
+	// Token: 0x0400277E RID: 10110
+	private int selectedLog;
+
+	// Token: 0x0400277F RID: 10111
+	private GameObject selectedGameObject;
+
+	// Token: 0x04002780 RID: 10112
+	private Vector2 scrollPos;
+
+	// Token: 0x04002781 RID: 10113
+	private bool lockSelection;
+
+	// Token: 0x04002782 RID: 10114
+	private bool showSettings;
+
+	// Token: 0x04002783 RID: 10115
+	private string stateMachineFilter = "";
 }

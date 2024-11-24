@@ -1,50 +1,70 @@
+﻿using System;
 using Database;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x020004A0 RID: 1184
 public class MonumentBottomConfig : IBuildingConfig
 {
-	public const string ID = "MonumentBottom";
-
+	// Token: 0x060014D1 RID: 5329 RVA: 0x001918E4 File Offset: 0x0018FAE4
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef("MonumentBottom", 5, 5, "monument_base_a_kanim", 1000, 60f, new float[2] { 7500f, 2500f }, new string[2]
+		string id = "MonumentBottom";
+		int width = 5;
+		int height = 5;
+		string anim = "monument_base_a_kanim";
+		int hitpoints = 1000;
+		float construction_time = 60f;
+		float[] construction_mass = new float[]
+		{
+			7500f,
+			2500f
+		};
+		string[] construction_materials = new string[]
 		{
 			SimHashes.Steel.ToString(),
 			SimHashes.Obsidian.ToString()
-		}, 9999f, BuildLocationRule.OnFloor, noise: NOISE_POLLUTION.NOISY.TIER2, decor: BUILDINGS.DECOR.BONUS.MONUMENT.INCOMPLETE);
-		BuildingTemplates.CreateMonumentBuildingDef(obj);
-		obj.SceneLayer = Grid.SceneLayer.BuildingFront;
-		obj.OverheatTemperature = 2273.15f;
-		obj.Floodable = false;
-		obj.AttachmentSlotTag = "MonumentBottom";
-		obj.ObjectLayer = ObjectLayer.Building;
-		obj.PermittedRotations = PermittedRotations.FlipH;
-		obj.attachablePosition = new CellOffset(0, 0);
-		obj.RequiresPowerInput = false;
-		obj.CanMove = false;
-		return obj;
+		};
+		float melting_point = 9999f;
+		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
+		EffectorValues tier = NOISE_POLLUTION.NOISY.TIER2;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, construction_mass, construction_materials, melting_point, build_location_rule, BUILDINGS.DECOR.BONUS.MONUMENT.INCOMPLETE, tier, 0.2f);
+		BuildingTemplates.CreateMonumentBuildingDef(buildingDef);
+		buildingDef.SceneLayer = Grid.SceneLayer.BuildingFront;
+		buildingDef.OverheatTemperature = 2273.15f;
+		buildingDef.Floodable = false;
+		buildingDef.AttachmentSlotTag = "MonumentBottom";
+		buildingDef.ObjectLayer = ObjectLayer.Building;
+		buildingDef.PermittedRotations = PermittedRotations.FlipH;
+		buildingDef.attachablePosition = new CellOffset(0, 0);
+		buildingDef.RequiresPowerInput = false;
+		buildingDef.CanMove = false;
+		return buildingDef;
 	}
 
+	// Token: 0x060014D2 RID: 5330 RVA: 0x001919C4 File Offset: 0x0018FBC4
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
 		go.AddOrGet<LoopingSounds>();
-		go.AddOrGet<BuildingAttachPoint>().points = new BuildingAttachPoint.HardPoint[1]
+		go.AddOrGet<BuildingAttachPoint>().points = new BuildingAttachPoint.HardPoint[]
 		{
 			new BuildingAttachPoint.HardPoint(new CellOffset(0, 5), "MonumentMiddle", null)
 		};
 		go.AddOrGet<MonumentPart>().part = MonumentPartResource.Part.Bottom;
 	}
 
+	// Token: 0x060014D3 RID: 5331 RVA: 0x000A5E40 File Offset: 0x000A4040
 	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
 	}
 
+	// Token: 0x060014D4 RID: 5332 RVA: 0x000A5E40 File Offset: 0x000A4040
 	public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 	}
 
+	// Token: 0x060014D5 RID: 5333 RVA: 0x000AF229 File Offset: 0x000AD429
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<KBatchedAnimController>().initialAnim = "option_a";
@@ -55,4 +75,7 @@ public class MonumentBottomConfig : IBuildingConfig
 			monumentPart.stateUISymbol = "base";
 		};
 	}
+
+	// Token: 0x04000DEA RID: 3562
+	public const string ID = "MonumentBottom";
 }

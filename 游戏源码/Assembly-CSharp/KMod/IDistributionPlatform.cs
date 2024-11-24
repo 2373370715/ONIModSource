@@ -1,5 +1,9 @@
-namespace KMod;
+﻿using System;
 
-public interface IDistributionPlatform
+namespace KMod
 {
+	// Token: 0x020021CE RID: 8654
+	public interface IDistributionPlatform
+	{
+	}
 }

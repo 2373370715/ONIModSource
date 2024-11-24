@@ -1,27 +1,40 @@
+﻿using System;
 using System.Collections.Generic;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x0200001C RID: 28
 public class AirConditionerConfig : IBuildingConfig
 {
-	public const string ID = "AirConditioner";
-
+	// Token: 0x0600006E RID: 110 RVA: 0x0013F6C0 File Offset: 0x0013D8C0
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef("AirConditioner", 2, 2, "airconditioner_kanim", 100, 120f, BUILDINGS.CONSTRUCTION_MASS_KG.TIER3, MATERIALS.ALL_METALS, 1600f, BuildLocationRule.OnFloor, noise: NOISE_POLLUTION.NOISY.TIER2, decor: BUILDINGS.DECOR.NONE);
-		BuildingTemplates.CreateElectricalBuildingDef(obj);
-		obj.EnergyConsumptionWhenActive = 240f;
-		obj.SelfHeatKilowattsWhenActive = 0f;
-		obj.ThermalConductivity = 5f;
-		obj.InputConduitType = ConduitType.Gas;
-		obj.OutputConduitType = ConduitType.Gas;
-		obj.PowerInputOffset = new CellOffset(1, 0);
-		obj.PermittedRotations = PermittedRotations.FlipH;
-		obj.ViewMode = OverlayModes.GasConduits.ID;
-		obj.LogicInputPorts = LogicOperationalController.CreateSingleInputPortList(new CellOffset(0, 1));
-		return obj;
+		string id = "AirConditioner";
+		int width = 2;
+		int height = 2;
+		string anim = "airconditioner_kanim";
+		int hitpoints = 100;
+		float construction_time = 120f;
+		float[] tier = BUILDINGS.CONSTRUCTION_MASS_KG.TIER3;
+		string[] all_METALS = MATERIALS.ALL_METALS;
+		float melting_point = 1600f;
+		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
+		EffectorValues tier2 = NOISE_POLLUTION.NOISY.TIER2;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, all_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, tier2, 0.2f);
+		BuildingTemplates.CreateElectricalBuildingDef(buildingDef);
+		buildingDef.EnergyConsumptionWhenActive = 240f;
+		buildingDef.SelfHeatKilowattsWhenActive = 0f;
+		buildingDef.ThermalConductivity = 5f;
+		buildingDef.InputConduitType = ConduitType.Gas;
+		buildingDef.OutputConduitType = ConduitType.Gas;
+		buildingDef.PowerInputOffset = new CellOffset(1, 0);
+		buildingDef.PermittedRotations = PermittedRotations.FlipH;
+		buildingDef.ViewMode = OverlayModes.GasConduits.ID;
+		buildingDef.LogicInputPorts = LogicOperationalController.CreateSingleInputPortList(new CellOffset(0, 1));
+		return buildingDef;
 	}
 
+	// Token: 0x0600006F RID: 111 RVA: 0x0013F76C File Offset: 0x0013D96C
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<LoopingSounds>();
@@ -29,7 +42,7 @@ public class AirConditionerConfig : IBuildingConfig
 		airConditioner.temperatureDelta = -14f;
 		airConditioner.maxEnvironmentDelta = -50f;
 		go.AddOrGet<KBatchedAnimHeatPostProcessingEffect>();
-		Storage storage = BuildingTemplates.CreateDefaultStorage(go);
+		Storage storage = BuildingTemplates.CreateDefaultStorage(go, false);
 		storage.showInUI = true;
 		storage.SetDefaultStoredItemModifiers(new List<Storage.StoredItemModifier>
 		{
@@ -42,9 +55,13 @@ public class AirConditionerConfig : IBuildingConfig
 		conduitConsumer.consumptionRate = 1f;
 	}
 
+	// Token: 0x06000070 RID: 112 RVA: 0x000A5FB5 File Offset: 0x000A41B5
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicOperationalController>();
 		go.AddOrGetDef<PoweredActiveController.Def>();
 	}
+
+	// Token: 0x04000050 RID: 80
+	public const string ID = "AirConditioner";
 }

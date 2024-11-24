@@ -1,148 +1,171 @@
+﻿using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI.Extensions;
 
+// Token: 0x02001CE9 RID: 7401
 [AddComponentMenu("KMonoBehaviour/scripts/GraphBase")]
 public class GraphBase : KMonoBehaviour
 {
-	[Header("Axis")]
-	public GraphAxis axis_x;
-
-	public GraphAxis axis_y;
-
-	[Header("References")]
-	public GameObject prefab_guide_x;
-
-	public GameObject prefab_guide_y;
-
-	public GameObject prefab_guide_horizontal_label;
-
-	public GameObject prefab_guide_vertical_label;
-
-	public GameObject guides_x;
-
-	public GameObject guides_y;
-
-	public LocText label_title;
-
-	public LocText label_x;
-
-	public LocText label_y;
-
-	public string graphName;
-
-	protected List<GameObject> horizontalGuides = new List<GameObject>();
-
-	protected List<GameObject> verticalGuides = new List<GameObject>();
-
-	private const int points_per_guide_line = 2;
-
+	// Token: 0x06009A94 RID: 39572 RVA: 0x003BA2D4 File Offset: 0x003B84D4
 	public Vector2 GetRelativePosition(Vector2 absolute_point)
 	{
 		Vector2 zero = Vector2.zero;
-		float num = Mathf.Max(1f, axis_x.max_value - axis_x.min_value);
-		float num2 = absolute_point.x - axis_x.min_value;
+		float num = Mathf.Max(1f, this.axis_x.max_value - this.axis_x.min_value);
+		float num2 = absolute_point.x - this.axis_x.min_value;
 		zero.x = num2 / num;
-		float num3 = Mathf.Max(1f, axis_y.max_value - axis_y.min_value);
-		float num4 = absolute_point.y - axis_y.min_value;
+		float num3 = Mathf.Max(1f, this.axis_y.max_value - this.axis_y.min_value);
+		float num4 = absolute_point.y - this.axis_y.min_value;
 		zero.y = num4 / num3;
 		return zero;
 	}
 
+	// Token: 0x06009A95 RID: 39573 RVA: 0x00104878 File Offset: 0x00102A78
 	public Vector2 GetRelativeSize(Vector2 absolute_size)
 	{
-		return GetRelativePosition(absolute_size);
+		return this.GetRelativePosition(absolute_size);
 	}
 
+	// Token: 0x06009A96 RID: 39574 RVA: 0x00104881 File Offset: 0x00102A81
 	public void ClearGuides()
 	{
-		ClearVerticalGuides();
-		ClearHorizontalGuides();
+		this.ClearVerticalGuides();
+		this.ClearHorizontalGuides();
 	}
 
+	// Token: 0x06009A97 RID: 39575 RVA: 0x003BA368 File Offset: 0x003B8568
 	public void ClearHorizontalGuides()
 	{
-		foreach (GameObject horizontalGuide in horizontalGuides)
+		foreach (GameObject gameObject in this.horizontalGuides)
 		{
-			if (horizontalGuide != null)
+			if (gameObject != null)
 			{
-				Object.DestroyImmediate(horizontalGuide);
+				UnityEngine.Object.DestroyImmediate(gameObject);
 			}
 		}
-		horizontalGuides.Clear();
+		this.horizontalGuides.Clear();
 	}
 
+	// Token: 0x06009A98 RID: 39576 RVA: 0x003BA3D0 File Offset: 0x003B85D0
 	public void ClearVerticalGuides()
 	{
-		foreach (GameObject verticalGuide in verticalGuides)
+		foreach (GameObject gameObject in this.verticalGuides)
 		{
-			if (verticalGuide != null)
+			if (gameObject != null)
 			{
-				Object.DestroyImmediate(verticalGuide);
+				UnityEngine.Object.DestroyImmediate(gameObject);
 			}
 		}
-		verticalGuides.Clear();
+		this.verticalGuides.Clear();
 	}
 
+	// Token: 0x06009A99 RID: 39577 RVA: 0x0010488F File Offset: 0x00102A8F
 	public void RefreshGuides()
 	{
-		ClearGuides();
-		RefreshHorizontalGuides();
-		RefreshVerticalGuides();
+		this.ClearGuides();
+		this.RefreshHorizontalGuides();
+		this.RefreshVerticalGuides();
 	}
 
+	// Token: 0x06009A9A RID: 39578 RVA: 0x003BA438 File Offset: 0x003B8638
 	public void RefreshHorizontalGuides()
 	{
-		if (!(prefab_guide_x != null))
+		if (this.prefab_guide_x != null)
 		{
-			return;
-		}
-		GameObject gameObject = Util.KInstantiateUI(prefab_guide_x, guides_x, force_active: true);
-		gameObject.name = "guides_horizontal";
-		Vector2[] array = new Vector2[2 * (int)(axis_y.range / axis_y.guide_frequency)];
-		for (int i = 0; i < array.Length; i += 2)
-		{
-			Vector2 absolute_point = new Vector2(axis_x.min_value, (float)i * (axis_y.guide_frequency / 2f));
-			array[i] = GetRelativePosition(absolute_point);
-			Vector2 absolute_point2 = new Vector2(axis_x.max_value, (float)i * (axis_y.guide_frequency / 2f));
-			array[i + 1] = GetRelativePosition(absolute_point2);
-			if (prefab_guide_horizontal_label != null)
+			GameObject gameObject = Util.KInstantiateUI(this.prefab_guide_x, this.guides_x, true);
+			gameObject.name = "guides_horizontal";
+			Vector2[] array = new Vector2[2 * (int)(this.axis_y.range / this.axis_y.guide_frequency)];
+			for (int i = 0; i < array.Length; i += 2)
 			{
-				GameObject obj = Util.KInstantiateUI(prefab_guide_horizontal_label, gameObject, force_active: true);
-				obj.GetComponent<LocText>().alignment = TextAlignmentOptions.MidlineLeft;
-				obj.GetComponent<LocText>().text = ((int)axis_y.guide_frequency * (i / 2)).ToString();
-				obj.rectTransform().SetLocalPosition(new Vector2(8f, (float)i * (base.gameObject.rectTransform().rect.height / (float)array.Length)) - base.gameObject.rectTransform().rect.size / 2f);
+				Vector2 absolute_point = new Vector2(this.axis_x.min_value, (float)i * (this.axis_y.guide_frequency / 2f));
+				array[i] = this.GetRelativePosition(absolute_point);
+				Vector2 absolute_point2 = new Vector2(this.axis_x.max_value, (float)i * (this.axis_y.guide_frequency / 2f));
+				array[i + 1] = this.GetRelativePosition(absolute_point2);
+				if (this.prefab_guide_horizontal_label != null)
+				{
+					GameObject gameObject2 = Util.KInstantiateUI(this.prefab_guide_horizontal_label, gameObject, true);
+					gameObject2.GetComponent<LocText>().alignment = TextAlignmentOptions.MidlineLeft;
+					gameObject2.GetComponent<LocText>().text = ((int)this.axis_y.guide_frequency * (i / 2)).ToString();
+					gameObject2.rectTransform().SetLocalPosition(new Vector2(8f, (float)i * (base.gameObject.rectTransform().rect.height / (float)array.Length)) - base.gameObject.rectTransform().rect.size / 2f);
+				}
 			}
+			gameObject.GetComponent<UILineRenderer>().Points = array;
+			this.horizontalGuides.Add(gameObject);
 		}
-		gameObject.GetComponent<UILineRenderer>().Points = array;
-		horizontalGuides.Add(gameObject);
 	}
 
+	// Token: 0x06009A9B RID: 39579 RVA: 0x003BA5E0 File Offset: 0x003B87E0
 	public void RefreshVerticalGuides()
 	{
-		if (!(prefab_guide_y != null))
+		if (this.prefab_guide_y != null)
 		{
-			return;
-		}
-		GameObject gameObject = Util.KInstantiateUI(prefab_guide_y, guides_y, force_active: true);
-		gameObject.name = "guides_vertical";
-		Vector2[] array = new Vector2[2 * (int)(axis_x.range / axis_x.guide_frequency)];
-		for (int i = 0; i < array.Length; i += 2)
-		{
-			Vector2 absolute_point = new Vector2((float)i * (axis_x.guide_frequency / 2f), axis_y.min_value);
-			array[i] = GetRelativePosition(absolute_point);
-			Vector2 absolute_point2 = new Vector2((float)i * (axis_x.guide_frequency / 2f), axis_y.max_value);
-			array[i + 1] = GetRelativePosition(absolute_point2);
-			if (prefab_guide_vertical_label != null)
+			GameObject gameObject = Util.KInstantiateUI(this.prefab_guide_y, this.guides_y, true);
+			gameObject.name = "guides_vertical";
+			Vector2[] array = new Vector2[2 * (int)(this.axis_x.range / this.axis_x.guide_frequency)];
+			for (int i = 0; i < array.Length; i += 2)
 			{
-				GameObject obj = Util.KInstantiateUI(prefab_guide_vertical_label, gameObject, force_active: true);
-				obj.GetComponent<LocText>().alignment = TextAlignmentOptions.Bottom;
-				obj.GetComponent<LocText>().text = ((int)axis_x.guide_frequency * (i / 2)).ToString();
-				obj.rectTransform().SetLocalPosition(new Vector2((float)i * (base.gameObject.rectTransform().rect.width / (float)array.Length), 4f) - base.gameObject.rectTransform().rect.size / 2f);
+				Vector2 absolute_point = new Vector2((float)i * (this.axis_x.guide_frequency / 2f), this.axis_y.min_value);
+				array[i] = this.GetRelativePosition(absolute_point);
+				Vector2 absolute_point2 = new Vector2((float)i * (this.axis_x.guide_frequency / 2f), this.axis_y.max_value);
+				array[i + 1] = this.GetRelativePosition(absolute_point2);
+				if (this.prefab_guide_vertical_label != null)
+				{
+					GameObject gameObject2 = Util.KInstantiateUI(this.prefab_guide_vertical_label, gameObject, true);
+					gameObject2.GetComponent<LocText>().alignment = TextAlignmentOptions.Bottom;
+					gameObject2.GetComponent<LocText>().text = ((int)this.axis_x.guide_frequency * (i / 2)).ToString();
+					gameObject2.rectTransform().SetLocalPosition(new Vector2((float)i * (base.gameObject.rectTransform().rect.width / (float)array.Length), 4f) - base.gameObject.rectTransform().rect.size / 2f);
+				}
 			}
+			gameObject.GetComponent<UILineRenderer>().Points = array;
+			this.verticalGuides.Add(gameObject);
 		}
-		gameObject.GetComponent<UILineRenderer>().Points = array;
-		verticalGuides.Add(gameObject);
 	}
+
+	// Token: 0x040078B7 RID: 30903
+	[Header("Axis")]
+	public GraphAxis axis_x;
+
+	// Token: 0x040078B8 RID: 30904
+	public GraphAxis axis_y;
+
+	// Token: 0x040078B9 RID: 30905
+	[Header("References")]
+	public GameObject prefab_guide_x;
+
+	// Token: 0x040078BA RID: 30906
+	public GameObject prefab_guide_y;
+
+	// Token: 0x040078BB RID: 30907
+	public GameObject prefab_guide_horizontal_label;
+
+	// Token: 0x040078BC RID: 30908
+	public GameObject prefab_guide_vertical_label;
+
+	// Token: 0x040078BD RID: 30909
+	public GameObject guides_x;
+
+	// Token: 0x040078BE RID: 30910
+	public GameObject guides_y;
+
+	// Token: 0x040078BF RID: 30911
+	public LocText label_title;
+
+	// Token: 0x040078C0 RID: 30912
+	public LocText label_x;
+
+	// Token: 0x040078C1 RID: 30913
+	public LocText label_y;
+
+	// Token: 0x040078C2 RID: 30914
+	public string graphName;
+
+	// Token: 0x040078C3 RID: 30915
+	protected List<GameObject> horizontalGuides = new List<GameObject>();
+
+	// Token: 0x040078C4 RID: 30916
+	protected List<GameObject> verticalGuides = new List<GameObject>();
+
+	// Token: 0x040078C5 RID: 30917
+	private const int points_per_guide_line = 2;
 }

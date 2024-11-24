@@ -1,22 +1,35 @@
+﻿using System;
 using STRINGS;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x0200053A RID: 1338
 public class RationBoxConfig : IBuildingConfig
 {
-	public const string ID = "RationBox";
-
+	// Token: 0x060017A6 RID: 6054 RVA: 0x0019B020 File Offset: 0x00199220
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef("RationBox", 2, 2, "rationbox_kanim", 10, 10f, TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER4, MATERIALS.RAW_MINERALS, 1600f, BuildLocationRule.OnFloor, noise: NOISE_POLLUTION.NONE, decor: TUNING.BUILDINGS.DECOR.BONUS.TIER0);
-		obj.Overheatable = false;
-		obj.Floodable = false;
-		obj.AudioCategory = "Metal";
+		string id = "RationBox";
+		int width = 2;
+		int height = 2;
+		string anim = "rationbox_kanim";
+		int hitpoints = 10;
+		float construction_time = 10f;
+		float[] tier = TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER4;
+		string[] raw_MINERALS = MATERIALS.RAW_MINERALS;
+		float melting_point = 1600f;
+		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
+		EffectorValues none = NOISE_POLLUTION.NONE;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, raw_MINERALS, melting_point, build_location_rule, TUNING.BUILDINGS.DECOR.BONUS.TIER0, none, 0.2f);
+		buildingDef.Overheatable = false;
+		buildingDef.Floodable = false;
+		buildingDef.AudioCategory = "Metal";
 		SoundEventVolumeCache.instance.AddVolume("rationbox_kanim", "RationBox_open", NOISE_POLLUTION.NOISY.TIER1);
 		SoundEventVolumeCache.instance.AddVolume("rationbox_kanim", "RationBox_close", NOISE_POLLUTION.NOISY.TIER1);
-		return obj;
+		return buildingDef;
 	}
 
+	// Token: 0x060017A7 RID: 6055 RVA: 0x0019B0B4 File Offset: 0x001992B4
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		Prioritizable.AddRef(go);
@@ -36,8 +49,12 @@ public class RationBoxConfig : IBuildingConfig
 		go.AddOrGetDef<RocketUsageRestriction.Def>();
 	}
 
+	// Token: 0x060017A8 RID: 6056 RVA: 0x000A6A93 File Offset: 0x000A4C93
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGetDef<StorageController.Def>();
 	}
+
+	// Token: 0x04000F4D RID: 3917
+	public const string ID = "RationBox";
 }

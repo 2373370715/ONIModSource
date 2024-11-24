@@ -1,116 +1,70 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Klei;
 using STRINGS;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+// Token: 0x02001DEA RID: 7658
 public class MaterialSelector : KScreen
 {
-	public delegate void SelectMaterialActions();
-
-	public static List<Tag> DeprioritizeAutoSelectElementList = new List<Tag>
-	{
-		SimHashes.WoodLog.ToString().ToTag(),
-		SimHashes.SolidMercury.ToString().ToTag(),
-		SimHashes.Lead.ToString().ToTag()
-	};
-
-	public Tag CurrentSelectedElement;
-
-	public Dictionary<Tag, KToggle> ElementToggles = new Dictionary<Tag, KToggle>();
-
-	public int selectorIndex;
-
-	public SelectMaterialActions selectMaterialActions;
-
-	public SelectMaterialActions deselectMaterialActions;
-
-	private ToggleGroup toggleGroup;
-
-	public GameObject TogglePrefab;
-
-	public GameObject LayoutContainer;
-
-	public KScrollRect ScrollRect;
-
-	public GameObject Scrollbar;
-
-	public GameObject Headerbar;
-
-	public GameObject BadBG;
-
-	public LocText NoMaterialDiscovered;
-
-	public GameObject MaterialDescriptionPane;
-
-	public LocText MaterialDescriptionText;
-
-	public DescriptorPanel MaterialEffectsPane;
-
-	public GameObject DescriptorsPanel;
-
-	private KToggle selectedToggle;
-
-	private Recipe.Ingredient activeIngredient;
-
-	private Recipe activeRecipe;
-
-	private float activeMass;
-
-	private List<Tag> elementsToSort = new List<Tag>();
-
+	// Token: 0x0600A01E RID: 40990 RVA: 0x001081A5 File Offset: 0x001063A5
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		toggleGroup = GetComponent<ToggleGroup>();
+		this.toggleGroup = base.GetComponent<ToggleGroup>();
 	}
 
+	// Token: 0x0600A01F RID: 40991 RVA: 0x001081B9 File Offset: 0x001063B9
 	public override void OnKeyDown(KButtonEvent e)
 	{
-		if (!e.Consumed)
+		if (e.Consumed)
 		{
-			base.OnKeyDown(e);
+			return;
 		}
+		base.OnKeyDown(e);
 	}
 
+	// Token: 0x0600A020 RID: 40992 RVA: 0x003D48B8 File Offset: 0x003D2AB8
 	public void ClearMaterialToggles()
 	{
-		CurrentSelectedElement = null;
-		NoMaterialDiscovered.gameObject.SetActive(value: false);
-		foreach (KeyValuePair<Tag, KToggle> elementToggle in ElementToggles)
+		this.CurrentSelectedElement = null;
+		this.NoMaterialDiscovered.gameObject.SetActive(false);
+		foreach (KeyValuePair<Tag, KToggle> keyValuePair in this.ElementToggles)
 		{
-			elementToggle.Value.gameObject.SetActive(value: false);
-			Util.KDestroyGameObject(elementToggle.Value.gameObject);
+			keyValuePair.Value.gameObject.SetActive(false);
+			Util.KDestroyGameObject(keyValuePair.Value.gameObject);
 		}
-		ElementToggles.Clear();
+		this.ElementToggles.Clear();
 	}
 
+	// Token: 0x0600A021 RID: 40993 RVA: 0x003D4950 File Offset: 0x003D2B50
 	public static List<Tag> GetValidMaterials(Tag _materialTypeTag, bool omitDisabledElements = false)
 	{
-		string[] array = _materialTypeTag.ToString().Split('&');
+		string[] array = _materialTypeTag.ToString().Split('&', StringSplitOptions.None);
 		List<Tag> list = new List<Tag>();
-		foreach (Tag tag in array)
+		for (int i = 0; i < array.Length; i++)
 		{
+			Tag tag = array[i];
 			foreach (Element element in ElementLoader.elements)
 			{
-				if (!(element.disabled && omitDisabledElements) && element.IsSolid && (element.tag == tag || element.HasTag(tag)))
+				if ((!element.disabled || !omitDisabledElements) && element.IsSolid && (element.tag == tag || element.HasTag(tag)))
 				{
 					list.Add(element.tag);
 				}
 			}
-			foreach (Tag materialBuildingElement in GameTags.MaterialBuildingElements)
+			foreach (Tag tag2 in GameTags.MaterialBuildingElements)
 			{
-				if (!(materialBuildingElement == tag))
+				if (tag2 == tag)
 				{
-					continue;
-				}
-				foreach (GameObject item in Assets.GetPrefabsWithTag(materialBuildingElement))
-				{
-					KPrefabID component = item.GetComponent<KPrefabID>();
-					if (component != null && !list.Contains(component.PrefabTag))
+					foreach (GameObject gameObject in Assets.GetPrefabsWithTag(tag2))
 					{
-						list.Add(component.PrefabTag);
+						KPrefabID component = gameObject.GetComponent<KPrefabID>();
+						if (component != null && !list.Contains(component.PrefabTag))
+						{
+							list.Add(component.PrefabTag);
+						}
 					}
 				}
 			}
@@ -118,52 +72,54 @@ public class MaterialSelector : KScreen
 		return list;
 	}
 
+	// Token: 0x0600A022 RID: 40994 RVA: 0x003D4AC0 File Offset: 0x003D2CC0
 	public void ConfigureScreen(Recipe.Ingredient ingredient, Recipe recipe)
 	{
-		activeIngredient = ingredient;
-		activeRecipe = recipe;
-		activeMass = ingredient.amount;
-		List<Tag> validMaterials = GetValidMaterials(ingredient.tag);
+		this.activeIngredient = ingredient;
+		this.activeRecipe = recipe;
+		this.activeMass = ingredient.amount;
+		List<Tag> validMaterials = MaterialSelector.GetValidMaterials(ingredient.tag, false);
 		List<Tag> list = new List<Tag>();
-		foreach (KeyValuePair<Tag, KToggle> elementToggle in ElementToggles)
+		foreach (KeyValuePair<Tag, KToggle> keyValuePair in this.ElementToggles)
 		{
-			if (!validMaterials.Contains(elementToggle.Key))
+			if (!validMaterials.Contains(keyValuePair.Key))
 			{
-				list.Add(elementToggle.Key);
+				list.Add(keyValuePair.Key);
 			}
 		}
-		foreach (Tag item in list)
+		foreach (Tag key in list)
 		{
-			ElementToggles[item].gameObject.SetActive(value: false);
-			Util.KDestroyGameObject(ElementToggles[item].gameObject);
-			ElementToggles.Remove(item);
+			this.ElementToggles[key].gameObject.SetActive(false);
+			Util.KDestroyGameObject(this.ElementToggles[key].gameObject);
+			this.ElementToggles.Remove(key);
 		}
-		foreach (Tag item2 in validMaterials)
+		foreach (Tag tag in validMaterials)
 		{
-			if (!ElementToggles.ContainsKey(item2))
+			if (!this.ElementToggles.ContainsKey(tag))
 			{
-				GameObject obj = Util.KInstantiate(TogglePrefab, LayoutContainer, "MaterialSelection_" + item2.ProperName());
-				obj.transform.localScale = Vector3.one;
-				obj.SetActive(value: true);
-				KToggle component = obj.GetComponent<KToggle>();
-				ElementToggles.Add(item2, component);
-				component.group = toggleGroup;
-				obj.gameObject.GetComponent<ToolTip>().toolTip = item2.ProperName();
+				GameObject gameObject = Util.KInstantiate(this.TogglePrefab, this.LayoutContainer, "MaterialSelection_" + tag.ProperName());
+				gameObject.transform.localScale = Vector3.one;
+				gameObject.SetActive(true);
+				KToggle component = gameObject.GetComponent<KToggle>();
+				this.ElementToggles.Add(tag, component);
+				component.group = this.toggleGroup;
+				gameObject.gameObject.GetComponent<ToolTip>().toolTip = tag.ProperName();
 			}
 		}
-		ConfigureMaterialTooltips();
-		RefreshToggleContents();
+		this.ConfigureMaterialTooltips();
+		this.RefreshToggleContents();
 	}
 
+	// Token: 0x0600A023 RID: 40995 RVA: 0x003D4C98 File Offset: 0x003D2E98
 	private void SetToggleBGImage(KToggle toggle, Tag elem)
 	{
-		if (toggle == selectedToggle)
+		if (toggle == this.selectedToggle)
 		{
 			toggle.GetComponentsInChildren<Image>()[1].material = GlobalResources.Instance().AnimUIMaterial;
 			toggle.GetComponent<ImageToggleState>().SetActive();
 			return;
 		}
-		if (ClusterManager.Instance.activeWorld.worldInventory.GetAmount(elem, includeRelatedWorlds: true) >= activeMass || DebugHandler.InstantBuildMode || Game.Instance.SandboxModeActive)
+		if (ClusterManager.Instance.activeWorld.worldInventory.GetAmount(elem, true) >= this.activeMass || DebugHandler.InstantBuildMode || Game.Instance.SandboxModeActive)
 		{
 			toggle.GetComponentsInChildren<Image>()[1].material = GlobalResources.Instance().AnimUIMaterial;
 			toggle.GetComponentsInChildren<Image>()[1].color = Color.white;
@@ -172,180 +128,180 @@ public class MaterialSelector : KScreen
 		}
 		toggle.GetComponentsInChildren<Image>()[1].material = GlobalResources.Instance().AnimMaterialUIDesaturated;
 		toggle.GetComponentsInChildren<Image>()[1].color = new Color(1f, 1f, 1f, 0.6f);
-		if (!AllowInsufficientMaterialBuild())
+		if (!MaterialSelector.AllowInsufficientMaterialBuild())
 		{
 			toggle.GetComponent<ImageToggleState>().SetDisabled();
 		}
 	}
 
+	// Token: 0x0600A024 RID: 40996 RVA: 0x003D4D8C File Offset: 0x003D2F8C
 	public void OnSelectMaterial(Tag elem, Recipe recipe, bool focusScrollRect = false)
 	{
-		KToggle kToggle = null;
-		kToggle = ElementToggles[elem];
-		if (kToggle != selectedToggle)
+		KToggle x = this.ElementToggles[elem];
+		if (x != this.selectedToggle)
 		{
-			selectedToggle = kToggle;
+			this.selectedToggle = x;
 			if (recipe != null)
 			{
-				SaveGame.Instance.materialSelectorSerializer.SetSelectedElement(ClusterManager.Instance.activeWorldId, selectorIndex, recipe.Result, elem);
+				SaveGame.Instance.materialSelectorSerializer.SetSelectedElement(ClusterManager.Instance.activeWorldId, this.selectorIndex, recipe.Result, elem);
 			}
-			CurrentSelectedElement = elem;
-			if (selectMaterialActions != null)
+			this.CurrentSelectedElement = elem;
+			if (this.selectMaterialActions != null)
 			{
-				selectMaterialActions();
+				this.selectMaterialActions();
 			}
-			UpdateHeader();
-			SetDescription(elem);
-			SetEffects(elem);
-			if (MaterialDescriptionPane != null)
+			this.UpdateHeader();
+			this.SetDescription(elem);
+			this.SetEffects(elem);
+			if (this.MaterialDescriptionPane != null)
 			{
-				if (!MaterialDescriptionPane.gameObject.activeSelf && !MaterialEffectsPane.gameObject.activeSelf)
+				if (!this.MaterialDescriptionPane.gameObject.activeSelf && !this.MaterialEffectsPane.gameObject.activeSelf)
 				{
-					DescriptorsPanel.SetActive(value: false);
+					this.DescriptorsPanel.SetActive(false);
 				}
 				else
 				{
-					DescriptorsPanel.SetActive(value: true);
+					this.DescriptorsPanel.SetActive(true);
 				}
 			}
 		}
-		if (focusScrollRect && ElementToggles.Count > 1)
+		if (focusScrollRect && this.ElementToggles.Count > 1)
 		{
 			List<Tag> list = new List<Tag>();
-			foreach (KeyValuePair<Tag, KToggle> elementToggle in ElementToggles)
+			foreach (KeyValuePair<Tag, KToggle> keyValuePair in this.ElementToggles)
 			{
-				list.Add(elementToggle.Key);
+				list.Add(keyValuePair.Key);
 			}
-			list.Sort(ElementSorter);
-			int num = list.IndexOf(elem);
-			int constraintCount = LayoutContainer.GetComponent<GridLayoutGroup>().constraintCount;
-			float num2 = num / constraintCount / Math.Max((list.Count - 1) / constraintCount, 1);
-			ScrollRect.normalizedPosition = new Vector2(0f, 1f - num2);
+			list.Sort(new Comparison<Tag>(this.ElementSorter));
+			float num = (float)list.IndexOf(elem);
+			int constraintCount = this.LayoutContainer.GetComponent<GridLayoutGroup>().constraintCount;
+			float num2 = num / (float)constraintCount / (float)Math.Max((list.Count - 1) / constraintCount, 1);
+			this.ScrollRect.normalizedPosition = new Vector2(0f, 1f - num2);
 		}
-		RefreshToggleContents();
+		this.RefreshToggleContents();
 	}
 
+	// Token: 0x0600A025 RID: 40997 RVA: 0x003D4F30 File Offset: 0x003D3130
 	public void RefreshToggleContents()
 	{
-		foreach (KeyValuePair<Tag, KToggle> elementToggle in ElementToggles)
+		foreach (KeyValuePair<Tag, KToggle> keyValuePair in this.ElementToggles)
 		{
-			KToggle value = elementToggle.Value;
-			Tag elem = elementToggle.Key;
+			KToggle value = keyValuePair.Value;
+			Tag elem = keyValuePair.Key;
 			GameObject gameObject = value.gameObject;
 			bool flag = DiscoveredResources.Instance.IsDiscovered(elem) || DebugHandler.InstantBuildMode || Game.Instance.SandboxModeActive;
 			if (gameObject.activeSelf != flag)
 			{
 				gameObject.SetActive(flag);
 			}
-			if (!flag)
+			if (flag)
 			{
-				continue;
-			}
-			LocText[] componentsInChildren = gameObject.GetComponentsInChildren<LocText>();
-			LocText locText = componentsInChildren[0];
-			LocText obj = componentsInChildren[1];
-			Image image = gameObject.GetComponentsInChildren<Image>()[1];
-			obj.text = Util.FormatWholeNumber(ClusterManager.Instance.activeWorld.worldInventory.GetAmount(elem, includeRelatedWorlds: true));
-			locText.text = Util.FormatWholeNumber(activeMass);
-			GameObject gameObject2 = Assets.TryGetPrefab(elementToggle.Key);
-			if (gameObject2 != null)
-			{
-				KBatchedAnimController component = gameObject2.GetComponent<KBatchedAnimController>();
-				image.sprite = Def.GetUISpriteFromMultiObjectAnim(component.AnimFiles[0]);
-			}
-			SetToggleBGImage(elementToggle.Value, elementToggle.Key);
-			value.soundPlayer.AcceptClickCondition = () => IsEnoughMass(elem);
-			value.ClearOnClick();
-			if (IsEnoughMass(elem))
-			{
-				value.onClick += delegate
+				LocText[] componentsInChildren = gameObject.GetComponentsInChildren<LocText>();
+				LocText locText = componentsInChildren[0];
+				TMP_Text tmp_Text = componentsInChildren[1];
+				Image image = gameObject.GetComponentsInChildren<Image>()[1];
+				tmp_Text.text = Util.FormatWholeNumber(ClusterManager.Instance.activeWorld.worldInventory.GetAmount(elem, true));
+				locText.text = Util.FormatWholeNumber(this.activeMass);
+				GameObject gameObject2 = Assets.TryGetPrefab(keyValuePair.Key);
+				if (gameObject2 != null)
 				{
-					OnSelectMaterial(elem, activeRecipe);
-				};
+					KBatchedAnimController component = gameObject2.GetComponent<KBatchedAnimController>();
+					image.sprite = Def.GetUISpriteFromMultiObjectAnim(component.AnimFiles[0], "ui", false, "");
+				}
+				this.SetToggleBGImage(keyValuePair.Value, keyValuePair.Key);
+				value.soundPlayer.AcceptClickCondition = (() => this.IsEnoughMass(elem));
+				value.ClearOnClick();
+				if (this.IsEnoughMass(elem))
+				{
+					value.onClick += delegate()
+					{
+						this.OnSelectMaterial(elem, this.activeRecipe, false);
+					};
+				}
 			}
 		}
-		SortElementToggles();
-		UpdateHeader();
+		this.SortElementToggles();
+		this.UpdateHeader();
 	}
 
+	// Token: 0x0600A026 RID: 40998 RVA: 0x001081CB File Offset: 0x001063CB
 	private bool IsEnoughMass(Tag t)
 	{
-		if (!(ClusterManager.Instance.activeWorld.worldInventory.GetAmount(t, includeRelatedWorlds: true) >= activeMass) && !DebugHandler.InstantBuildMode && !Game.Instance.SandboxModeActive)
-		{
-			return AllowInsufficientMaterialBuild();
-		}
-		return true;
+		return ClusterManager.Instance.activeWorld.worldInventory.GetAmount(t, true) >= this.activeMass || DebugHandler.InstantBuildMode || Game.Instance.SandboxModeActive || MaterialSelector.AllowInsufficientMaterialBuild();
 	}
 
+	// Token: 0x0600A027 RID: 40999 RVA: 0x003D50EC File Offset: 0x003D32EC
 	public bool AutoSelectAvailableMaterial()
 	{
-		if (activeRecipe == null || ElementToggles.Count == 0)
+		if (this.activeRecipe == null || this.ElementToggles.Count == 0)
 		{
 			return false;
 		}
-		Tag previousElement = SaveGame.Instance.materialSelectorSerializer.GetPreviousElement(ClusterManager.Instance.activeWorldId, selectorIndex, activeRecipe.Result);
+		Tag previousElement = SaveGame.Instance.materialSelectorSerializer.GetPreviousElement(ClusterManager.Instance.activeWorldId, this.selectorIndex, this.activeRecipe.Result);
 		if (previousElement != null)
 		{
-			ElementToggles.TryGetValue(previousElement, out var value);
-			if (value != null && (DebugHandler.InstantBuildMode || Game.Instance.SandboxModeActive || ClusterManager.Instance.activeWorld.worldInventory.GetAmount(previousElement, includeRelatedWorlds: true) >= activeMass))
+			KToggle x;
+			this.ElementToggles.TryGetValue(previousElement, out x);
+			if (x != null && (DebugHandler.InstantBuildMode || Game.Instance.SandboxModeActive || ClusterManager.Instance.activeWorld.worldInventory.GetAmount(previousElement, true) >= this.activeMass))
 			{
-				OnSelectMaterial(previousElement, activeRecipe, focusScrollRect: true);
+				this.OnSelectMaterial(previousElement, this.activeRecipe, true);
 				return true;
 			}
 		}
 		float num = -1f;
 		List<Tag> list = new List<Tag>();
-		foreach (KeyValuePair<Tag, KToggle> elementToggle in ElementToggles)
+		foreach (KeyValuePair<Tag, KToggle> keyValuePair in this.ElementToggles)
 		{
-			list.Add(elementToggle.Key);
+			list.Add(keyValuePair.Key);
 		}
-		list.Sort(ElementSorter);
+		list.Sort(new Comparison<Tag>(this.ElementSorter));
 		if (DebugHandler.InstantBuildMode || Game.Instance.SandboxModeActive)
 		{
-			OnSelectMaterial(list[0], activeRecipe, focusScrollRect: true);
+			this.OnSelectMaterial(list[0], this.activeRecipe, true);
 			return true;
 		}
 		Tag tag = null;
-		foreach (Tag item in list)
+		foreach (Tag tag2 in list)
 		{
-			float num2 = ClusterManager.Instance.activeWorld.worldInventory.GetAmount(item, includeRelatedWorlds: true);
-			if (DeprioritizeAutoSelectElementList.Contains(item))
+			float num2 = ClusterManager.Instance.activeWorld.worldInventory.GetAmount(tag2, true);
+			if (MaterialSelector.DeprioritizeAutoSelectElementList.Contains(tag2))
 			{
-				num2 = Mathf.Min(activeMass, num2);
+				num2 = Mathf.Min(this.activeMass, num2);
 			}
-			if (num2 >= activeMass && num2 > num)
+			if (num2 >= this.activeMass && num2 > num)
 			{
 				num = num2;
-				tag = item;
+				tag = tag2;
 			}
 		}
 		if (tag != null)
 		{
 			UISounds.PlaySound(UISounds.Sound.Object_AutoSelected);
-			string arg = ((ElementLoader.GetElement(tag) == null) ? tag.ToString() : tag.Name);
-			PopFXManager.Instance.SpawnFX(PopFXManager.Instance.sprite_Resource, string.Format(MISC.POPFX.RESOURCE_SELECTION_CHANGED, arg), null, Camera.main.ScreenToWorldPoint(KInputManager.GetMousePos()));
-			OnSelectMaterial(tag, activeRecipe, focusScrollRect: true);
+			string arg = (ElementLoader.GetElement(tag) == null) ? tag.ToString() : tag.Name;
+			PopFXManager.Instance.SpawnFX(PopFXManager.Instance.sprite_Resource, string.Format(MISC.POPFX.RESOURCE_SELECTION_CHANGED, arg), null, Camera.main.ScreenToWorldPoint(KInputManager.GetMousePos()), 1.5f, false, false);
+			this.OnSelectMaterial(tag, this.activeRecipe, true);
 			return true;
 		}
 		return false;
 	}
 
+	// Token: 0x0600A028 RID: 41000 RVA: 0x003D5348 File Offset: 0x003D3548
 	private void SortElementToggles()
 	{
 		bool flag = false;
 		int num = -1;
-		elementsToSort.Clear();
-		foreach (KeyValuePair<Tag, KToggle> elementToggle in ElementToggles)
+		this.elementsToSort.Clear();
+		foreach (KeyValuePair<Tag, KToggle> keyValuePair in this.ElementToggles)
 		{
-			if (elementToggle.Value.gameObject.activeSelf)
+			if (keyValuePair.Value.gameObject.activeSelf)
 			{
-				elementsToSort.Add(elementToggle.Key);
+				this.elementsToSort.Add(keyValuePair.Key);
 			}
 		}
-		elementsToSort.Sort(ElementSorter);
-		for (int i = 0; i < elementsToSort.Count; i++)
+		this.elementsToSort.Sort(new Comparison<Tag>(this.ElementSorter));
+		for (int i = 0; i < this.elementsToSort.Count; i++)
 		{
-			int siblingIndex = ElementToggles[elementsToSort[i]].transform.GetSiblingIndex();
+			int siblingIndex = this.ElementToggles[this.elementsToSort[i]].transform.GetSiblingIndex();
 			if (siblingIndex <= num)
 			{
 				flag = true;
@@ -355,63 +311,66 @@ public class MaterialSelector : KScreen
 		}
 		if (flag)
 		{
-			foreach (Tag item in elementsToSort)
+			foreach (Tag key in this.elementsToSort)
 			{
-				ElementToggles[item].transform.SetAsLastSibling();
+				this.ElementToggles[key].transform.SetAsLastSibling();
 			}
 		}
-		UpdateScrollBar();
+		this.UpdateScrollBar();
 	}
 
+	// Token: 0x0600A029 RID: 41001 RVA: 0x003D5488 File Offset: 0x003D3688
 	private void ConfigureMaterialTooltips()
 	{
-		foreach (KeyValuePair<Tag, KToggle> elementToggle in ElementToggles)
+		foreach (KeyValuePair<Tag, KToggle> keyValuePair in this.ElementToggles)
 		{
-			ToolTip component = elementToggle.Value.gameObject.GetComponent<ToolTip>();
+			ToolTip component = keyValuePair.Value.gameObject.GetComponent<ToolTip>();
 			if (component != null)
 			{
-				component.toolTip = GameUtil.GetMaterialTooltips(elementToggle.Key);
+				component.toolTip = GameUtil.GetMaterialTooltips(keyValuePair.Key);
 			}
 		}
 	}
 
+	// Token: 0x0600A02A RID: 41002 RVA: 0x003D5504 File Offset: 0x003D3704
 	private void UpdateScrollBar()
 	{
-		if (Scrollbar == null)
+		if (this.Scrollbar == null)
 		{
 			return;
 		}
 		int num = 0;
-		foreach (KeyValuePair<Tag, KToggle> elementToggle in ElementToggles)
+		foreach (KeyValuePair<Tag, KToggle> keyValuePair in this.ElementToggles)
 		{
-			if (elementToggle.Value.gameObject.activeSelf)
+			if (keyValuePair.Value.gameObject.activeSelf)
 			{
 				num++;
 			}
 		}
-		if (Scrollbar.activeSelf != num > 5)
+		if (this.Scrollbar.activeSelf != num > 5)
 		{
-			Scrollbar.SetActive(num > 5);
+			this.Scrollbar.SetActive(num > 5);
 		}
-		ScrollRect.GetComponent<LayoutElement>().minHeight = 74 * ((num <= 5) ? 1 : 2);
+		this.ScrollRect.GetComponent<LayoutElement>().minHeight = (float)(74 * ((num <= 5) ? 1 : 2));
 	}
 
+	// Token: 0x0600A02B RID: 41003 RVA: 0x003D55B4 File Offset: 0x003D37B4
 	private void UpdateHeader()
 	{
-		if (activeIngredient == null)
+		if (this.activeIngredient == null)
 		{
 			return;
 		}
 		int num = 0;
-		foreach (KeyValuePair<Tag, KToggle> elementToggle in ElementToggles)
+		foreach (KeyValuePair<Tag, KToggle> keyValuePair in this.ElementToggles)
 		{
-			if (elementToggle.Value.gameObject.activeSelf)
+			if (keyValuePair.Value.gameObject.activeSelf)
 			{
 				num++;
 			}
 		}
-		LocText componentInChildren = Headerbar.GetComponentInChildren<LocText>();
-		string[] array = activeIngredient.tag.ToString().Split('&');
+		LocText componentInChildren = this.Headerbar.GetComponentInChildren<LocText>();
+		string[] array = this.activeIngredient.tag.ToString().Split('&', StringSplitOptions.None);
 		string text = array[0].ToTag().ProperName();
 		for (int i = 1; i < array.Length; i++)
 		{
@@ -419,84 +378,86 @@ public class MaterialSelector : KScreen
 		}
 		if (num == 0)
 		{
-			componentInChildren.text = string.Format(UI.PRODUCTINFO_MISSINGRESOURCES_TITLE, text, GameUtil.GetFormattedMass(activeIngredient.amount));
+			componentInChildren.text = string.Format(UI.PRODUCTINFO_MISSINGRESOURCES_TITLE, text, GameUtil.GetFormattedMass(this.activeIngredient.amount, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"));
 			string text2 = string.Format(UI.PRODUCTINFO_MISSINGRESOURCES_DESC, text);
-			NoMaterialDiscovered.text = text2;
-			NoMaterialDiscovered.gameObject.SetActive(value: true);
-			NoMaterialDiscovered.color = Constants.NEGATIVE_COLOR;
-			BadBG.SetActive(value: true);
-			if (Scrollbar != null)
+			this.NoMaterialDiscovered.text = text2;
+			this.NoMaterialDiscovered.gameObject.SetActive(true);
+			this.NoMaterialDiscovered.color = Constants.NEGATIVE_COLOR;
+			this.BadBG.SetActive(true);
+			if (this.Scrollbar != null)
 			{
-				Scrollbar.SetActive(value: false);
+				this.Scrollbar.SetActive(false);
 			}
-			LayoutContainer.SetActive(value: false);
+			this.LayoutContainer.SetActive(false);
+			return;
 		}
-		else
-		{
-			componentInChildren.text = string.Format(UI.PRODUCTINFO_SELECTMATERIAL, text);
-			NoMaterialDiscovered.gameObject.SetActive(value: false);
-			BadBG.SetActive(value: false);
-			LayoutContainer.SetActive(value: true);
-			UpdateScrollBar();
-		}
+		componentInChildren.text = string.Format(UI.PRODUCTINFO_SELECTMATERIAL, text);
+		this.NoMaterialDiscovered.gameObject.SetActive(false);
+		this.BadBG.SetActive(false);
+		this.LayoutContainer.SetActive(true);
+		this.UpdateScrollBar();
 	}
 
+	// Token: 0x0600A02C RID: 41004 RVA: 0x00108205 File Offset: 0x00106405
 	public void ToggleShowDescriptorsPanel(bool show)
 	{
-		if (!(DescriptorsPanel == null))
+		if (this.DescriptorsPanel == null)
 		{
-			DescriptorsPanel.gameObject.SetActive(show);
+			return;
 		}
+		this.DescriptorsPanel.gameObject.SetActive(show);
 	}
 
+	// Token: 0x0600A02D RID: 41005 RVA: 0x003D5778 File Offset: 0x003D3978
 	private void SetDescription(Tag element)
 	{
-		if (!(DescriptorsPanel == null))
+		if (this.DescriptorsPanel == null)
 		{
-			StringEntry result = null;
-			if (Strings.TryGet(new StringKey("STRINGS.ELEMENTS." + element.ToString().ToUpper() + ".BUILD_DESC"), out result))
-			{
-				MaterialDescriptionText.text = result.ToString();
-				MaterialDescriptionPane.SetActive(value: true);
-			}
-			else
-			{
-				MaterialDescriptionPane.SetActive(value: false);
-			}
+			return;
 		}
+		StringEntry stringEntry = null;
+		if (Strings.TryGet(new StringKey("STRINGS.ELEMENTS." + element.ToString().ToUpper() + ".BUILD_DESC"), out stringEntry))
+		{
+			this.MaterialDescriptionText.text = stringEntry.ToString();
+			this.MaterialDescriptionPane.SetActive(true);
+			return;
+		}
+		this.MaterialDescriptionPane.SetActive(false);
 	}
 
+	// Token: 0x0600A02E RID: 41006 RVA: 0x003D57F0 File Offset: 0x003D39F0
 	private void SetEffects(Tag element)
 	{
-		if (!(MaterialDescriptionPane == null))
+		if (this.MaterialDescriptionPane == null)
 		{
-			List<Descriptor> materialDescriptors = GameUtil.GetMaterialDescriptors(element);
-			if (materialDescriptors.Count > 0)
-			{
-				Descriptor item = default(Descriptor);
-				item.SetupDescriptor(ELEMENTS.MATERIAL_MODIFIERS.EFFECTS_HEADER, ELEMENTS.MATERIAL_MODIFIERS.TOOLTIP.EFFECTS_HEADER);
-				materialDescriptors.Insert(0, item);
-				MaterialEffectsPane.gameObject.SetActive(value: true);
-				MaterialEffectsPane.SetDescriptors(materialDescriptors);
-			}
-			else
-			{
-				MaterialEffectsPane.gameObject.SetActive(value: false);
-			}
+			return;
 		}
+		List<Descriptor> materialDescriptors = GameUtil.GetMaterialDescriptors(element);
+		if (materialDescriptors.Count > 0)
+		{
+			Descriptor item = default(Descriptor);
+			item.SetupDescriptor(ELEMENTS.MATERIAL_MODIFIERS.EFFECTS_HEADER, ELEMENTS.MATERIAL_MODIFIERS.TOOLTIP.EFFECTS_HEADER, Descriptor.DescriptorType.Effect);
+			materialDescriptors.Insert(0, item);
+			this.MaterialEffectsPane.gameObject.SetActive(true);
+			this.MaterialEffectsPane.SetDescriptors(materialDescriptors);
+			return;
+		}
+		this.MaterialEffectsPane.gameObject.SetActive(false);
 	}
 
+	// Token: 0x0600A02F RID: 41007 RVA: 0x00108227 File Offset: 0x00106427
 	public static bool AllowInsufficientMaterialBuild()
 	{
 		return GenericGameSettings.instance.allowInsufficientMaterialBuild;
 	}
 
+	// Token: 0x0600A030 RID: 41008 RVA: 0x003D5878 File Offset: 0x003D3A78
 	private int ElementSorter(Tag at, Tag bt)
 	{
 		GameObject gameObject = Assets.TryGetPrefab(at);
-		IHasSortOrder hasSortOrder = ((gameObject != null) ? gameObject.GetComponent<IHasSortOrder>() : null);
+		IHasSortOrder hasSortOrder = (gameObject != null) ? gameObject.GetComponent<IHasSortOrder>() : null;
 		GameObject gameObject2 = Assets.TryGetPrefab(bt);
-		IHasSortOrder hasSortOrder2 = ((gameObject2 != null) ? gameObject2.GetComponent<IHasSortOrder>() : null);
+		IHasSortOrder hasSortOrder2 = (gameObject2 != null) ? gameObject2.GetComponent<IHasSortOrder>() : null;
 		if (hasSortOrder == null || hasSortOrder2 == null)
 		{
 			return 0;
@@ -509,4 +470,82 @@ public class MaterialSelector : KScreen
 		}
 		return hasSortOrder.sortOrder.CompareTo(hasSortOrder2.sortOrder);
 	}
+
+	// Token: 0x04007D4F RID: 32079
+	public static List<Tag> DeprioritizeAutoSelectElementList = new List<Tag>
+	{
+		SimHashes.WoodLog.ToString().ToTag(),
+		SimHashes.SolidMercury.ToString().ToTag(),
+		SimHashes.Lead.ToString().ToTag()
+	};
+
+	// Token: 0x04007D50 RID: 32080
+	public Tag CurrentSelectedElement;
+
+	// Token: 0x04007D51 RID: 32081
+	public Dictionary<Tag, KToggle> ElementToggles = new Dictionary<Tag, KToggle>();
+
+	// Token: 0x04007D52 RID: 32082
+	public int selectorIndex;
+
+	// Token: 0x04007D53 RID: 32083
+	public MaterialSelector.SelectMaterialActions selectMaterialActions;
+
+	// Token: 0x04007D54 RID: 32084
+	public MaterialSelector.SelectMaterialActions deselectMaterialActions;
+
+	// Token: 0x04007D55 RID: 32085
+	private ToggleGroup toggleGroup;
+
+	// Token: 0x04007D56 RID: 32086
+	public GameObject TogglePrefab;
+
+	// Token: 0x04007D57 RID: 32087
+	public GameObject LayoutContainer;
+
+	// Token: 0x04007D58 RID: 32088
+	public KScrollRect ScrollRect;
+
+	// Token: 0x04007D59 RID: 32089
+	public GameObject Scrollbar;
+
+	// Token: 0x04007D5A RID: 32090
+	public GameObject Headerbar;
+
+	// Token: 0x04007D5B RID: 32091
+	public GameObject BadBG;
+
+	// Token: 0x04007D5C RID: 32092
+	public LocText NoMaterialDiscovered;
+
+	// Token: 0x04007D5D RID: 32093
+	public GameObject MaterialDescriptionPane;
+
+	// Token: 0x04007D5E RID: 32094
+	public LocText MaterialDescriptionText;
+
+	// Token: 0x04007D5F RID: 32095
+	public DescriptorPanel MaterialEffectsPane;
+
+	// Token: 0x04007D60 RID: 32096
+	public GameObject DescriptorsPanel;
+
+	// Token: 0x04007D61 RID: 32097
+	private KToggle selectedToggle;
+
+	// Token: 0x04007D62 RID: 32098
+	private Recipe.Ingredient activeIngredient;
+
+	// Token: 0x04007D63 RID: 32099
+	private Recipe activeRecipe;
+
+	// Token: 0x04007D64 RID: 32100
+	private float activeMass;
+
+	// Token: 0x04007D65 RID: 32101
+	private List<Tag> elementsToSort = new List<Tag>();
+
+	// Token: 0x02001DEB RID: 7659
+	// (Invoke) Token: 0x0600A034 RID: 41012
+	public delegate void SelectMaterialActions();
 }

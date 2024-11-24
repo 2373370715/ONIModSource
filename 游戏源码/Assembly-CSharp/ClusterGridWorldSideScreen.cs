@@ -1,46 +1,44 @@
+﻿using System;
 using STRINGS;
 using UnityEngine;
 using UnityEngine.UI;
 
+// Token: 0x02001F44 RID: 8004
 public class ClusterGridWorldSideScreen : SideScreenContent
 {
-	public Image icon;
-
-	public KButton viewButton;
-
-	private AsteroidGridEntity targetEntity;
-
+	// Token: 0x0600A904 RID: 43268 RVA: 0x0010DCCC File Offset: 0x0010BECC
 	protected override void OnSpawn()
 	{
-		viewButton.onClick += OnClickView;
+		this.viewButton.onClick += this.OnClickView;
 	}
 
+	// Token: 0x0600A905 RID: 43269 RVA: 0x0010DCE5 File Offset: 0x0010BEE5
 	public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetComponent<AsteroidGridEntity>() != null;
 	}
 
+	// Token: 0x0600A906 RID: 43270 RVA: 0x003FF18C File Offset: 0x003FD38C
 	public override void SetTarget(GameObject target)
 	{
 		base.SetTarget(target);
-		targetEntity = target.GetComponent<AsteroidGridEntity>();
-		icon.sprite = Def.GetUISprite(targetEntity).first;
-		WorldContainer component = targetEntity.GetComponent<WorldContainer>();
+		this.targetEntity = target.GetComponent<AsteroidGridEntity>();
+		this.icon.sprite = Def.GetUISprite(this.targetEntity, "ui", false).first;
+		WorldContainer component = this.targetEntity.GetComponent<WorldContainer>();
 		bool flag = component != null && component.IsDiscovered;
-		viewButton.isInteractable = flag;
+		this.viewButton.isInteractable = flag;
 		if (!flag)
 		{
-			viewButton.GetComponent<ToolTip>().SetSimpleTooltip(UI.UISIDESCREENS.CLUSTERWORLDSIDESCREEN.VIEW_WORLD_DISABLE_TOOLTIP);
+			this.viewButton.GetComponent<ToolTip>().SetSimpleTooltip(UI.UISIDESCREENS.CLUSTERWORLDSIDESCREEN.VIEW_WORLD_DISABLE_TOOLTIP);
+			return;
 		}
-		else
-		{
-			viewButton.GetComponent<ToolTip>().SetSimpleTooltip(UI.UISIDESCREENS.CLUSTERWORLDSIDESCREEN.VIEW_WORLD_TOOLTIP);
-		}
+		this.viewButton.GetComponent<ToolTip>().SetSimpleTooltip(UI.UISIDESCREENS.CLUSTERWORLDSIDESCREEN.VIEW_WORLD_TOOLTIP);
 	}
 
+	// Token: 0x0600A907 RID: 43271 RVA: 0x003FF230 File Offset: 0x003FD430
 	private void OnClickView()
 	{
-		WorldContainer component = targetEntity.GetComponent<WorldContainer>();
+		WorldContainer component = this.targetEntity.GetComponent<WorldContainer>();
 		if (!component.IsDupeVisited)
 		{
 			component.LookAtSurface();
@@ -48,4 +46,13 @@ public class ClusterGridWorldSideScreen : SideScreenContent
 		ClusterManager.Instance.SetActiveWorld(component.id);
 		ManagementMenu.Instance.CloseAll();
 	}
+
+	// Token: 0x040084DA RID: 34010
+	public Image icon;
+
+	// Token: 0x040084DB RID: 34011
+	public KButton viewButton;
+
+	// Token: 0x040084DC RID: 34012
+	private AsteroidGridEntity targetEntity;
 }

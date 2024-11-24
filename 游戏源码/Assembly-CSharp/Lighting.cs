@@ -1,260 +1,334 @@
-using System;
+﻿using System;
 using UnityEngine;
 
+// Token: 0x02001782 RID: 6018
 [ExecuteInEditMode]
 public class Lighting : MonoBehaviour
 {
-	public LightingSettings Settings;
-
-	public static Lighting Instance;
-
-	[NonSerialized]
-	public bool disableLighting;
-
-	private static int _liquidZ = Shader.PropertyToID("_LiquidZ");
-
-	private static int _DigMapMapParameters = Shader.PropertyToID("_DigMapMapParameters");
-
-	private static int _DigDamageMap = Shader.PropertyToID("_DigDamageMap");
-
-	private static int _StateTransitionMap = Shader.PropertyToID("_StateTransitionMap");
-
-	private static int _StateTransitionColor = Shader.PropertyToID("_StateTransitionColor");
-
-	private static int _StateTransitionParameters = Shader.PropertyToID("_StateTransitionParameters");
-
-	private static int _FallingSolidMap = Shader.PropertyToID("_FallingSolidMap");
-
-	private static int _FallingSolidColor = Shader.PropertyToID("_FallingSolidColor");
-
-	private static int _FallingSolidParameters = Shader.PropertyToID("_FallingSolidParameters");
-
-	private static int _WaterTrimColor = Shader.PropertyToID("_WaterTrimColor");
-
-	private static int _WaterParameters2 = Shader.PropertyToID("_WaterParameters2");
-
-	private static int _WaterWaveParameters = Shader.PropertyToID("_WaterWaveParameters");
-
-	private static int _WaterWaveParameters2 = Shader.PropertyToID("_WaterWaveParameters2");
-
-	private static int _WaterDetailParameters = Shader.PropertyToID("_WaterDetailParameters");
-
-	private static int _WaterDistortionParameters = Shader.PropertyToID("_WaterDistortionParameters");
-
-	private static int _BloomParameters = Shader.PropertyToID("_BloomParameters");
-
-	private static int _LiquidParameters2 = Shader.PropertyToID("_LiquidParameters2");
-
-	private static int _GridParameters = Shader.PropertyToID("_GridParameters");
-
-	private static int _GridColor = Shader.PropertyToID("_GridColor");
-
-	private static int _EdgeGlowParameters = Shader.PropertyToID("_EdgeGlowParameters");
-
-	private static int _SubstanceParameters = Shader.PropertyToID("_SubstanceParameters");
-
-	private static int _TileEdgeParameters = Shader.PropertyToID("_TileEdgeParameters");
-
-	private static int _AnimParameters = Shader.PropertyToID("_AnimParameters");
-
-	private static int _GasOpacity = Shader.PropertyToID("_GasOpacity");
-
-	private static int _DarkenTintBackground = Shader.PropertyToID("_DarkenTintBackground");
-
-	private static int _DarkenTintMidground = Shader.PropertyToID("_DarkenTintMidground");
-
-	private static int _DarkenTintForeground = Shader.PropertyToID("_DarkenTintForeground");
-
-	private static int _BrightenOverlay = Shader.PropertyToID("_BrightenOverlay");
-
-	private static int _ColdFG = Shader.PropertyToID("_ColdFG");
-
-	private static int _ColdMG = Shader.PropertyToID("_ColdMG");
-
-	private static int _ColdBG = Shader.PropertyToID("_ColdBG");
-
-	private static int _HotFG = Shader.PropertyToID("_HotFG");
-
-	private static int _HotMG = Shader.PropertyToID("_HotMG");
-
-	private static int _HotBG = Shader.PropertyToID("_HotBG");
-
-	private static int _TemperatureParallax = Shader.PropertyToID("_TemperatureParallax");
-
-	private static int _ColdUVOffset1 = Shader.PropertyToID("_ColdUVOffset1");
-
-	private static int _ColdUVOffset2 = Shader.PropertyToID("_ColdUVOffset2");
-
-	private static int _HotUVOffset1 = Shader.PropertyToID("_HotUVOffset1");
-
-	private static int _HotUVOffset2 = Shader.PropertyToID("_HotUVOffset2");
-
-	private static int _DustColour = Shader.PropertyToID("_DustColour");
-
-	private static int _DustInfo = Shader.PropertyToID("_DustInfo");
-
-	private static int _DustTex = Shader.PropertyToID("_DustTex");
-
-	private static int _DebugShowInfo = Shader.PropertyToID("_DebugShowInfo");
-
-	private static int _HeatHazeParameters = Shader.PropertyToID("_HeatHazeParameters");
-
-	private static int _HeatHazeTexture = Shader.PropertyToID("_HeatHazeTexture");
-
-	private static int _ShineParams = Shader.PropertyToID("_ShineParams");
-
-	private static int _ShineParams2 = Shader.PropertyToID("_ShineParams2");
-
-	private static int _WorldZoneGasBlend = Shader.PropertyToID("_WorldZoneGasBlend");
-
-	private static int _WorldZoneLiquidBlend = Shader.PropertyToID("_WorldZoneLiquidBlend");
-
-	private static int _WorldZoneForegroundBlend = Shader.PropertyToID("_WorldZoneForegroundBlend");
-
-	private static int _WorldZoneSimpleAnimBlend = Shader.PropertyToID("_WorldZoneSimpleAnimBlend");
-
-	private static int _CharacterLitColour = Shader.PropertyToID("_CharacterLitColour");
-
-	private static int _CharacterUnlitColour = Shader.PropertyToID("_CharacterUnlitColour");
-
-	private static int _BuildingDamagedTex = Shader.PropertyToID("_BuildingDamagedTex");
-
-	private static int _BuildingDamagedUVParameters = Shader.PropertyToID("_BuildingDamagedUVParameters");
-
-	private static int _DiseaseOverlayTex = Shader.PropertyToID("_DiseaseOverlayTex");
-
-	private static int _DiseaseOverlayTexInfo = Shader.PropertyToID("_DiseaseOverlayTexInfo");
-
-	private static int _RadHazeColor = Shader.PropertyToID("_RadHazeColor");
-
-	private static int _RadUVOffset1 = Shader.PropertyToID("_RadUVOffset1");
-
-	private static int _RadUVOffset2 = Shader.PropertyToID("_RadUVOffset2");
-
-	private static int _RadUVScales = Shader.PropertyToID("_RadUVScales");
-
-	private static int _RadRange1 = Shader.PropertyToID("_RadRange1");
-
-	private static int _RadRange2 = Shader.PropertyToID("_RadRange2");
-
-	private static int _LightBufferTex = Shader.PropertyToID("_LightBufferTex");
-
+	// Token: 0x06007BE1 RID: 31713 RVA: 0x000F19C4 File Offset: 0x000EFBC4
 	private void Awake()
 	{
-		Instance = this;
+		Lighting.Instance = this;
 	}
 
+	// Token: 0x06007BE2 RID: 31714 RVA: 0x000F19CC File Offset: 0x000EFBCC
 	private void OnDestroy()
 	{
-		Instance = null;
+		Lighting.Instance = null;
 	}
 
+	// Token: 0x06007BE3 RID: 31715 RVA: 0x000F19D4 File Offset: 0x000EFBD4
 	private Color PremultiplyAlpha(Color c)
 	{
 		return c * c.a;
 	}
 
+	// Token: 0x06007BE4 RID: 31716 RVA: 0x000F19E2 File Offset: 0x000EFBE2
 	private void Start()
 	{
-		UpdateLighting();
+		this.UpdateLighting();
 	}
 
+	// Token: 0x06007BE5 RID: 31717 RVA: 0x000F19E2 File Offset: 0x000EFBE2
 	private void Update()
 	{
-		UpdateLighting();
+		this.UpdateLighting();
 	}
 
+	// Token: 0x06007BE6 RID: 31718 RVA: 0x0031D818 File Offset: 0x0031BA18
 	private void UpdateLighting()
 	{
-		Shader.SetGlobalInt(_liquidZ, -28);
-		Shader.SetGlobalVector(_DigMapMapParameters, new Vector4(Settings.DigMapColour.r, Settings.DigMapColour.g, Settings.DigMapColour.b, Settings.DigMapScale));
-		Shader.SetGlobalTexture(_DigDamageMap, Settings.DigDamageMap);
-		Shader.SetGlobalTexture(_StateTransitionMap, Settings.StateTransitionMap);
-		Shader.SetGlobalColor(_StateTransitionColor, Settings.StateTransitionColor);
-		Shader.SetGlobalVector(_StateTransitionParameters, new Vector4(1f / Settings.StateTransitionUVScale, Settings.StateTransitionUVOffsetRate.x, Settings.StateTransitionUVOffsetRate.y, 0f));
-		Shader.SetGlobalTexture(_FallingSolidMap, Settings.FallingSolidMap);
-		Shader.SetGlobalColor(_FallingSolidColor, Settings.FallingSolidColor);
-		Shader.SetGlobalVector(_FallingSolidParameters, new Vector4(1f / Settings.FallingSolidUVScale, Settings.FallingSolidUVOffsetRate.x, Settings.FallingSolidUVOffsetRate.y, 0f));
-		Shader.SetGlobalColor(_WaterTrimColor, Settings.WaterTrimColor);
-		Shader.SetGlobalVector(_WaterParameters2, new Vector4(Settings.WaterTrimSize, Settings.WaterAlphaTrimSize, 0f, Settings.WaterAlphaThreshold));
-		Shader.SetGlobalVector(_WaterWaveParameters, new Vector4(Settings.WaterWaveAmplitude, Settings.WaterWaveFrequency, Settings.WaterWaveSpeed, 0f));
-		Shader.SetGlobalVector(_WaterWaveParameters2, new Vector4(Settings.WaterWaveAmplitude2, Settings.WaterWaveFrequency2, Settings.WaterWaveSpeed2, 0f));
-		Shader.SetGlobalVector(_WaterDetailParameters, new Vector4(Settings.WaterCubeMapScale, Settings.WaterDetailTiling, Settings.WaterColorScale, Settings.WaterDetailTiling2));
-		Shader.SetGlobalVector(_WaterDistortionParameters, new Vector4(Settings.WaterDistortionScaleStart, Settings.WaterDistortionScaleEnd, Settings.WaterDepthColorOpacityStart, Settings.WaterDepthColorOpacityEnd));
-		Shader.SetGlobalVector(_BloomParameters, new Vector4(Settings.BloomScale, 0f, 0f, 0f));
-		Shader.SetGlobalVector(_LiquidParameters2, new Vector4(Settings.LiquidMin, Settings.LiquidMax, Settings.LiquidCutoff, Settings.LiquidTransparency));
-		Shader.SetGlobalVector(_GridParameters, new Vector4(Settings.GridLineWidth, Settings.GridSize, Settings.GridMinIntensity, Settings.GridMaxIntensity));
-		Shader.SetGlobalColor(_GridColor, Settings.GridColor);
-		Shader.SetGlobalVector(_EdgeGlowParameters, new Vector4(Settings.EdgeGlowCutoffStart, Settings.EdgeGlowCutoffEnd, Settings.EdgeGlowIntensity, 0f));
-		if (disableLighting)
+		Shader.SetGlobalInt(Lighting._liquidZ, -28);
+		Shader.SetGlobalVector(Lighting._DigMapMapParameters, new Vector4(this.Settings.DigMapColour.r, this.Settings.DigMapColour.g, this.Settings.DigMapColour.b, this.Settings.DigMapScale));
+		Shader.SetGlobalTexture(Lighting._DigDamageMap, this.Settings.DigDamageMap);
+		Shader.SetGlobalTexture(Lighting._StateTransitionMap, this.Settings.StateTransitionMap);
+		Shader.SetGlobalColor(Lighting._StateTransitionColor, this.Settings.StateTransitionColor);
+		Shader.SetGlobalVector(Lighting._StateTransitionParameters, new Vector4(1f / this.Settings.StateTransitionUVScale, this.Settings.StateTransitionUVOffsetRate.x, this.Settings.StateTransitionUVOffsetRate.y, 0f));
+		Shader.SetGlobalTexture(Lighting._FallingSolidMap, this.Settings.FallingSolidMap);
+		Shader.SetGlobalColor(Lighting._FallingSolidColor, this.Settings.FallingSolidColor);
+		Shader.SetGlobalVector(Lighting._FallingSolidParameters, new Vector4(1f / this.Settings.FallingSolidUVScale, this.Settings.FallingSolidUVOffsetRate.x, this.Settings.FallingSolidUVOffsetRate.y, 0f));
+		Shader.SetGlobalColor(Lighting._WaterTrimColor, this.Settings.WaterTrimColor);
+		Shader.SetGlobalVector(Lighting._WaterParameters2, new Vector4(this.Settings.WaterTrimSize, this.Settings.WaterAlphaTrimSize, 0f, this.Settings.WaterAlphaThreshold));
+		Shader.SetGlobalVector(Lighting._WaterWaveParameters, new Vector4(this.Settings.WaterWaveAmplitude, this.Settings.WaterWaveFrequency, this.Settings.WaterWaveSpeed, 0f));
+		Shader.SetGlobalVector(Lighting._WaterWaveParameters2, new Vector4(this.Settings.WaterWaveAmplitude2, this.Settings.WaterWaveFrequency2, this.Settings.WaterWaveSpeed2, 0f));
+		Shader.SetGlobalVector(Lighting._WaterDetailParameters, new Vector4(this.Settings.WaterCubeMapScale, this.Settings.WaterDetailTiling, this.Settings.WaterColorScale, this.Settings.WaterDetailTiling2));
+		Shader.SetGlobalVector(Lighting._WaterDistortionParameters, new Vector4(this.Settings.WaterDistortionScaleStart, this.Settings.WaterDistortionScaleEnd, this.Settings.WaterDepthColorOpacityStart, this.Settings.WaterDepthColorOpacityEnd));
+		Shader.SetGlobalVector(Lighting._BloomParameters, new Vector4(this.Settings.BloomScale, 0f, 0f, 0f));
+		Shader.SetGlobalVector(Lighting._LiquidParameters2, new Vector4(this.Settings.LiquidMin, this.Settings.LiquidMax, this.Settings.LiquidCutoff, this.Settings.LiquidTransparency));
+		Shader.SetGlobalVector(Lighting._GridParameters, new Vector4(this.Settings.GridLineWidth, this.Settings.GridSize, this.Settings.GridMinIntensity, this.Settings.GridMaxIntensity));
+		Shader.SetGlobalColor(Lighting._GridColor, this.Settings.GridColor);
+		Shader.SetGlobalVector(Lighting._EdgeGlowParameters, new Vector4(this.Settings.EdgeGlowCutoffStart, this.Settings.EdgeGlowCutoffEnd, this.Settings.EdgeGlowIntensity, 0f));
+		if (this.disableLighting)
 		{
-			Shader.SetGlobalVector(_SubstanceParameters, Vector4.one);
-			Shader.SetGlobalVector(_TileEdgeParameters, Vector4.one);
+			Shader.SetGlobalVector(Lighting._SubstanceParameters, Vector4.one);
+			Shader.SetGlobalVector(Lighting._TileEdgeParameters, Vector4.one);
 		}
 		else
 		{
-			Shader.SetGlobalVector(_SubstanceParameters, new Vector4(Settings.substanceEdgeParameters.intensity, Settings.substanceEdgeParameters.edgeIntensity, Settings.substanceEdgeParameters.directSunlightScale, Settings.substanceEdgeParameters.power));
-			Shader.SetGlobalVector(_TileEdgeParameters, new Vector4(Settings.tileEdgeParameters.intensity, Settings.tileEdgeParameters.edgeIntensity, Settings.tileEdgeParameters.directSunlightScale, Settings.tileEdgeParameters.power));
+			Shader.SetGlobalVector(Lighting._SubstanceParameters, new Vector4(this.Settings.substanceEdgeParameters.intensity, this.Settings.substanceEdgeParameters.edgeIntensity, this.Settings.substanceEdgeParameters.directSunlightScale, this.Settings.substanceEdgeParameters.power));
+			Shader.SetGlobalVector(Lighting._TileEdgeParameters, new Vector4(this.Settings.tileEdgeParameters.intensity, this.Settings.tileEdgeParameters.edgeIntensity, this.Settings.tileEdgeParameters.directSunlightScale, this.Settings.tileEdgeParameters.power));
 		}
-		float w = ((SimDebugView.Instance != null && SimDebugView.Instance.GetMode() == OverlayModes.Disease.ID) ? 1f : 0f);
-		if (disableLighting)
+		float w = (SimDebugView.Instance != null && SimDebugView.Instance.GetMode() == OverlayModes.Disease.ID) ? 1f : 0f;
+		if (this.disableLighting)
 		{
-			Shader.SetGlobalVector(_AnimParameters, new Vector4(1f, Settings.WorldZoneAnimBlend, 0f, w));
+			Shader.SetGlobalVector(Lighting._AnimParameters, new Vector4(1f, this.Settings.WorldZoneAnimBlend, 0f, w));
 		}
 		else
 		{
-			Shader.SetGlobalVector(_AnimParameters, new Vector4(Settings.AnimIntensity, Settings.WorldZoneAnimBlend, 0f, w));
+			Shader.SetGlobalVector(Lighting._AnimParameters, new Vector4(this.Settings.AnimIntensity, this.Settings.WorldZoneAnimBlend, 0f, w));
 		}
-		Shader.SetGlobalVector(_GasOpacity, new Vector4(Settings.GasMinOpacity, Settings.GasMaxOpacity, 0f, 0f));
-		Shader.SetGlobalColor(_DarkenTintBackground, Settings.DarkenTints[0]);
-		Shader.SetGlobalColor(_DarkenTintMidground, Settings.DarkenTints[1]);
-		Shader.SetGlobalColor(_DarkenTintForeground, Settings.DarkenTints[2]);
-		Shader.SetGlobalColor(_BrightenOverlay, Settings.BrightenOverlayColour);
-		Shader.SetGlobalColor(_ColdFG, PremultiplyAlpha(Settings.ColdColours[2]));
-		Shader.SetGlobalColor(_ColdMG, PremultiplyAlpha(Settings.ColdColours[1]));
-		Shader.SetGlobalColor(_ColdBG, PremultiplyAlpha(Settings.ColdColours[0]));
-		Shader.SetGlobalColor(_HotFG, PremultiplyAlpha(Settings.HotColours[2]));
-		Shader.SetGlobalColor(_HotMG, PremultiplyAlpha(Settings.HotColours[1]));
-		Shader.SetGlobalColor(_HotBG, PremultiplyAlpha(Settings.HotColours[0]));
-		Shader.SetGlobalVector(_TemperatureParallax, Settings.TemperatureParallax);
-		Shader.SetGlobalVector(_ColdUVOffset1, new Vector4(Settings.ColdBGUVOffset.x, Settings.ColdBGUVOffset.y, Settings.ColdMGUVOffset.x, Settings.ColdMGUVOffset.y));
-		Shader.SetGlobalVector(_ColdUVOffset2, new Vector4(Settings.ColdFGUVOffset.x, Settings.ColdFGUVOffset.y, 0f, 0f));
-		Shader.SetGlobalVector(_HotUVOffset1, new Vector4(Settings.HotBGUVOffset.x, Settings.HotBGUVOffset.y, Settings.HotMGUVOffset.x, Settings.HotMGUVOffset.y));
-		Shader.SetGlobalVector(_HotUVOffset2, new Vector4(Settings.HotFGUVOffset.x, Settings.HotFGUVOffset.y, 0f, 0f));
-		Shader.SetGlobalColor(_DustColour, PremultiplyAlpha(Settings.DustColour));
-		Shader.SetGlobalVector(_DustInfo, new Vector4(Settings.DustScale, Settings.DustMovement.x, Settings.DustMovement.y, Settings.DustMovement.z));
-		Shader.SetGlobalTexture(_DustTex, Settings.DustTex);
-		Shader.SetGlobalVector(_DebugShowInfo, new Vector4(Settings.ShowDust, Settings.ShowGas, Settings.ShowShadow, Settings.ShowTemperature));
-		Shader.SetGlobalVector(_HeatHazeParameters, Settings.HeatHazeParameters);
-		Shader.SetGlobalTexture(_HeatHazeTexture, Settings.HeatHazeTexture);
-		Shader.SetGlobalVector(_ShineParams, new Vector4(Settings.ShineCenter.x, Settings.ShineCenter.y, Settings.ShineRange.x, Settings.ShineRange.y));
-		Shader.SetGlobalVector(_ShineParams2, new Vector4(Settings.ShineZoomSpeed, 0f, 0f, 0f));
-		Shader.SetGlobalFloat(_WorldZoneGasBlend, Settings.WorldZoneGasBlend);
-		Shader.SetGlobalFloat(_WorldZoneLiquidBlend, Settings.WorldZoneLiquidBlend);
-		Shader.SetGlobalFloat(_WorldZoneForegroundBlend, Settings.WorldZoneForegroundBlend);
-		Shader.SetGlobalFloat(_WorldZoneSimpleAnimBlend, Settings.WorldZoneSimpleAnimBlend);
-		Shader.SetGlobalColor(_CharacterLitColour, Settings.characterLighting.litColour);
-		Shader.SetGlobalColor(_CharacterUnlitColour, Settings.characterLighting.unlitColour);
-		Shader.SetGlobalTexture(_BuildingDamagedTex, Settings.BuildingDamagedTex);
-		Shader.SetGlobalVector(_BuildingDamagedUVParameters, Settings.BuildingDamagedUVParameters);
-		Shader.SetGlobalTexture(_DiseaseOverlayTex, Settings.DiseaseOverlayTex);
-		Shader.SetGlobalVector(_DiseaseOverlayTexInfo, Settings.DiseaseOverlayTexInfo);
-		if (Settings.ShowRadiation)
+		Shader.SetGlobalVector(Lighting._GasOpacity, new Vector4(this.Settings.GasMinOpacity, this.Settings.GasMaxOpacity, 0f, 0f));
+		Shader.SetGlobalColor(Lighting._DarkenTintBackground, this.Settings.DarkenTints[0]);
+		Shader.SetGlobalColor(Lighting._DarkenTintMidground, this.Settings.DarkenTints[1]);
+		Shader.SetGlobalColor(Lighting._DarkenTintForeground, this.Settings.DarkenTints[2]);
+		Shader.SetGlobalColor(Lighting._BrightenOverlay, this.Settings.BrightenOverlayColour);
+		Shader.SetGlobalColor(Lighting._ColdFG, this.PremultiplyAlpha(this.Settings.ColdColours[2]));
+		Shader.SetGlobalColor(Lighting._ColdMG, this.PremultiplyAlpha(this.Settings.ColdColours[1]));
+		Shader.SetGlobalColor(Lighting._ColdBG, this.PremultiplyAlpha(this.Settings.ColdColours[0]));
+		Shader.SetGlobalColor(Lighting._HotFG, this.PremultiplyAlpha(this.Settings.HotColours[2]));
+		Shader.SetGlobalColor(Lighting._HotMG, this.PremultiplyAlpha(this.Settings.HotColours[1]));
+		Shader.SetGlobalColor(Lighting._HotBG, this.PremultiplyAlpha(this.Settings.HotColours[0]));
+		Shader.SetGlobalVector(Lighting._TemperatureParallax, this.Settings.TemperatureParallax);
+		Shader.SetGlobalVector(Lighting._ColdUVOffset1, new Vector4(this.Settings.ColdBGUVOffset.x, this.Settings.ColdBGUVOffset.y, this.Settings.ColdMGUVOffset.x, this.Settings.ColdMGUVOffset.y));
+		Shader.SetGlobalVector(Lighting._ColdUVOffset2, new Vector4(this.Settings.ColdFGUVOffset.x, this.Settings.ColdFGUVOffset.y, 0f, 0f));
+		Shader.SetGlobalVector(Lighting._HotUVOffset1, new Vector4(this.Settings.HotBGUVOffset.x, this.Settings.HotBGUVOffset.y, this.Settings.HotMGUVOffset.x, this.Settings.HotMGUVOffset.y));
+		Shader.SetGlobalVector(Lighting._HotUVOffset2, new Vector4(this.Settings.HotFGUVOffset.x, this.Settings.HotFGUVOffset.y, 0f, 0f));
+		Shader.SetGlobalColor(Lighting._DustColour, this.PremultiplyAlpha(this.Settings.DustColour));
+		Shader.SetGlobalVector(Lighting._DustInfo, new Vector4(this.Settings.DustScale, this.Settings.DustMovement.x, this.Settings.DustMovement.y, this.Settings.DustMovement.z));
+		Shader.SetGlobalTexture(Lighting._DustTex, this.Settings.DustTex);
+		Shader.SetGlobalVector(Lighting._DebugShowInfo, new Vector4(this.Settings.ShowDust, this.Settings.ShowGas, this.Settings.ShowShadow, this.Settings.ShowTemperature));
+		Shader.SetGlobalVector(Lighting._HeatHazeParameters, this.Settings.HeatHazeParameters);
+		Shader.SetGlobalTexture(Lighting._HeatHazeTexture, this.Settings.HeatHazeTexture);
+		Shader.SetGlobalVector(Lighting._ShineParams, new Vector4(this.Settings.ShineCenter.x, this.Settings.ShineCenter.y, this.Settings.ShineRange.x, this.Settings.ShineRange.y));
+		Shader.SetGlobalVector(Lighting._ShineParams2, new Vector4(this.Settings.ShineZoomSpeed, 0f, 0f, 0f));
+		Shader.SetGlobalFloat(Lighting._WorldZoneGasBlend, this.Settings.WorldZoneGasBlend);
+		Shader.SetGlobalFloat(Lighting._WorldZoneLiquidBlend, this.Settings.WorldZoneLiquidBlend);
+		Shader.SetGlobalFloat(Lighting._WorldZoneForegroundBlend, this.Settings.WorldZoneForegroundBlend);
+		Shader.SetGlobalFloat(Lighting._WorldZoneSimpleAnimBlend, this.Settings.WorldZoneSimpleAnimBlend);
+		Shader.SetGlobalColor(Lighting._CharacterLitColour, this.Settings.characterLighting.litColour);
+		Shader.SetGlobalColor(Lighting._CharacterUnlitColour, this.Settings.characterLighting.unlitColour);
+		Shader.SetGlobalTexture(Lighting._BuildingDamagedTex, this.Settings.BuildingDamagedTex);
+		Shader.SetGlobalVector(Lighting._BuildingDamagedUVParameters, this.Settings.BuildingDamagedUVParameters);
+		Shader.SetGlobalTexture(Lighting._DiseaseOverlayTex, this.Settings.DiseaseOverlayTex);
+		Shader.SetGlobalVector(Lighting._DiseaseOverlayTexInfo, this.Settings.DiseaseOverlayTexInfo);
+		if (this.Settings.ShowRadiation)
 		{
-			Shader.SetGlobalColor(_RadHazeColor, PremultiplyAlpha(Settings.RadColor));
+			Shader.SetGlobalColor(Lighting._RadHazeColor, this.PremultiplyAlpha(this.Settings.RadColor));
 		}
 		else
 		{
-			Shader.SetGlobalColor(_RadHazeColor, Color.clear);
+			Shader.SetGlobalColor(Lighting._RadHazeColor, Color.clear);
 		}
-		Shader.SetGlobalVector(_RadUVOffset1, new Vector4(Settings.Rad1UVOffset.x, Settings.Rad1UVOffset.y, Settings.Rad2UVOffset.x, Settings.Rad2UVOffset.y));
-		Shader.SetGlobalVector(_RadUVOffset2, new Vector4(Settings.Rad3UVOffset.x, Settings.Rad3UVOffset.y, Settings.Rad4UVOffset.x, Settings.Rad4UVOffset.y));
-		Shader.SetGlobalVector(_RadUVScales, new Vector4(1f / Settings.RadUVScales.x, 1f / Settings.RadUVScales.y, 1f / Settings.RadUVScales.z, 1f / Settings.RadUVScales.w));
-		Shader.SetGlobalVector(_RadRange1, new Vector4(Settings.Rad1Range.x, Settings.Rad1Range.y, Settings.Rad2Range.x, Settings.Rad2Range.y));
-		Shader.SetGlobalVector(_RadRange2, new Vector4(Settings.Rad3Range.x, Settings.Rad3Range.y, Settings.Rad4Range.x, Settings.Rad4Range.y));
+		Shader.SetGlobalVector(Lighting._RadUVOffset1, new Vector4(this.Settings.Rad1UVOffset.x, this.Settings.Rad1UVOffset.y, this.Settings.Rad2UVOffset.x, this.Settings.Rad2UVOffset.y));
+		Shader.SetGlobalVector(Lighting._RadUVOffset2, new Vector4(this.Settings.Rad3UVOffset.x, this.Settings.Rad3UVOffset.y, this.Settings.Rad4UVOffset.x, this.Settings.Rad4UVOffset.y));
+		Shader.SetGlobalVector(Lighting._RadUVScales, new Vector4(1f / this.Settings.RadUVScales.x, 1f / this.Settings.RadUVScales.y, 1f / this.Settings.RadUVScales.z, 1f / this.Settings.RadUVScales.w));
+		Shader.SetGlobalVector(Lighting._RadRange1, new Vector4(this.Settings.Rad1Range.x, this.Settings.Rad1Range.y, this.Settings.Rad2Range.x, this.Settings.Rad2Range.y));
+		Shader.SetGlobalVector(Lighting._RadRange2, new Vector4(this.Settings.Rad3Range.x, this.Settings.Rad3Range.y, this.Settings.Rad4Range.x, this.Settings.Rad4Range.y));
 		if (LightBuffer.Instance != null && LightBuffer.Instance.Texture != null)
 		{
-			Shader.SetGlobalTexture(_LightBufferTex, LightBuffer.Instance.Texture);
+			Shader.SetGlobalTexture(Lighting._LightBufferTex, LightBuffer.Instance.Texture);
 		}
 	}
+
+	// Token: 0x04005CE6 RID: 23782
+	public global::LightingSettings Settings;
+
+	// Token: 0x04005CE7 RID: 23783
+	public static Lighting Instance;
+
+	// Token: 0x04005CE8 RID: 23784
+	[NonSerialized]
+	public bool disableLighting;
+
+	// Token: 0x04005CE9 RID: 23785
+	private static int _liquidZ = Shader.PropertyToID("_LiquidZ");
+
+	// Token: 0x04005CEA RID: 23786
+	private static int _DigMapMapParameters = Shader.PropertyToID("_DigMapMapParameters");
+
+	// Token: 0x04005CEB RID: 23787
+	private static int _DigDamageMap = Shader.PropertyToID("_DigDamageMap");
+
+	// Token: 0x04005CEC RID: 23788
+	private static int _StateTransitionMap = Shader.PropertyToID("_StateTransitionMap");
+
+	// Token: 0x04005CED RID: 23789
+	private static int _StateTransitionColor = Shader.PropertyToID("_StateTransitionColor");
+
+	// Token: 0x04005CEE RID: 23790
+	private static int _StateTransitionParameters = Shader.PropertyToID("_StateTransitionParameters");
+
+	// Token: 0x04005CEF RID: 23791
+	private static int _FallingSolidMap = Shader.PropertyToID("_FallingSolidMap");
+
+	// Token: 0x04005CF0 RID: 23792
+	private static int _FallingSolidColor = Shader.PropertyToID("_FallingSolidColor");
+
+	// Token: 0x04005CF1 RID: 23793
+	private static int _FallingSolidParameters = Shader.PropertyToID("_FallingSolidParameters");
+
+	// Token: 0x04005CF2 RID: 23794
+	private static int _WaterTrimColor = Shader.PropertyToID("_WaterTrimColor");
+
+	// Token: 0x04005CF3 RID: 23795
+	private static int _WaterParameters2 = Shader.PropertyToID("_WaterParameters2");
+
+	// Token: 0x04005CF4 RID: 23796
+	private static int _WaterWaveParameters = Shader.PropertyToID("_WaterWaveParameters");
+
+	// Token: 0x04005CF5 RID: 23797
+	private static int _WaterWaveParameters2 = Shader.PropertyToID("_WaterWaveParameters2");
+
+	// Token: 0x04005CF6 RID: 23798
+	private static int _WaterDetailParameters = Shader.PropertyToID("_WaterDetailParameters");
+
+	// Token: 0x04005CF7 RID: 23799
+	private static int _WaterDistortionParameters = Shader.PropertyToID("_WaterDistortionParameters");
+
+	// Token: 0x04005CF8 RID: 23800
+	private static int _BloomParameters = Shader.PropertyToID("_BloomParameters");
+
+	// Token: 0x04005CF9 RID: 23801
+	private static int _LiquidParameters2 = Shader.PropertyToID("_LiquidParameters2");
+
+	// Token: 0x04005CFA RID: 23802
+	private static int _GridParameters = Shader.PropertyToID("_GridParameters");
+
+	// Token: 0x04005CFB RID: 23803
+	private static int _GridColor = Shader.PropertyToID("_GridColor");
+
+	// Token: 0x04005CFC RID: 23804
+	private static int _EdgeGlowParameters = Shader.PropertyToID("_EdgeGlowParameters");
+
+	// Token: 0x04005CFD RID: 23805
+	private static int _SubstanceParameters = Shader.PropertyToID("_SubstanceParameters");
+
+	// Token: 0x04005CFE RID: 23806
+	private static int _TileEdgeParameters = Shader.PropertyToID("_TileEdgeParameters");
+
+	// Token: 0x04005CFF RID: 23807
+	private static int _AnimParameters = Shader.PropertyToID("_AnimParameters");
+
+	// Token: 0x04005D00 RID: 23808
+	private static int _GasOpacity = Shader.PropertyToID("_GasOpacity");
+
+	// Token: 0x04005D01 RID: 23809
+	private static int _DarkenTintBackground = Shader.PropertyToID("_DarkenTintBackground");
+
+	// Token: 0x04005D02 RID: 23810
+	private static int _DarkenTintMidground = Shader.PropertyToID("_DarkenTintMidground");
+
+	// Token: 0x04005D03 RID: 23811
+	private static int _DarkenTintForeground = Shader.PropertyToID("_DarkenTintForeground");
+
+	// Token: 0x04005D04 RID: 23812
+	private static int _BrightenOverlay = Shader.PropertyToID("_BrightenOverlay");
+
+	// Token: 0x04005D05 RID: 23813
+	private static int _ColdFG = Shader.PropertyToID("_ColdFG");
+
+	// Token: 0x04005D06 RID: 23814
+	private static int _ColdMG = Shader.PropertyToID("_ColdMG");
+
+	// Token: 0x04005D07 RID: 23815
+	private static int _ColdBG = Shader.PropertyToID("_ColdBG");
+
+	// Token: 0x04005D08 RID: 23816
+	private static int _HotFG = Shader.PropertyToID("_HotFG");
+
+	// Token: 0x04005D09 RID: 23817
+	private static int _HotMG = Shader.PropertyToID("_HotMG");
+
+	// Token: 0x04005D0A RID: 23818
+	private static int _HotBG = Shader.PropertyToID("_HotBG");
+
+	// Token: 0x04005D0B RID: 23819
+	private static int _TemperatureParallax = Shader.PropertyToID("_TemperatureParallax");
+
+	// Token: 0x04005D0C RID: 23820
+	private static int _ColdUVOffset1 = Shader.PropertyToID("_ColdUVOffset1");
+
+	// Token: 0x04005D0D RID: 23821
+	private static int _ColdUVOffset2 = Shader.PropertyToID("_ColdUVOffset2");
+
+	// Token: 0x04005D0E RID: 23822
+	private static int _HotUVOffset1 = Shader.PropertyToID("_HotUVOffset1");
+
+	// Token: 0x04005D0F RID: 23823
+	private static int _HotUVOffset2 = Shader.PropertyToID("_HotUVOffset2");
+
+	// Token: 0x04005D10 RID: 23824
+	private static int _DustColour = Shader.PropertyToID("_DustColour");
+
+	// Token: 0x04005D11 RID: 23825
+	private static int _DustInfo = Shader.PropertyToID("_DustInfo");
+
+	// Token: 0x04005D12 RID: 23826
+	private static int _DustTex = Shader.PropertyToID("_DustTex");
+
+	// Token: 0x04005D13 RID: 23827
+	private static int _DebugShowInfo = Shader.PropertyToID("_DebugShowInfo");
+
+	// Token: 0x04005D14 RID: 23828
+	private static int _HeatHazeParameters = Shader.PropertyToID("_HeatHazeParameters");
+
+	// Token: 0x04005D15 RID: 23829
+	private static int _HeatHazeTexture = Shader.PropertyToID("_HeatHazeTexture");
+
+	// Token: 0x04005D16 RID: 23830
+	private static int _ShineParams = Shader.PropertyToID("_ShineParams");
+
+	// Token: 0x04005D17 RID: 23831
+	private static int _ShineParams2 = Shader.PropertyToID("_ShineParams2");
+
+	// Token: 0x04005D18 RID: 23832
+	private static int _WorldZoneGasBlend = Shader.PropertyToID("_WorldZoneGasBlend");
+
+	// Token: 0x04005D19 RID: 23833
+	private static int _WorldZoneLiquidBlend = Shader.PropertyToID("_WorldZoneLiquidBlend");
+
+	// Token: 0x04005D1A RID: 23834
+	private static int _WorldZoneForegroundBlend = Shader.PropertyToID("_WorldZoneForegroundBlend");
+
+	// Token: 0x04005D1B RID: 23835
+	private static int _WorldZoneSimpleAnimBlend = Shader.PropertyToID("_WorldZoneSimpleAnimBlend");
+
+	// Token: 0x04005D1C RID: 23836
+	private static int _CharacterLitColour = Shader.PropertyToID("_CharacterLitColour");
+
+	// Token: 0x04005D1D RID: 23837
+	private static int _CharacterUnlitColour = Shader.PropertyToID("_CharacterUnlitColour");
+
+	// Token: 0x04005D1E RID: 23838
+	private static int _BuildingDamagedTex = Shader.PropertyToID("_BuildingDamagedTex");
+
+	// Token: 0x04005D1F RID: 23839
+	private static int _BuildingDamagedUVParameters = Shader.PropertyToID("_BuildingDamagedUVParameters");
+
+	// Token: 0x04005D20 RID: 23840
+	private static int _DiseaseOverlayTex = Shader.PropertyToID("_DiseaseOverlayTex");
+
+	// Token: 0x04005D21 RID: 23841
+	private static int _DiseaseOverlayTexInfo = Shader.PropertyToID("_DiseaseOverlayTexInfo");
+
+	// Token: 0x04005D22 RID: 23842
+	private static int _RadHazeColor = Shader.PropertyToID("_RadHazeColor");
+
+	// Token: 0x04005D23 RID: 23843
+	private static int _RadUVOffset1 = Shader.PropertyToID("_RadUVOffset1");
+
+	// Token: 0x04005D24 RID: 23844
+	private static int _RadUVOffset2 = Shader.PropertyToID("_RadUVOffset2");
+
+	// Token: 0x04005D25 RID: 23845
+	private static int _RadUVScales = Shader.PropertyToID("_RadUVScales");
+
+	// Token: 0x04005D26 RID: 23846
+	private static int _RadRange1 = Shader.PropertyToID("_RadRange1");
+
+	// Token: 0x04005D27 RID: 23847
+	private static int _RadRange2 = Shader.PropertyToID("_RadRange2");
+
+	// Token: 0x04005D28 RID: 23848
+	private static int _LightBufferTex = Shader.PropertyToID("_LightBufferTex");
 }

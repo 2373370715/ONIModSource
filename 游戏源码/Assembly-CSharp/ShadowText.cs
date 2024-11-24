@@ -1,63 +1,69 @@
+﻿using System;
 using System.Text.RegularExpressions;
 using UnityEngine.UI;
 
+// Token: 0x02001F1A RID: 7962
 public class ShadowText : ShadowRect
 {
-	private Text shadowText;
-
-	private Text mainText;
-
+	// Token: 0x0600A7DE RID: 42974 RVA: 0x003FAAEC File Offset: 0x003F8CEC
 	protected override void MatchRect()
 	{
-		if (RectMain == null || RectShadow == null)
+		if (this.RectMain == null || this.RectShadow == null)
 		{
 			return;
 		}
-		if (shadowText == null)
+		if (this.shadowText == null)
 		{
-			shadowText = RectShadow.GetComponent<Text>();
+			this.shadowText = this.RectShadow.GetComponent<Text>();
 		}
-		if (mainText == null)
+		if (this.mainText == null)
 		{
-			mainText = RectMain.GetComponent<Text>();
+			this.mainText = this.RectMain.GetComponent<Text>();
 		}
-		if (!(shadowText == null) && !(mainText == null))
+		if (this.shadowText == null || this.mainText == null)
 		{
-			if (shadowText.font != mainText.font)
-			{
-				shadowText.font = mainText.font;
-			}
-			if (shadowText.fontSize != mainText.fontSize)
-			{
-				shadowText.fontSize = mainText.fontSize;
-			}
-			if (shadowText.alignment != mainText.alignment)
-			{
-				shadowText.alignment = mainText.alignment;
-			}
-			if (shadowText.lineSpacing != mainText.lineSpacing)
-			{
-				shadowText.lineSpacing = mainText.lineSpacing;
-			}
-			string text = mainText.text;
-			text = Regex.Replace(text, "\\</?color\\b.*?\\>", string.Empty);
-			if (shadowText.text != text)
-			{
-				shadowText.text = text;
-			}
-			if (shadowText.color != shadowColor)
-			{
-				shadowText.color = shadowColor;
-			}
-			if (shadowText.horizontalOverflow != mainText.horizontalOverflow)
-			{
-				shadowText.horizontalOverflow = mainText.horizontalOverflow;
-			}
-			if (shadowText.verticalOverflow != mainText.verticalOverflow)
-			{
-				shadowText.verticalOverflow = mainText.verticalOverflow;
-			}
-			base.MatchRect();
+			return;
 		}
+		if (this.shadowText.font != this.mainText.font)
+		{
+			this.shadowText.font = this.mainText.font;
+		}
+		if (this.shadowText.fontSize != this.mainText.fontSize)
+		{
+			this.shadowText.fontSize = this.mainText.fontSize;
+		}
+		if (this.shadowText.alignment != this.mainText.alignment)
+		{
+			this.shadowText.alignment = this.mainText.alignment;
+		}
+		if (this.shadowText.lineSpacing != this.mainText.lineSpacing)
+		{
+			this.shadowText.lineSpacing = this.mainText.lineSpacing;
+		}
+		string text = this.mainText.text;
+		text = Regex.Replace(text, "\\</?color\\b.*?\\>", string.Empty);
+		if (this.shadowText.text != text)
+		{
+			this.shadowText.text = text;
+		}
+		if (this.shadowText.color != this.shadowColor)
+		{
+			this.shadowText.color = this.shadowColor;
+		}
+		if (this.shadowText.horizontalOverflow != this.mainText.horizontalOverflow)
+		{
+			this.shadowText.horizontalOverflow = this.mainText.horizontalOverflow;
+		}
+		if (this.shadowText.verticalOverflow != this.mainText.verticalOverflow)
+		{
+			this.shadowText.verticalOverflow = this.mainText.verticalOverflow;
+		}
+		base.MatchRect();
 	}
+
+	// Token: 0x04008400 RID: 33792
+	private Text shadowText;
+
+	// Token: 0x04008401 RID: 33793
+	private Text mainText;
 }

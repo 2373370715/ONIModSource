@@ -1,15 +1,25 @@
+﻿using System;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x02000350 RID: 848
 public class GasConduitBridgeConfig : IBuildingConfig
 {
-	public const string ID = "GasConduitBridge";
-
-	private const ConduitType CONDUIT_TYPE = ConduitType.Gas;
-
+	// Token: 0x06000DB9 RID: 3513 RVA: 0x00174820 File Offset: 0x00172A20
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef("GasConduitBridge", 3, 1, "utilitygasbridge_kanim", 10, 3f, BUILDINGS.CONSTRUCTION_MASS_KG.TIER1, MATERIALS.RAW_MINERALS, 1600f, BuildLocationRule.Conduit, noise: NOISE_POLLUTION.NONE, decor: BUILDINGS.DECOR.NONE);
+		string id = "GasConduitBridge";
+		int width = 3;
+		int height = 1;
+		string anim = "utilitygasbridge_kanim";
+		int hitpoints = 10;
+		float construction_time = 3f;
+		float[] tier = BUILDINGS.CONSTRUCTION_MASS_KG.TIER1;
+		string[] raw_MINERALS = MATERIALS.RAW_MINERALS;
+		float melting_point = 1600f;
+		BuildLocationRule build_location_rule = BuildLocationRule.Conduit;
+		EffectorValues none = NOISE_POLLUTION.NONE;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, raw_MINERALS, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, none, 0.2f);
 		buildingDef.ObjectLayer = ObjectLayer.GasConduitConnection;
 		buildingDef.SceneLayer = Grid.SceneLayer.GasConduitBridges;
 		buildingDef.InputConduitType = ConduitType.Gas;
@@ -28,6 +38,7 @@ public class GasConduitBridgeConfig : IBuildingConfig
 		return buildingDef;
 	}
 
+	// Token: 0x06000DBA RID: 3514 RVA: 0x000AC0AA File Offset: 0x000AA2AA
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		GeneratedBuildings.MakeBuildingAlwaysOperational(go);
@@ -35,10 +46,17 @@ public class GasConduitBridgeConfig : IBuildingConfig
 		go.AddOrGet<ConduitBridge>().type = ConduitType.Gas;
 	}
 
+	// Token: 0x06000DBB RID: 3515 RVA: 0x000AC0D3 File Offset: 0x000AA2D3
 	public override void DoPostConfigureComplete(GameObject go)
 	{
-		Object.DestroyImmediate(go.GetComponent<RequireInputs>());
-		Object.DestroyImmediate(go.GetComponent<ConduitConsumer>());
-		Object.DestroyImmediate(go.GetComponent<ConduitDispenser>());
+		UnityEngine.Object.DestroyImmediate(go.GetComponent<RequireInputs>());
+		UnityEngine.Object.DestroyImmediate(go.GetComponent<ConduitConsumer>());
+		UnityEngine.Object.DestroyImmediate(go.GetComponent<ConduitDispenser>());
 	}
+
+	// Token: 0x040009DA RID: 2522
+	public const string ID = "GasConduitBridge";
+
+	// Token: 0x040009DB RID: 2523
+	private const ConduitType CONDUIT_TYPE = ConduitType.Gas;
 }

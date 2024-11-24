@@ -1,37 +1,48 @@
+﻿using System;
 using Klei.AI;
 
-namespace Database;
-
-public class BuildingAttributes : ResourceSet<Attribute>
+namespace Database
 {
-	public Attribute Decor;
-
-	public Attribute DecorRadius;
-
-	public Attribute NoisePollution;
-
-	public Attribute NoisePollutionRadius;
-
-	public Attribute Hygiene;
-
-	public Attribute Comfort;
-
-	public Attribute OverheatTemperature;
-
-	public Attribute FatalTemperature;
-
-	public BuildingAttributes(ResourceSet parent)
-		: base("BuildingAttributes", parent)
+	// Token: 0x0200211C RID: 8476
+	public class BuildingAttributes : ResourceSet<Klei.AI.Attribute>
 	{
-		Decor = Add(new Attribute("Decor", is_trainable: true, Attribute.Display.General, is_profession: false));
-		DecorRadius = Add(new Attribute("DecorRadius", is_trainable: true, Attribute.Display.General, is_profession: false));
-		NoisePollution = Add(new Attribute("NoisePollution", is_trainable: true, Attribute.Display.General, is_profession: false));
-		NoisePollutionRadius = Add(new Attribute("NoisePollutionRadius", is_trainable: true, Attribute.Display.General, is_profession: false));
-		Hygiene = Add(new Attribute("Hygiene", is_trainable: true, Attribute.Display.General, is_profession: false));
-		Comfort = Add(new Attribute("Comfort", is_trainable: true, Attribute.Display.General, is_profession: false));
-		OverheatTemperature = Add(new Attribute("OverheatTemperature", is_trainable: true, Attribute.Display.General, is_profession: false));
-		OverheatTemperature.SetFormatter(new StandardAttributeFormatter(GameUtil.UnitClass.Temperature, GameUtil.TimeSlice.ModifyOnly));
-		FatalTemperature = Add(new Attribute("FatalTemperature", is_trainable: true, Attribute.Display.General, is_profession: false));
-		FatalTemperature.SetFormatter(new StandardAttributeFormatter(GameUtil.UnitClass.Temperature, GameUtil.TimeSlice.ModifyOnly));
+		// Token: 0x0600B40D RID: 46093 RVA: 0x0043DA30 File Offset: 0x0043BC30
+		public BuildingAttributes(ResourceSet parent) : base("BuildingAttributes", parent)
+		{
+			this.Decor = base.Add(new Klei.AI.Attribute("Decor", true, Klei.AI.Attribute.Display.General, false, 0f, null, null, null, null));
+			this.DecorRadius = base.Add(new Klei.AI.Attribute("DecorRadius", true, Klei.AI.Attribute.Display.General, false, 0f, null, null, null, null));
+			this.NoisePollution = base.Add(new Klei.AI.Attribute("NoisePollution", true, Klei.AI.Attribute.Display.General, false, 0f, null, null, null, null));
+			this.NoisePollutionRadius = base.Add(new Klei.AI.Attribute("NoisePollutionRadius", true, Klei.AI.Attribute.Display.General, false, 0f, null, null, null, null));
+			this.Hygiene = base.Add(new Klei.AI.Attribute("Hygiene", true, Klei.AI.Attribute.Display.General, false, 0f, null, null, null, null));
+			this.Comfort = base.Add(new Klei.AI.Attribute("Comfort", true, Klei.AI.Attribute.Display.General, false, 0f, null, null, null, null));
+			this.OverheatTemperature = base.Add(new Klei.AI.Attribute("OverheatTemperature", true, Klei.AI.Attribute.Display.General, false, 0f, null, null, null, null));
+			this.OverheatTemperature.SetFormatter(new StandardAttributeFormatter(GameUtil.UnitClass.Temperature, GameUtil.TimeSlice.ModifyOnly));
+			this.FatalTemperature = base.Add(new Klei.AI.Attribute("FatalTemperature", true, Klei.AI.Attribute.Display.General, false, 0f, null, null, null, null));
+			this.FatalTemperature.SetFormatter(new StandardAttributeFormatter(GameUtil.UnitClass.Temperature, GameUtil.TimeSlice.ModifyOnly));
+		}
+
+		// Token: 0x04008E84 RID: 36484
+		public Klei.AI.Attribute Decor;
+
+		// Token: 0x04008E85 RID: 36485
+		public Klei.AI.Attribute DecorRadius;
+
+		// Token: 0x04008E86 RID: 36486
+		public Klei.AI.Attribute NoisePollution;
+
+		// Token: 0x04008E87 RID: 36487
+		public Klei.AI.Attribute NoisePollutionRadius;
+
+		// Token: 0x04008E88 RID: 36488
+		public Klei.AI.Attribute Hygiene;
+
+		// Token: 0x04008E89 RID: 36489
+		public Klei.AI.Attribute Comfort;
+
+		// Token: 0x04008E8A RID: 36490
+		public Klei.AI.Attribute OverheatTemperature;
+
+		// Token: 0x04008E8B RID: 36491
+		public Klei.AI.Attribute FatalTemperature;
 	}
 }

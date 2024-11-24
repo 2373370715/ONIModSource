@@ -1,122 +1,131 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using KSerialization;
 using UnityEngine;
 
+// Token: 0x0200123B RID: 4667
 [SerializationConfig(MemberSerialization.OptIn)]
 public class DiscoveredResources : KMonoBehaviour, ISaveLoadable, ISim4000ms
 {
-	public static DiscoveredResources Instance;
-
-	[Serialize]
-	private HashSet<Tag> Discovered = new HashSet<Tag>();
-
-	[Serialize]
-	private Dictionary<Tag, HashSet<Tag>> DiscoveredCategories = new Dictionary<Tag, HashSet<Tag>>();
-
-	[Serialize]
-	public Dictionary<Tag, float> newDiscoveries = new Dictionary<Tag, float>();
-
-	public event Action<Tag, Tag> OnDiscover;
-
+	// Token: 0x06005F86 RID: 24454 RVA: 0x000DE484 File Offset: 0x000DC684
 	public static void DestroyInstance()
 	{
-		Instance = null;
+		DiscoveredResources.Instance = null;
 	}
 
+	// Token: 0x1400001D RID: 29
+	// (add) Token: 0x06005F87 RID: 24455 RVA: 0x002AA64C File Offset: 0x002A884C
+	// (remove) Token: 0x06005F88 RID: 24456 RVA: 0x002AA684 File Offset: 0x002A8884
+	public event Action<Tag, Tag> OnDiscover;
+
+	// Token: 0x06005F89 RID: 24457 RVA: 0x002AA6BC File Offset: 0x002A88BC
 	public void Discover(Tag tag, Tag categoryTag)
 	{
-		bool num = Discovered.Add(tag);
-		DiscoverCategory(categoryTag, tag);
-		if (num)
+		bool flag = this.Discovered.Add(tag);
+		this.DiscoverCategory(categoryTag, tag);
+		if (flag)
 		{
 			if (this.OnDiscover != null)
 			{
 				this.OnDiscover(categoryTag, tag);
 			}
-			if (!newDiscoveries.ContainsKey(tag))
+			if (!this.newDiscoveries.ContainsKey(tag))
 			{
-				newDiscoveries.Add(tag, (float)GameClock.Instance.GetCycle() + GameClock.Instance.GetCurrentCycleAsPercentage());
+				this.newDiscoveries.Add(tag, (float)GameClock.Instance.GetCycle() + GameClock.Instance.GetCurrentCycleAsPercentage());
 			}
 		}
 	}
 
+	// Token: 0x06005F8A RID: 24458 RVA: 0x000DE48C File Offset: 0x000DC68C
 	public void Discover(Tag tag)
 	{
-		Discover(tag, GetCategoryForEntity(Assets.GetPrefab(tag).GetComponent<KPrefabID>()));
+		this.Discover(tag, DiscoveredResources.GetCategoryForEntity(Assets.GetPrefab(tag).GetComponent<KPrefabID>()));
 	}
 
+	// Token: 0x06005F8B RID: 24459 RVA: 0x000DE4A5 File Offset: 0x000DC6A5
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		Instance = this;
+		DiscoveredResources.Instance = this;
 	}
 
+	// Token: 0x06005F8C RID: 24460 RVA: 0x000DE4B3 File Offset: 0x000DC6B3
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		FilterDisabledContent();
+		this.FilterDisabledContent();
 	}
 
+	// Token: 0x06005F8D RID: 24461 RVA: 0x002AA724 File Offset: 0x002A8924
 	private void FilterDisabledContent()
 	{
 		HashSet<Tag> hashSet = new HashSet<Tag>();
-		foreach (Tag item in Discovered)
+		foreach (Tag tag in this.Discovered)
 		{
-			Element element = ElementLoader.GetElement(item);
+			Element element = ElementLoader.GetElement(tag);
 			if (element != null && element.disabled)
 			{
-				hashSet.Add(item);
-				continue;
+				hashSet.Add(tag);
 			}
-			GameObject gameObject = Assets.TryGetPrefab(item);
-			if (gameObject != null && gameObject.HasTag(GameTags.DeprecatedContent))
+			else
 			{
-				hashSet.Add(item);
-			}
-			else if (gameObject == null)
-			{
-				hashSet.Add(item);
-			}
-		}
-		foreach (Tag item2 in hashSet)
-		{
-			Discovered.Remove(item2);
-		}
-		foreach (KeyValuePair<Tag, HashSet<Tag>> discoveredCategory in DiscoveredCategories)
-		{
-			foreach (Tag item3 in hashSet)
-			{
-				if (discoveredCategory.Value.Contains(item3))
+				GameObject gameObject = Assets.TryGetPrefab(tag);
+				if (gameObject != null && gameObject.HasTag(GameTags.DeprecatedContent))
 				{
-					discoveredCategory.Value.Remove(item3);
+					hashSet.Add(tag);
+				}
+				else if (gameObject == null)
+				{
+					hashSet.Add(tag);
 				}
 			}
 		}
-		foreach (string item4 in new List<string> { "Pacu", "PacuCleaner", "PacuTropical", "PacuBaby", "PacuCleanerBaby", "PacuTropicalBaby" })
+		foreach (Tag item in hashSet)
 		{
-			if (!DiscoveredCategories.ContainsKey(item4))
+			this.Discovered.Remove(item);
+		}
+		foreach (KeyValuePair<Tag, HashSet<Tag>> keyValuePair in this.DiscoveredCategories)
+		{
+			foreach (Tag item2 in hashSet)
 			{
-				continue;
-			}
-			List<Tag> list = DiscoveredCategories[item4].ToList();
-			SolidConsumerMonitor.Def def = Assets.GetPrefab(item4).GetDef<SolidConsumerMonitor.Def>();
-			foreach (Tag item5 in list)
-			{
-				if (def.diet.GetDietInfo(item5) == null)
+				if (keyValuePair.Value.Contains(item2))
 				{
-					DiscoveredCategories[item4].Remove(item5);
+					keyValuePair.Value.Remove(item2);
+				}
+			}
+		}
+		foreach (string s in new List<string>
+		{
+			"Pacu",
+			"PacuCleaner",
+			"PacuTropical",
+			"PacuBaby",
+			"PacuCleanerBaby",
+			"PacuTropicalBaby"
+		})
+		{
+			if (this.DiscoveredCategories.ContainsKey(s))
+			{
+				List<Tag> list = this.DiscoveredCategories[s].ToList<Tag>();
+				SolidConsumerMonitor.Def def = Assets.GetPrefab(s).GetDef<SolidConsumerMonitor.Def>();
+				foreach (Tag tag2 in list)
+				{
+					if (def.diet.GetDietInfo(tag2) == null)
+					{
+						this.DiscoveredCategories[s].Remove(tag2);
+					}
 				}
 			}
 		}
 	}
 
+	// Token: 0x06005F8E RID: 24462 RVA: 0x002AA9CC File Offset: 0x002A8BCC
 	public bool CheckAllDiscoveredAreNew()
 	{
-		foreach (Tag item in Discovered)
+		foreach (Tag key in this.Discovered)
 		{
-			if (!newDiscoveries.ContainsKey(item))
+			if (!this.newDiscoveries.ContainsKey(key))
 			{
 				return false;
 			}
@@ -124,35 +133,36 @@ public class DiscoveredResources : KMonoBehaviour, ISaveLoadable, ISim4000ms
 		return true;
 	}
 
+	// Token: 0x06005F8F RID: 24463 RVA: 0x002AAA30 File Offset: 0x002A8C30
 	private void DiscoverCategory(Tag category_tag, Tag item_tag)
 	{
-		if (!DiscoveredCategories.TryGetValue(category_tag, out var value))
+		HashSet<Tag> hashSet;
+		if (!this.DiscoveredCategories.TryGetValue(category_tag, out hashSet))
 		{
-			value = new HashSet<Tag>();
-			DiscoveredCategories[category_tag] = value;
+			hashSet = new HashSet<Tag>();
+			this.DiscoveredCategories[category_tag] = hashSet;
 		}
-		value.Add(item_tag);
+		hashSet.Add(item_tag);
 	}
 
+	// Token: 0x06005F90 RID: 24464 RVA: 0x000DE4C1 File Offset: 0x000DC6C1
 	public HashSet<Tag> GetDiscovered()
 	{
-		return Discovered;
+		return this.Discovered;
 	}
 
+	// Token: 0x06005F91 RID: 24465 RVA: 0x000DE4C9 File Offset: 0x000DC6C9
 	public bool IsDiscovered(Tag tag)
 	{
-		if (!Discovered.Contains(tag))
-		{
-			return DiscoveredCategories.ContainsKey(tag);
-		}
-		return true;
+		return this.Discovered.Contains(tag) || this.DiscoveredCategories.ContainsKey(tag);
 	}
 
+	// Token: 0x06005F92 RID: 24466 RVA: 0x002AAA68 File Offset: 0x002A8C68
 	public bool AnyDiscovered(ICollection<Tag> tags)
 	{
 		foreach (Tag tag in tags)
 		{
-			if (IsDiscovered(tag))
+			if (this.IsDiscovered(tag))
 			{
 				return true;
 			}
@@ -160,33 +170,39 @@ public class DiscoveredResources : KMonoBehaviour, ISaveLoadable, ISim4000ms
 		return false;
 	}
 
+	// Token: 0x06005F93 RID: 24467 RVA: 0x000DE4E7 File Offset: 0x000DC6E7
 	public bool TryGetDiscoveredResourcesFromTag(Tag tag, out HashSet<Tag> resources)
 	{
-		return DiscoveredCategories.TryGetValue(tag, out resources);
+		return this.DiscoveredCategories.TryGetValue(tag, out resources);
 	}
 
+	// Token: 0x06005F94 RID: 24468 RVA: 0x002AAABC File Offset: 0x002A8CBC
 	public HashSet<Tag> GetDiscoveredResourcesFromTag(Tag tag)
 	{
-		if (DiscoveredCategories.TryGetValue(tag, out var value))
+		HashSet<Tag> result;
+		if (this.DiscoveredCategories.TryGetValue(tag, out result))
 		{
-			return value;
+			return result;
 		}
 		return new HashSet<Tag>();
 	}
 
+	// Token: 0x06005F95 RID: 24469 RVA: 0x002AAAE0 File Offset: 0x002A8CE0
 	public Dictionary<Tag, HashSet<Tag>> GetDiscoveredResourcesFromTagSet(TagSet tagSet)
 	{
 		Dictionary<Tag, HashSet<Tag>> dictionary = new Dictionary<Tag, HashSet<Tag>>();
-		foreach (Tag item in tagSet)
+		foreach (Tag key in tagSet)
 		{
-			if (DiscoveredCategories.TryGetValue(item, out var value))
+			HashSet<Tag> value;
+			if (this.DiscoveredCategories.TryGetValue(key, out value))
 			{
-				dictionary[item] = value;
+				dictionary[key] = value;
 			}
 		}
 		return dictionary;
 	}
 
+	// Token: 0x06005F96 RID: 24470 RVA: 0x002AAB40 File Offset: 0x002A8D40
 	public static Tag GetCategoryForTags(HashSet<Tag> tags)
 	{
 		Tag result = Tag.Invalid;
@@ -201,6 +217,7 @@ public class DiscoveredResources : KMonoBehaviour, ISaveLoadable, ISim4000ms
 		return result;
 	}
 
+	// Token: 0x06005F97 RID: 24471 RVA: 0x002AABAC File Offset: 0x002A8DAC
 	public static Tag GetCategoryForEntity(KPrefabID entity)
 	{
 		ElementChunk component = entity.GetComponent<ElementChunk>();
@@ -208,23 +225,39 @@ public class DiscoveredResources : KMonoBehaviour, ISaveLoadable, ISim4000ms
 		{
 			return component.GetComponent<PrimaryElement>().Element.materialCategory;
 		}
-		return GetCategoryForTags(entity.Tags);
+		return DiscoveredResources.GetCategoryForTags(entity.Tags);
 	}
 
+	// Token: 0x06005F98 RID: 24472 RVA: 0x002AABE8 File Offset: 0x002A8DE8
 	public void Sim4000ms(float dt)
 	{
 		float num = GameClock.Instance.GetTimeInCycles() + GameClock.Instance.GetCurrentCycleAsPercentage();
 		List<Tag> list = new List<Tag>();
-		foreach (KeyValuePair<Tag, float> newDiscovery in newDiscoveries)
+		foreach (KeyValuePair<Tag, float> keyValuePair in this.newDiscoveries)
 		{
-			if (num - newDiscovery.Value > 3f)
+			if (num - keyValuePair.Value > 3f)
 			{
-				list.Add(newDiscovery.Key);
+				list.Add(keyValuePair.Key);
 			}
 		}
-		foreach (Tag item in list)
+		foreach (Tag key in list)
 		{
-			newDiscoveries.Remove(item);
+			this.newDiscoveries.Remove(key);
 		}
 	}
+
+	// Token: 0x040043C7 RID: 17351
+	public static DiscoveredResources Instance;
+
+	// Token: 0x040043C8 RID: 17352
+	[Serialize]
+	private HashSet<Tag> Discovered = new HashSet<Tag>();
+
+	// Token: 0x040043C9 RID: 17353
+	[Serialize]
+	private Dictionary<Tag, HashSet<Tag>> DiscoveredCategories = new Dictionary<Tag, HashSet<Tag>>();
+
+	// Token: 0x040043CB RID: 17355
+	[Serialize]
+	public Dictionary<Tag, float> newDiscoveries = new Dictionary<Tag, float>();
 }

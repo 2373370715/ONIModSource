@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,229 +7,131 @@ using ProcGen;
 using ProcGenGame;
 using Steamworks;
 using STRINGS;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+// Token: 0x02001ADB RID: 6875
 public class LoadScreen : KModalScreen
 {
-	private struct SaveGameFileDetails
-	{
-		public string BaseName;
-
-		public string FileName;
-
-		public string UniqueID;
-
-		public System.DateTime FileDate;
-
-		public SaveGame.Header FileHeader;
-
-		public SaveGame.GameInfo FileInfo;
-
-		public long Size;
-	}
-
-	private class SelectedSave
-	{
-		public string filename;
-
-		public List<string> dlcIds;
-
-		public KButton button;
-	}
-
-	private const int MAX_CLOUD_TUTORIALS = 5;
-
-	private const string CLOUD_TUTORIAL_KEY = "LoadScreenCloudTutorialTimes";
-
-	private const int ITEMS_PER_PAGE = 20;
-
-	[SerializeField]
-	private KButton closeButton;
-
-	[SerializeField]
-	private GameObject saveButtonRoot;
-
-	[SerializeField]
-	private GameObject colonyListRoot;
-
-	[SerializeField]
-	private GameObject colonyViewRoot;
-
-	[SerializeField]
-	private HierarchyReferences migrationPanelRefs;
-
-	[SerializeField]
-	private HierarchyReferences saveButtonPrefab;
-
-	[SerializeField]
-	private KButton loadMoreButton;
-
-	[Space]
-	[SerializeField]
-	private KButton colonyCloudButton;
-
-	[SerializeField]
-	private KButton colonyLocalButton;
-
-	[SerializeField]
-	private KButton colonyInfoButton;
-
-	[SerializeField]
-	private Sprite localToCloudSprite;
-
-	[SerializeField]
-	private Sprite cloudToLocalSprite;
-
-	[SerializeField]
-	private Sprite errorSprite;
-
-	[SerializeField]
-	private Sprite infoSprite;
-
-	[SerializeField]
-	private Bouncer cloudTutorialBouncer;
-
-	[Space]
-	[SerializeField]
-	private Material materialUiNormal;
-
-	[SerializeField]
-	private Material materialUiDesaturated;
-
-	public bool requireConfirmation = true;
-
-	private SelectedSave selectedSave;
-
-	private List<SaveGameFileDetails> currentColony;
-
-	private UIPool<HierarchyReferences> colonyListPool;
-
-	private ConfirmDialogScreen confirmScreen;
-
-	private InfoDialogScreen infoScreen;
-
-	private InfoDialogScreen errorInfoScreen;
-
-	private ConfirmDialogScreen errorScreen;
-
-	private InspectSaveScreen inspectScreenInstance;
-
-	private int displayedPageCount = 1;
-
+	// Token: 0x1700098E RID: 2446
+	// (get) Token: 0x06008FF8 RID: 36856 RVA: 0x000FE23B File Offset: 0x000FC43B
+	// (set) Token: 0x06008FF9 RID: 36857 RVA: 0x000FE242 File Offset: 0x000FC442
 	public static LoadScreen Instance { get; private set; }
 
+	// Token: 0x06008FFA RID: 36858 RVA: 0x000FE24A File Offset: 0x000FC44A
 	public static void DestroyInstance()
 	{
-		Instance = null;
+		LoadScreen.Instance = null;
 	}
 
+	// Token: 0x06008FFB RID: 36859 RVA: 0x00378A58 File Offset: 0x00376C58
 	protected override void OnPrefabInit()
 	{
-		Debug.Assert(Instance == null);
-		Instance = this;
+		global::Debug.Assert(LoadScreen.Instance == null);
+		LoadScreen.Instance = this;
 		base.OnPrefabInit();
-		saveButtonPrefab.gameObject.SetActive(value: false);
-		colonyListPool = new UIPool<HierarchyReferences>(saveButtonPrefab);
+		this.saveButtonPrefab.gameObject.SetActive(false);
+		this.colonyListPool = new UIPool<HierarchyReferences>(this.saveButtonPrefab);
 		if (SpeedControlScreen.Instance != null)
 		{
-			SpeedControlScreen.Instance.Pause(playSound: false);
+			SpeedControlScreen.Instance.Pause(false, false);
 		}
-		if (closeButton != null)
+		if (this.closeButton != null)
 		{
-			closeButton.onClick += delegate
+			this.closeButton.onClick += delegate()
 			{
-				Deactivate();
+				this.Deactivate();
 			};
 		}
-		if (colonyCloudButton != null)
+		if (this.colonyCloudButton != null)
 		{
-			colonyCloudButton.onClick += delegate
+			this.colonyCloudButton.onClick += delegate()
 			{
-				ConvertAllToCloud();
+				this.ConvertAllToCloud();
 			};
 		}
-		if (colonyLocalButton != null)
+		if (this.colonyLocalButton != null)
 		{
-			colonyLocalButton.onClick += delegate
+			this.colonyLocalButton.onClick += delegate()
 			{
-				ConvertAllToLocal();
+				this.ConvertAllToLocal();
 			};
 		}
-		if (colonyInfoButton != null)
+		if (this.colonyInfoButton != null)
 		{
-			colonyInfoButton.onClick += delegate
+			this.colonyInfoButton.onClick += delegate()
 			{
-				ShowSaveInfo();
+				this.ShowSaveInfo();
 			};
 		}
-		if (loadMoreButton != null)
+		if (this.loadMoreButton != null)
 		{
-			loadMoreButton.onClick += delegate
+			this.loadMoreButton.onClick += delegate()
 			{
-				displayedPageCount++;
-				RefreshColonyList();
-				ShowColonyList();
+				this.displayedPageCount++;
+				this.RefreshColonyList();
+				this.ShowColonyList();
 			};
 		}
 	}
 
+	// Token: 0x06008FFC RID: 36860 RVA: 0x000FE252 File Offset: 0x000FC452
 	private bool IsInMenu()
 	{
 		return App.GetCurrentSceneName() == "frontend";
 	}
 
+	// Token: 0x06008FFD RID: 36861 RVA: 0x000FE263 File Offset: 0x000FC463
 	private bool CloudSavesVisible()
 	{
-		if (!SaveLoader.GetCloudSavesAvailable())
-		{
-			return false;
-		}
-		return IsInMenu();
+		return SaveLoader.GetCloudSavesAvailable() && this.IsInMenu();
 	}
 
+	// Token: 0x06008FFE RID: 36862 RVA: 0x00378B78 File Offset: 0x00376D78
 	protected override void OnActivate()
 	{
 		base.OnActivate();
-		WorldGen.LoadSettings();
-		SetCloudSaveInfoActive(CloudSavesVisible());
-		displayedPageCount = 1;
-		RefreshColonyList();
-		ShowColonyList();
+		WorldGen.LoadSettings(false);
+		this.SetCloudSaveInfoActive(this.CloudSavesVisible());
+		this.displayedPageCount = 1;
+		this.RefreshColonyList();
+		this.ShowColonyList();
 		bool cloudSavesAvailable = SaveLoader.GetCloudSavesAvailable();
-		cloudTutorialBouncer.gameObject.SetActive(cloudSavesAvailable);
-		if (cloudSavesAvailable && !cloudTutorialBouncer.IsBouncing())
+		this.cloudTutorialBouncer.gameObject.SetActive(cloudSavesAvailable);
+		if (cloudSavesAvailable && !this.cloudTutorialBouncer.IsBouncing())
 		{
 			int @int = KPlayerPrefs.GetInt("LoadScreenCloudTutorialTimes", 0);
 			if (@int < 5)
 			{
-				cloudTutorialBouncer.Bounce();
+				this.cloudTutorialBouncer.Bounce();
 				KPlayerPrefs.SetInt("LoadScreenCloudTutorialTimes", @int + 1);
 				KPlayerPrefs.GetInt("LoadScreenCloudTutorialTimes", 0);
 			}
 			else
 			{
-				cloudTutorialBouncer.gameObject.SetActive(value: false);
+				this.cloudTutorialBouncer.gameObject.SetActive(false);
 			}
 		}
 		if (DistributionPlatform.Initialized && SteamUtils.IsSteamRunningOnSteamDeck())
 		{
-			colonyInfoButton.gameObject.SetActive(value: false);
+			this.colonyInfoButton.gameObject.SetActive(false);
 		}
 	}
 
-	private Dictionary<string, List<SaveGameFileDetails>> GetColoniesDetails(List<SaveLoader.SaveFileEntry> files)
+	// Token: 0x06008FFF RID: 36863 RVA: 0x00378C40 File Offset: 0x00376E40
+	private Dictionary<string, List<LoadScreen.SaveGameFileDetails>> GetColoniesDetails(List<SaveLoader.SaveFileEntry> files)
 	{
-		Dictionary<string, List<SaveGameFileDetails>> dictionary = new Dictionary<string, List<SaveGameFileDetails>>();
+		Dictionary<string, List<LoadScreen.SaveGameFileDetails>> dictionary = new Dictionary<string, List<LoadScreen.SaveGameFileDetails>>();
 		if (files.Count <= 0)
 		{
 			return dictionary;
 		}
 		for (int i = 0; i < files.Count; i++)
 		{
-			if (IsFileValid(files[i].path))
+			if (this.IsFileValid(files[i].path))
 			{
-				Tuple<SaveGame.Header, SaveGame.GameInfo> fileInfo = SaveGame.GetFileInfo(files[i].path);
+				global::Tuple<SaveGame.Header, SaveGame.GameInfo> fileInfo = SaveGame.GetFileInfo(files[i].path);
 				SaveGame.Header first = fileInfo.first;
 				SaveGame.GameInfo second = fileInfo.second;
 				System.DateTime timeStamp = files[i].timeStamp;
@@ -240,58 +142,66 @@ public class LoadScreen : KModalScreen
 				}
 				catch (Exception ex)
 				{
-					Debug.LogWarning("Failed to get size for file: " + files[i].ToString() + "\n" + ex.ToString());
+					global::Debug.LogWarning("Failed to get size for file: " + files[i].ToString() + "\n" + ex.ToString());
 				}
-				SaveGameFileDetails item = default(SaveGameFileDetails);
-				item.BaseName = second.baseName;
-				item.FileName = files[i].path;
-				item.FileDate = timeStamp;
-				item.FileHeader = first;
-				item.FileInfo = second;
-				item.Size = size;
-				item.UniqueID = SaveGame.GetSaveUniqueID(second);
-				if (!dictionary.ContainsKey(item.UniqueID))
+				LoadScreen.SaveGameFileDetails saveGameFileDetails = new LoadScreen.SaveGameFileDetails
 				{
-					dictionary.Add(item.UniqueID, new List<SaveGameFileDetails>());
+					BaseName = second.baseName,
+					FileName = files[i].path,
+					FileDate = timeStamp,
+					FileHeader = first,
+					FileInfo = second,
+					Size = size,
+					UniqueID = SaveGame.GetSaveUniqueID(second)
+				};
+				if (!dictionary.ContainsKey(saveGameFileDetails.UniqueID))
+				{
+					dictionary.Add(saveGameFileDetails.UniqueID, new List<LoadScreen.SaveGameFileDetails>());
 				}
-				dictionary[item.UniqueID].Add(item);
+				dictionary[saveGameFileDetails.UniqueID].Add(saveGameFileDetails);
 			}
 		}
 		return dictionary;
 	}
 
-	private Dictionary<string, List<SaveGameFileDetails>> GetColonies(bool sort)
+	// Token: 0x06009000 RID: 36864 RVA: 0x00378DA8 File Offset: 0x00376FA8
+	private Dictionary<string, List<LoadScreen.SaveGameFileDetails>> GetColonies(bool sort)
 	{
-		List<SaveLoader.SaveFileEntry> allFiles = SaveLoader.GetAllFiles(sort);
-		return GetColoniesDetails(allFiles);
+		List<SaveLoader.SaveFileEntry> allFiles = SaveLoader.GetAllFiles(sort, SaveLoader.SaveType.both);
+		return this.GetColoniesDetails(allFiles);
 	}
 
-	private Dictionary<string, List<SaveGameFileDetails>> GetLocalColonies(bool sort)
+	// Token: 0x06009001 RID: 36865 RVA: 0x00378DC4 File Offset: 0x00376FC4
+	private Dictionary<string, List<LoadScreen.SaveGameFileDetails>> GetLocalColonies(bool sort)
 	{
 		List<SaveLoader.SaveFileEntry> allFiles = SaveLoader.GetAllFiles(sort, SaveLoader.SaveType.local);
-		return GetColoniesDetails(allFiles);
+		return this.GetColoniesDetails(allFiles);
 	}
 
-	private Dictionary<string, List<SaveGameFileDetails>> GetCloudColonies(bool sort)
+	// Token: 0x06009002 RID: 36866 RVA: 0x00378DE0 File Offset: 0x00376FE0
+	private Dictionary<string, List<LoadScreen.SaveGameFileDetails>> GetCloudColonies(bool sort)
 	{
 		List<SaveLoader.SaveFileEntry> allFiles = SaveLoader.GetAllFiles(sort, SaveLoader.SaveType.cloud);
-		return GetColoniesDetails(allFiles);
+		return this.GetColoniesDetails(allFiles);
 	}
 
+	// Token: 0x06009003 RID: 36867 RVA: 0x00378DFC File Offset: 0x00376FFC
 	private bool IsFileValid(string filename)
 	{
 		bool result = false;
 		try
 		{
-			result = SaveLoader.LoadHeader(filename, out var _).saveMajorVersion >= 7;
+			SaveGame.Header header;
+			result = (SaveLoader.LoadHeader(filename, out header).saveMajorVersion >= 7);
 		}
 		catch (Exception ex)
 		{
-			Debug.LogWarning("Corrupted save file: " + filename + "\n" + ex.ToString());
+			global::Debug.LogWarning("Corrupted save file: " + filename + "\n" + ex.ToString());
 		}
 		return result;
 	}
 
+	// Token: 0x06009004 RID: 36868 RVA: 0x00378E50 File Offset: 0x00377050
 	private void CheckCloudLocalOverlap()
 	{
 		if (!SaveLoader.GetCloudSavesAvailable())
@@ -303,80 +213,90 @@ public class LoadScreen : KModalScreen
 		{
 			return;
 		}
-		foreach (KeyValuePair<string, List<SaveGameFileDetails>> colony in GetColonies(sort: false))
+		foreach (KeyValuePair<string, List<LoadScreen.SaveGameFileDetails>> keyValuePair in this.GetColonies(false))
 		{
 			bool flag = false;
-			List<SaveGameFileDetails> list = new List<SaveGameFileDetails>();
-			foreach (SaveGameFileDetails item in colony.Value)
+			List<LoadScreen.SaveGameFileDetails> list = new List<LoadScreen.SaveGameFileDetails>();
+			foreach (LoadScreen.SaveGameFileDetails saveGameFileDetails in keyValuePair.Value)
 			{
-				if (SaveLoader.IsSaveCloud(item.FileName))
+				if (SaveLoader.IsSaveCloud(saveGameFileDetails.FileName))
 				{
 					flag = true;
 				}
 				else
 				{
-					list.Add(item);
+					list.Add(saveGameFileDetails);
 				}
 			}
-			if (!flag || list.Count == 0)
+			if (flag && list.Count != 0)
 			{
-				continue;
-			}
-			string baseName = list[0].BaseName;
-			string path = System.IO.Path.Combine(SaveLoader.GetSavePrefix(), baseName);
-			string text = System.IO.Path.Combine(cloudSavePrefix, baseName);
-			if (!Directory.Exists(text))
-			{
-				Directory.CreateDirectory(text);
-			}
-			Debug.Log("Saves / Found overlapped cloud/local saves for colony '" + baseName + "', moving to cloud...");
-			foreach (SaveGameFileDetails item2 in list)
-			{
-				string fileName = item2.FileName;
-				string source = System.IO.Path.ChangeExtension(fileName, "png");
-				string path2 = text;
-				if (SaveLoader.IsSaveAuto(fileName))
+				string baseName = list[0].BaseName;
+				string path = System.IO.Path.Combine(SaveLoader.GetSavePrefix(), baseName);
+				string text = System.IO.Path.Combine(cloudSavePrefix, baseName);
+				if (!Directory.Exists(text))
 				{
-					string text2 = System.IO.Path.Combine(path2, "auto_save");
-					if (!Directory.Exists(text2))
+					Directory.CreateDirectory(text);
+				}
+				global::Debug.Log("Saves / Found overlapped cloud/local saves for colony '" + baseName + "', moving to cloud...");
+				foreach (LoadScreen.SaveGameFileDetails saveGameFileDetails2 in list)
+				{
+					string fileName = saveGameFileDetails2.FileName;
+					string source = System.IO.Path.ChangeExtension(fileName, "png");
+					string path2 = text;
+					if (SaveLoader.IsSaveAuto(fileName))
 					{
-						Directory.CreateDirectory(text2);
+						string text2 = System.IO.Path.Combine(path2, "auto_save");
+						if (!Directory.Exists(text2))
+						{
+							Directory.CreateDirectory(text2);
+						}
+						path2 = text2;
 					}
-					path2 = text2;
+					string text3 = System.IO.Path.Combine(path2, System.IO.Path.GetFileName(fileName));
+					global::Tuple<bool, bool> tuple;
+					if (this.FileMatch(fileName, text3, out tuple))
+					{
+						global::Debug.Log("Saves / file match found for `" + fileName + "`...");
+						this.MigrateFile(fileName, text3, false);
+						string dest = System.IO.Path.ChangeExtension(text3, "png");
+						this.MigrateFile(source, dest, true);
+					}
+					else
+					{
+						global::Debug.Log("Saves / no file match found for `" + fileName + "`... move as copy");
+						string nextUsableSavePath = SaveLoader.GetNextUsableSavePath(text3);
+						this.MigrateFile(fileName, nextUsableSavePath, false);
+						string dest2 = System.IO.Path.ChangeExtension(nextUsableSavePath, "png");
+						this.MigrateFile(source, dest2, true);
+					}
 				}
-				string text3 = System.IO.Path.Combine(path2, System.IO.Path.GetFileName(fileName));
-				if (FileMatch(fileName, text3, out var _))
-				{
-					Debug.Log("Saves / file match found for `" + fileName + "`...");
-					MigrateFile(fileName, text3);
-					string dest = System.IO.Path.ChangeExtension(text3, "png");
-					MigrateFile(source, dest, ignoreMissing: true);
-				}
-				else
-				{
-					Debug.Log("Saves / no file match found for `" + fileName + "`... move as copy");
-					string nextUsableSavePath = SaveLoader.GetNextUsableSavePath(text3);
-					MigrateFile(fileName, nextUsableSavePath);
-					string dest2 = System.IO.Path.ChangeExtension(nextUsableSavePath, "png");
-					MigrateFile(source, dest2, ignoreMissing: true);
-				}
+				this.RemoveEmptyFolder(path);
 			}
-			RemoveEmptyFolder(path);
 		}
 	}
 
+	// Token: 0x06009005 RID: 36869 RVA: 0x000FE274 File Offset: 0x000FC474
 	private void DeleteFileAndEmptyFolder(string file)
 	{
 		if (File.Exists(file))
 		{
 			File.Delete(file);
 		}
-		RemoveEmptyFolder(System.IO.Path.GetDirectoryName(file));
+		this.RemoveEmptyFolder(System.IO.Path.GetDirectoryName(file));
 	}
 
+	// Token: 0x06009006 RID: 36870 RVA: 0x003790C8 File Offset: 0x003772C8
 	private void RemoveEmptyFolder(string path)
 	{
-		if (!Directory.Exists(path) || !File.GetAttributes(path).HasFlag(FileAttributes.Directory) || Directory.EnumerateFileSystemEntries(path).Any())
+		if (!Directory.Exists(path))
+		{
+			return;
+		}
+		if (!File.GetAttributes(path).HasFlag(FileAttributes.Directory))
+		{
+			return;
+		}
+		if (Directory.EnumerateFileSystemEntries(path).Any<string>())
 		{
 			return;
 		}
@@ -384,49 +304,57 @@ public class LoadScreen : KModalScreen
 		{
 			Directory.Delete(path);
 		}
-		catch (Exception ex)
+		catch (Exception obj)
 		{
-			Debug.LogWarning("Failed to remove empty directory `" + path + "`...");
-			Debug.LogWarning(ex);
+			global::Debug.LogWarning("Failed to remove empty directory `" + path + "`...");
+			global::Debug.LogWarning(obj);
 		}
 	}
 
+	// Token: 0x06009007 RID: 36871 RVA: 0x0037913C File Offset: 0x0037733C
 	private void RefreshColonyList()
 	{
-		if (colonyListPool != null)
+		if (this.colonyListPool != null)
 		{
-			colonyListPool.ClearAll();
+			this.colonyListPool.ClearAll();
 		}
-		CheckCloudLocalOverlap();
-		Dictionary<string, List<SaveGameFileDetails>> colonies = GetColonies(sort: true);
-		if (colonies.Count <= 0)
+		this.CheckCloudLocalOverlap();
+		Dictionary<string, List<LoadScreen.SaveGameFileDetails>> colonies = this.GetColonies(true);
+		if (colonies.Count > 0)
 		{
-			return;
-		}
-		int num = 0;
-		foreach (KeyValuePair<string, List<SaveGameFileDetails>> item in colonies)
-		{
-			if (num >= displayedPageCount * 20)
+			int num = 0;
+			foreach (KeyValuePair<string, List<LoadScreen.SaveGameFileDetails>> keyValuePair in colonies)
 			{
-				break;
+				if (num >= this.displayedPageCount * 20)
+				{
+					break;
+				}
+				this.AddColonyToList(keyValuePair.Value);
+				num++;
 			}
-			AddColonyToList(item.Value);
-			num++;
+			this.loadMoreButton.gameObject.SetActive(colonies.Count != num);
+			this.loadMoreButton.gameObject.transform.SetAsLastSibling();
 		}
-		loadMoreButton.gameObject.SetActive(colonies.Count != num);
-		loadMoreButton.gameObject.transform.SetAsLastSibling();
 	}
 
+	// Token: 0x06009008 RID: 36872 RVA: 0x00379200 File Offset: 0x00377400
 	private string GetFileHash(string path)
 	{
-		using MD5 mD = MD5.Create();
-		using FileStream inputStream = File.OpenRead(path);
-		return BitConverter.ToString(mD.ComputeHash(inputStream)).Replace("-", "").ToLowerInvariant();
+		string result;
+		using (MD5 md = MD5.Create())
+		{
+			using (FileStream fileStream = File.OpenRead(path))
+			{
+				result = BitConverter.ToString(md.ComputeHash(fileStream)).Replace("-", "").ToLowerInvariant();
+			}
+		}
+		return result;
 	}
 
-	private bool FileMatch(string file, string other_file, out Tuple<bool, bool> matches)
+	// Token: 0x06009009 RID: 36873 RVA: 0x00379270 File Offset: 0x00377470
+	private bool FileMatch(string file, string other_file, out global::Tuple<bool, bool> matches)
 	{
-		matches = new Tuple<bool, bool>(a: false, b: false);
+		matches = new global::Tuple<bool, bool>(false, false);
 		if (!File.Exists(file))
 		{
 			return false;
@@ -439,17 +367,24 @@ public class LoadScreen : KModalScreen
 		bool flag2 = false;
 		try
 		{
-			string fileHash = GetFileHash(file);
-			string fileHash2 = GetFileHash(other_file);
+			string fileHash = this.GetFileHash(file);
+			string fileHash2 = this.GetFileHash(other_file);
 			FileInfo fileInfo = new FileInfo(file);
 			FileInfo fileInfo2 = new FileInfo(other_file);
-			flag = fileInfo.Length == fileInfo2.Length;
-			flag2 = fileHash == fileHash2;
+			flag = (fileInfo.Length == fileInfo2.Length);
+			flag2 = (fileHash == fileHash2);
 		}
-		catch (Exception ex)
+		catch (Exception obj)
 		{
-			Debug.LogWarning("FileMatch / file match failed for `" + file + "` vs `" + other_file + "`!");
-			Debug.LogWarning(ex);
+			global::Debug.LogWarning(string.Concat(new string[]
+			{
+				"FileMatch / file match failed for `",
+				file,
+				"` vs `",
+				other_file,
+				"`!"
+			}));
+			global::Debug.LogWarning(obj);
 			return false;
 		}
 		matches.first = flag;
@@ -457,73 +392,91 @@ public class LoadScreen : KModalScreen
 		return flag && flag2;
 	}
 
+	// Token: 0x0600900A RID: 36874 RVA: 0x00379338 File Offset: 0x00377538
 	private bool MigrateFile(string source, string dest, bool ignoreMissing = false)
 	{
-		Debug.Log("Migration / moving `" + source + "` to `" + dest + "` ...");
+		global::Debug.Log(string.Concat(new string[]
+		{
+			"Migration / moving `",
+			source,
+			"` to `",
+			dest,
+			"` ..."
+		}));
 		if (dest == source)
 		{
-			Debug.Log("Migration / ignored `" + source + "` to `" + dest + "` ... same location");
+			global::Debug.Log(string.Concat(new string[]
+			{
+				"Migration / ignored `",
+				source,
+				"` to `",
+				dest,
+				"` ... same location"
+			}));
 			return true;
 		}
-		if (FileMatch(source, dest, out var _))
+		global::Tuple<bool, bool> tuple;
+		if (this.FileMatch(source, dest, out tuple))
 		{
-			Debug.Log("Migration / dest and source are identical size + hash ... removing original");
+			global::Debug.Log("Migration / dest and source are identical size + hash ... removing original");
 			try
 			{
-				DeleteFileAndEmptyFolder(source);
+				this.DeleteFileAndEmptyFolder(source);
 			}
 			catch (Exception ex)
 			{
-				Debug.LogWarning("Migration / removing original failed for `" + source + "`!");
-				Debug.LogWarning(ex);
+				global::Debug.LogWarning("Migration / removing original failed for `" + source + "`!");
+				global::Debug.LogWarning(ex);
 				throw ex;
 			}
 			return true;
 		}
 		try
 		{
-			Debug.Log("Migration / copying...");
-			File.Copy(source, dest, overwrite: false);
+			global::Debug.Log("Migration / copying...");
+			File.Copy(source, dest, false);
 		}
-		catch (FileNotFoundException) when (ignoreMissing)
+		catch (FileNotFoundException obj) when (ignoreMissing)
 		{
-			Debug.Log("Migration / File `" + source + "` wasn't found but we're ignoring that.");
+			global::Debug.Log("Migration / File `" + source + "` wasn't found but we're ignoring that.");
 			return true;
+		}
+		catch (Exception ex2)
+		{
+			global::Debug.LogWarning("Migration / copy failed for `" + source + "`! Leaving it alone");
+			global::Debug.LogWarning(ex2);
+			global::Debug.LogWarning("failed to convert colony: " + ex2.ToString());
+			throw ex2;
+		}
+		global::Debug.Log("Migration / copy ok ...");
+		global::Tuple<bool, bool> tuple2;
+		if (!this.FileMatch(source, dest, out tuple2))
+		{
+			global::Debug.LogWarning("Migration / failed to match dest file for `" + source + "`!");
+			global::Debug.LogWarning(string.Format("Migration / did hash match? {0} did size match? {1}", tuple2.second, tuple2.first));
+			throw new Exception("Hash/Size didn't match for source and destination");
+		}
+		global::Debug.Log("Migration / hash validation ok ... removing original");
+		try
+		{
+			this.DeleteFileAndEmptyFolder(source);
 		}
 		catch (Exception ex3)
 		{
-			Debug.LogWarning("Migration / copy failed for `" + source + "`! Leaving it alone");
-			Debug.LogWarning(ex3);
-			Debug.LogWarning("failed to convert colony: " + ex3.ToString());
+			global::Debug.LogWarning("Migration / removing original failed for `" + source + "`!");
+			global::Debug.LogWarning(ex3);
 			throw ex3;
 		}
-		Debug.Log("Migration / copy ok ...");
-		if (!FileMatch(source, dest, out var matches2))
-		{
-			Debug.LogWarning("Migration / failed to match dest file for `" + source + "`!");
-			Debug.LogWarning($"Migration / did hash match? {matches2.second} did size match? {matches2.first}");
-			throw new Exception("Hash/Size didn't match for source and destination");
-		}
-		Debug.Log("Migration / hash validation ok ... removing original");
-		try
-		{
-			DeleteFileAndEmptyFolder(source);
-		}
-		catch (Exception ex4)
-		{
-			Debug.LogWarning("Migration / removing original failed for `" + source + "`!");
-			Debug.LogWarning(ex4);
-			throw ex4;
-		}
-		Debug.Log("Migration / moved ok for `" + source + "`!");
+		global::Debug.Log("Migration / moved ok for `" + source + "`!");
 		return true;
 	}
 
+	// Token: 0x0600900B RID: 36875 RVA: 0x0037953C File Offset: 0x0037773C
 	private bool MigrateSave(string dest_root, string file, bool is_auto_save, out string saveError)
 	{
 		saveError = null;
-		Tuple<SaveGame.Header, SaveGame.GameInfo> fileInfo = SaveGame.GetFileInfo(file);
-		_ = fileInfo.first;
+		global::Tuple<SaveGame.Header, SaveGame.GameInfo> fileInfo = SaveGame.GetFileInfo(file);
+		SaveGame.Header first = fileInfo.first;
 		string path = fileInfo.second.baseName.TrimEnd(' ');
 		string fileName = System.IO.Path.GetFileName(file);
 		string text = System.IO.Path.Combine(dest_root, path);
@@ -546,8 +499,8 @@ public class LoadScreen : KModalScreen
 		string dest = System.IO.Path.ChangeExtension(text3, "png");
 		try
 		{
-			MigrateFile(file, text3);
-			MigrateFile(source, dest, ignoreMissing: true);
+			this.MigrateFile(file, text3, false);
+			this.MigrateFile(source, dest, true);
 		}
 		catch (Exception ex)
 		{
@@ -557,14 +510,15 @@ public class LoadScreen : KModalScreen
 		return true;
 	}
 
-	private (int, int, ulong) GetSavesSizeAndCounts(List<SaveGameFileDetails> list)
+	// Token: 0x0600900C RID: 36876 RVA: 0x00379618 File Offset: 0x00377818
+	private ValueTuple<int, int, ulong> GetSavesSizeAndCounts(List<LoadScreen.SaveGameFileDetails> list)
 	{
-		ulong num = 0uL;
+		ulong num = 0UL;
 		int num2 = 0;
 		int num3 = 0;
 		for (int i = 0; i < list.Count; i++)
 		{
-			SaveGameFileDetails saveGameFileDetails = list[i];
+			LoadScreen.SaveGameFileDetails saveGameFileDetails = list[i];
 			num += (ulong)saveGameFileDetails.Size;
 			if (saveGameFileDetails.FileInfo.isAutoSave)
 			{
@@ -575,16 +529,17 @@ public class LoadScreen : KModalScreen
 				num2++;
 			}
 		}
-		return (num2, num3, num);
+		return new ValueTuple<int, int, ulong>(num2, num3, num);
 	}
 
+	// Token: 0x0600900D RID: 36877 RVA: 0x00379670 File Offset: 0x00377870
 	private int CountValidSaves(string path, SearchOption searchType = SearchOption.AllDirectories)
 	{
 		int num = 0;
-		List<SaveLoader.SaveFileEntry> saveFiles = SaveLoader.GetSaveFiles(path, sort: false, searchType);
+		List<SaveLoader.SaveFileEntry> saveFiles = SaveLoader.GetSaveFiles(path, false, searchType);
 		for (int i = 0; i < saveFiles.Count; i++)
 		{
-			if (IsFileValid(saveFiles[i].path))
+			if (this.IsFileValid(saveFiles[i].path))
 			{
 				num++;
 			}
@@ -592,166 +547,191 @@ public class LoadScreen : KModalScreen
 		return num;
 	}
 
-	private (int, int) GetMigrationSaveCounts()
+	// Token: 0x0600900E RID: 36878 RVA: 0x003796B4 File Offset: 0x003778B4
+	private ValueTuple<int, int> GetMigrationSaveCounts()
 	{
-		int item = CountValidSaves(SaveLoader.GetSavePrefixAndCreateFolder(), SearchOption.TopDirectoryOnly);
-		int item2 = CountValidSaves(SaveLoader.GetAutoSavePrefix());
-		return (item, item2);
+		int item = this.CountValidSaves(SaveLoader.GetSavePrefixAndCreateFolder(), SearchOption.TopDirectoryOnly);
+		int item2 = this.CountValidSaves(SaveLoader.GetAutoSavePrefix(), SearchOption.AllDirectories);
+		return new ValueTuple<int, int>(item, item2);
 	}
 
-	private (int, int) MigrateSaves(out string errorColony, out string errorMessage)
+	// Token: 0x0600900F RID: 36879 RVA: 0x003796E0 File Offset: 0x003778E0
+	private ValueTuple<int, int> MigrateSaves(out string errorColony, out string errorMessage)
 	{
 		errorColony = null;
 		errorMessage = null;
 		int num = 0;
 		string savePrefixAndCreateFolder = SaveLoader.GetSavePrefixAndCreateFolder();
-		List<SaveLoader.SaveFileEntry> saveFiles = SaveLoader.GetSaveFiles(savePrefixAndCreateFolder, sort: false, SearchOption.TopDirectoryOnly);
+		List<SaveLoader.SaveFileEntry> saveFiles = SaveLoader.GetSaveFiles(savePrefixAndCreateFolder, false, SearchOption.TopDirectoryOnly);
 		for (int i = 0; i < saveFiles.Count; i++)
 		{
 			SaveLoader.SaveFileEntry saveFileEntry = saveFiles[i];
-			if (IsFileValid(saveFileEntry.path))
+			if (this.IsFileValid(saveFileEntry.path))
 			{
-				if (MigrateSave(savePrefixAndCreateFolder, saveFileEntry.path, is_auto_save: false, out var saveError))
+				string text;
+				if (this.MigrateSave(savePrefixAndCreateFolder, saveFileEntry.path, false, out text))
 				{
 					num++;
 				}
 				else if (errorColony == null)
 				{
 					errorColony = saveFileEntry.path;
-					errorMessage = saveError;
+					errorMessage = text;
 				}
 			}
 		}
 		int num2 = 0;
-		List<SaveLoader.SaveFileEntry> saveFiles2 = SaveLoader.GetSaveFiles(SaveLoader.GetAutoSavePrefix(), sort: false);
+		List<SaveLoader.SaveFileEntry> saveFiles2 = SaveLoader.GetSaveFiles(SaveLoader.GetAutoSavePrefix(), false, SearchOption.AllDirectories);
 		for (int j = 0; j < saveFiles2.Count; j++)
 		{
 			SaveLoader.SaveFileEntry saveFileEntry2 = saveFiles2[j];
-			if (IsFileValid(saveFileEntry2.path))
+			if (this.IsFileValid(saveFileEntry2.path))
 			{
-				if (MigrateSave(savePrefixAndCreateFolder, saveFileEntry2.path, is_auto_save: true, out var saveError2))
+				string text2;
+				if (this.MigrateSave(savePrefixAndCreateFolder, saveFileEntry2.path, true, out text2))
 				{
 					num2++;
 				}
 				else if (errorColony == null)
 				{
 					errorColony = saveFileEntry2.path;
-					errorMessage = saveError2;
+					errorMessage = text2;
 				}
 			}
 		}
-		return (num, num2);
+		return new ValueTuple<int, int>(num, num2);
 	}
 
+	// Token: 0x06009010 RID: 36880 RVA: 0x003797D0 File Offset: 0x003779D0
 	public void ShowMigrationIfNecessary(bool fromMainMenu)
 	{
-		var (saveCount, autoCount) = GetMigrationSaveCounts();
+		ValueTuple<int, int> migrationSaveCounts = this.GetMigrationSaveCounts();
+		int saveCount = migrationSaveCounts.Item1;
+		int autoCount = migrationSaveCounts.Item2;
 		if (saveCount == 0 && autoCount == 0)
 		{
 			if (fromMainMenu)
 			{
-				Deactivate();
+				this.Deactivate();
 			}
 			return;
 		}
-		Activate();
-		migrationPanelRefs.gameObject.SetActive(value: true);
-		KButton migrateButton = migrationPanelRefs.GetReference<RectTransform>("MigrateSaves").GetComponent<KButton>();
-		KButton continueButton = migrationPanelRefs.GetReference<RectTransform>("Continue").GetComponent<KButton>();
-		KButton moreInfoButton = migrationPanelRefs.GetReference<RectTransform>("MoreInfo").GetComponent<KButton>();
-		KButton component = migrationPanelRefs.GetReference<RectTransform>("OpenSaves").GetComponent<KButton>();
-		LocText statsText = migrationPanelRefs.GetReference<RectTransform>("CountText").GetComponent<LocText>();
-		LocText infoText = migrationPanelRefs.GetReference<RectTransform>("InfoText").GetComponent<LocText>();
-		migrateButton.gameObject.SetActive(value: true);
-		continueButton.gameObject.SetActive(value: false);
-		moreInfoButton.gameObject.SetActive(value: false);
+		base.Activate();
+		this.migrationPanelRefs.gameObject.SetActive(true);
+		KButton migrateButton = this.migrationPanelRefs.GetReference<RectTransform>("MigrateSaves").GetComponent<KButton>();
+		KButton continueButton = this.migrationPanelRefs.GetReference<RectTransform>("Continue").GetComponent<KButton>();
+		KButton moreInfoButton = this.migrationPanelRefs.GetReference<RectTransform>("MoreInfo").GetComponent<KButton>();
+		KButton component = this.migrationPanelRefs.GetReference<RectTransform>("OpenSaves").GetComponent<KButton>();
+		LocText statsText = this.migrationPanelRefs.GetReference<RectTransform>("CountText").GetComponent<LocText>();
+		LocText infoText = this.migrationPanelRefs.GetReference<RectTransform>("InfoText").GetComponent<LocText>();
+		migrateButton.gameObject.SetActive(true);
+		continueButton.gameObject.SetActive(false);
+		moreInfoButton.gameObject.SetActive(false);
 		statsText.text = string.Format(UI.FRONTEND.LOADSCREEN.MIGRATE_COUNT, saveCount, autoCount);
 		component.ClearOnClick();
-		component.onClick += delegate
+		component.onClick += delegate()
 		{
 			App.OpenWebURL(SaveLoader.GetSavePrefixAndCreateFolder());
 		};
 		migrateButton.ClearOnClick();
-		migrateButton.onClick += delegate
+		migrateButton.onClick += delegate()
 		{
-			migrateButton.gameObject.SetActive(value: false);
-			string errorColony;
-			string errorMessage;
-			(int, int) tuple2 = MigrateSaves(out errorColony, out errorMessage);
-			int item = tuple2.Item1;
-			int item2 = tuple2.Item2;
-			bool flag = errorColony == null;
-			string format = (flag ? UI.FRONTEND.LOADSCREEN.MIGRATE_RESULT.text : UI.FRONTEND.LOADSCREEN.MIGRATE_RESULT_FAILURES.Replace("{ErrorColony}", errorColony).Replace("{ErrorMessage}", errorMessage));
-			statsText.text = string.Format(format, item, saveCount, item2, autoCount);
-			infoText.gameObject.SetActive(value: false);
+			migrateButton.gameObject.SetActive(false);
+			string text;
+			string newValue;
+			ValueTuple<int, int> valueTuple = this.MigrateSaves(out text, out newValue);
+			int item = valueTuple.Item1;
+			int item2 = valueTuple.Item2;
+			bool flag = text == null;
+			string format = flag ? UI.FRONTEND.LOADSCREEN.MIGRATE_RESULT.text : UI.FRONTEND.LOADSCREEN.MIGRATE_RESULT_FAILURES.Replace("{ErrorColony}", text).Replace("{ErrorMessage}", newValue);
+			statsText.text = string.Format(format, new object[]
+			{
+				item,
+				saveCount,
+				item2,
+				autoCount
+			});
+			infoText.gameObject.SetActive(false);
 			if (flag)
 			{
-				continueButton.gameObject.SetActive(value: true);
+				continueButton.gameObject.SetActive(true);
 			}
 			else
 			{
-				moreInfoButton.gameObject.SetActive(value: true);
+				moreInfoButton.gameObject.SetActive(true);
 			}
-			MainMenu.Instance.RefreshResumeButton();
-			RefreshColonyList();
+			MainMenu.Instance.RefreshResumeButton(false);
+			this.RefreshColonyList();
 		};
 		continueButton.ClearOnClick();
-		continueButton.onClick += delegate
+		continueButton.onClick += delegate()
 		{
-			migrationPanelRefs.gameObject.SetActive(value: false);
-			cloudTutorialBouncer.Bounce();
+			this.migrationPanelRefs.gameObject.SetActive(false);
+			this.cloudTutorialBouncer.Bounce();
 		};
 		moreInfoButton.ClearOnClick();
-		moreInfoButton.onClick += delegate
+		Action<InfoDialogScreen> <>9__4;
+		Action<InfoDialogScreen> <>9__6;
+		moreInfoButton.onClick += delegate()
 		{
 			if (DistributionPlatform.Initialized && SteamUtils.IsSteamRunningOnSteamDeck())
 			{
-				Util.KInstantiateUI<InfoDialogScreen>(ScreenPrefabs.Instance.InfoDialogScreen.gameObject, base.gameObject).SetHeader(UI.FRONTEND.LOADSCREEN.MIGRATE_RESULT_FAILURES_MORE_INFO_TITLE).AddPlainText(UI.FRONTEND.LOADSCREEN.MIGRATE_RESULT_FAILURES_MORE_INFO_PRE)
-					.AddLineItem(UI.FRONTEND.LOADSCREEN.MIGRATE_RESULT_FAILURES_MORE_INFO_ITEM1, "")
-					.AddLineItem(UI.FRONTEND.LOADSCREEN.MIGRATE_RESULT_FAILURES_MORE_INFO_ITEM2, "")
-					.AddLineItem(UI.FRONTEND.LOADSCREEN.MIGRATE_RESULT_FAILURES_MORE_INFO_ITEM3, "")
-					.AddPlainText(UI.FRONTEND.LOADSCREEN.MIGRATE_RESULT_FAILURES_MORE_INFO_POST)
-					.AddOption(UI.CONFIRMDIALOG.OK, delegate(InfoDialogScreen d)
+				InfoDialogScreen infoDialogScreen = global::Util.KInstantiateUI<InfoDialogScreen>(ScreenPrefabs.Instance.InfoDialogScreen.gameObject, this.gameObject, false).SetHeader(UI.FRONTEND.LOADSCREEN.MIGRATE_RESULT_FAILURES_MORE_INFO_TITLE).AddPlainText(UI.FRONTEND.LOADSCREEN.MIGRATE_RESULT_FAILURES_MORE_INFO_PRE).AddLineItem(UI.FRONTEND.LOADSCREEN.MIGRATE_RESULT_FAILURES_MORE_INFO_ITEM1, "").AddLineItem(UI.FRONTEND.LOADSCREEN.MIGRATE_RESULT_FAILURES_MORE_INFO_ITEM2, "").AddLineItem(UI.FRONTEND.LOADSCREEN.MIGRATE_RESULT_FAILURES_MORE_INFO_ITEM3, "").AddPlainText(UI.FRONTEND.LOADSCREEN.MIGRATE_RESULT_FAILURES_MORE_INFO_POST);
+				string text = UI.CONFIRMDIALOG.OK;
+				Action<InfoDialogScreen> action;
+				if ((action = <>9__4) == null)
+				{
+					action = (<>9__4 = delegate(InfoDialogScreen d)
 					{
-						migrationPanelRefs.gameObject.SetActive(value: false);
-						cloudTutorialBouncer.Bounce();
+						this.migrationPanelRefs.gameObject.SetActive(false);
+						this.cloudTutorialBouncer.Bounce();
 						d.Deactivate();
-					}, rightSide: true)
-					.Activate();
+					});
+				}
+				infoDialogScreen.AddOption(text, action, true).Activate();
+				return;
 			}
-			else
+			InfoDialogScreen infoDialogScreen2 = global::Util.KInstantiateUI<InfoDialogScreen>(ScreenPrefabs.Instance.InfoDialogScreen.gameObject, this.gameObject, false).SetHeader(UI.FRONTEND.LOADSCREEN.MIGRATE_RESULT_FAILURES_MORE_INFO_TITLE).AddPlainText(UI.FRONTEND.LOADSCREEN.MIGRATE_RESULT_FAILURES_MORE_INFO_PRE).AddLineItem(UI.FRONTEND.LOADSCREEN.MIGRATE_RESULT_FAILURES_MORE_INFO_ITEM1, "").AddLineItem(UI.FRONTEND.LOADSCREEN.MIGRATE_RESULT_FAILURES_MORE_INFO_ITEM2, "").AddLineItem(UI.FRONTEND.LOADSCREEN.MIGRATE_RESULT_FAILURES_MORE_INFO_ITEM3, "").AddPlainText(UI.FRONTEND.LOADSCREEN.MIGRATE_RESULT_FAILURES_MORE_INFO_POST).AddOption(UI.FRONTEND.LOADSCREEN.MIGRATE_FAILURES_FORUM_BUTTON, delegate(InfoDialogScreen d)
 			{
-				Util.KInstantiateUI<InfoDialogScreen>(ScreenPrefabs.Instance.InfoDialogScreen.gameObject, base.gameObject).SetHeader(UI.FRONTEND.LOADSCREEN.MIGRATE_RESULT_FAILURES_MORE_INFO_TITLE).AddPlainText(UI.FRONTEND.LOADSCREEN.MIGRATE_RESULT_FAILURES_MORE_INFO_PRE)
-					.AddLineItem(UI.FRONTEND.LOADSCREEN.MIGRATE_RESULT_FAILURES_MORE_INFO_ITEM1, "")
-					.AddLineItem(UI.FRONTEND.LOADSCREEN.MIGRATE_RESULT_FAILURES_MORE_INFO_ITEM2, "")
-					.AddLineItem(UI.FRONTEND.LOADSCREEN.MIGRATE_RESULT_FAILURES_MORE_INFO_ITEM3, "")
-					.AddPlainText(UI.FRONTEND.LOADSCREEN.MIGRATE_RESULT_FAILURES_MORE_INFO_POST)
-					.AddOption(UI.FRONTEND.LOADSCREEN.MIGRATE_FAILURES_FORUM_BUTTON, delegate
-					{
-						App.OpenWebURL("https://forums.kleientertainment.com/klei-bug-tracker/oni/");
-					})
-					.AddOption(UI.CONFIRMDIALOG.OK, delegate(InfoDialogScreen d)
-					{
-						migrationPanelRefs.gameObject.SetActive(value: false);
-						cloudTutorialBouncer.Bounce();
-						d.Deactivate();
-					}, rightSide: true)
-					.Activate();
+				App.OpenWebURL("https://forums.kleientertainment.com/klei-bug-tracker/oni/");
+			}, false);
+			string text2 = UI.CONFIRMDIALOG.OK;
+			Action<InfoDialogScreen> action2;
+			if ((action2 = <>9__6) == null)
+			{
+				action2 = (<>9__6 = delegate(InfoDialogScreen d)
+				{
+					this.migrationPanelRefs.gameObject.SetActive(false);
+					this.cloudTutorialBouncer.Bounce();
+					d.Deactivate();
+				});
 			}
+			infoDialogScreen2.AddOption(text2, action2, true).Activate();
 		};
 	}
 
+	// Token: 0x06009011 RID: 36881 RVA: 0x000FE290 File Offset: 0x000FC490
 	private void SetCloudSaveInfoActive(bool active)
 	{
-		colonyCloudButton.gameObject.SetActive(active);
-		colonyLocalButton.gameObject.SetActive(active);
+		this.colonyCloudButton.gameObject.SetActive(active);
+		this.colonyLocalButton.gameObject.SetActive(active);
 	}
 
+	// Token: 0x06009012 RID: 36882 RVA: 0x003799CC File Offset: 0x00377BCC
 	private bool ConvertToLocalOrCloud(string fromRoot, string destRoot, string colonyName)
 	{
 		string text = System.IO.Path.Combine(fromRoot, colonyName);
 		string text2 = System.IO.Path.Combine(destRoot, colonyName);
-		Debug.Log("Convert / Colony '" + colonyName + "' from `" + text + "` => `" + text2 + "`");
+		global::Debug.Log(string.Concat(new string[]
+		{
+			"Convert / Colony '",
+			colonyName,
+			"' from `",
+			text,
+			"` => `",
+			text2,
+			"`"
+		}));
 		try
 		{
 			Directory.Move(text, text2);
@@ -759,165 +739,178 @@ public class LoadScreen : KModalScreen
 		}
 		catch (Exception ex)
 		{
-			Debug.LogWarning("failed to convert colony: " + ex.ToString());
+			global::Debug.LogWarning("failed to convert colony: " + ex.ToString());
 			string message = UI.FRONTEND.LOADSCREEN.CONVERT_ERROR.Replace("{Colony}", colonyName).Replace("{Error}", ex.Message);
-			ShowConvertError(message);
+			this.ShowConvertError(message);
 		}
 		return false;
 	}
 
+	// Token: 0x06009013 RID: 36883 RVA: 0x00379A88 File Offset: 0x00377C88
 	private bool ConvertColonyToCloud(string colonyName)
 	{
 		string savePrefix = SaveLoader.GetSavePrefix();
 		string cloudSavePrefix = SaveLoader.GetCloudSavePrefix();
 		if (cloudSavePrefix == null)
 		{
-			Debug.LogWarning("Failed to move colony to cloud, no cloud save prefix found (usually a userID is missing, not logged in?)");
+			global::Debug.LogWarning("Failed to move colony to cloud, no cloud save prefix found (usually a userID is missing, not logged in?)");
 			return false;
 		}
-		return ConvertToLocalOrCloud(savePrefix, cloudSavePrefix, colonyName);
+		return this.ConvertToLocalOrCloud(savePrefix, cloudSavePrefix, colonyName);
 	}
 
+	// Token: 0x06009014 RID: 36884 RVA: 0x00379ABC File Offset: 0x00377CBC
 	private bool ConvertColonyToLocal(string colonyName)
 	{
 		string savePrefix = SaveLoader.GetSavePrefix();
 		string cloudSavePrefix = SaveLoader.GetCloudSavePrefix();
 		if (cloudSavePrefix == null)
 		{
-			Debug.LogWarning("Failed to move colony from cloud, no cloud save prefix found (usually a userID is missing, not logged in?)");
+			global::Debug.LogWarning("Failed to move colony from cloud, no cloud save prefix found (usually a userID is missing, not logged in?)");
 			return false;
 		}
-		return ConvertToLocalOrCloud(cloudSavePrefix, savePrefix, colonyName);
+		return this.ConvertToLocalOrCloud(cloudSavePrefix, savePrefix, colonyName);
 	}
 
+	// Token: 0x06009015 RID: 36885 RVA: 0x00379AF0 File Offset: 0x00377CF0
 	private void DoConvertAllToLocal()
 	{
-		Dictionary<string, List<SaveGameFileDetails>> cloudColonies = GetCloudColonies(sort: false);
+		Dictionary<string, List<LoadScreen.SaveGameFileDetails>> cloudColonies = this.GetCloudColonies(false);
 		if (cloudColonies.Count == 0)
 		{
 			return;
 		}
 		bool flag = true;
-		foreach (KeyValuePair<string, List<SaveGameFileDetails>> item in cloudColonies)
+		foreach (KeyValuePair<string, List<LoadScreen.SaveGameFileDetails>> keyValuePair in cloudColonies)
 		{
-			flag &= ConvertColonyToLocal(item.Value[0].BaseName);
+			flag &= this.ConvertColonyToLocal(keyValuePair.Value[0].BaseName);
 		}
 		if (flag)
 		{
 			string replacement = UI.PLATFORMS.STEAM;
-			ShowSimpleDialog(UI.FRONTEND.LOADSCREEN.CONVERT_TO_LOCAL, UI.FRONTEND.LOADSCREEN.CONVERT_ALL_TO_LOCAL_SUCCESS.Replace("{Client}", replacement));
+			this.ShowSimpleDialog(UI.FRONTEND.LOADSCREEN.CONVERT_TO_LOCAL, UI.FRONTEND.LOADSCREEN.CONVERT_ALL_TO_LOCAL_SUCCESS.Replace("{Client}", replacement));
 		}
-		RefreshColonyList();
-		MainMenu.Instance.RefreshResumeButton();
-		SaveLoader.SetCloudSavesDefault(value: false);
+		this.RefreshColonyList();
+		MainMenu.Instance.RefreshResumeButton(false);
+		SaveLoader.SetCloudSavesDefault(false);
 	}
 
+	// Token: 0x06009016 RID: 36886 RVA: 0x00379BAC File Offset: 0x00377DAC
 	private void DoConvertAllToCloud()
 	{
-		Dictionary<string, List<SaveGameFileDetails>> localColonies = GetLocalColonies(sort: false);
+		Dictionary<string, List<LoadScreen.SaveGameFileDetails>> localColonies = this.GetLocalColonies(false);
 		if (localColonies.Count == 0)
 		{
 			return;
 		}
 		List<string> list = new List<string>();
-		foreach (KeyValuePair<string, List<SaveGameFileDetails>> item in localColonies)
+		foreach (KeyValuePair<string, List<LoadScreen.SaveGameFileDetails>> keyValuePair in localColonies)
 		{
-			string baseName = item.Value[0].BaseName;
+			string baseName = keyValuePair.Value[0].BaseName;
 			if (!list.Contains(baseName))
 			{
 				list.Add(baseName);
 			}
 		}
 		bool flag = true;
-		foreach (string item2 in list)
+		foreach (string colonyName in list)
 		{
-			flag &= ConvertColonyToCloud(item2);
+			flag &= this.ConvertColonyToCloud(colonyName);
 		}
 		if (flag)
 		{
 			string replacement = UI.PLATFORMS.STEAM;
-			ShowSimpleDialog(UI.FRONTEND.LOADSCREEN.CONVERT_TO_CLOUD, UI.FRONTEND.LOADSCREEN.CONVERT_ALL_TO_CLOUD_SUCCESS.Replace("{Client}", replacement));
+			this.ShowSimpleDialog(UI.FRONTEND.LOADSCREEN.CONVERT_TO_CLOUD, UI.FRONTEND.LOADSCREEN.CONVERT_ALL_TO_CLOUD_SUCCESS.Replace("{Client}", replacement));
 		}
-		RefreshColonyList();
-		MainMenu.Instance.RefreshResumeButton();
-		SaveLoader.SetCloudSavesDefault(value: true);
+		this.RefreshColonyList();
+		MainMenu.Instance.RefreshResumeButton(false);
+		SaveLoader.SetCloudSavesDefault(true);
 	}
 
+	// Token: 0x06009017 RID: 36887 RVA: 0x00379CC0 File Offset: 0x00377EC0
 	private void ConvertAllToCloud()
 	{
-		string message = $"{UI.FRONTEND.LOADSCREEN.CONVERT_TO_CLOUD_DETAILS}\n{UI.FRONTEND.LOADSCREEN.CONVERT_ALL_WARNING}\n";
+		string message = string.Format("{0}\n{1}\n", UI.FRONTEND.LOADSCREEN.CONVERT_TO_CLOUD_DETAILS, UI.FRONTEND.LOADSCREEN.CONVERT_ALL_WARNING);
 		KPlayerPrefs.SetInt("LoadScreenCloudTutorialTimes", 5);
-		ConfirmCloudSaveMigrations(message, UI.FRONTEND.LOADSCREEN.CONVERT_TO_CLOUD, UI.FRONTEND.LOADSCREEN.CONVERT_ALL_COLONIES, UI.FRONTEND.LOADSCREEN.OPEN_SAVE_FOLDER, delegate
+		this.ConfirmCloudSaveMigrations(message, UI.FRONTEND.LOADSCREEN.CONVERT_TO_CLOUD, UI.FRONTEND.LOADSCREEN.CONVERT_ALL_COLONIES, UI.FRONTEND.LOADSCREEN.OPEN_SAVE_FOLDER, delegate
 		{
-			DoConvertAllToCloud();
+			this.DoConvertAllToCloud();
 		}, delegate
 		{
 			App.OpenWebURL(SaveLoader.GetSavePrefix());
-		}, localToCloudSprite);
+		}, this.localToCloudSprite);
 	}
 
+	// Token: 0x06009018 RID: 36888 RVA: 0x00379D44 File Offset: 0x00377F44
 	private void ConvertAllToLocal()
 	{
-		string message = $"{UI.FRONTEND.LOADSCREEN.CONVERT_TO_LOCAL_DETAILS}\n{UI.FRONTEND.LOADSCREEN.CONVERT_ALL_WARNING}\n";
+		string message = string.Format("{0}\n{1}\n", UI.FRONTEND.LOADSCREEN.CONVERT_TO_LOCAL_DETAILS, UI.FRONTEND.LOADSCREEN.CONVERT_ALL_WARNING);
 		KPlayerPrefs.SetInt("LoadScreenCloudTutorialTimes", 5);
-		ConfirmCloudSaveMigrations(message, UI.FRONTEND.LOADSCREEN.CONVERT_TO_LOCAL, UI.FRONTEND.LOADSCREEN.CONVERT_ALL_COLONIES, UI.FRONTEND.LOADSCREEN.OPEN_SAVE_FOLDER, delegate
+		this.ConfirmCloudSaveMigrations(message, UI.FRONTEND.LOADSCREEN.CONVERT_TO_LOCAL, UI.FRONTEND.LOADSCREEN.CONVERT_ALL_COLONIES, UI.FRONTEND.LOADSCREEN.OPEN_SAVE_FOLDER, delegate
 		{
-			DoConvertAllToLocal();
+			this.DoConvertAllToLocal();
 		}, delegate
 		{
 			App.OpenWebURL(SaveLoader.GetCloudSavePrefix());
-		}, cloudToLocalSprite);
+		}, this.cloudToLocalSprite);
 	}
 
+	// Token: 0x06009019 RID: 36889 RVA: 0x00379DC8 File Offset: 0x00377FC8
 	private void ShowSaveInfo()
 	{
-		if (!(infoScreen == null))
+		if (this.infoScreen == null)
 		{
-			return;
-		}
-		infoScreen = Util.KInstantiateUI<InfoDialogScreen>(ScreenPrefabs.Instance.InfoDialogScreen.gameObject, base.gameObject).SetHeader(UI.FRONTEND.LOADSCREEN.SAVE_INFO_DIALOG_TITLE).AddSprite(infoSprite)
-			.AddPlainText(UI.FRONTEND.LOADSCREEN.SAVE_INFO_DIALOG_TEXT)
-			.AddOption(UI.FRONTEND.LOADSCREEN.OPEN_SAVE_FOLDER, delegate
+			this.infoScreen = global::Util.KInstantiateUI<InfoDialogScreen>(ScreenPrefabs.Instance.InfoDialogScreen.gameObject, base.gameObject, false).SetHeader(UI.FRONTEND.LOADSCREEN.SAVE_INFO_DIALOG_TITLE).AddSprite(this.infoSprite).AddPlainText(UI.FRONTEND.LOADSCREEN.SAVE_INFO_DIALOG_TEXT).AddOption(UI.FRONTEND.LOADSCREEN.OPEN_SAVE_FOLDER, delegate(InfoDialogScreen d)
 			{
 				App.OpenWebURL(SaveLoader.GetSavePrefix());
-			}, rightSide: true)
-			.AddDefaultCancel();
-		string cloudRoot = SaveLoader.GetCloudSavePrefix();
-		if (cloudRoot != null && CloudSavesVisible())
-		{
-			infoScreen.AddOption(UI.FRONTEND.LOADSCREEN.OPEN_CLOUDSAVE_FOLDER, delegate
+			}, true).AddDefaultCancel();
+			string cloudRoot = SaveLoader.GetCloudSavePrefix();
+			if (cloudRoot != null && this.CloudSavesVisible())
 			{
-				App.OpenWebURL(cloudRoot);
-			}, rightSide: true);
+				this.infoScreen.AddOption(UI.FRONTEND.LOADSCREEN.OPEN_CLOUDSAVE_FOLDER, delegate(InfoDialogScreen d)
+				{
+					App.OpenWebURL(cloudRoot);
+				}, true);
+			}
+			this.infoScreen.gameObject.SetActive(true);
 		}
-		infoScreen.gameObject.SetActive(value: true);
 	}
 
+	// Token: 0x0600901A RID: 36890 RVA: 0x000FE2B4 File Offset: 0x000FC4B4
 	protected override void OnDeactivate()
 	{
 		if (SpeedControlScreen.Instance != null)
 		{
-			SpeedControlScreen.Instance.Unpause(playSound: false);
+			SpeedControlScreen.Instance.Unpause(false);
 		}
-		selectedSave = null;
+		this.selectedSave = null;
 		base.OnDeactivate();
 	}
 
+	// Token: 0x0600901B RID: 36891 RVA: 0x000FE2DB File Offset: 0x000FC4DB
 	private void ShowColonyList()
 	{
-		colonyListRoot.SetActive(value: true);
-		colonyViewRoot.SetActive(value: false);
-		currentColony = null;
-		selectedSave = null;
+		this.colonyListRoot.SetActive(true);
+		this.colonyViewRoot.SetActive(false);
+		this.currentColony = null;
+		this.selectedSave = null;
 	}
 
-	private bool CheckSave(SaveGameFileDetails save, LocText display)
+	// Token: 0x0600901C RID: 36892 RVA: 0x00379EBC File Offset: 0x003780BC
+	private bool CheckSaveVersion(LoadScreen.SaveGameFileDetails save, LocText display)
 	{
-		if (IsSaveFileFromUnsupportedFutureBuild(save.FileHeader, save.FileInfo))
+		if (LoadScreen.IsSaveFileFromUnsupportedFutureBuild(save.FileHeader, save.FileInfo))
 		{
 			if (display != null)
 			{
-				display.text = string.Format(UI.FRONTEND.LOADSCREEN.SAVE_TOO_NEW, save.FileName, save.FileHeader.buildVersion, save.FileInfo.saveMinorVersion, 623711u, 34);
+				display.text = string.Format(UI.FRONTEND.LOADSCREEN.SAVE_TOO_NEW, new object[]
+				{
+					save.FileName,
+					save.FileHeader.buildVersion,
+					save.FileInfo.saveMinorVersion,
+					642695U,
+					35
+				});
 			}
 			return false;
 		}
@@ -925,16 +918,57 @@ public class LoadScreen : KModalScreen
 		{
 			if (display != null)
 			{
-				display.text = string.Format(UI.FRONTEND.LOADSCREEN.UNSUPPORTED_SAVE_VERSION, save.FileName, save.FileInfo.saveMajorVersion, save.FileInfo.saveMinorVersion, 7, 34);
+				display.text = string.Format(UI.FRONTEND.LOADSCREEN.UNSUPPORTED_SAVE_VERSION, new object[]
+				{
+					save.FileName,
+					save.FileInfo.saveMajorVersion,
+					save.FileInfo.saveMinorVersion,
+					7,
+					35
+				});
 			}
 			return false;
 		}
 		return true;
 	}
 
-	private void ShowColonySave(SaveGameFileDetails save)
+	// Token: 0x0600901D RID: 36893 RVA: 0x00379FC0 File Offset: 0x003781C0
+	private bool CheckSaveDLCsCompatable(LoadScreen.SaveGameFileDetails save)
 	{
-		HierarchyReferences component = colonyViewRoot.GetComponent<HierarchyReferences>();
+		HashSet<string> hashSet;
+		HashSet<string> hashSet2;
+		return save.FileInfo.IsCompatableWithCurrentDlcConfiguration(out hashSet, out hashSet2);
+	}
+
+	// Token: 0x0600901E RID: 36894 RVA: 0x00379FE0 File Offset: 0x003781E0
+	private string GetSaveDLCIncompatabilityTooltip(LoadScreen.SaveGameFileDetails save)
+	{
+		string text = "";
+		HashSet<string> hashSet;
+		HashSet<string> hashSet2;
+		if (save.FileInfo.IsCompatableWithCurrentDlcConfiguration(out hashSet, out hashSet2))
+		{
+			text = null;
+		}
+		else
+		{
+			text = UI.FRONTEND.LOADSCREEN.TOOLTIP_SAVE_INCOMPATABLE_DLC_CONFIGURATION;
+			foreach (string dlcId in hashSet)
+			{
+				text = text + "\n" + string.Format(UI.FRONTEND.LOADSCREEN.TOOLTIP_SAVE_INCOMPATABLE_DLC_CONFIGURATION_ASK_TO_ENABLE, DlcManager.GetDlcTitle(dlcId));
+			}
+			foreach (string dlcId2 in hashSet2)
+			{
+				text = text + "\n" + string.Format(UI.FRONTEND.LOADSCREEN.TOOLTIP_SAVE_INCOMPATABLE_DLC_CONFIGURATION_ASK_TO_DISABLE, DlcManager.GetDlcTitle(dlcId2));
+			}
+		}
+		return text;
+	}
+
+	// Token: 0x0600901F RID: 36895 RVA: 0x0037A0D0 File Offset: 0x003782D0
+	private void ShowColonySave(LoadScreen.SaveGameFileDetails save)
+	{
+		HierarchyReferences component = this.colonyViewRoot.GetComponent<HierarchyReferences>();
 		component.GetReference<RectTransform>("Title").GetComponent<LocText>().text = save.BaseName;
 		component.GetReference<RectTransform>("Date").GetComponent<LocText>().text = string.Format("{0:H:mm:ss} - " + Localization.GetFileDateFormat(0), save.FileDate.ToLocalTime());
 		string text = save.FileInfo.clusterId;
@@ -947,53 +981,66 @@ public class LoadScreen : KModalScreen
 			}
 			else
 			{
-				DebugUtil.LogWarningArgs("Failed to find cluster " + text + " including the scoped path, setting to default cluster name.");
-				Debug.Log("ClusterCache: " + string.Join(",", SettingsCache.clusterLayouts.clusterCache.Keys));
+				DebugUtil.LogWarningArgs(new object[]
+				{
+					"Failed to find cluster " + text + " including the scoped path, setting to default cluster name."
+				});
+				global::Debug.Log("ClusterCache: " + string.Join(",", SettingsCache.clusterLayouts.clusterCache.Keys));
 				text = WorldGenSettings.ClusterDefaultName;
 			}
 		}
-		ProcGen.World world = ((text != null) ? SettingsCache.clusterLayouts.GetWorldData(text, 0) : null);
-		string arg = ((world != null) ? ((string)Strings.Get(world.name)) : " - ");
+		ProcGen.World world = (text != null) ? SettingsCache.clusterLayouts.GetWorldData(text, 0) : null;
+		string arg = (world != null) ? Strings.Get(world.name) : " - ";
 		component.GetReference<LocText>("InfoWorld").text = string.Format(UI.FRONTEND.LOADSCREEN.COLONY_INFO_FMT, UI.FRONTEND.LOADSCREEN.WORLD_NAME, arg);
 		component.GetReference<LocText>("InfoCycles").text = string.Format(UI.FRONTEND.LOADSCREEN.COLONY_INFO_FMT, UI.FRONTEND.LOADSCREEN.CYCLES_SURVIVED, save.FileInfo.numberOfCycles);
 		component.GetReference<LocText>("InfoDupes").text = string.Format(UI.FRONTEND.LOADSCREEN.COLONY_INFO_FMT, UI.FRONTEND.LOADSCREEN.DUPLICANTS_ALIVE, save.FileInfo.numberOfDuplicants);
-		component.GetReference<RectTransform>("FileSize").GetComponent<LocText>().text = string.Format(arg0: GameUtil.GetFormattedBytes((ulong)save.Size), format: UI.FRONTEND.LOADSCREEN.COLONY_FILE_SIZE);
+		TMP_Text component2 = component.GetReference<RectTransform>("FileSize").GetComponent<LocText>();
+		string formattedBytes = GameUtil.GetFormattedBytes((ulong)save.Size);
+		component2.text = string.Format(UI.FRONTEND.LOADSCREEN.COLONY_FILE_SIZE, formattedBytes);
 		component.GetReference<RectTransform>("Filename").GetComponent<LocText>().text = string.Format(UI.FRONTEND.LOADSCREEN.COLONY_FILE_NAME, System.IO.Path.GetFileName(save.FileName));
-		LocText component2 = component.GetReference<RectTransform>("AutoInfo").GetComponent<LocText>();
-		component2.gameObject.SetActive(!CheckSave(save, component2));
-		Image component3 = component.GetReference<RectTransform>("Preview").GetComponent<Image>();
-		SetPreview(save.FileName, save.BaseName, component3);
-		KButton component4 = component.GetReference<RectTransform>("DeleteButton").GetComponent<KButton>();
-		component4.ClearOnClick();
-		component4.onClick += delegate
+		LocText component3 = component.GetReference<RectTransform>("AutoInfo").GetComponent<LocText>();
+		component3.gameObject.SetActive(!this.CheckSaveVersion(save, component3));
+		Image component4 = component.GetReference<RectTransform>("Preview").GetComponent<Image>();
+		this.SetPreview(save.FileName, save.BaseName, component4, false);
+		KButton component5 = component.GetReference<RectTransform>("DeleteButton").GetComponent<KButton>();
+		component5.ClearOnClick();
+		System.Action <>9__1;
+		component5.onClick += delegate()
 		{
-			Delete(delegate
+			LoadScreen <>4__this = this;
+			System.Action onDelete;
+			if ((onDelete = <>9__1) == null)
 			{
-				int num = currentColony.IndexOf(save);
-				currentColony.Remove(save);
-				ShowColony(currentColony, num - 1);
-			});
+				onDelete = (<>9__1 = delegate()
+				{
+					int num = this.currentColony.IndexOf(save);
+					this.currentColony.Remove(save);
+					this.ShowColony(this.currentColony, num - 1);
+				});
+			}
+			<>4__this.Delete(onDelete);
 		};
 	}
 
-	private void ShowColony(List<SaveGameFileDetails> saves, int selectIndex = -1)
+	// Token: 0x06009020 RID: 36896 RVA: 0x0037A3B8 File Offset: 0x003785B8
+	private void ShowColony(List<LoadScreen.SaveGameFileDetails> saves, int selectIndex = -1)
 	{
 		if (saves.Count <= 0)
 		{
-			RefreshColonyList();
-			ShowColonyList();
+			this.RefreshColonyList();
+			this.ShowColonyList();
 			return;
 		}
-		currentColony = saves;
-		colonyListRoot.SetActive(value: false);
-		colonyViewRoot.SetActive(value: true);
+		this.currentColony = saves;
+		this.colonyListRoot.SetActive(false);
+		this.colonyViewRoot.SetActive(true);
 		string baseName = saves[0].BaseName;
-		HierarchyReferences component = colonyViewRoot.GetComponent<HierarchyReferences>();
+		HierarchyReferences component = this.colonyViewRoot.GetComponent<HierarchyReferences>();
 		KButton component2 = component.GetReference<RectTransform>("Back").GetComponent<KButton>();
 		component2.ClearOnClick();
-		component2.onClick += delegate
+		component2.onClick += delegate()
 		{
-			ShowColonyList();
+			this.ShowColonyList();
 		};
 		component.GetReference<RectTransform>("ColonyTitle").GetComponent<LocText>().text = string.Format(UI.FRONTEND.LOADSCREEN.COLONY_TITLE, baseName);
 		GameObject gameObject = component.GetReference<RectTransform>("Content").gameObject;
@@ -1016,64 +1063,74 @@ public class LoadScreen : KModalScreen
 		}
 		for (int j = 0; j < saves.Count; j++)
 		{
-			SaveGameFileDetails save = saves[j];
-			RectTransform rectTransform = UnityEngine.Object.Instantiate(reference, gameObject.transform);
+			LoadScreen.SaveGameFileDetails save = saves[j];
+			RectTransform rectTransform = UnityEngine.Object.Instantiate<RectTransform>(reference, gameObject.transform);
 			HierarchyReferences component3 = rectTransform.GetComponent<HierarchyReferences>();
-			rectTransform.gameObject.SetActive(value: true);
+			rectTransform.gameObject.SetActive(true);
 			component3.GetReference<RectTransform>("AutoLabel").gameObject.SetActive(save.FileInfo.isAutoSave);
 			component3.GetReference<RectTransform>("SaveText").GetComponent<LocText>().text = System.IO.Path.GetFileNameWithoutExtension(save.FileName);
 			component3.GetReference<RectTransform>("DateText").GetComponent<LocText>().text = string.Format("{0:H:mm:ss} - " + Localization.GetFileDateFormat(0), save.FileDate.ToLocalTime());
 			component3.GetReference<RectTransform>("NewestLabel").gameObject.SetActive(j == 0);
-			bool num = CheckSave(save, null);
+			RectTransform reference2 = component3.GetReference<RectTransform>("DLCIconPrefab");
+			foreach (string dlcId in save.FileInfo.dlcIds)
+			{
+				GameObject gameObject3 = global::Util.KInstantiateUI(reference2.gameObject, reference2.transform.parent.gameObject, true);
+				gameObject3.GetComponent<Image>().sprite = Assets.GetSprite(DlcManager.GetDlcSmallLogo(dlcId));
+				gameObject3.GetComponent<ToolTip>().SetSimpleTooltip(string.Format(UI.FRONTEND.LOADSCREEN.TOOLTIP_SAVE_USES_DLC, DlcManager.GetDlcTitle(dlcId)));
+			}
+			object obj = this.CheckSaveVersion(save, null) && this.CheckSaveDLCsCompatable(save);
 			KButton button = rectTransform.GetComponent<KButton>();
 			button.ClearOnClick();
-			button.onClick += delegate
+			button.onClick += delegate()
 			{
-				UpdateSelected(button, save.FileName, save.FileInfo.dlcIds);
-				ShowColonySave(save);
+				this.UpdateSelected(button, save.FileName, save.FileInfo.dlcIds);
+				this.ShowColonySave(save);
 			};
-			if (num)
+			object obj2 = obj;
+			if (obj2 != null)
 			{
-				button.onDoubleClick += delegate
+				button.onDoubleClick += delegate()
 				{
-					UpdateSelected(button, save.FileName, save.FileInfo.dlcIds);
-					Load();
+					this.UpdateSelected(button, save.FileName, save.FileInfo.dlcIds);
+					this.Load();
 				};
 			}
 			KButton component4 = component3.GetReference<RectTransform>("LoadButton").GetComponent<KButton>();
 			component4.ClearOnClick();
-			if (!num)
+			if (obj2 == null)
 			{
 				component4.isInteractable = false;
 				component4.GetComponent<ImageToggleState>().SetState(ImageToggleState.State.Disabled);
+				component4.GetComponent<ToolTip>().SetSimpleTooltip(this.GetSaveDLCIncompatabilityTooltip(save));
 			}
 			else
 			{
-				component4.onClick += delegate
+				component4.onClick += delegate()
 				{
-					UpdateSelected(button, save.FileName, save.FileInfo.dlcIds);
-					Load();
+					this.UpdateSelected(button, save.FileName, save.FileInfo.dlcIds);
+					this.Load();
 				};
 			}
 			if (j == selectIndex)
 			{
-				UpdateSelected(button, save.FileName, save.FileInfo.dlcIds);
-				ShowColonySave(save);
+				this.UpdateSelected(button, save.FileName, save.FileInfo.dlcIds);
+				this.ShowColonySave(save);
 			}
 		}
 	}
 
-	private void AddColonyToList(List<SaveGameFileDetails> saves)
+	// Token: 0x06009021 RID: 36897 RVA: 0x0037A7AC File Offset: 0x003789AC
+	private void AddColonyToList(List<LoadScreen.SaveGameFileDetails> saves)
 	{
 		if (saves.Count == 0)
 		{
 			return;
 		}
-		HierarchyReferences freeElement = colonyListPool.GetFreeElement(saveButtonRoot, forceActive: true);
-		saves.Sort((SaveGameFileDetails x, SaveGameFileDetails y) => y.FileDate.CompareTo(x.FileDate));
-		SaveGameFileDetails saveGameFileDetails = saves[0];
+		HierarchyReferences freeElement = this.colonyListPool.GetFreeElement(this.saveButtonRoot, true);
+		saves.Sort((LoadScreen.SaveGameFileDetails x, LoadScreen.SaveGameFileDetails y) => y.FileDate.CompareTo(x.FileDate));
+		LoadScreen.SaveGameFileDetails saveGameFileDetails = saves[0];
 		string colonyName = saveGameFileDetails.BaseName;
-		(int, int, ulong) savesSizeAndCounts = GetSavesSizeAndCounts(saves);
+		ValueTuple<int, int, ulong> savesSizeAndCounts = this.GetSavesSizeAndCounts(saves);
 		int item = savesSizeAndCounts.Item1;
 		int item2 = savesSizeAndCounts.Item2;
 		string formattedBytes = GameUtil.GetFormattedBytes(savesSizeAndCounts.Item3);
@@ -1081,26 +1138,21 @@ public class LoadScreen : KModalScreen
 		freeElement.GetReference<RectTransform>("HeaderDate").GetComponent<LocText>().text = string.Format("{0:H:mm:ss} - " + Localization.GetFileDateFormat(0), saveGameFileDetails.FileDate.ToLocalTime());
 		freeElement.GetReference<RectTransform>("SaveTitle").GetComponent<LocText>().text = string.Format(UI.FRONTEND.LOADSCREEN.SAVE_INFO, item, item2, formattedBytes);
 		Image component = freeElement.GetReference<RectTransform>("Preview").GetComponent<Image>();
-		SetPreview(saveGameFileDetails.FileName, colonyName, component, fallbackToTimelapse: true);
-		List<(Sprite, Material, string)> list = new List<(Sprite, Material, string)>();
-		if (!saveGameFileDetails.FileInfo.dlcIds.Contains("EXPANSION1_ID"))
+		this.SetPreview(saveGameFileDetails.FileName, colonyName, component, true);
+		List<ValueTuple<Sprite, string>> list = new List<ValueTuple<Sprite, string>>();
+		if (saveGameFileDetails.FileInfo.dlcIds.Contains("EXPANSION1_ID"))
 		{
-			list.Add((Assets.GetSprite("ONI_mini_logo"), (!DlcManager.IsExpansion1Active()) ? materialUiNormal : materialUiDesaturated, string.Format(UI.FRONTEND.LOADSCREEN.TOOLTIP_SAVE_USES_DLC, UI.VANILLA.NAME)));
+			list.Add(new ValueTuple<Sprite, string>(Assets.GetSprite(DlcManager.GetDlcSmallLogo("EXPANSION1_ID")), string.Format(UI.FRONTEND.LOADSCREEN.TOOLTIP_SAVE_USES_DLC, DlcManager.GetDlcTitle("EXPANSION1_ID"))));
 		}
-		else
+		foreach (string text in saveGameFileDetails.FileInfo.dlcIds)
 		{
-			list.Add((Assets.GetSprite(DlcManager.GetDlcSmallLogo("EXPANSION1_ID")), DlcManager.IsExpansion1Active() ? materialUiNormal : materialUiDesaturated, string.Format(UI.FRONTEND.LOADSCREEN.TOOLTIP_SAVE_USES_DLC, DlcManager.GetDlcTitle("EXPANSION1_ID"))));
-		}
-		foreach (string dlcId in saveGameFileDetails.FileInfo.dlcIds)
-		{
-			if (DlcManager.IsDlcId(dlcId) && !(dlcId == "EXPANSION1_ID"))
+			if (DlcManager.IsDlcId(text) && !(text == "EXPANSION1_ID"))
 			{
-				list.Add((Assets.GetSprite(DlcManager.GetDlcSmallLogo(dlcId)), DlcManager.IsContentSubscribed(dlcId) ? materialUiNormal : materialUiDesaturated, string.Format(UI.FRONTEND.LOADSCREEN.TOOLTIP_SAVE_USES_DLC, DlcManager.GetDlcTitle(dlcId))));
+				list.Add(new ValueTuple<Sprite, string>(Assets.GetSprite(DlcManager.GetDlcSmallLogo(text)), string.Format(UI.FRONTEND.LOADSCREEN.TOOLTIP_SAVE_USES_DLC, DlcManager.GetDlcTitle(text))));
 			}
 		}
-		GameObject gameObject = freeElement.transform.Find("Header").Find("DlcIcons").Find("Prefab_DlcIcon")
-			.gameObject;
-		gameObject.SetActive(value: false);
+		GameObject gameObject = freeElement.transform.Find("Header").Find("DlcIcons").Find("Prefab_DlcIcon").gameObject;
+		gameObject.SetActive(false);
 		for (int i = 0; i < gameObject.transform.parent.childCount; i++)
 		{
 			GameObject gameObject2 = gameObject.transform.parent.GetChild(i).gameObject;
@@ -1109,16 +1161,16 @@ public class LoadScreen : KModalScreen
 				UnityEngine.Object.Destroy(gameObject2);
 			}
 		}
-		foreach (var item3 in list)
+		foreach (ValueTuple<Sprite, string> valueTuple in list)
 		{
-			GameObject obj = Util.KInstantiateUI(gameObject, gameObject.transform.parent.gameObject, force_active: true);
-			Image component2 = obj.GetComponent<Image>();
-			ToolTip component3 = obj.GetComponent<ToolTip>();
-			(component2.sprite, component2.material, _) = item3;
-			component3.SetSimpleTooltip(item3.Item3);
+			GameObject gameObject3 = global::Util.KInstantiateUI(gameObject, gameObject.transform.parent.gameObject, true);
+			Image component2 = gameObject3.GetComponent<Image>();
+			ToolTip component3 = gameObject3.GetComponent<ToolTip>();
+			component2.sprite = valueTuple.Item1;
+			component3.SetSimpleTooltip(valueTuple.Item2);
 		}
-		RectTransform reference = freeElement.GetReference<RectTransform>("LocationIcons");
-		bool flag = CloudSavesVisible();
+		Component reference = freeElement.GetReference<RectTransform>("LocationIcons");
+		bool flag = this.CloudSavesVisible();
 		reference.gameObject.SetActive(flag);
 		if (flag)
 		{
@@ -1129,77 +1181,70 @@ public class LoadScreen : KModalScreen
 			KButton localButton = freeElement.GetReference<RectTransform>("LocalButton").GetComponent<KButton>();
 			cloudButton.gameObject.SetActive(!isLocal);
 			cloudButton.ClearOnClick();
-			cloudButton.onClick += delegate
+			System.Action <>9__4;
+			cloudButton.onClick += delegate()
 			{
-				string message2 = $"{UI.FRONTEND.LOADSCREEN.CONVERT_TO_LOCAL_DETAILS}\n";
-				ConfirmCloudSaveMigrations(message2, UI.FRONTEND.LOADSCREEN.CONVERT_TO_LOCAL, UI.FRONTEND.LOADSCREEN.CONVERT_COLONY, null, delegate
+				string text2 = string.Format("{0}\n", UI.FRONTEND.LOADSCREEN.CONVERT_TO_LOCAL_DETAILS);
+				LoadScreen <>4__this = this;
+				string message = text2;
+				string title = UI.FRONTEND.LOADSCREEN.CONVERT_TO_LOCAL;
+				string confirmText = UI.FRONTEND.LOADSCREEN.CONVERT_COLONY;
+				string backupText = null;
+				System.Action commitAction;
+				if ((commitAction = <>9__4) == null)
 				{
-					cloudButton.gameObject.SetActive(value: false);
-					isLocal = true;
-					locationText.text = (isLocal ? UI.FRONTEND.LOADSCREEN.LOCAL_SAVE : UI.FRONTEND.LOADSCREEN.CLOUD_SAVE);
-					ConvertColonyToLocal(colonyName);
-					RefreshColonyList();
-					MainMenu.Instance.RefreshResumeButton();
-				}, null, cloudToLocalSprite);
+					commitAction = (<>9__4 = delegate()
+					{
+						cloudButton.gameObject.SetActive(false);
+						isLocal = true;
+						locationText.text = (isLocal ? UI.FRONTEND.LOADSCREEN.LOCAL_SAVE : UI.FRONTEND.LOADSCREEN.CLOUD_SAVE);
+						this.ConvertColonyToLocal(colonyName);
+						this.RefreshColonyList();
+						MainMenu.Instance.RefreshResumeButton(false);
+					});
+				}
+				<>4__this.ConfirmCloudSaveMigrations(message, title, confirmText, backupText, commitAction, null, this.cloudToLocalSprite);
 			};
 			localButton.gameObject.SetActive(isLocal);
 			localButton.ClearOnClick();
-			localButton.onClick += delegate
+			System.Action <>9__5;
+			localButton.onClick += delegate()
 			{
-				string message = $"{UI.FRONTEND.LOADSCREEN.CONVERT_TO_CLOUD_DETAILS}\n";
-				ConfirmCloudSaveMigrations(message, UI.FRONTEND.LOADSCREEN.CONVERT_TO_CLOUD, UI.FRONTEND.LOADSCREEN.CONVERT_COLONY, null, delegate
+				string text2 = string.Format("{0}\n", UI.FRONTEND.LOADSCREEN.CONVERT_TO_CLOUD_DETAILS);
+				LoadScreen <>4__this = this;
+				string message = text2;
+				string title = UI.FRONTEND.LOADSCREEN.CONVERT_TO_CLOUD;
+				string confirmText = UI.FRONTEND.LOADSCREEN.CONVERT_COLONY;
+				string backupText = null;
+				System.Action commitAction;
+				if ((commitAction = <>9__5) == null)
 				{
-					localButton.gameObject.SetActive(value: false);
-					isLocal = false;
-					locationText.text = (isLocal ? UI.FRONTEND.LOADSCREEN.LOCAL_SAVE : UI.FRONTEND.LOADSCREEN.CLOUD_SAVE);
-					ConvertColonyToCloud(colonyName);
-					RefreshColonyList();
-					MainMenu.Instance.RefreshResumeButton();
-				}, null, localToCloudSprite);
+					commitAction = (<>9__5 = delegate()
+					{
+						localButton.gameObject.SetActive(false);
+						isLocal = false;
+						locationText.text = (isLocal ? UI.FRONTEND.LOADSCREEN.LOCAL_SAVE : UI.FRONTEND.LOADSCREEN.CLOUD_SAVE);
+						this.ConvertColonyToCloud(colonyName);
+						this.RefreshColonyList();
+						MainMenu.Instance.RefreshResumeButton(false);
+					});
+				}
+				<>4__this.ConfirmCloudSaveMigrations(message, title, confirmText, backupText, commitAction, null, this.localToCloudSprite);
 			};
 		}
-		string text;
-		if (saveGameFileDetails.FileInfo.IsCompatableWithCurrentDlcConfiguration(out var dlcIdsToEnable, out var dlcIdToDisable))
+		this.GetSaveDLCIncompatabilityTooltip(saveGameFileDetails);
+		freeElement.GetReference<RectTransform>("Button").GetComponent<KButton>().onClick += delegate()
 		{
-			text = null;
-		}
-		else
-		{
-			text = UI.FRONTEND.LOADSCREEN.TOOLTIP_SAVE_INCOMPATABLE_DLC_CONFIGURATION;
-			foreach (string item4 in dlcIdsToEnable)
-			{
-				text = text + "\n" + string.Format(UI.FRONTEND.LOADSCREEN.TOOLTIP_SAVE_INCOMPATABLE_DLC_CONFIGURATION_ASK_TO_ENABLE, DlcManager.GetDlcTitle(item4));
-			}
-			foreach (string item5 in dlcIdToDisable)
-			{
-				text = text + "\n" + string.Format(UI.FRONTEND.LOADSCREEN.TOOLTIP_SAVE_INCOMPATABLE_DLC_CONFIGURATION_ASK_TO_DISABLE, DlcManager.GetDlcTitle(item5));
-			}
-		}
-		KButton component4 = freeElement.GetReference<RectTransform>("Button").GetComponent<KButton>();
-		ToolTip component5 = freeElement.GetComponent<ToolTip>();
-		if (string.IsNullOrEmpty(text))
-		{
-			component5.ClearMultiStringTooltip();
-			component4.isInteractable = true;
-			component4.ClearOnClick();
-			component4.onClick += delegate
-			{
-				ShowColony(saves);
-			};
-		}
-		else
-		{
-			component5.SetSimpleTooltip(text);
-			component4.isInteractable = false;
-			component4.ClearOnClick();
-		}
+			this.ShowColony(saves, -1);
+		};
 		freeElement.transform.SetAsLastSibling();
 	}
 
+	// Token: 0x06009022 RID: 36898 RVA: 0x0037AC4C File Offset: 0x00378E4C
 	private void SetPreview(string filename, string basename, Image preview, bool fallbackToTimelapse = false)
 	{
 		preview.color = Color.black;
-		preview.gameObject.SetActive(value: false);
+		preview.gameObject.SetActive(false);
 		try
 		{
 			Sprite sprite = RetireColonyUtility.LoadColonyPreview(filename, basename, fallbackToTimelapse);
@@ -1217,15 +1262,16 @@ public class LoadScreen : KModalScreen
 				{
 					preview.rectTransform.sizeDelta = new Vector2(rect.width, rect.width / num);
 				}
-				preview.gameObject.SetActive(value: true);
+				preview.gameObject.SetActive(true);
 			}
 		}
-		catch (Exception ex)
+		catch (Exception obj)
 		{
-			Debug.Log(ex);
+			global::Debug.Log(obj);
 		}
 	}
 
+	// Token: 0x06009023 RID: 36899 RVA: 0x000FE303 File Offset: 0x000FC503
 	public static void ForceStopGame()
 	{
 		ThreadedHttps<KleiMetrics>.Instance.ClearGameFields();
@@ -1235,186 +1281,320 @@ public class LoadScreen : KModalScreen
 		Sim.Shutdown();
 	}
 
+	// Token: 0x06009024 RID: 36900 RVA: 0x000FE32F File Offset: 0x000FC52F
 	private static bool IsSaveFileFromUnsupportedFutureBuild(SaveGame.Header header, SaveGame.GameInfo gameInfo)
 	{
-		if (gameInfo.saveMajorVersion > 7 || (gameInfo.saveMajorVersion == 7 && gameInfo.saveMinorVersion > 34))
-		{
-			return true;
-		}
-		return header.buildVersion > 623711;
+		return gameInfo.saveMajorVersion > 7 || (gameInfo.saveMajorVersion == 7 && gameInfo.saveMinorVersion > 35) || header.buildVersion > 642695U;
 	}
 
+	// Token: 0x06009025 RID: 36901 RVA: 0x0037AD5C File Offset: 0x00378F5C
 	private void UpdateSelected(KButton button, string filename, List<string> dlcIds)
 	{
-		if (selectedSave != null && selectedSave.button != null)
+		if (this.selectedSave != null && this.selectedSave.button != null)
 		{
-			selectedSave.button.GetComponent<ImageToggleState>().SetState(ImageToggleState.State.Inactive);
+			this.selectedSave.button.GetComponent<ImageToggleState>().SetState(ImageToggleState.State.Inactive);
 		}
-		if (selectedSave == null)
+		if (this.selectedSave == null)
 		{
-			selectedSave = new SelectedSave();
+			this.selectedSave = new LoadScreen.SelectedSave();
 		}
-		selectedSave.button = button;
-		selectedSave.filename = filename;
-		selectedSave.dlcIds = dlcIds;
-		if (selectedSave.button != null)
+		this.selectedSave.button = button;
+		this.selectedSave.filename = filename;
+		this.selectedSave.dlcIds = dlcIds;
+		if (this.selectedSave.button != null)
 		{
-			selectedSave.button.GetComponent<ImageToggleState>().SetState(ImageToggleState.State.Active);
+			this.selectedSave.button.GetComponent<ImageToggleState>().SetState(ImageToggleState.State.Active);
 		}
 	}
 
+	// Token: 0x06009026 RID: 36902 RVA: 0x0037ADFC File Offset: 0x00378FFC
 	private void Load()
 	{
-		if (!DlcManager.HasAllContentSubscribed(selectedSave.dlcIds))
+		if (!DlcManager.IsAllContentSubscribed(this.selectedSave.dlcIds))
 		{
-			string message = (selectedSave.dlcIds.Contains("") ? UI.FRONTEND.LOADSCREEN.VANILLA_RESTART : UI.FRONTEND.LOADSCREEN.EXPANSION1_RESTART);
-			ConfirmDoAction(message, delegate
+			string message = this.selectedSave.dlcIds.Contains("") ? UI.FRONTEND.LOADSCREEN.VANILLA_RESTART : UI.FRONTEND.LOADSCREEN.EXPANSION1_RESTART;
+			this.ConfirmDoAction(message, delegate
 			{
-				KPlayerPrefs.SetString("AutoResumeSaveFile", selectedSave.filename);
+				KPlayerPrefs.SetString("AutoResumeSaveFile", this.selectedSave.filename);
 				DlcManager.ToggleDLC("EXPANSION1_ID");
 			});
+			return;
 		}
-		else
-		{
-			LoadingOverlay.Load(DoLoad);
-		}
+		LoadingOverlay.Load(new System.Action(this.DoLoad));
 	}
 
+	// Token: 0x06009027 RID: 36903 RVA: 0x000FE35C File Offset: 0x000FC55C
 	private void DoLoad()
 	{
-		if (selectedSave != null)
+		if (this.selectedSave == null)
 		{
-			DoLoad(selectedSave.filename);
-			Deactivate();
+			return;
 		}
+		LoadScreen.DoLoad(this.selectedSave.filename);
+		this.Deactivate();
 	}
 
+	// Token: 0x06009028 RID: 36904 RVA: 0x0037AE6C File Offset: 0x0037906C
 	public static void DoLoad(string filename)
 	{
 		KCrashReporter.MOST_RECENT_SAVEFILE = filename;
+		bool flag = true;
 		SaveGame.Header header;
 		SaveGame.GameInfo gameInfo = SaveLoader.LoadHeader(filename, out header);
 		string arg = null;
 		string arg2 = null;
-		if (header.buildVersion > 623711)
+		if (header.buildVersion > 642695U)
 		{
 			arg = header.buildVersion.ToString();
-			arg2 = 623711u.ToString();
+			arg2 = 642695U.ToString();
 		}
 		else if (gameInfo.saveMajorVersion < 7)
 		{
-			arg = $"v{gameInfo.saveMajorVersion}.{gameInfo.saveMinorVersion}";
-			arg2 = $"v{7}.{34}";
+			arg = string.Format("v{0}.{1}", gameInfo.saveMajorVersion, gameInfo.saveMinorVersion);
+			arg2 = string.Format("v{0}.{1}", 7, 35);
 		}
-		if (1 == 0)
+		if (!flag)
 		{
-			GameObject parent = ((FrontEndManager.Instance == null) ? GameScreenManager.Instance.ssOverlayCanvas : FrontEndManager.Instance.gameObject);
-			Util.KInstantiateUI(ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject, parent, force_active: true).GetComponent<ConfirmDialogScreen>().PopupConfirmDialog(string.Format(UI.CRASHSCREEN.LOADFAILED, "Version Mismatch", arg, arg2), null, null);
+			GameObject parent = (FrontEndManager.Instance == null) ? GameScreenManager.Instance.ssOverlayCanvas : FrontEndManager.Instance.gameObject;
+			global::Util.KInstantiateUI(ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject, parent, true).GetComponent<ConfirmDialogScreen>().PopupConfirmDialog(string.Format(UI.CRASHSCREEN.LOADFAILED, "Version Mismatch", arg, arg2), null, null, null, null, null, null, null, null);
 			return;
 		}
 		if (Game.Instance != null)
 		{
-			ForceStopGame();
+			LoadScreen.ForceStopGame();
 		}
 		SaveLoader.SetActiveSaveFilePath(filename);
 		Time.timeScale = 0f;
 		App.LoadScene("backend");
 	}
 
+	// Token: 0x06009029 RID: 36905 RVA: 0x000FE37D File Offset: 0x000FC57D
 	private void MoreInfo()
 	{
 		App.OpenWebURL("http://support.kleientertainment.com/customer/portal/articles/2776550");
 	}
 
+	// Token: 0x0600902A RID: 36906 RVA: 0x0037AF90 File Offset: 0x00379190
 	private void Delete(System.Action onDelete)
 	{
-		if (selectedSave == null || string.IsNullOrEmpty(selectedSave.filename))
+		if (this.selectedSave == null || string.IsNullOrEmpty(this.selectedSave.filename))
 		{
-			Debug.LogError("The path provided is not valid and cannot be deleted.");
+			global::Debug.LogError("The path provided is not valid and cannot be deleted.");
 			return;
 		}
-		ConfirmDoAction(string.Format(UI.FRONTEND.LOADSCREEN.CONFIRMDELETE, System.IO.Path.GetFileName(selectedSave.filename)), delegate
+		this.ConfirmDoAction(string.Format(UI.FRONTEND.LOADSCREEN.CONFIRMDELETE, System.IO.Path.GetFileName(this.selectedSave.filename)), delegate
 		{
 			try
 			{
-				DeleteFileAndEmptyFolder(selectedSave.filename);
-				string file = System.IO.Path.ChangeExtension(selectedSave.filename, "png");
-				DeleteFileAndEmptyFolder(file);
+				this.DeleteFileAndEmptyFolder(this.selectedSave.filename);
+				string file = System.IO.Path.ChangeExtension(this.selectedSave.filename, "png");
+				this.DeleteFileAndEmptyFolder(file);
 				if (onDelete != null)
 				{
 					onDelete();
 				}
-				MainMenu.Instance.RefreshResumeButton();
+				MainMenu.Instance.RefreshResumeButton(false);
 			}
 			catch (SystemException ex)
 			{
-				Debug.LogError(ex.ToString());
+				global::Debug.LogError(ex.ToString());
 			}
 		});
 	}
 
+	// Token: 0x0600902B RID: 36907 RVA: 0x000FE389 File Offset: 0x000FC589
 	private void ShowSimpleDialog(string title, string message)
 	{
-		Util.KInstantiateUI<InfoDialogScreen>(ScreenPrefabs.Instance.InfoDialogScreen.gameObject, base.gameObject).SetHeader(title).AddPlainText(message)
-			.AddDefaultOK()
-			.Activate();
+		global::Util.KInstantiateUI<InfoDialogScreen>(ScreenPrefabs.Instance.InfoDialogScreen.gameObject, base.gameObject, false).SetHeader(title).AddPlainText(message).AddDefaultOK(false).Activate();
 	}
 
+	// Token: 0x0600902C RID: 36908 RVA: 0x0037B008 File Offset: 0x00379208
 	private void ConfirmCloudSaveMigrations(string message, string title, string confirmText, string backupText, System.Action commitAction, System.Action backupAction, Sprite sprite)
 	{
-		Util.KInstantiateUI<InfoDialogScreen>(ScreenPrefabs.Instance.InfoDialogScreen.gameObject, base.gameObject).SetHeader(title).AddSprite(sprite)
-			.AddPlainText(message)
-			.AddDefaultCancel()
-			.AddOption(confirmText, delegate(InfoDialogScreen d)
-			{
-				d.Deactivate();
-				commitAction();
-			}, rightSide: true)
-			.Activate();
+		global::Util.KInstantiateUI<InfoDialogScreen>(ScreenPrefabs.Instance.InfoDialogScreen.gameObject, base.gameObject, false).SetHeader(title).AddSprite(sprite).AddPlainText(message).AddDefaultCancel().AddOption(confirmText, delegate(InfoDialogScreen d)
+		{
+			d.Deactivate();
+			commitAction();
+		}, true).Activate();
 	}
 
+	// Token: 0x0600902D RID: 36909 RVA: 0x0037B070 File Offset: 0x00379270
 	private void ShowConvertError(string message)
 	{
-		if (!(errorInfoScreen == null))
+		if (this.errorInfoScreen == null)
 		{
-			return;
-		}
-		if (DistributionPlatform.Initialized && SteamUtils.IsSteamRunningOnSteamDeck())
-		{
-			errorInfoScreen = Util.KInstantiateUI<InfoDialogScreen>(ScreenPrefabs.Instance.InfoDialogScreen.gameObject, base.gameObject).SetHeader(UI.FRONTEND.LOADSCREEN.CONVERT_ERROR_TITLE).AddSprite(errorSprite)
-				.AddPlainText(message)
-				.AddDefaultOK();
-			errorInfoScreen.Activate();
-			return;
-		}
-		errorInfoScreen = Util.KInstantiateUI<InfoDialogScreen>(ScreenPrefabs.Instance.InfoDialogScreen.gameObject, base.gameObject).SetHeader(UI.FRONTEND.LOADSCREEN.CONVERT_ERROR_TITLE).AddSprite(errorSprite)
-			.AddPlainText(message)
-			.AddOption(UI.FRONTEND.LOADSCREEN.MIGRATE_FAILURES_FORUM_BUTTON, delegate
+			if (DistributionPlatform.Initialized && SteamUtils.IsSteamRunningOnSteamDeck())
+			{
+				this.errorInfoScreen = global::Util.KInstantiateUI<InfoDialogScreen>(ScreenPrefabs.Instance.InfoDialogScreen.gameObject, base.gameObject, false).SetHeader(UI.FRONTEND.LOADSCREEN.CONVERT_ERROR_TITLE).AddSprite(this.errorSprite).AddPlainText(message).AddDefaultOK(false);
+				this.errorInfoScreen.Activate();
+				return;
+			}
+			this.errorInfoScreen = global::Util.KInstantiateUI<InfoDialogScreen>(ScreenPrefabs.Instance.InfoDialogScreen.gameObject, base.gameObject, false).SetHeader(UI.FRONTEND.LOADSCREEN.CONVERT_ERROR_TITLE).AddSprite(this.errorSprite).AddPlainText(message).AddOption(UI.FRONTEND.LOADSCREEN.MIGRATE_FAILURES_FORUM_BUTTON, delegate(InfoDialogScreen d)
 			{
 				App.OpenWebURL("https://forums.kleientertainment.com/klei-bug-tracker/oni/");
-			})
-			.AddDefaultOK();
-		errorInfoScreen.Activate();
+			}, false).AddDefaultOK(false);
+			this.errorInfoScreen.Activate();
+		}
 	}
 
+	// Token: 0x0600902E RID: 36910 RVA: 0x0037B170 File Offset: 0x00379370
 	private void ConfirmDoAction(string message, System.Action action)
 	{
-		if (confirmScreen == null)
+		if (this.confirmScreen == null)
 		{
-			confirmScreen = Util.KInstantiateUI<ConfirmDialogScreen>(ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject, base.gameObject);
-			confirmScreen.PopupConfirmDialog(message, action, delegate
+			this.confirmScreen = global::Util.KInstantiateUI<ConfirmDialogScreen>(ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject, base.gameObject, false);
+			this.confirmScreen.PopupConfirmDialog(message, action, delegate
 			{
-			});
-			confirmScreen.gameObject.SetActive(value: true);
+			}, null, null, null, null, null, null);
+			this.confirmScreen.gameObject.SetActive(true);
 		}
 	}
 
+	// Token: 0x0600902F RID: 36911 RVA: 0x000FE3BD File Offset: 0x000FC5BD
 	public override void OnKeyDown(KButtonEvent e)
 	{
-		if (currentColony != null && e.TryConsume(Action.Escape))
+		if (this.currentColony != null && e.TryConsume(global::Action.Escape))
 		{
-			ShowColonyList();
+			this.ShowColonyList();
 		}
 		base.OnKeyDown(e);
+	}
+
+	// Token: 0x04006CC5 RID: 27845
+	private const int MAX_CLOUD_TUTORIALS = 5;
+
+	// Token: 0x04006CC6 RID: 27846
+	private const string CLOUD_TUTORIAL_KEY = "LoadScreenCloudTutorialTimes";
+
+	// Token: 0x04006CC7 RID: 27847
+	private const int ITEMS_PER_PAGE = 20;
+
+	// Token: 0x04006CC8 RID: 27848
+	[SerializeField]
+	private KButton closeButton;
+
+	// Token: 0x04006CC9 RID: 27849
+	[SerializeField]
+	private GameObject saveButtonRoot;
+
+	// Token: 0x04006CCA RID: 27850
+	[SerializeField]
+	private GameObject colonyListRoot;
+
+	// Token: 0x04006CCB RID: 27851
+	[SerializeField]
+	private GameObject colonyViewRoot;
+
+	// Token: 0x04006CCC RID: 27852
+	[SerializeField]
+	private HierarchyReferences migrationPanelRefs;
+
+	// Token: 0x04006CCD RID: 27853
+	[SerializeField]
+	private HierarchyReferences saveButtonPrefab;
+
+	// Token: 0x04006CCE RID: 27854
+	[SerializeField]
+	private KButton loadMoreButton;
+
+	// Token: 0x04006CCF RID: 27855
+	[Space]
+	[SerializeField]
+	private KButton colonyCloudButton;
+
+	// Token: 0x04006CD0 RID: 27856
+	[SerializeField]
+	private KButton colonyLocalButton;
+
+	// Token: 0x04006CD1 RID: 27857
+	[SerializeField]
+	private KButton colonyInfoButton;
+
+	// Token: 0x04006CD2 RID: 27858
+	[SerializeField]
+	private Sprite localToCloudSprite;
+
+	// Token: 0x04006CD3 RID: 27859
+	[SerializeField]
+	private Sprite cloudToLocalSprite;
+
+	// Token: 0x04006CD4 RID: 27860
+	[SerializeField]
+	private Sprite errorSprite;
+
+	// Token: 0x04006CD5 RID: 27861
+	[SerializeField]
+	private Sprite infoSprite;
+
+	// Token: 0x04006CD6 RID: 27862
+	[SerializeField]
+	private Bouncer cloudTutorialBouncer;
+
+	// Token: 0x04006CD7 RID: 27863
+	public bool requireConfirmation = true;
+
+	// Token: 0x04006CD8 RID: 27864
+	private LoadScreen.SelectedSave selectedSave;
+
+	// Token: 0x04006CD9 RID: 27865
+	private List<LoadScreen.SaveGameFileDetails> currentColony;
+
+	// Token: 0x04006CDA RID: 27866
+	private UIPool<HierarchyReferences> colonyListPool;
+
+	// Token: 0x04006CDB RID: 27867
+	private ConfirmDialogScreen confirmScreen;
+
+	// Token: 0x04006CDC RID: 27868
+	private InfoDialogScreen infoScreen;
+
+	// Token: 0x04006CDD RID: 27869
+	private InfoDialogScreen errorInfoScreen;
+
+	// Token: 0x04006CDE RID: 27870
+	private ConfirmDialogScreen errorScreen;
+
+	// Token: 0x04006CDF RID: 27871
+	private InspectSaveScreen inspectScreenInstance;
+
+	// Token: 0x04006CE0 RID: 27872
+	private int displayedPageCount = 1;
+
+	// Token: 0x02001ADC RID: 6876
+	private struct SaveGameFileDetails
+	{
+		// Token: 0x04006CE1 RID: 27873
+		public string BaseName;
+
+		// Token: 0x04006CE2 RID: 27874
+		public string FileName;
+
+		// Token: 0x04006CE3 RID: 27875
+		public string UniqueID;
+
+		// Token: 0x04006CE4 RID: 27876
+		public System.DateTime FileDate;
+
+		// Token: 0x04006CE5 RID: 27877
+		public SaveGame.Header FileHeader;
+
+		// Token: 0x04006CE6 RID: 27878
+		public SaveGame.GameInfo FileInfo;
+
+		// Token: 0x04006CE7 RID: 27879
+		public long Size;
+	}
+
+	// Token: 0x02001ADD RID: 6877
+	private class SelectedSave
+	{
+		// Token: 0x04006CE8 RID: 27880
+		public string filename;
+
+		// Token: 0x04006CE9 RID: 27881
+		public List<string> dlcIds;
+
+		// Token: 0x04006CEA RID: 27882
+		public KButton button;
 	}
 }

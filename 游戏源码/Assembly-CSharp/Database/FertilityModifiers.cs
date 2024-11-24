@@ -1,20 +1,24 @@
+﻿using System;
 using System.Collections.Generic;
 using Klei.AI;
 
-namespace Database;
-
-public class FertilityModifiers : ResourceSet<FertilityModifier>
+namespace Database
 {
-	public List<FertilityModifier> GetForTag(Tag searchTag)
+	// Token: 0x02002106 RID: 8454
+	public class FertilityModifiers : ResourceSet<FertilityModifier>
 	{
-		List<FertilityModifier> list = new List<FertilityModifier>();
-		foreach (FertilityModifier resource in resources)
+		// Token: 0x0600B3D2 RID: 46034 RVA: 0x0043AEA0 File Offset: 0x004390A0
+		public List<FertilityModifier> GetForTag(Tag searchTag)
 		{
-			if (resource.TargetTag == searchTag)
+			List<FertilityModifier> list = new List<FertilityModifier>();
+			foreach (FertilityModifier fertilityModifier in this.resources)
 			{
-				list.Add(resource);
+				if (fertilityModifier.TargetTag == searchTag)
+				{
+					list.Add(fertilityModifier);
+				}
 			}
+			return list;
 		}
-		return list;
 	}
 }

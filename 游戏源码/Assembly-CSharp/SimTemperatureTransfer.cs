@@ -1,102 +1,114 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Token: 0x02001873 RID: 6259
 [SkipSaveFileSerialization]
 [AddComponentMenu("KMonoBehaviour/scripts/SimTemperatureTransfer")]
 public class SimTemperatureTransfer : KMonoBehaviour
 {
-	private const float SIM_FREEZE_SPAWN_ORE_PERCENT = 0.8f;
-
-	public const float MIN_MASS_FOR_TEMPERATURE_TRANSFER = 0.01f;
-
-	public float deltaKJ;
-
-	public Action<SimTemperatureTransfer> onSimRegistered;
-
-	protected int simHandle = -1;
-
-	private float pendingEnergyModifications;
-
-	[SerializeField]
-	protected float surfaceArea = 10f;
-
-	[SerializeField]
-	protected float thickness = 0.01f;
-
-	[SerializeField]
-	protected float groundTransferScale = 0.0625f;
-
-	private static Dictionary<int, SimTemperatureTransfer> handleInstanceMap = new Dictionary<int, SimTemperatureTransfer>();
-
+	// Token: 0x1700083D RID: 2109
+	// (get) Token: 0x06008173 RID: 33139 RVA: 0x000F527D File Offset: 0x000F347D
+	// (set) Token: 0x06008174 RID: 33140 RVA: 0x000F5285 File Offset: 0x000F3485
 	public float SurfaceArea
 	{
 		get
 		{
-			return surfaceArea;
+			return this.surfaceArea;
 		}
 		set
 		{
-			surfaceArea = value;
+			this.surfaceArea = value;
 		}
 	}
 
+	// Token: 0x1700083E RID: 2110
+	// (get) Token: 0x06008175 RID: 33141 RVA: 0x000F528E File Offset: 0x000F348E
+	// (set) Token: 0x06008176 RID: 33142 RVA: 0x000F5296 File Offset: 0x000F3496
 	public float Thickness
 	{
 		get
 		{
-			return thickness;
+			return this.thickness;
 		}
 		set
 		{
-			thickness = value;
+			this.thickness = value;
 		}
 	}
 
+	// Token: 0x1700083F RID: 2111
+	// (get) Token: 0x06008177 RID: 33143 RVA: 0x000F529F File Offset: 0x000F349F
+	// (set) Token: 0x06008178 RID: 33144 RVA: 0x000F52A7 File Offset: 0x000F34A7
 	public float GroundTransferScale
 	{
 		get
 		{
-			return groundTransferScale;
+			return this.groundTransferScale;
 		}
 		set
 		{
-			groundTransferScale = value;
+			this.groundTransferScale = value;
 		}
 	}
 
-	public int SimHandle => simHandle;
+	// Token: 0x17000840 RID: 2112
+	// (get) Token: 0x06008179 RID: 33145 RVA: 0x000F52B0 File Offset: 0x000F34B0
+	public int SimHandle
+	{
+		get
+		{
+			return this.simHandle;
+		}
+	}
 
+	// Token: 0x0600817A RID: 33146 RVA: 0x000F52B8 File Offset: 0x000F34B8
 	public static void ClearInstanceMap()
 	{
-		handleInstanceMap.Clear();
+		SimTemperatureTransfer.handleInstanceMap.Clear();
 	}
 
+	// Token: 0x0600817B RID: 33147 RVA: 0x00339284 File Offset: 0x00337484
 	public static void DoOreMeltTransition(int sim_handle)
 	{
-		SimTemperatureTransfer value = null;
-		if (!handleInstanceMap.TryGetValue(sim_handle, out value) || value == null || value.HasTag(GameTags.Sealed))
+		SimTemperatureTransfer simTemperatureTransfer = null;
+		if (!SimTemperatureTransfer.handleInstanceMap.TryGetValue(sim_handle, out simTemperatureTransfer))
 		{
 			return;
 		}
-		PrimaryElement component = value.GetComponent<PrimaryElement>();
-		Element element = component.Element;
-		bool flag = component.Temperature >= element.highTemp;
-		bool flag2 = component.Temperature <= element.lowTemp;
-		DebugUtil.DevAssert(flag || flag2, "An ore got a melt message from the sim but it's still the correct temperature for its state!", component);
-		if ((flag && element.highTempTransitionTarget == SimHashes.Unobtanium) || (flag2 && element.lowTempTransitionTarget == SimHashes.Unobtanium))
+		if (simTemperatureTransfer == null)
 		{
 			return;
 		}
-		if (component.Mass > 0f)
+		if (simTemperatureTransfer.HasTag(GameTags.Sealed))
 		{
-			int gameCell = Grid.PosToCell(value.transform.GetPosition());
-			float num = component.Mass;
-			int num2 = component.DiseaseCount;
-			SimHashes new_element = (flag ? element.highTempTransitionTarget : element.lowTempTransitionTarget);
-			SimHashes simHashes = (flag ? element.highTempTransitionOreID : element.lowTempTransitionOreID);
-			float num3 = (flag ? element.highTempTransitionOreMassConversion : element.lowTempTransitionOreMassConversion);
-			if (simHashes != 0)
+			return;
+		}
+		PrimaryElement primaryElement = simTemperatureTransfer.pe;
+		Element element = primaryElement.Element;
+		bool flag = primaryElement.Temperature >= element.highTemp;
+		bool flag2 = primaryElement.Temperature <= element.lowTemp;
+		if (!flag && !flag2)
+		{
+			return;
+		}
+		if (flag && element.highTempTransitionTarget == SimHashes.Unobtanium)
+		{
+			return;
+		}
+		if (flag2 && element.lowTempTransitionTarget == SimHashes.Unobtanium)
+		{
+			return;
+		}
+		if (primaryElement.Mass > 0f)
+		{
+			int gameCell = Grid.PosToCell(simTemperatureTransfer.transform.GetPosition());
+			float num = primaryElement.Mass;
+			int num2 = primaryElement.DiseaseCount;
+			SimHashes new_element = flag ? element.highTempTransitionTarget : element.lowTempTransitionTarget;
+			SimHashes simHashes = flag ? element.highTempTransitionOreID : element.lowTempTransitionOreID;
+			float num3 = flag ? element.highTempTransitionOreMassConversion : element.lowTempTransitionOreMassConversion;
+			if (simHashes != (SimHashes)0)
 			{
 				float num4 = num * num3;
 				int num5 = (int)((float)num2 * num3);
@@ -107,65 +119,68 @@ public class SimTemperatureTransfer : KMonoBehaviour
 					Element element2 = ElementLoader.FindElementByHash(simHashes);
 					if (element2.IsSolid)
 					{
-						GameObject gameObject = element2.substance.SpawnResource(value.transform.GetPosition(), num4, component.Temperature, component.DiseaseIdx, num5, prevent_merge: true, forceTemperature: false, manual_activation: true);
-						element2.substance.ActivateSubstanceGameObject(gameObject, component.DiseaseIdx, num5);
+						GameObject obj = element2.substance.SpawnResource(simTemperatureTransfer.transform.GetPosition(), num4, primaryElement.Temperature, primaryElement.DiseaseIdx, num5, true, false, true);
+						element2.substance.ActivateSubstanceGameObject(obj, primaryElement.DiseaseIdx, num5);
 					}
 					else
 					{
-						SimMessages.AddRemoveSubstance(gameCell, element2.id, CellEventLogger.Instance.OreMelted, num4, component.Temperature, component.DiseaseIdx, num5);
+						SimMessages.AddRemoveSubstance(gameCell, element2.id, CellEventLogger.Instance.OreMelted, num4, primaryElement.Temperature, primaryElement.DiseaseIdx, num5, true, -1);
 					}
 				}
 			}
-			SimMessages.AddRemoveSubstance(gameCell, new_element, CellEventLogger.Instance.OreMelted, num, component.Temperature, component.DiseaseIdx, num2);
+			SimMessages.AddRemoveSubstance(gameCell, new_element, CellEventLogger.Instance.OreMelted, num, primaryElement.Temperature, primaryElement.DiseaseIdx, num2, true, -1);
 		}
-		value.OnCleanUp();
-		Util.KDestroyGameObject(value.gameObject);
+		simTemperatureTransfer.OnCleanUp();
+		Util.KDestroyGameObject(simTemperatureTransfer.gameObject);
 	}
 
+	// Token: 0x0600817C RID: 33148 RVA: 0x0033946C File Offset: 0x0033766C
 	protected override void OnPrefabInit()
 	{
-		PrimaryElement component = GetComponent<PrimaryElement>();
-		component.getTemperatureCallback = OnGetTemperature;
-		component.setTemperatureCallback = OnSetTemperature;
-		component.onDataChanged = (Action<PrimaryElement>)Delegate.Combine(component.onDataChanged, new Action<PrimaryElement>(OnDataChanged));
+		this.pe.sttOptimizationHook = this;
+		this.pe.getTemperatureCallback = new PrimaryElement.GetTemperatureCallback(SimTemperatureTransfer.OnGetTemperature);
+		this.pe.setTemperatureCallback = new PrimaryElement.SetTemperatureCallback(SimTemperatureTransfer.OnSetTemperature);
+		PrimaryElement primaryElement = this.pe;
+		primaryElement.onDataChanged = (Action<PrimaryElement>)Delegate.Combine(primaryElement.onDataChanged, new Action<PrimaryElement>(this.OnDataChanged));
 	}
 
+	// Token: 0x0600817D RID: 33149 RVA: 0x003394DC File Offset: 0x003376DC
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		PrimaryElement component = GetComponent<PrimaryElement>();
-		Element element = component.Element;
-		Singleton<CellChangeMonitor>.Instance.RegisterCellChangedHandler(base.transform, OnCellChanged, "SimTemperatureTransfer.OnSpawn");
-		if (!Grid.IsValidCell(Grid.PosToCell(this)) || component.Element.HasTag(GameTags.Special) || element.specificHeatCapacity == 0f)
+		Element element = this.pe.Element;
+		Singleton<CellChangeMonitor>.Instance.RegisterCellChangedHandler(base.transform, new System.Action(this.OnCellChanged), "SimTemperatureTransfer.OnSpawn");
+		if (!Grid.IsValidCell(Grid.PosToCell(this)) || this.pe.Element.HasTag(GameTags.Special) || element.specificHeatCapacity == 0f)
 		{
 			base.enabled = false;
 		}
-		SimRegister();
+		this.SimRegister();
 	}
 
+	// Token: 0x0600817E RID: 33150 RVA: 0x000F52C4 File Offset: 0x000F34C4
 	protected override void OnCmpEnable()
 	{
 		base.OnCmpEnable();
-		SimRegister();
-		if (Sim.IsValidHandle(simHandle))
+		this.SimRegister();
+		if (Sim.IsValidHandle(this.simHandle))
 		{
-			PrimaryElement component = GetComponent<PrimaryElement>();
-			OnSetTemperature(component, component.Temperature);
+			SimTemperatureTransfer.OnSetTemperature(this.pe, this.pe.Temperature);
 		}
 	}
 
+	// Token: 0x0600817F RID: 33151 RVA: 0x0033955C File Offset: 0x0033775C
 	protected override void OnCmpDisable()
 	{
-		if (Sim.IsValidHandle(simHandle))
+		if (Sim.IsValidHandle(this.simHandle))
 		{
-			PrimaryElement component = GetComponent<PrimaryElement>();
-			float temperature = component.Temperature;
-			component.InternalTemperature = component.Temperature;
-			SimMessages.SetElementChunkData(simHandle, temperature, 0f);
+			float temperature = this.pe.Temperature;
+			this.pe.InternalTemperature = this.pe.Temperature;
+			SimMessages.SetElementChunkData(this.simHandle, temperature, 0f);
 		}
 		base.OnCmpDisable();
 	}
 
+	// Token: 0x06008180 RID: 33152 RVA: 0x003395B0 File Offset: 0x003377B0
 	private void OnCellChanged()
 	{
 		int cell = Grid.PosToCell(this);
@@ -174,41 +189,33 @@ public class SimTemperatureTransfer : KMonoBehaviour
 			base.enabled = false;
 			return;
 		}
-		SimRegister();
-		if (Sim.IsValidHandle(simHandle))
+		this.SimRegister();
+		if (Sim.IsValidHandle(this.simHandle))
 		{
-			SimMessages.MoveElementChunk(simHandle, cell);
+			SimMessages.MoveElementChunk(this.simHandle, cell);
+			return;
 		}
+		this.forceDataSyncOnRegister = true;
 	}
 
+	// Token: 0x06008181 RID: 33153 RVA: 0x000F52F5 File Offset: 0x000F34F5
 	protected override void OnCleanUp()
 	{
-		Singleton<CellChangeMonitor>.Instance.UnregisterCellChangedHandler(base.transform, OnCellChanged);
-		SimUnregister();
+		Singleton<CellChangeMonitor>.Instance.UnregisterCellChangedHandler(base.transform, new System.Action(this.OnCellChanged));
+		this.SimUnregister();
 		base.OnForcedCleanUp();
 	}
 
-	public void ModifyEnergy(float delta_kilojoules)
-	{
-		if (Sim.IsValidHandle(simHandle))
-		{
-			SimMessages.ModifyElementChunkEnergy(simHandle, delta_kilojoules);
-		}
-		else
-		{
-			pendingEnergyModifications += delta_kilojoules;
-		}
-	}
-
+	// Token: 0x06008182 RID: 33154 RVA: 0x003395FC File Offset: 0x003377FC
 	private unsafe static float OnGetTemperature(PrimaryElement primary_element)
 	{
-		SimTemperatureTransfer component = primary_element.GetComponent<SimTemperatureTransfer>();
+		SimTemperatureTransfer sttOptimizationHook = primary_element.sttOptimizationHook;
 		float result;
-		if (Sim.IsValidHandle(component.simHandle))
+		if (Sim.IsValidHandle(sttOptimizationHook.simHandle))
 		{
-			int handleIndex = Sim.GetHandleIndex(component.simHandle);
+			int handleIndex = Sim.GetHandleIndex(sttOptimizationHook.simHandle);
 			result = Game.Instance.simData.elementChunks[handleIndex].temperature;
-			component.deltaKJ = Game.Instance.simData.elementChunks[handleIndex].deltaKJ;
+			sttOptimizationHook.deltaKJ = Game.Instance.simData.elementChunks[handleIndex].deltaKJ;
 		}
 		else
 		{
@@ -217,103 +224,108 @@ public class SimTemperatureTransfer : KMonoBehaviour
 		return result;
 	}
 
+	// Token: 0x06008183 RID: 33155 RVA: 0x00339678 File Offset: 0x00337878
 	private unsafe static void OnSetTemperature(PrimaryElement primary_element, float temperature)
 	{
 		if (temperature <= 0f)
 		{
-			KCrashReporter.Assert(condition: false, "STT.OnSetTemperature - Tried to set <= 0 degree temperature");
+			KCrashReporter.Assert(false, "STT.OnSetTemperature - Tried to set <= 0 degree temperature", null);
 			temperature = 293f;
 		}
-		SimTemperatureTransfer component = primary_element.GetComponent<SimTemperatureTransfer>();
-		if (Sim.IsValidHandle(component.simHandle))
+		primary_element.InternalTemperature = temperature;
+		SimTemperatureTransfer sttOptimizationHook = primary_element.sttOptimizationHook;
+		if (Sim.IsValidHandle(sttOptimizationHook.simHandle))
 		{
 			float mass = primary_element.Mass;
-			float heat_capacity = ((mass >= 0.01f) ? (mass * primary_element.Element.specificHeatCapacity) : 0f);
-			SimMessages.SetElementChunkData(component.simHandle, temperature, heat_capacity);
-			int handleIndex = Sim.GetHandleIndex(component.simHandle);
+			float heat_capacity = (mass >= 0.01f) ? (mass * primary_element.Element.specificHeatCapacity) : 0f;
+			SimMessages.SetElementChunkData(sttOptimizationHook.simHandle, temperature, heat_capacity);
+			int handleIndex = Sim.GetHandleIndex(sttOptimizationHook.simHandle);
 			Game.Instance.simData.elementChunks[handleIndex].temperature = temperature;
 		}
-		else
-		{
-			primary_element.InternalTemperature = temperature;
-		}
 	}
 
+	// Token: 0x06008184 RID: 33156 RVA: 0x00339718 File Offset: 0x00337918
 	private void OnDataChanged(PrimaryElement primary_element)
 	{
-		if (Sim.IsValidHandle(simHandle))
+		if (Sim.IsValidHandle(this.simHandle))
 		{
-			float heat_capacity = ((primary_element.Mass >= 0.01f) ? (primary_element.Mass * primary_element.Element.specificHeatCapacity) : 0f);
-			SimMessages.SetElementChunkData(simHandle, primary_element.Temperature, heat_capacity);
-		}
-	}
-
-	protected void SimRegister()
-	{
-		if (!base.isSpawned || simHandle != -1 || !base.enabled)
-		{
+			float heat_capacity = (primary_element.Mass >= 0.01f) ? (primary_element.Mass * primary_element.Element.specificHeatCapacity) : 0f;
+			SimMessages.SetElementChunkData(this.simHandle, primary_element.Temperature, heat_capacity);
 			return;
 		}
-		PrimaryElement component = GetComponent<PrimaryElement>();
-		if (component.Mass > 0f && !component.Element.IsTemperatureInsulated)
+		this.forceDataSyncOnRegister = true;
+	}
+
+	// Token: 0x06008185 RID: 33157 RVA: 0x00339774 File Offset: 0x00337974
+	protected void SimRegister()
+	{
+		if (base.isSpawned && this.simHandle == -1 && base.enabled && this.pe.Mass > 0f && !this.pe.Element.IsTemperatureInsulated)
 		{
 			int gameCell = Grid.PosToCell(base.transform.GetPosition());
-			simHandle = -2;
-			HandleVector<Game.ComplexCallbackInfo<int>>.Handle handle = Game.Instance.simComponentCallbackManager.Add(OnSimRegisteredCallback, this, "SimTemperatureTransfer.SimRegister");
-			float num = component.InternalTemperature;
+			this.simHandle = -2;
+			HandleVector<Game.ComplexCallbackInfo<int>>.Handle handle = Game.Instance.simComponentCallbackManager.Add(new Action<int, object>(SimTemperatureTransfer.OnSimRegisteredCallback), this, "SimTemperatureTransfer.SimRegister");
+			float num = this.pe.InternalTemperature;
 			if (num <= 0f)
 			{
-				component.InternalTemperature = 293f;
+				this.pe.InternalTemperature = 293f;
 				num = 293f;
 			}
-			SimMessages.AddElementChunk(gameCell, component.ElementID, component.Mass, num, surfaceArea, thickness, groundTransferScale, handle.index);
+			this.forceDataSyncOnRegister = false;
+			SimMessages.AddElementChunk(gameCell, this.pe.ElementID, this.pe.Mass, num, this.surfaceArea, this.thickness, this.groundTransferScale, handle.index);
 		}
 	}
 
+	// Token: 0x06008186 RID: 33158 RVA: 0x00339870 File Offset: 0x00337A70
 	protected unsafe void SimUnregister()
 	{
-		if (simHandle != -1 && !KMonoBehaviour.isLoadingScene)
+		if (this.simHandle != -1 && !KMonoBehaviour.isLoadingScene)
 		{
-			PrimaryElement component = GetComponent<PrimaryElement>();
-			if (Sim.IsValidHandle(simHandle))
+			if (Sim.IsValidHandle(this.simHandle))
 			{
-				int handleIndex = Sim.GetHandleIndex(simHandle);
-				component.InternalTemperature = Game.Instance.simData.elementChunks[handleIndex].temperature;
-				SimMessages.RemoveElementChunk(simHandle, -1);
-				handleInstanceMap.Remove(simHandle);
+				int handleIndex = Sim.GetHandleIndex(this.simHandle);
+				this.pe.InternalTemperature = Game.Instance.simData.elementChunks[handleIndex].temperature;
+				SimMessages.RemoveElementChunk(this.simHandle, -1);
+				SimTemperatureTransfer.handleInstanceMap.Remove(this.simHandle);
 			}
-			simHandle = -1;
+			this.simHandle = -1;
 		}
 	}
 
+	// Token: 0x06008187 RID: 33159 RVA: 0x000F531F File Offset: 0x000F351F
 	private static void OnSimRegisteredCallback(int handle, object data)
 	{
 		((SimTemperatureTransfer)data).OnSimRegistered(handle);
 	}
 
+	// Token: 0x06008188 RID: 33160 RVA: 0x003398F4 File Offset: 0x00337AF4
 	private unsafe void OnSimRegistered(int handle)
 	{
-		if (this != null && simHandle == -2)
+		if (this != null && this.simHandle == -2)
 		{
-			simHandle = handle;
+			this.simHandle = handle;
 			int handleIndex = Sim.GetHandleIndex(handle);
-			if (Game.Instance.simData.elementChunks[handleIndex].temperature <= 0f)
+			float temperature = Game.Instance.simData.elementChunks[handleIndex].temperature;
+			float internalTemperature = this.pe.InternalTemperature;
+			if (temperature <= 0f)
 			{
-				KCrashReporter.Assert(condition: false, "Bad temperature");
+				KCrashReporter.Assert(false, "Bad temperature", null);
 			}
-			handleInstanceMap[simHandle] = this;
-			if (pendingEnergyModifications > 0f)
+			SimTemperatureTransfer.handleInstanceMap[this.simHandle] = this;
+			if (this.forceDataSyncOnRegister || Mathf.Abs(temperature - internalTemperature) > 0.1f)
 			{
-				ModifyEnergy(pendingEnergyModifications);
-				pendingEnergyModifications = 0f;
+				float heat_capacity = (this.pe.Mass >= 0.01f) ? (this.pe.Mass * this.pe.Element.specificHeatCapacity) : 0f;
+				SimMessages.SetElementChunkData(this.simHandle, internalTemperature, heat_capacity);
+				SimMessages.MoveElementChunk(this.simHandle, Grid.PosToCell(this));
+				Game.Instance.simData.elementChunks[handleIndex].temperature = internalTemperature;
 			}
-			if (onSimRegistered != null)
+			if (this.onSimRegistered != null)
 			{
-				onSimRegistered(this);
+				this.onSimRegistered(this);
 			}
 			if (!base.enabled)
 			{
-				OnCmpDisable();
+				this.OnCmpDisable();
+				return;
 			}
 		}
 		else
@@ -321,4 +333,41 @@ public class SimTemperatureTransfer : KMonoBehaviour
 			SimMessages.RemoveElementChunk(handle, -1);
 		}
 	}
+
+	// Token: 0x04006246 RID: 25158
+	[MyCmpReq]
+	public PrimaryElement pe;
+
+	// Token: 0x04006247 RID: 25159
+	private const float SIM_FREEZE_SPAWN_ORE_PERCENT = 0.8f;
+
+	// Token: 0x04006248 RID: 25160
+	public const float MIN_MASS_FOR_TEMPERATURE_TRANSFER = 0.01f;
+
+	// Token: 0x04006249 RID: 25161
+	public float deltaKJ;
+
+	// Token: 0x0400624A RID: 25162
+	public Action<SimTemperatureTransfer> onSimRegistered;
+
+	// Token: 0x0400624B RID: 25163
+	protected int simHandle = -1;
+
+	// Token: 0x0400624C RID: 25164
+	protected bool forceDataSyncOnRegister;
+
+	// Token: 0x0400624D RID: 25165
+	[SerializeField]
+	protected float surfaceArea = 10f;
+
+	// Token: 0x0400624E RID: 25166
+	[SerializeField]
+	protected float thickness = 0.01f;
+
+	// Token: 0x0400624F RID: 25167
+	[SerializeField]
+	protected float groundTransferScale = 0.0625f;
+
+	// Token: 0x04006250 RID: 25168
+	private static Dictionary<int, SimTemperatureTransfer> handleInstanceMap = new Dictionary<int, SimTemperatureTransfer>();
 }

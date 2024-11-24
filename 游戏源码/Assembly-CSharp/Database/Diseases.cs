@@ -1,60 +1,77 @@
+﻿using System;
+using System.Collections.Generic;
 using Klei.AI;
 
-namespace Database;
-
-public class Diseases : ResourceSet<Disease>
+namespace Database
 {
-	public Disease FoodGerms;
-
-	public Disease SlimeGerms;
-
-	public Disease PollenGerms;
-
-	public Disease ZombieSpores;
-
-	public Disease RadiationPoisoning;
-
-	public Diseases(ResourceSet parent, bool statsOnly = false)
-		: base("Diseases", parent)
+	// Token: 0x02002132 RID: 8498
+	public class Diseases : ResourceSet<Disease>
 	{
-		FoodGerms = Add(new FoodGerms(statsOnly));
-		SlimeGerms = Add(new SlimeGerms(statsOnly));
-		PollenGerms = Add(new PollenGerms(statsOnly));
-		ZombieSpores = Add(new ZombieSpores(statsOnly));
-		if (DlcManager.FeatureRadiationEnabled())
+		// Token: 0x0600B510 RID: 46352 RVA: 0x0044B390 File Offset: 0x00449590
+		public Diseases(ResourceSet parent, bool statsOnly = false) : base("Diseases", parent)
 		{
-			RadiationPoisoning = Add(new RadiationPoisoning(statsOnly));
-		}
-	}
-
-	public bool IsValidID(string id)
-	{
-		bool result = false;
-		foreach (Disease resource in resources)
-		{
-			if (resource.Id == id)
+			this.FoodGerms = base.Add(new FoodGerms(statsOnly));
+			this.SlimeGerms = base.Add(new SlimeGerms(statsOnly));
+			this.PollenGerms = base.Add(new PollenGerms(statsOnly));
+			this.ZombieSpores = base.Add(new ZombieSpores(statsOnly));
+			if (DlcManager.FeatureRadiationEnabled())
 			{
-				result = true;
+				this.RadiationPoisoning = base.Add(new RadiationPoisoning(statsOnly));
 			}
 		}
-		return result;
-	}
 
-	public byte GetIndex(int hash)
-	{
-		for (byte b = 0; b < resources.Count; b++)
+		// Token: 0x0600B511 RID: 46353 RVA: 0x0044B40C File Offset: 0x0044960C
+		public bool IsValidID(string id)
 		{
-			Disease disease = resources[b];
-			if (hash == disease.id.GetHashCode())
+			bool result = false;
+			using (List<Disease>.Enumerator enumerator = this.resources.GetEnumerator())
 			{
-				return b;
+				while (enumerator.MoveNext())
+				{
+					if (enumerator.Current.Id == id)
+					{
+						result = true;
+					}
+				}
 			}
+			return result;
 		}
-		return byte.MaxValue;
-	}
 
-	public byte GetIndex(HashedString id)
-	{
-		return GetIndex(id.GetHashCode());
+		// Token: 0x0600B512 RID: 46354 RVA: 0x0044B46C File Offset: 0x0044966C
+		public byte GetIndex(int hash)
+		{
+			byte b = 0;
+			while ((int)b < this.resources.Count)
+			{
+				Disease disease = this.resources[(int)b];
+				if (hash == disease.id.GetHashCode())
+				{
+					return b;
+				}
+				b += 1;
+			}
+			return byte.MaxValue;
+		}
+
+		// Token: 0x0600B513 RID: 46355 RVA: 0x00114F0C File Offset: 0x0011310C
+		public byte GetIndex(HashedString id)
+		{
+			return this.GetIndex(id.GetHashCode());
+		}
+
+		// Token: 0x0400919B RID: 37275
+		public Disease FoodGerms;
+
+		// Token: 0x0400919C RID: 37276
+		public Disease SlimeGerms;
+
+		// Token: 0x0400919D RID: 37277
+		public Disease PollenGerms;
+
+		// Token: 0x0400919E RID: 37278
+		public Disease ZombieSpores;
+
+		// Token: 0x0400919F RID: 37279
+		public Disease RadiationPoisoning;
 	}
 }

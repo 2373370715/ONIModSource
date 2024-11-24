@@ -1,57 +1,69 @@
+﻿using System;
 using UnityEngine;
 
+// Token: 0x0200092F RID: 2351
 public class NativeAnimBatchLoader : MonoBehaviour
 {
-	public bool performTimeUpdate;
-
-	public bool performUpdate;
-
-	public bool performRender;
-
-	public bool setTimeScale;
-
-	public bool destroySelf;
-
-	public bool generateObjects;
-
-	public GameObject[] enableObjects;
-
+	// Token: 0x06002A77 RID: 10871 RVA: 0x001DA9EC File Offset: 0x001D8BEC
 	private void Start()
 	{
-		if (generateObjects)
+		if (this.generateObjects)
 		{
-			for (int i = 0; i < enableObjects.Length; i++)
+			for (int i = 0; i < this.enableObjects.Length; i++)
 			{
-				if (enableObjects[i] != null)
+				if (this.enableObjects[i] != null)
 				{
-					enableObjects[i].GetComponent<KBatchedAnimController>().visibilityType = KAnimControllerBase.VisibilityType.Always;
-					enableObjects[i].SetActive(value: true);
+					this.enableObjects[i].GetComponent<KBatchedAnimController>().visibilityType = KAnimControllerBase.VisibilityType.Always;
+					this.enableObjects[i].SetActive(true);
 				}
 			}
 		}
-		if (setTimeScale)
+		if (this.setTimeScale)
 		{
 			Time.timeScale = 1f;
 		}
-		if (destroySelf)
+		if (this.destroySelf)
 		{
-			Object.Destroy(this);
+			UnityEngine.Object.Destroy(this);
 		}
 	}
 
+	// Token: 0x06002A78 RID: 10872 RVA: 0x001DAA68 File Offset: 0x001D8C68
 	private void LateUpdate()
 	{
-		if (!destroySelf)
+		if (this.destroySelf)
 		{
-			if (performUpdate)
-			{
-				KAnimBatchManager.Instance().UpdateActiveArea(new Vector2I(0, 0), new Vector2I(9999, 9999));
-				KAnimBatchManager.Instance().UpdateDirty(Time.frameCount);
-			}
-			if (performRender)
-			{
-				KAnimBatchManager.Instance().Render();
-			}
+			return;
+		}
+		if (this.performUpdate)
+		{
+			KAnimBatchManager.Instance().UpdateActiveArea(new Vector2I(0, 0), new Vector2I(9999, 9999));
+			KAnimBatchManager.Instance().UpdateDirty(Time.frameCount);
+		}
+		if (this.performRender)
+		{
+			KAnimBatchManager.Instance().Render();
 		}
 	}
+
+	// Token: 0x04001C43 RID: 7235
+	public bool performTimeUpdate;
+
+	// Token: 0x04001C44 RID: 7236
+	public bool performUpdate;
+
+	// Token: 0x04001C45 RID: 7237
+	public bool performRender;
+
+	// Token: 0x04001C46 RID: 7238
+	public bool setTimeScale;
+
+	// Token: 0x04001C47 RID: 7239
+	public bool destroySelf;
+
+	// Token: 0x04001C48 RID: 7240
+	public bool generateObjects;
+
+	// Token: 0x04001C49 RID: 7241
+	public GameObject[] enableObjects;
 }

@@ -1,7 +1,10 @@
+﻿using System;
 using ImGuiNET;
 
+// Token: 0x02000BA4 RID: 2980
 public class DevToolDLCManager : DevTool
 {
+	// Token: 0x0600391B RID: 14619 RVA: 0x0021D6B0 File Offset: 0x0021B8B0
 	protected override void RenderTo(DevPanel panel)
 	{
 		string name = DistributionPlatform.Inst.Name;
@@ -12,22 +15,22 @@ public class DevToolDLCManager : DevTool
 		}
 		ImGui.Text("Active content letters: " + DlcManager.GetActiveContentLetters());
 		ImGui.Separator();
-		foreach (string rELEASED_VERSION in DlcManager.RELEASED_VERSIONS)
+		foreach (string text in DlcManager.RELEASED_VERSIONS)
 		{
-			if (!rELEASED_VERSION.IsNullOrWhiteSpace())
+			if (!text.IsNullOrWhiteSpace())
 			{
-				ImGui.Text(rELEASED_VERSION);
+				ImGui.Text(text);
 				ImGui.SameLine();
-				bool v = DlcManager.IsContentSubscribed(rELEASED_VERSION);
-				if (ImGui.Checkbox("Enabled ", ref v))
+				bool flag = DlcManager.IsContentSubscribed(text);
+				if (ImGui.Checkbox("Enabled ", ref flag))
 				{
-					DlcManager.ToggleDLC(rELEASED_VERSION);
+					DlcManager.ToggleDLC(text);
 				}
 				ImGui.SameLine();
-				bool v2 = DistributionPlatform.Inst.IsDLCSubscribed(rELEASED_VERSION);
-				if (ImGui.Checkbox("Subscribed ", ref v2))
+				bool flag2 = DistributionPlatform.Inst.IsDLCSubscribed(text);
+				if (ImGui.Checkbox("Subscribed ", ref flag2))
 				{
-					DistributionPlatform.Inst.ToggleDLCSubscription(rELEASED_VERSION);
+					DistributionPlatform.Inst.ToggleDLCSubscription(text);
 				}
 			}
 		}

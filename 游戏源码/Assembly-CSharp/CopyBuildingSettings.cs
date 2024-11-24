@@ -1,36 +1,32 @@
+﻿using System;
 using STRINGS;
 using UnityEngine;
 
+// Token: 0x02001116 RID: 4374
 [AddComponentMenu("KMonoBehaviour/scripts/CopyBuildingSettings")]
 public class CopyBuildingSettings : KMonoBehaviour
 {
-	[MyCmpReq]
-	private KPrefabID id;
-
-	public Tag copyGroupTag;
-
-	private static readonly EventSystem.IntraObjectHandler<CopyBuildingSettings> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<CopyBuildingSettings>(delegate(CopyBuildingSettings component, object data)
-	{
-		component.OnRefreshUserMenu(data);
-	});
-
+	// Token: 0x060059A1 RID: 22945 RVA: 0x000DA55C File Offset: 0x000D875C
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		Subscribe(493375141, OnRefreshUserMenuDelegate);
+		base.Subscribe<CopyBuildingSettings>(493375141, CopyBuildingSettings.OnRefreshUserMenuDelegate);
 	}
 
+	// Token: 0x060059A2 RID: 22946 RVA: 0x00292314 File Offset: 0x00290514
 	private void OnRefreshUserMenu(object data)
 	{
-		Game.Instance.userMenu.AddButton(base.gameObject, new KIconButtonMenu.ButtonInfo("action_mirror", UI.USERMENUACTIONS.COPY_BUILDING_SETTINGS.NAME, ActivateCopyTool, Action.BuildingUtility1, null, null, null, UI.USERMENUACTIONS.COPY_BUILDING_SETTINGS.TOOLTIP));
+		Game.Instance.userMenu.AddButton(base.gameObject, new KIconButtonMenu.ButtonInfo("action_mirror", UI.USERMENUACTIONS.COPY_BUILDING_SETTINGS.NAME, new System.Action(this.ActivateCopyTool), global::Action.BuildingUtility1, null, null, null, UI.USERMENUACTIONS.COPY_BUILDING_SETTINGS.TOOLTIP, true), 1f);
 	}
 
+	// Token: 0x060059A3 RID: 22947 RVA: 0x000DA575 File Offset: 0x000D8775
 	private void ActivateCopyTool()
 	{
 		CopySettingsTool.Instance.SetSourceObject(base.gameObject);
 		PlayerController.Instance.ActivateTool(CopySettingsTool.Instance);
 	}
 
+	// Token: 0x060059A4 RID: 22948 RVA: 0x00292370 File Offset: 0x00290570
 	public static bool ApplyCopy(int targetCell, GameObject sourceGameObject)
 	{
 		ObjectLayer layer = ObjectLayer.Building;
@@ -80,7 +76,20 @@ public class CopyBuildingSettings : KMonoBehaviour
 			return false;
 		}
 		component3.Trigger(-905833192, sourceGameObject);
-		PopFXManager.Instance.SpawnFX(PopFXManager.Instance.sprite_Plus, UI.COPIED_SETTINGS, gameObject.transform, new Vector3(0f, 0.5f, 0f));
+		PopFXManager.Instance.SpawnFX(PopFXManager.Instance.sprite_Plus, UI.COPIED_SETTINGS, gameObject.transform, new Vector3(0f, 0.5f, 0f), 1.5f, false, false);
 		return true;
 	}
+
+	// Token: 0x04003F56 RID: 16214
+	[MyCmpReq]
+	private KPrefabID id;
+
+	// Token: 0x04003F57 RID: 16215
+	public Tag copyGroupTag;
+
+	// Token: 0x04003F58 RID: 16216
+	private static readonly EventSystem.IntraObjectHandler<CopyBuildingSettings> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<CopyBuildingSettings>(delegate(CopyBuildingSettings component, object data)
+	{
+		component.OnRefreshUserMenu(data);
+	});
 }

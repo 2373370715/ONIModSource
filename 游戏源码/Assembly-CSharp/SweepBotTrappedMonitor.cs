@@ -1,98 +1,109 @@
+﻿using System;
 using UnityEngine;
 
+// Token: 0x020017DB RID: 6107
 public class SweepBotTrappedMonitor : GameStateMachine<SweepBotTrappedMonitor, SweepBotTrappedMonitor.Instance, IStateMachineTarget, SweepBotTrappedMonitor.Def>
 {
-	public class Def : BaseDef
+	// Token: 0x06007DAB RID: 32171 RVA: 0x00327634 File Offset: 0x00325834
+	public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
-	}
-
-	public new class Instance : GameInstance
-	{
-		public Instance(IStateMachineTarget master, Def def)
-			: base(master, def)
+		default_state = this.notTrapped;
+		this.notTrapped.Update(delegate(SweepBotTrappedMonitor.Instance smi, float dt)
 		{
-		}
-	}
-
-	public static CellOffset[] defaultOffsets = new CellOffset[1]
-	{
-		new CellOffset(0, 0)
-	};
-
-	public State notTrapped;
-
-	public State trapped;
-
-	public State death;
-
-	public State destroySelf;
-
-	public override void InitializeStates(out BaseState default_state)
-	{
-		default_state = notTrapped;
-		notTrapped.Update(delegate(Instance smi, float dt)
+			StorageUnloadMonitor.Instance smi2 = smi.master.gameObject.GetSMI<StorageUnloadMonitor.Instance>();
+			Storage storage = smi2.sm.sweepLocker.Get(smi2);
+			Navigator component = smi.master.GetComponent<Navigator>();
+			if (storage == null)
+			{
+				smi.GoTo(this.death);
+				return;
+			}
+			if ((smi.master.gameObject.HasTag(GameTags.Robots.Behaviours.RechargeBehaviour) || smi.master.gameObject.HasTag(GameTags.Robots.Behaviours.UnloadBehaviour)) && !component.CanReach(Grid.PosToCell(storage), SweepBotTrappedMonitor.defaultOffsets))
+			{
+				smi.GoTo(this.trapped);
+			}
+		}, UpdateRate.SIM_1000ms, false);
+		this.trapped.ToggleBehaviour(GameTags.Robots.Behaviours.TrappedBehaviour, (SweepBotTrappedMonitor.Instance data) => true, null).ToggleStatusItem(Db.Get().RobotStatusItems.CantReachStation, null, Db.Get().StatusItemCategories.Main).Update(delegate(SweepBotTrappedMonitor.Instance smi, float dt)
 		{
-			StorageUnloadMonitor.Instance sMI2 = smi.master.gameObject.GetSMI<StorageUnloadMonitor.Instance>();
-			Storage storage3 = sMI2.sm.sweepLocker.Get(sMI2);
-			Navigator component3 = smi.master.GetComponent<Navigator>();
-			if (storage3 == null)
+			StorageUnloadMonitor.Instance smi2 = smi.master.gameObject.GetSMI<StorageUnloadMonitor.Instance>();
+			Storage storage = smi2.sm.sweepLocker.Get(smi2);
+			Navigator component = smi.master.GetComponent<Navigator>();
+			if (storage == null)
 			{
-				smi.GoTo(death);
+				smi.GoTo(this.death);
 			}
-			else if ((smi.master.gameObject.HasTag(GameTags.Robots.Behaviours.RechargeBehaviour) || smi.master.gameObject.HasTag(GameTags.Robots.Behaviours.UnloadBehaviour)) && !component3.CanReach(Grid.PosToCell(storage3), defaultOffsets))
+			else if ((!smi.master.gameObject.HasTag(GameTags.Robots.Behaviours.RechargeBehaviour) && !smi.master.gameObject.HasTag(GameTags.Robots.Behaviours.UnloadBehaviour)) || component.CanReach(Grid.PosToCell(storage), SweepBotTrappedMonitor.defaultOffsets))
 			{
-				smi.GoTo(trapped);
+				smi.GoTo(this.notTrapped);
 			}
-		}, UpdateRate.SIM_1000ms);
-		trapped.ToggleBehaviour(GameTags.Robots.Behaviours.TrappedBehaviour, (Instance data) => true).ToggleStatusItem(Db.Get().RobotStatusItems.CantReachStation, null, Db.Get().StatusItemCategories.Main).Update(delegate(Instance smi, float dt)
-		{
-			StorageUnloadMonitor.Instance sMI = smi.master.gameObject.GetSMI<StorageUnloadMonitor.Instance>();
-			Storage storage2 = sMI.sm.sweepLocker.Get(sMI);
-			Navigator component2 = smi.master.GetComponent<Navigator>();
-			if (storage2 == null)
+			if (storage != null && component.CanReach(Grid.PosToCell(storage), SweepBotTrappedMonitor.defaultOffsets))
 			{
-				smi.GoTo(death);
+				smi.GoTo(this.notTrapped);
+				return;
 			}
-			else if ((!smi.master.gameObject.HasTag(GameTags.Robots.Behaviours.RechargeBehaviour) && !smi.master.gameObject.HasTag(GameTags.Robots.Behaviours.UnloadBehaviour)) || component2.CanReach(Grid.PosToCell(storage2), defaultOffsets))
+			if (storage == null)
 			{
-				smi.GoTo(notTrapped);
+				smi.GoTo(this.death);
 			}
-			if (storage2 != null && component2.CanReach(Grid.PosToCell(storage2), defaultOffsets))
-			{
-				smi.GoTo(notTrapped);
-			}
-			else if (storage2 == null)
-			{
-				smi.GoTo(death);
-			}
-		}, UpdateRate.SIM_1000ms);
-		death.Enter(delegate(Instance smi)
+		}, UpdateRate.SIM_1000ms, false);
+		this.death.Enter(delegate(SweepBotTrappedMonitor.Instance smi)
 		{
 			smi.master.gameObject.GetComponent<OrnamentReceptacle>().OrderRemoveOccupant();
 			smi.master.gameObject.GetSMI<AnimInterruptMonitor.Instance>().PlayAnim("death");
-		}).OnAnimQueueComplete(destroySelf);
-		destroySelf.Enter(delegate(Instance smi)
+		}).OnAnimQueueComplete(this.destroySelf);
+		this.destroySelf.Enter(delegate(SweepBotTrappedMonitor.Instance smi)
 		{
 			Game.Instance.SpawnFX(SpawnFXHashes.MeteorImpactDust, smi.master.transform.position, 0f);
-			Storage[] components = smi.master.gameObject.GetComponents<Storage>();
-			foreach (Storage storage in components)
+			foreach (Storage storage in smi.master.gameObject.GetComponents<Storage>())
 			{
-				for (int num = storage.items.Count - 1; num >= 0; num--)
+				for (int j = storage.items.Count - 1; j >= 0; j--)
 				{
-					GameObject gameObject = storage.Drop(storage.items[num]);
+					GameObject gameObject = storage.Drop(storage.items[j], true);
 					if (gameObject != null)
 					{
 						if (GameComps.Fallers.Has(gameObject))
 						{
 							GameComps.Fallers.Remove(gameObject);
 						}
-						GameComps.Fallers.Add(gameObject, new Vector2(Random.Range(-5, 5), 8f));
+						GameComps.Fallers.Add(gameObject, new Vector2((float)UnityEngine.Random.Range(-5, 5), 8f));
 					}
 				}
 			}
 			PrimaryElement component = smi.master.GetComponent<PrimaryElement>();
-			component.Element.substance.SpawnResource(Grid.CellToPosCCC(Grid.PosToCell(smi.master.gameObject), Grid.SceneLayer.Ore), SweepBotConfig.MASS, component.Temperature, component.DiseaseIdx, component.DiseaseCount);
+			component.Element.substance.SpawnResource(Grid.CellToPosCCC(Grid.PosToCell(smi.master.gameObject), Grid.SceneLayer.Ore), SweepBotConfig.MASS, component.Temperature, component.DiseaseIdx, component.DiseaseCount, false, false, false);
 			Util.KDestroyGameObject(smi.master.gameObject);
 		});
+	}
+
+	// Token: 0x04005F30 RID: 24368
+	public static CellOffset[] defaultOffsets = new CellOffset[]
+	{
+		new CellOffset(0, 0)
+	};
+
+	// Token: 0x04005F31 RID: 24369
+	public GameStateMachine<SweepBotTrappedMonitor, SweepBotTrappedMonitor.Instance, IStateMachineTarget, SweepBotTrappedMonitor.Def>.State notTrapped;
+
+	// Token: 0x04005F32 RID: 24370
+	public GameStateMachine<SweepBotTrappedMonitor, SweepBotTrappedMonitor.Instance, IStateMachineTarget, SweepBotTrappedMonitor.Def>.State trapped;
+
+	// Token: 0x04005F33 RID: 24371
+	public GameStateMachine<SweepBotTrappedMonitor, SweepBotTrappedMonitor.Instance, IStateMachineTarget, SweepBotTrappedMonitor.Def>.State death;
+
+	// Token: 0x04005F34 RID: 24372
+	public GameStateMachine<SweepBotTrappedMonitor, SweepBotTrappedMonitor.Instance, IStateMachineTarget, SweepBotTrappedMonitor.Def>.State destroySelf;
+
+	// Token: 0x020017DC RID: 6108
+	public class Def : StateMachine.BaseDef
+	{
+	}
+
+	// Token: 0x020017DD RID: 6109
+	public new class Instance : GameStateMachine<SweepBotTrappedMonitor, SweepBotTrappedMonitor.Instance, IStateMachineTarget, SweepBotTrappedMonitor.Def>.GameInstance
+	{
+		// Token: 0x06007DB1 RID: 32177 RVA: 0x000F2CFE File Offset: 0x000F0EFE
+		public Instance(IStateMachineTarget master, SweepBotTrappedMonitor.Def def) : base(master, def)
+		{
+		}
 	}
 }

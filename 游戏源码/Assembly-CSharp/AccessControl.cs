@@ -1,182 +1,156 @@
+﻿using System;
 using System.Collections.Generic;
 using KSerialization;
 using STRINGS;
 using UnityEngine;
 
+// Token: 0x02001736 RID: 5942
 [SerializationConfig(MemberSerialization.OptIn)]
 [AddComponentMenu("KMonoBehaviour/scripts/AccessControl")]
 public class AccessControl : KMonoBehaviour, ISaveLoadable, IGameObjectEffectDescriptor
 {
-	public enum Permission
-	{
-		Both,
-		GoLeft,
-		GoRight,
-		Neither
-	}
-
-	[MyCmpGet]
-	private Operational operational;
-
-	[MyCmpReq]
-	private KSelectable selectable;
-
-	[MyCmpAdd]
-	private CopyBuildingSettings copyBuildingSettings;
-
-	private bool isTeleporter;
-
-	private int[] registeredBuildingCells;
-
-	[Serialize]
-	private List<KeyValuePair<Ref<KPrefabID>, Permission>> savedPermissions = new List<KeyValuePair<Ref<KPrefabID>, Permission>>();
-
-	[Serialize]
-	private Permission _defaultPermission;
-
-	[Serialize]
-	public bool registered = true;
-
-	[Serialize]
-	public bool controlEnabled;
-
-	public Door.ControlState overrideAccess;
-
-	private static StatusItem accessControlActive;
-
-	private static readonly EventSystem.IntraObjectHandler<AccessControl> OnControlStateChangedDelegate = new EventSystem.IntraObjectHandler<AccessControl>(delegate(AccessControl component, object data)
-	{
-		component.OnControlStateChanged(data);
-	});
-
-	private static readonly EventSystem.IntraObjectHandler<AccessControl> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<AccessControl>(delegate(AccessControl component, object data)
-	{
-		component.OnCopySettings(data);
-	});
-
-	public Permission DefaultPermission
+	// Token: 0x170007AB RID: 1963
+	// (get) Token: 0x06007A53 RID: 31315 RVA: 0x000F05A6 File Offset: 0x000EE7A6
+	// (set) Token: 0x06007A54 RID: 31316 RVA: 0x000F05AE File Offset: 0x000EE7AE
+	public AccessControl.Permission DefaultPermission
 	{
 		get
 		{
-			return _defaultPermission;
+			return this._defaultPermission;
 		}
 		set
 		{
-			_defaultPermission = value;
-			SetStatusItem();
-			SetGridRestrictions(null, _defaultPermission);
+			this._defaultPermission = value;
+			this.SetStatusItem();
+			this.SetGridRestrictions(null, this._defaultPermission);
 		}
 	}
 
-	public bool Online => true;
+	// Token: 0x170007AC RID: 1964
+	// (get) Token: 0x06007A55 RID: 31317 RVA: 0x000A65EC File Offset: 0x000A47EC
+	public bool Online
+	{
+		get
+		{
+			return true;
+		}
+	}
 
+	// Token: 0x06007A56 RID: 31318 RVA: 0x003182C0 File Offset: 0x003164C0
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		if (accessControlActive == null)
+		if (AccessControl.accessControlActive == null)
 		{
-			accessControlActive = new StatusItem("accessControlActive", BUILDING.STATUSITEMS.ACCESS_CONTROL.ACTIVE.NAME, BUILDING.STATUSITEMS.ACCESS_CONTROL.ACTIVE.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.Neutral, allow_multiples: false, OverlayModes.None.ID);
+			AccessControl.accessControlActive = new StatusItem("accessControlActive", BUILDING.STATUSITEMS.ACCESS_CONTROL.ACTIVE.NAME, BUILDING.STATUSITEMS.ACCESS_CONTROL.ACTIVE.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, 129022, true, null);
 		}
-		Subscribe(279163026, OnControlStateChangedDelegate);
-		Subscribe(-905833192, OnCopySettingsDelegate);
+		base.Subscribe<AccessControl>(279163026, AccessControl.OnControlStateChangedDelegate);
+		base.Subscribe<AccessControl>(-905833192, AccessControl.OnCopySettingsDelegate);
 	}
 
+	// Token: 0x06007A57 RID: 31319 RVA: 0x00318334 File Offset: 0x00316534
 	private void CheckForBadData()
 	{
-		List<KeyValuePair<Ref<KPrefabID>, Permission>> list = new List<KeyValuePair<Ref<KPrefabID>, Permission>>();
-		foreach (KeyValuePair<Ref<KPrefabID>, Permission> savedPermission in savedPermissions)
+		List<KeyValuePair<Ref<KPrefabID>, AccessControl.Permission>> list = new List<KeyValuePair<Ref<KPrefabID>, AccessControl.Permission>>();
+		foreach (KeyValuePair<Ref<KPrefabID>, AccessControl.Permission> item in this.savedPermissions)
 		{
-			if (savedPermission.Key.Get() == null)
+			if (item.Key.Get() == null)
 			{
-				list.Add(savedPermission);
+				list.Add(item);
 			}
 		}
-		foreach (KeyValuePair<Ref<KPrefabID>, Permission> item in list)
+		foreach (KeyValuePair<Ref<KPrefabID>, AccessControl.Permission> item2 in list)
 		{
-			savedPermissions.Remove(item);
+			this.savedPermissions.Remove(item2);
 		}
 	}
 
+	// Token: 0x06007A58 RID: 31320 RVA: 0x003183E4 File Offset: 0x003165E4
 	protected override void OnSpawn()
 	{
-		isTeleporter = GetComponent<NavTeleporter>() != null;
+		this.isTeleporter = (base.GetComponent<NavTeleporter>() != null);
 		base.OnSpawn();
-		if (savedPermissions.Count > 0)
+		if (this.savedPermissions.Count > 0)
 		{
-			CheckForBadData();
+			this.CheckForBadData();
 		}
-		if (registered)
+		if (this.registered)
 		{
-			RegisterInGrid(register: true);
-			RestorePermissions();
+			this.RegisterInGrid(true);
+			this.RestorePermissions();
 		}
-		ListPool<Tuple<MinionAssignablesProxy, Permission>, AccessControl>.PooledList pooledList = ListPool<Tuple<MinionAssignablesProxy, Permission>, AccessControl>.Allocate();
-		for (int num = savedPermissions.Count - 1; num >= 0; num--)
+		ListPool<global::Tuple<MinionAssignablesProxy, AccessControl.Permission>, AccessControl>.PooledList pooledList = ListPool<global::Tuple<MinionAssignablesProxy, AccessControl.Permission>, AccessControl>.Allocate();
+		for (int i = this.savedPermissions.Count - 1; i >= 0; i--)
 		{
-			KPrefabID kPrefabID = savedPermissions[num].Key.Get();
-			if (kPrefabID != null)
+			KPrefabID kprefabID = this.savedPermissions[i].Key.Get();
+			if (kprefabID != null)
 			{
-				MinionIdentity component = kPrefabID.GetComponent<MinionIdentity>();
+				MinionIdentity component = kprefabID.GetComponent<MinionIdentity>();
 				if (component != null)
 				{
-					pooledList.Add(new Tuple<MinionAssignablesProxy, Permission>(component.assignableProxy.Get(), savedPermissions[num].Value));
-					savedPermissions.RemoveAt(num);
-					ClearGridRestrictions(kPrefabID);
+					pooledList.Add(new global::Tuple<MinionAssignablesProxy, AccessControl.Permission>(component.assignableProxy.Get(), this.savedPermissions[i].Value));
+					this.savedPermissions.RemoveAt(i);
+					this.ClearGridRestrictions(kprefabID);
 				}
 			}
 		}
-		foreach (Tuple<MinionAssignablesProxy, Permission> item in pooledList)
+		foreach (global::Tuple<MinionAssignablesProxy, AccessControl.Permission> tuple in pooledList)
 		{
-			SetPermission(item.first, item.second);
+			this.SetPermission(tuple.first, tuple.second);
 		}
 		pooledList.Recycle();
-		SetStatusItem();
+		this.SetStatusItem();
 	}
 
+	// Token: 0x06007A59 RID: 31321 RVA: 0x000F05CA File Offset: 0x000EE7CA
 	protected override void OnCleanUp()
 	{
-		RegisterInGrid(register: false);
+		this.RegisterInGrid(false);
 		base.OnCleanUp();
 	}
 
+	// Token: 0x06007A5A RID: 31322 RVA: 0x000F05D9 File Offset: 0x000EE7D9
 	private void OnControlStateChanged(object data)
 	{
-		overrideAccess = (Door.ControlState)data;
+		this.overrideAccess = (Door.ControlState)data;
 	}
 
+	// Token: 0x06007A5B RID: 31323 RVA: 0x00318520 File Offset: 0x00316720
 	private void OnCopySettings(object data)
 	{
 		AccessControl component = ((GameObject)data).GetComponent<AccessControl>();
-		if (!(component != null))
+		if (component != null)
 		{
-			return;
-		}
-		savedPermissions.Clear();
-		foreach (KeyValuePair<Ref<KPrefabID>, Permission> savedPermission in component.savedPermissions)
-		{
-			if (savedPermission.Key.Get() != null)
+			this.savedPermissions.Clear();
+			foreach (KeyValuePair<Ref<KPrefabID>, AccessControl.Permission> keyValuePair in component.savedPermissions)
 			{
-				SetPermission(savedPermission.Key.Get().GetComponent<MinionAssignablesProxy>(), savedPermission.Value);
+				if (keyValuePair.Key.Get() != null)
+				{
+					this.SetPermission(keyValuePair.Key.Get().GetComponent<MinionAssignablesProxy>(), keyValuePair.Value);
+				}
 			}
+			this._defaultPermission = component._defaultPermission;
+			this.SetGridRestrictions(null, this.DefaultPermission);
 		}
-		_defaultPermission = component._defaultPermission;
-		SetGridRestrictions(null, DefaultPermission);
 	}
 
+	// Token: 0x06007A5C RID: 31324 RVA: 0x000F05E7 File Offset: 0x000EE7E7
 	public void SetRegistered(bool newRegistered)
 	{
-		if (newRegistered && !registered)
+		if (newRegistered && !this.registered)
 		{
-			RegisterInGrid(register: true);
-			RestorePermissions();
+			this.RegisterInGrid(true);
+			this.RestorePermissions();
+			return;
 		}
-		else if (!newRegistered && registered)
+		if (!newRegistered && this.registered)
 		{
-			RegisterInGrid(register: false);
+			this.RegisterInGrid(false);
 		}
 	}
 
-	public void SetPermission(MinionAssignablesProxy key, Permission permission)
+	// Token: 0x06007A5D RID: 31325 RVA: 0x003185DC File Offset: 0x003167DC
+	public void SetPermission(MinionAssignablesProxy key, AccessControl.Permission permission)
 	{
 		KPrefabID component = key.GetComponent<KPrefabID>();
 		if (component == null)
@@ -184,54 +158,64 @@ public class AccessControl : KMonoBehaviour, ISaveLoadable, IGameObjectEffectDes
 			return;
 		}
 		bool flag = false;
-		for (int i = 0; i < savedPermissions.Count; i++)
+		for (int i = 0; i < this.savedPermissions.Count; i++)
 		{
-			if (savedPermissions[i].Key.GetId() == component.InstanceID)
+			if (this.savedPermissions[i].Key.GetId() == component.InstanceID)
 			{
 				flag = true;
-				KeyValuePair<Ref<KPrefabID>, Permission> keyValuePair = savedPermissions[i];
-				savedPermissions[i] = new KeyValuePair<Ref<KPrefabID>, Permission>(keyValuePair.Key, permission);
+				KeyValuePair<Ref<KPrefabID>, AccessControl.Permission> keyValuePair = this.savedPermissions[i];
+				this.savedPermissions[i] = new KeyValuePair<Ref<KPrefabID>, AccessControl.Permission>(keyValuePair.Key, permission);
 				break;
 			}
 		}
 		if (!flag)
 		{
-			savedPermissions.Add(new KeyValuePair<Ref<KPrefabID>, Permission>(new Ref<KPrefabID>(component), permission));
+			this.savedPermissions.Add(new KeyValuePair<Ref<KPrefabID>, AccessControl.Permission>(new Ref<KPrefabID>(component), permission));
 		}
-		SetStatusItem();
-		SetGridRestrictions(component, permission);
+		this.SetStatusItem();
+		this.SetGridRestrictions(component, permission);
 	}
 
+	// Token: 0x06007A5E RID: 31326 RVA: 0x00318688 File Offset: 0x00316888
 	private void RestorePermissions()
 	{
-		SetGridRestrictions(null, DefaultPermission);
-		foreach (KeyValuePair<Ref<KPrefabID>, Permission> savedPermission in savedPermissions)
+		this.SetGridRestrictions(null, this.DefaultPermission);
+		foreach (KeyValuePair<Ref<KPrefabID>, AccessControl.Permission> keyValuePair in this.savedPermissions)
 		{
-			KPrefabID kPrefabID = savedPermission.Key.Get();
-			if (kPrefabID == null)
+			KPrefabID x = keyValuePair.Key.Get();
+			if (x == null)
 			{
-				DebugUtil.Assert(kPrefabID == null, "Tried to set a duplicant-specific access restriction with a null key! This will result in an invisible default permission!");
+				DebugUtil.Assert(x == null, "Tried to set a duplicant-specific access restriction with a null key! This will result in an invisible default permission!");
 			}
-			SetGridRestrictions(savedPermission.Key.Get(), savedPermission.Value);
+			this.SetGridRestrictions(keyValuePair.Key.Get(), keyValuePair.Value);
 		}
 	}
 
+	// Token: 0x06007A5F RID: 31327 RVA: 0x00318724 File Offset: 0x00316924
 	private void RegisterInGrid(bool register)
 	{
-		Building component = GetComponent<Building>();
-		OccupyArea component2 = GetComponent<OccupyArea>();
+		Building component = base.GetComponent<Building>();
+		OccupyArea component2 = base.GetComponent<OccupyArea>();
 		if (component2 == null && component == null)
 		{
 			return;
 		}
 		if (register)
 		{
-			Rotatable component3 = GetComponent<Rotatable>();
-			Grid.Restriction.Orientation orientation = (isTeleporter ? Grid.Restriction.Orientation.SingleCell : ((!(component3 == null) && component3.GetOrientation() != 0) ? Grid.Restriction.Orientation.Horizontal : Grid.Restriction.Orientation.Vertical));
+			Rotatable component3 = base.GetComponent<Rotatable>();
+			Grid.Restriction.Orientation orientation;
+			if (!this.isTeleporter)
+			{
+				orientation = ((component3 == null || component3.GetOrientation() == Orientation.Neutral) ? Grid.Restriction.Orientation.Vertical : Grid.Restriction.Orientation.Horizontal);
+			}
+			else
+			{
+				orientation = Grid.Restriction.Orientation.SingleCell;
+			}
 			if (component != null)
 			{
-				registeredBuildingCells = component.PlacementCells;
-				int[] array = registeredBuildingCells;
+				this.registeredBuildingCells = component.PlacementCells;
+				int[] array = this.registeredBuildingCells;
 				for (int i = 0; i < array.Length; i++)
 				{
 					Grid.RegisterRestriction(array[i], orientation);
@@ -239,87 +223,93 @@ public class AccessControl : KMonoBehaviour, ISaveLoadable, IGameObjectEffectDes
 			}
 			else
 			{
-				CellOffset[] occupiedCellsOffsets = component2.OccupiedCellsOffsets;
-				foreach (CellOffset offset in occupiedCellsOffsets)
+				foreach (CellOffset offset in component2.OccupiedCellsOffsets)
 				{
 					Grid.RegisterRestriction(Grid.OffsetCell(Grid.PosToCell(component2), offset), orientation);
 				}
 			}
-			if (isTeleporter)
+			if (this.isTeleporter)
 			{
-				Grid.RegisterRestriction(GetComponent<NavTeleporter>().GetCell(), orientation);
+				Grid.RegisterRestriction(base.GetComponent<NavTeleporter>().GetCell(), orientation);
 			}
 		}
 		else
 		{
 			if (component != null)
 			{
-				if (component.GetMyWorldId() != 255 && registeredBuildingCells != null)
+				if (component.GetMyWorldId() != 255 && this.registeredBuildingCells != null)
 				{
-					int[] array = registeredBuildingCells;
+					int[] array = this.registeredBuildingCells;
 					for (int i = 0; i < array.Length; i++)
 					{
 						Grid.UnregisterRestriction(array[i]);
 					}
-					registeredBuildingCells = null;
+					this.registeredBuildingCells = null;
 				}
 			}
 			else
 			{
-				CellOffset[] occupiedCellsOffsets = component2.OccupiedCellsOffsets;
-				foreach (CellOffset offset2 in occupiedCellsOffsets)
+				foreach (CellOffset offset2 in component2.OccupiedCellsOffsets)
 				{
 					Grid.UnregisterRestriction(Grid.OffsetCell(Grid.PosToCell(component2), offset2));
 				}
 			}
-			if (isTeleporter)
+			if (this.isTeleporter)
 			{
-				int cell = GetComponent<NavTeleporter>().GetCell();
+				int cell = base.GetComponent<NavTeleporter>().GetCell();
 				if (cell != Grid.InvalidCell)
 				{
 					Grid.UnregisterRestriction(cell);
 				}
 			}
 		}
-		registered = register;
+		this.registered = register;
 	}
 
-	private void SetGridRestrictions(KPrefabID kpid, Permission permission)
+	// Token: 0x06007A60 RID: 31328 RVA: 0x003188C8 File Offset: 0x00316AC8
+	private void SetGridRestrictions(KPrefabID kpid, AccessControl.Permission permission)
 	{
-		if (!registered || !base.isSpawned)
+		if (!this.registered || !base.isSpawned)
 		{
 			return;
 		}
-		Building component = GetComponent<Building>();
-		OccupyArea component2 = GetComponent<OccupyArea>();
+		Building component = base.GetComponent<Building>();
+		OccupyArea component2 = base.GetComponent<OccupyArea>();
 		if (component2 == null && component == null)
 		{
 			return;
 		}
-		int minionInstanceID = ((kpid != null) ? kpid.InstanceID : (-1));
+		int minionInstanceID = (kpid != null) ? kpid.InstanceID : -1;
 		Grid.Restriction.Directions directions = (Grid.Restriction.Directions)0;
 		switch (permission)
 		{
-		case Permission.Both:
+		case AccessControl.Permission.Both:
 			directions = (Grid.Restriction.Directions)0;
 			break;
-		case Permission.GoLeft:
+		case AccessControl.Permission.GoLeft:
 			directions = Grid.Restriction.Directions.Right;
 			break;
-		case Permission.GoRight:
+		case AccessControl.Permission.GoRight:
 			directions = Grid.Restriction.Directions.Left;
 			break;
-		case Permission.Neither:
-			directions = Grid.Restriction.Directions.Left | Grid.Restriction.Directions.Right;
+		case AccessControl.Permission.Neither:
+			directions = (Grid.Restriction.Directions.Left | Grid.Restriction.Directions.Right);
 			break;
 		}
-		if (isTeleporter)
+		if (this.isTeleporter)
 		{
-			directions = ((directions != 0) ? Grid.Restriction.Directions.Teleport : ((Grid.Restriction.Directions)0));
+			if (directions != (Grid.Restriction.Directions)0)
+			{
+				directions = Grid.Restriction.Directions.Teleport;
+			}
+			else
+			{
+				directions = (Grid.Restriction.Directions)0;
+			}
 		}
 		if (component != null)
 		{
-			int[] array = registeredBuildingCells;
+			int[] array = this.registeredBuildingCells;
 			for (int i = 0; i < array.Length; i++)
 			{
 				Grid.SetRestriction(array[i], minionInstanceID, directions);
@@ -327,73 +317,80 @@ public class AccessControl : KMonoBehaviour, ISaveLoadable, IGameObjectEffectDes
 		}
 		else
 		{
-			CellOffset[] occupiedCellsOffsets = component2.OccupiedCellsOffsets;
-			foreach (CellOffset offset in occupiedCellsOffsets)
+			foreach (CellOffset offset in component2.OccupiedCellsOffsets)
 			{
 				Grid.SetRestriction(Grid.OffsetCell(Grid.PosToCell(component2), offset), minionInstanceID, directions);
 			}
 		}
-		if (isTeleporter)
+		if (this.isTeleporter)
 		{
-			Grid.SetRestriction(GetComponent<NavTeleporter>().GetCell(), minionInstanceID, directions);
+			Grid.SetRestriction(base.GetComponent<NavTeleporter>().GetCell(), minionInstanceID, directions);
 		}
 	}
 
+	// Token: 0x06007A61 RID: 31329 RVA: 0x003189DC File Offset: 0x00316BDC
 	private void ClearGridRestrictions(KPrefabID kpid)
 	{
-		Building component = GetComponent<Building>();
-		OccupyArea component2 = GetComponent<OccupyArea>();
+		Building component = base.GetComponent<Building>();
+		OccupyArea component2 = base.GetComponent<OccupyArea>();
 		if (component2 == null && component == null)
 		{
 			return;
 		}
-		int minionInstanceID = ((kpid != null) ? kpid.InstanceID : (-1));
+		int minionInstanceID = (kpid != null) ? kpid.InstanceID : -1;
 		if (component != null)
 		{
-			int[] array = registeredBuildingCells;
+			int[] array = this.registeredBuildingCells;
 			for (int i = 0; i < array.Length; i++)
 			{
 				Grid.ClearRestriction(array[i], minionInstanceID);
 			}
 			return;
 		}
-		CellOffset[] occupiedCellsOffsets = component2.OccupiedCellsOffsets;
-		foreach (CellOffset offset in occupiedCellsOffsets)
+		foreach (CellOffset offset in component2.OccupiedCellsOffsets)
 		{
 			Grid.ClearRestriction(Grid.OffsetCell(Grid.PosToCell(component2), offset), minionInstanceID);
 		}
 	}
 
-	public Permission GetPermission(Navigator minion)
+	// Token: 0x06007A62 RID: 31330 RVA: 0x00318A84 File Offset: 0x00316C84
+	public AccessControl.Permission GetPermission(Navigator minion)
 	{
-		return overrideAccess switch
+		Door.ControlState controlState = this.overrideAccess;
+		if (controlState == Door.ControlState.Opened)
 		{
-			Door.ControlState.Locked => Permission.Neither, 
-			Door.ControlState.Opened => Permission.Both, 
-			_ => GetSetPermission(GetKeyForNavigator(minion)), 
-		};
+			return AccessControl.Permission.Both;
+		}
+		if (controlState == Door.ControlState.Locked)
+		{
+			return AccessControl.Permission.Neither;
+		}
+		return this.GetSetPermission(this.GetKeyForNavigator(minion));
 	}
 
+	// Token: 0x06007A63 RID: 31331 RVA: 0x000F0614 File Offset: 0x000EE814
 	private MinionAssignablesProxy GetKeyForNavigator(Navigator minion)
 	{
 		return minion.GetComponent<MinionIdentity>().assignableProxy.Get();
 	}
 
-	public Permission GetSetPermission(MinionAssignablesProxy key)
+	// Token: 0x06007A64 RID: 31332 RVA: 0x000F0626 File Offset: 0x000EE826
+	public AccessControl.Permission GetSetPermission(MinionAssignablesProxy key)
 	{
-		return GetSetPermission(key.GetComponent<KPrefabID>());
+		return this.GetSetPermission(key.GetComponent<KPrefabID>());
 	}
 
-	private Permission GetSetPermission(KPrefabID kpid)
+	// Token: 0x06007A65 RID: 31333 RVA: 0x00318AB4 File Offset: 0x00316CB4
+	private AccessControl.Permission GetSetPermission(KPrefabID kpid)
 	{
-		Permission result = DefaultPermission;
+		AccessControl.Permission result = this.DefaultPermission;
 		if (kpid != null)
 		{
-			for (int i = 0; i < savedPermissions.Count; i++)
+			for (int i = 0; i < this.savedPermissions.Count; i++)
 			{
-				if (savedPermissions[i].Key.GetId() == kpid.InstanceID)
+				if (this.savedPermissions[i].Key.GetId() == kpid.InstanceID)
 				{
-					result = savedPermissions[i].Value;
+					result = this.savedPermissions[i].Value;
 					break;
 				}
 			}
@@ -401,33 +398,35 @@ public class AccessControl : KMonoBehaviour, ISaveLoadable, IGameObjectEffectDes
 		return result;
 	}
 
+	// Token: 0x06007A66 RID: 31334 RVA: 0x00318B20 File Offset: 0x00316D20
 	public void ClearPermission(MinionAssignablesProxy key)
 	{
 		KPrefabID component = key.GetComponent<KPrefabID>();
 		if (component != null)
 		{
-			for (int i = 0; i < savedPermissions.Count; i++)
+			for (int i = 0; i < this.savedPermissions.Count; i++)
 			{
-				if (savedPermissions[i].Key.GetId() == component.InstanceID)
+				if (this.savedPermissions[i].Key.GetId() == component.InstanceID)
 				{
-					savedPermissions.RemoveAt(i);
+					this.savedPermissions.RemoveAt(i);
 					break;
 				}
 			}
 		}
-		SetStatusItem();
-		ClearGridRestrictions(component);
+		this.SetStatusItem();
+		this.ClearGridRestrictions(component);
 	}
 
+	// Token: 0x06007A67 RID: 31335 RVA: 0x00318B90 File Offset: 0x00316D90
 	public bool IsDefaultPermission(MinionAssignablesProxy key)
 	{
 		bool flag = false;
 		KPrefabID component = key.GetComponent<KPrefabID>();
 		if (component != null)
 		{
-			for (int i = 0; i < savedPermissions.Count; i++)
+			for (int i = 0; i < this.savedPermissions.Count; i++)
 			{
-				if (savedPermissions[i].Key.GetId() == component.InstanceID)
+				if (this.savedPermissions[i].Key.GetId() == component.InstanceID)
 				{
 					flag = true;
 					break;
@@ -437,24 +436,89 @@ public class AccessControl : KMonoBehaviour, ISaveLoadable, IGameObjectEffectDes
 		return !flag;
 	}
 
+	// Token: 0x06007A68 RID: 31336 RVA: 0x00318BF0 File Offset: 0x00316DF0
 	private void SetStatusItem()
 	{
-		if (_defaultPermission != 0 || savedPermissions.Count > 0)
+		if (this._defaultPermission != AccessControl.Permission.Both || this.savedPermissions.Count > 0)
 		{
-			selectable.SetStatusItem(Db.Get().StatusItemCategories.AccessControl, accessControlActive);
+			this.selectable.SetStatusItem(Db.Get().StatusItemCategories.AccessControl, AccessControl.accessControlActive, null);
+			return;
 		}
-		else
-		{
-			selectable.SetStatusItem(Db.Get().StatusItemCategories.AccessControl, null);
-		}
+		this.selectable.SetStatusItem(Db.Get().StatusItemCategories.AccessControl, null, null);
 	}
 
+	// Token: 0x06007A69 RID: 31337 RVA: 0x00318C54 File Offset: 0x00316E54
 	public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		Descriptor item = default(Descriptor);
-		item.SetupDescriptor(UI.BUILDINGEFFECTS.ACCESS_CONTROL, UI.BUILDINGEFFECTS.TOOLTIPS.ACCESS_CONTROL);
+		item.SetupDescriptor(UI.BUILDINGEFFECTS.ACCESS_CONTROL, UI.BUILDINGEFFECTS.TOOLTIPS.ACCESS_CONTROL, Descriptor.DescriptorType.Effect);
 		list.Add(item);
 		return list;
+	}
+
+	// Token: 0x04005BCE RID: 23502
+	[MyCmpGet]
+	private Operational operational;
+
+	// Token: 0x04005BCF RID: 23503
+	[MyCmpReq]
+	private KSelectable selectable;
+
+	// Token: 0x04005BD0 RID: 23504
+	[MyCmpAdd]
+	private CopyBuildingSettings copyBuildingSettings;
+
+	// Token: 0x04005BD1 RID: 23505
+	private bool isTeleporter;
+
+	// Token: 0x04005BD2 RID: 23506
+	private int[] registeredBuildingCells;
+
+	// Token: 0x04005BD3 RID: 23507
+	[Serialize]
+	private List<KeyValuePair<Ref<KPrefabID>, AccessControl.Permission>> savedPermissions = new List<KeyValuePair<Ref<KPrefabID>, AccessControl.Permission>>();
+
+	// Token: 0x04005BD4 RID: 23508
+	[Serialize]
+	private AccessControl.Permission _defaultPermission;
+
+	// Token: 0x04005BD5 RID: 23509
+	[Serialize]
+	public bool registered = true;
+
+	// Token: 0x04005BD6 RID: 23510
+	[Serialize]
+	public bool controlEnabled;
+
+	// Token: 0x04005BD7 RID: 23511
+	public Door.ControlState overrideAccess;
+
+	// Token: 0x04005BD8 RID: 23512
+	private static StatusItem accessControlActive;
+
+	// Token: 0x04005BD9 RID: 23513
+	private static readonly EventSystem.IntraObjectHandler<AccessControl> OnControlStateChangedDelegate = new EventSystem.IntraObjectHandler<AccessControl>(delegate(AccessControl component, object data)
+	{
+		component.OnControlStateChanged(data);
+	});
+
+	// Token: 0x04005BDA RID: 23514
+	private static readonly EventSystem.IntraObjectHandler<AccessControl> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<AccessControl>(delegate(AccessControl component, object data)
+	{
+		component.OnCopySettings(data);
+	});
+
+	// Token: 0x02001737 RID: 5943
+	public enum Permission
+	{
+		// Token: 0x04005BDC RID: 23516
+		Both,
+		// Token: 0x04005BDD RID: 23517
+		GoLeft,
+		// Token: 0x04005BDE RID: 23518
+		GoRight,
+		// Token: 0x04005BDF RID: 23519
+		Neither
 	}
 }

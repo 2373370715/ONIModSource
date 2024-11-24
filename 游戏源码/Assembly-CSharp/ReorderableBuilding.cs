@@ -1,85 +1,72 @@
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Token: 0x02000F55 RID: 3925
 public class ReorderableBuilding : KMonoBehaviour
 {
-	public enum MoveSource
-	{
-		Push,
-		Pull
-	}
-
-	private bool cancelShield;
-
-	private bool reorderingAnimUnderway;
-
-	private KBatchedAnimController animController;
-
-	public List<SelectModuleCondition> buildConditions = new List<SelectModuleCondition>();
-
-	private KBatchedAnimController reorderArmController;
-
-	private KAnimLink m_animLink;
-
-	[MyCmpAdd]
-	private LoopingSounds loopingSounds;
-
-	private string reorderSound = "RocketModuleSwitchingArm_moving_LP";
-
-	private static List<ReorderableBuilding> toBeRemoved = new List<ReorderableBuilding>();
-
+	// Token: 0x06004F6A RID: 20330 RVA: 0x0026B198 File Offset: 0x00269398
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		animController = GetComponent<KBatchedAnimController>();
-		Subscribe(2127324410, OnCancel);
+		this.animController = base.GetComponent<KBatchedAnimController>();
+		base.Subscribe(2127324410, new Action<object>(this.OnCancel));
 		GameObject gameObject = new GameObject();
 		gameObject.name = "ReorderArm";
 		gameObject.transform.SetParent(base.transform);
-		gameObject.transform.SetLocalPosition(Vector3.up * Grid.CellSizeInMeters * ((float)GetComponent<Building>().Def.HeightInCells / 2f - 0.5f));
+		gameObject.transform.SetLocalPosition(Vector3.up * Grid.CellSizeInMeters * ((float)base.GetComponent<Building>().Def.HeightInCells / 2f - 0.5f));
 		gameObject.transform.SetPosition(new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, Grid.GetLayerZ(Grid.SceneLayer.BuildingBack)));
-		gameObject.SetActive(value: false);
-		reorderArmController = gameObject.AddComponent<KBatchedAnimController>();
-		reorderArmController.AnimFiles = new KAnimFile[1] { Assets.GetAnim("rocket_module_switching_arm_kanim") };
-		reorderArmController.initialAnim = "off";
-		gameObject.SetActive(value: true);
+		gameObject.SetActive(false);
+		this.reorderArmController = gameObject.AddComponent<KBatchedAnimController>();
+		this.reorderArmController.AnimFiles = new KAnimFile[]
+		{
+			Assets.GetAnim("rocket_module_switching_arm_kanim")
+		};
+		this.reorderArmController.initialAnim = "off";
+		gameObject.SetActive(true);
 		int cell = Grid.PosToCell(gameObject);
-		ShowReorderArm(Grid.IsValidCell(cell));
-		RocketModuleCluster component = GetComponent<RocketModuleCluster>();
+		this.ShowReorderArm(Grid.IsValidCell(cell));
+		RocketModuleCluster component = base.GetComponent<RocketModuleCluster>();
 		if (component != null)
 		{
 			LaunchPad currentPad = component.CraftInterface.CurrentPad;
 			if (currentPad != null)
 			{
-				m_animLink = new KAnimLink(currentPad.GetComponent<KAnimControllerBase>(), reorderArmController);
+				this.m_animLink = new KAnimLink(currentPad.GetComponent<KAnimControllerBase>(), this.reorderArmController);
 			}
 		}
-		if (m_animLink == null)
+		if (this.m_animLink == null)
 		{
-			m_animLink = new KAnimLink(GetComponent<KAnimControllerBase>(), reorderArmController);
+			this.m_animLink = new KAnimLink(base.GetComponent<KAnimControllerBase>(), this.reorderArmController);
 		}
 	}
 
+	// Token: 0x06004F6B RID: 20331 RVA: 0x000D3C61 File Offset: 0x000D1E61
 	private void OnCancel(object data)
 	{
-		if (GetComponent<BuildingUnderConstruction>() != null && !cancelShield && !toBeRemoved.Contains(this))
+		if (base.GetComponent<BuildingUnderConstruction>() != null && !this.cancelShield && !ReorderableBuilding.toBeRemoved.Contains(this))
 		{
-			toBeRemoved.Add(this);
+			ReorderableBuilding.toBeRemoved.Add(this);
 		}
 	}
 
+	// Token: 0x06004F6C RID: 20332 RVA: 0x0026B324 File Offset: 0x00269524
 	public GameObject AddModule(BuildingDef def, IList<Tag> buildMaterials)
 	{
-		if (Assets.GetPrefab(GetComponent<KPrefabID>().PrefabID()).GetComponent<ReorderableBuilding>().buildConditions.Find((SelectModuleCondition match) => match is TopOnly) != null || def.BuildingComplete.GetComponent<ReorderableBuilding>().buildConditions.Find((SelectModuleCondition match) => match is EngineOnBottom) != null)
+		if (Assets.GetPrefab(base.GetComponent<KPrefabID>().PrefabID()).GetComponent<ReorderableBuilding>().buildConditions.Find((SelectModuleCondition match) => match is TopOnly) == null)
 		{
-			return AddModuleBelow(def, buildMaterials);
+			if (def.BuildingComplete.GetComponent<ReorderableBuilding>().buildConditions.Find((SelectModuleCondition match) => match is EngineOnBottom) == null)
+			{
+				return this.AddModuleAbove(def, buildMaterials);
+			}
 		}
-		return AddModuleAbove(def, buildMaterials);
+		return this.AddModuleBelow(def, buildMaterials);
 	}
 
+	// Token: 0x06004F6D RID: 20333 RVA: 0x0026B3B8 File Offset: 0x002695B8
 	private GameObject AddModuleAbove(BuildingDef def, IList<Tag> buildMaterials)
 	{
-		BuildingAttachPoint component = GetComponent<BuildingAttachPoint>();
+		BuildingAttachPoint component = base.GetComponent<BuildingAttachPoint>();
 		if (component == null)
 		{
 			return null;
@@ -89,38 +76,49 @@ public class ReorderableBuilding : KMonoBehaviour
 		int heightInCells = def.HeightInCells;
 		if (hardPoint.attachedBuilding != null)
 		{
-			if (!hardPoint.attachedBuilding.GetComponent<ReorderableBuilding>().CanMoveVertically(heightInCells))
+			if (!hardPoint.attachedBuilding.GetComponent<ReorderableBuilding>().CanMoveVertically(heightInCells, null))
 			{
 				return null;
 			}
 			hardPoint.attachedBuilding.GetComponent<ReorderableBuilding>().MoveVertical(heightInCells);
 		}
-		return AddModuleCommon(def, buildMaterials, cell);
+		return this.AddModuleCommon(def, buildMaterials, cell);
 	}
 
+	// Token: 0x06004F6E RID: 20334 RVA: 0x0026B440 File Offset: 0x00269640
 	private GameObject AddModuleBelow(BuildingDef def, IList<Tag> buildMaterials)
 	{
 		int cell = Grid.PosToCell(base.gameObject);
 		int heightInCells = def.HeightInCells;
-		if (!CanMoveVertically(heightInCells))
+		if (!this.CanMoveVertically(heightInCells, null))
 		{
 			return null;
 		}
-		MoveVertical(heightInCells);
-		return AddModuleCommon(def, buildMaterials, cell);
+		this.MoveVertical(heightInCells);
+		return this.AddModuleCommon(def, buildMaterials, cell);
 	}
 
+	// Token: 0x06004F6F RID: 20335 RVA: 0x0026B47C File Offset: 0x0026967C
 	private GameObject AddModuleCommon(BuildingDef def, IList<Tag> buildMaterials, int cell)
 	{
-		GameObject result = ((!DebugHandler.InstantBuildMode && (!Game.Instance.SandboxModeActive || !SandboxToolParameterMenu.instance.settings.InstantBuild)) ? def.TryPlace(null, Grid.CellToPosCBC(cell, def.SceneLayer), Orientation.Neutral, buildMaterials) : def.Build(cell, Orientation.Neutral, null, buildMaterials, 273.15f, playsound: true, GameClock.Instance.GetTime()));
-		RebuildNetworks();
-		RocketSpecificPostAdd(result, cell);
-		return result;
+		GameObject gameObject;
+		if (DebugHandler.InstantBuildMode || (Game.Instance.SandboxModeActive && SandboxToolParameterMenu.instance.settings.InstantBuild))
+		{
+			gameObject = def.Build(cell, Orientation.Neutral, null, buildMaterials, 273.15f, true, GameClock.Instance.GetTime());
+		}
+		else
+		{
+			gameObject = def.TryPlace(null, Grid.CellToPosCBC(cell, def.SceneLayer), Orientation.Neutral, buildMaterials, 0);
+		}
+		ReorderableBuilding.RebuildNetworks();
+		this.RocketSpecificPostAdd(gameObject, cell);
+		return gameObject;
 	}
 
+	// Token: 0x06004F70 RID: 20336 RVA: 0x0026B4F0 File Offset: 0x002696F0
 	private void RocketSpecificPostAdd(GameObject obj, int cell)
 	{
-		RocketModuleCluster component = GetComponent<RocketModuleCluster>();
+		RocketModuleCluster component = base.GetComponent<RocketModuleCluster>();
 		RocketModuleCluster component2 = obj.GetComponent<RocketModuleCluster>();
 		if (component != null && component2 != null)
 		{
@@ -128,24 +126,25 @@ public class ReorderableBuilding : KMonoBehaviour
 		}
 	}
 
+	// Token: 0x06004F71 RID: 20337 RVA: 0x0026B52C File Offset: 0x0026972C
 	public void RemoveModule()
 	{
-		BuildingAttachPoint component = GetComponent<BuildingAttachPoint>();
+		BuildingAttachPoint component = base.GetComponent<BuildingAttachPoint>();
 		AttachableBuilding attachableBuilding = null;
 		if (component != null && component.points[0].attachedBuilding != null)
 		{
 			attachableBuilding = component.points[0].attachedBuilding;
 		}
-		int heightInCells = GetComponent<Building>().Def.HeightInCells;
-		if (GetComponent<Deconstructable>() != null)
+		int heightInCells = base.GetComponent<Building>().Def.HeightInCells;
+		if (base.GetComponent<Deconstructable>() != null)
 		{
-			GetComponent<Deconstructable>().CompleteWork(null);
+			base.GetComponent<Deconstructable>().CompleteWork(null);
 		}
-		if (GetComponent<BuildingUnderConstruction>() != null)
+		if (base.GetComponent<BuildingUnderConstruction>() != null)
 		{
 			this.DeleteObject();
 		}
-		Building component2 = GetComponent<Building>();
+		Building component2 = base.GetComponent<Building>();
 		component2.Def.UnmarkArea(Grid.PosToCell(this), component2.Orientation, component2.Def.ObjectLayer, base.gameObject);
 		if (attachableBuilding != null)
 		{
@@ -157,169 +156,186 @@ public class ReorderableBuilding : KMonoBehaviour
 		}
 	}
 
+	// Token: 0x06004F72 RID: 20338 RVA: 0x0026B608 File Offset: 0x00269808
 	public void LateUpdate()
 	{
-		cancelShield = false;
-		ProcessToBeRemoved();
-		if (!reorderingAnimUnderway)
+		this.cancelShield = false;
+		ReorderableBuilding.ProcessToBeRemoved();
+		if (this.reorderingAnimUnderway)
 		{
-			return;
-		}
-		float num = 10f;
-		if (Mathf.Abs(animController.Offset.y) < Time.unscaledDeltaTime * num)
-		{
-			animController.Offset = new Vector3(animController.Offset.x, 0f, animController.Offset.z);
-			reorderingAnimUnderway = false;
-			string text = GetComponent<Building>().Def.WidthInCells + "x" + GetComponent<Building>().Def.HeightInCells + "_ungrab";
-			if (!reorderArmController.HasAnimation(text))
+			float num = 10f;
+			if (Mathf.Abs(this.animController.Offset.y) < Time.unscaledDeltaTime * num)
 			{
-				text = "3x3_ungrab";
+				this.animController.Offset = new Vector3(this.animController.Offset.x, 0f, this.animController.Offset.z);
+				this.reorderingAnimUnderway = false;
+				string s = base.GetComponent<Building>().Def.WidthInCells.ToString() + "x" + base.GetComponent<Building>().Def.HeightInCells.ToString() + "_ungrab";
+				if (!this.reorderArmController.HasAnimation(s))
+				{
+					s = "3x3_ungrab";
+				}
+				this.reorderArmController.Play(s, KAnim.PlayMode.Once, 1f, 0f);
+				this.reorderArmController.Queue("off", KAnim.PlayMode.Once, 1f, 0f);
+				this.loopingSounds.StopSound(GlobalAssets.GetSound(this.reorderSound, false));
 			}
-			reorderArmController.Play(text);
-			reorderArmController.Queue("off");
-			loopingSounds.StopSound(GlobalAssets.GetSound(reorderSound));
+			else if (this.animController.Offset.y > 0f)
+			{
+				this.animController.Offset = new Vector3(this.animController.Offset.x, this.animController.Offset.y - Time.unscaledDeltaTime * num, this.animController.Offset.z);
+			}
+			else if (this.animController.Offset.y < 0f)
+			{
+				this.animController.Offset = new Vector3(this.animController.Offset.x, this.animController.Offset.y + Time.unscaledDeltaTime * num, this.animController.Offset.z);
+			}
+			this.reorderArmController.Offset = this.animController.Offset;
 		}
-		else if (animController.Offset.y > 0f)
-		{
-			animController.Offset = new Vector3(animController.Offset.x, animController.Offset.y - Time.unscaledDeltaTime * num, animController.Offset.z);
-		}
-		else if (animController.Offset.y < 0f)
-		{
-			animController.Offset = new Vector3(animController.Offset.x, animController.Offset.y + Time.unscaledDeltaTime * num, animController.Offset.z);
-		}
-		reorderArmController.Offset = animController.Offset;
 	}
 
+	// Token: 0x06004F73 RID: 20339 RVA: 0x0026B810 File Offset: 0x00269A10
 	private static void ProcessToBeRemoved()
 	{
-		if (toBeRemoved.Count > 0)
+		if (ReorderableBuilding.toBeRemoved.Count > 0)
 		{
-			toBeRemoved.Sort((ReorderableBuilding a, ReorderableBuilding b) => (a.transform.position.y >= b.transform.position.y) ? 1 : (-1));
-			for (int i = 0; i < toBeRemoved.Count; i++)
+			ReorderableBuilding.toBeRemoved.Sort(delegate(ReorderableBuilding a, ReorderableBuilding b)
 			{
-				toBeRemoved[i].RemoveModule();
+				if (a.transform.position.y < b.transform.position.y)
+				{
+					return -1;
+				}
+				return 1;
+			});
+			for (int i = 0; i < ReorderableBuilding.toBeRemoved.Count; i++)
+			{
+				ReorderableBuilding.toBeRemoved[i].RemoveModule();
 			}
-			toBeRemoved.Clear();
+			ReorderableBuilding.toBeRemoved.Clear();
 		}
 	}
 
+	// Token: 0x06004F74 RID: 20340 RVA: 0x0026B884 File Offset: 0x00269A84
 	public void MoveVertical(int amount)
 	{
 		if (amount == 0)
 		{
 			return;
 		}
-		cancelShield = true;
-		List<GameObject> buildings = new List<GameObject>();
-		buildings.Add(base.gameObject);
-		AttachableBuilding.GetAttachedAbove(GetComponent<AttachableBuilding>(), ref buildings);
+		this.cancelShield = true;
+		List<GameObject> list = new List<GameObject>();
+		list.Add(base.gameObject);
+		AttachableBuilding.GetAttachedAbove(base.GetComponent<AttachableBuilding>(), ref list);
 		if (amount > 0)
 		{
-			buildings.Reverse();
+			list.Reverse();
 		}
-		foreach (GameObject item in buildings)
+		foreach (GameObject gameObject in list)
 		{
-			UnmarkBuilding(item, null);
-			TransformExtensions.SetPosition(position: Grid.CellToPos(Grid.OffsetCell(Grid.PosToCell(item), 0, amount), CellAlignment.Bottom, Grid.SceneLayer.BuildingFront), transform: item.transform);
-			MarkBuilding(item, null);
-			item.GetComponent<ReorderableBuilding>().ApplyAnimOffset(-amount);
+			ReorderableBuilding.UnmarkBuilding(gameObject, null);
+			int cell = Grid.OffsetCell(Grid.PosToCell(gameObject), 0, amount);
+			gameObject.transform.SetPosition(Grid.CellToPos(cell, CellAlignment.Bottom, Grid.SceneLayer.BuildingFront));
+			ReorderableBuilding.MarkBuilding(gameObject, null);
+			gameObject.GetComponent<ReorderableBuilding>().ApplyAnimOffset((float)(-(float)amount));
 		}
-		if (amount <= 0)
+		if (amount > 0)
 		{
-			return;
-		}
-		foreach (GameObject item2 in buildings)
-		{
-			item2.GetComponent<AttachableBuilding>().RegisterWithAttachPoint(register: true);
-		}
-	}
-
-	public void SwapWithAbove(bool selectOnComplete = true)
-	{
-		BuildingAttachPoint component = GetComponent<BuildingAttachPoint>();
-		if (!(component == null) && !(component.points[0].attachedBuilding == null))
-		{
-			int num = Grid.PosToCell(base.gameObject);
-			UnmarkBuilding(base.gameObject, null);
-			AttachableBuilding attachedBuilding = component.points[0].attachedBuilding;
-			BuildingAttachPoint component2 = attachedBuilding.GetComponent<BuildingAttachPoint>();
-			AttachableBuilding aboveBuilding = ((component2 != null) ? component2.points[0].attachedBuilding : null);
-			UnmarkBuilding(attachedBuilding.gameObject, aboveBuilding);
-			Building component3 = attachedBuilding.GetComponent<Building>();
-			int cell = num;
-			attachedBuilding.transform.SetPosition(Grid.CellToPos(cell, CellAlignment.Bottom, Grid.SceneLayer.BuildingFront));
-			MarkBuilding(attachedBuilding.gameObject, null);
-			int cell2 = Grid.OffsetCell(num, 0, component3.Def.HeightInCells);
-			base.transform.SetPosition(Grid.CellToPos(cell2, CellAlignment.Bottom, Grid.SceneLayer.BuildingFront));
-			MarkBuilding(base.gameObject, aboveBuilding);
-			RebuildNetworks();
-			ApplyAnimOffset(-component3.Def.HeightInCells);
-			Building component4 = GetComponent<Building>();
-			component3.GetComponent<ReorderableBuilding>().ApplyAnimOffset(component4.Def.HeightInCells);
-			if (selectOnComplete)
+			foreach (GameObject gameObject2 in list)
 			{
-				SelectTool.Instance.Select(component4.GetComponent<KSelectable>());
+				gameObject2.GetComponent<AttachableBuilding>().RegisterWithAttachPoint(true);
 			}
 		}
 	}
 
+	// Token: 0x06004F75 RID: 20341 RVA: 0x0026B980 File Offset: 0x00269B80
+	public void SwapWithAbove(bool selectOnComplete = true)
+	{
+		BuildingAttachPoint component = base.GetComponent<BuildingAttachPoint>();
+		if (component == null || component.points[0].attachedBuilding == null)
+		{
+			return;
+		}
+		int num = Grid.PosToCell(base.gameObject);
+		ReorderableBuilding.UnmarkBuilding(base.gameObject, null);
+		AttachableBuilding attachedBuilding = component.points[0].attachedBuilding;
+		BuildingAttachPoint component2 = attachedBuilding.GetComponent<BuildingAttachPoint>();
+		AttachableBuilding aboveBuilding = (component2 != null) ? component2.points[0].attachedBuilding : null;
+		ReorderableBuilding.UnmarkBuilding(attachedBuilding.gameObject, aboveBuilding);
+		Building component3 = attachedBuilding.GetComponent<Building>();
+		int cell = num;
+		attachedBuilding.transform.SetPosition(Grid.CellToPos(cell, CellAlignment.Bottom, Grid.SceneLayer.BuildingFront));
+		ReorderableBuilding.MarkBuilding(attachedBuilding.gameObject, null);
+		int cell2 = Grid.OffsetCell(num, 0, component3.Def.HeightInCells);
+		base.transform.SetPosition(Grid.CellToPos(cell2, CellAlignment.Bottom, Grid.SceneLayer.BuildingFront));
+		ReorderableBuilding.MarkBuilding(base.gameObject, aboveBuilding);
+		ReorderableBuilding.RebuildNetworks();
+		this.ApplyAnimOffset((float)(-(float)component3.Def.HeightInCells));
+		Building component4 = base.GetComponent<Building>();
+		component3.GetComponent<ReorderableBuilding>().ApplyAnimOffset((float)component4.Def.HeightInCells);
+		if (selectOnComplete)
+		{
+			SelectTool.Instance.Select(component4.GetComponent<KSelectable>(), false);
+		}
+	}
+
+	// Token: 0x06004F76 RID: 20342 RVA: 0x000D3C91 File Offset: 0x000D1E91
 	protected override void OnCleanUp()
 	{
-		if (GetComponent<BuildingUnderConstruction>() == null && !this.HasTag(GameTags.RocketInSpace))
+		if (base.GetComponent<BuildingUnderConstruction>() == null && !this.HasTag(GameTags.RocketInSpace))
 		{
-			RemoveModule();
+			this.RemoveModule();
 		}
-		if (m_animLink != null)
+		if (this.m_animLink != null)
 		{
-			m_animLink.Unregister();
+			this.m_animLink.Unregister();
 		}
 		base.OnCleanUp();
 	}
 
+	// Token: 0x06004F77 RID: 20343 RVA: 0x0026BAC4 File Offset: 0x00269CC4
 	private void ApplyAnimOffset(float amount)
 	{
-		animController.Offset = new Vector3(animController.Offset.x, animController.Offset.y + amount, animController.Offset.z);
-		reorderArmController.Offset = animController.Offset;
-		string text = GetComponent<Building>().Def.WidthInCells + "x" + GetComponent<Building>().Def.HeightInCells + "_grab";
-		if (!reorderArmController.HasAnimation(text))
+		this.animController.Offset = new Vector3(this.animController.Offset.x, this.animController.Offset.y + amount, this.animController.Offset.z);
+		this.reorderArmController.Offset = this.animController.Offset;
+		string s = base.GetComponent<Building>().Def.WidthInCells.ToString() + "x" + base.GetComponent<Building>().Def.HeightInCells.ToString() + "_grab";
+		if (!this.reorderArmController.HasAnimation(s))
 		{
-			text = "3x3_grab";
+			s = "3x3_grab";
 		}
-		reorderArmController.Play(text);
-		reorderArmController.onAnimComplete += StartReorderingAnim;
+		this.reorderArmController.Play(s, KAnim.PlayMode.Once, 1f, 0f);
+		this.reorderArmController.onAnimComplete += this.StartReorderingAnim;
 	}
 
+	// Token: 0x06004F78 RID: 20344 RVA: 0x0026BBB0 File Offset: 0x00269DB0
 	private void StartReorderingAnim(HashedString data)
 	{
-		loopingSounds.StartSound(GlobalAssets.GetSound(reorderSound));
-		reorderingAnimUnderway = true;
-		reorderArmController.onAnimComplete -= StartReorderingAnim;
-		base.gameObject.Trigger(-1447108533);
+		this.loopingSounds.StartSound(GlobalAssets.GetSound(this.reorderSound, false));
+		this.reorderingAnimUnderway = true;
+		this.reorderArmController.onAnimComplete -= this.StartReorderingAnim;
+		base.gameObject.Trigger(-1447108533, null);
 	}
 
+	// Token: 0x06004F79 RID: 20345 RVA: 0x0026BC04 File Offset: 0x00269E04
 	public void SwapWithBelow(bool selectOnComplete = true)
 	{
-		if (!(GetComponent<AttachableBuilding>() == null) && !(GetComponent<AttachableBuilding>().GetAttachedTo() == null))
+		if (base.GetComponent<AttachableBuilding>() == null || base.GetComponent<AttachableBuilding>().GetAttachedTo() == null)
 		{
-			GetComponent<AttachableBuilding>().GetAttachedTo().GetComponent<ReorderableBuilding>().SwapWithAbove(!selectOnComplete);
-			if (selectOnComplete)
-			{
-				SelectTool.Instance.Select(GetComponent<KSelectable>());
-			}
+			return;
+		}
+		base.GetComponent<AttachableBuilding>().GetAttachedTo().GetComponent<ReorderableBuilding>().SwapWithAbove(!selectOnComplete);
+		if (selectOnComplete)
+		{
+			SelectTool.Instance.Select(base.GetComponent<KSelectable>(), false);
 		}
 	}
 
+	// Token: 0x06004F7A RID: 20346 RVA: 0x0026BC60 File Offset: 0x00269E60
 	public bool CanMoveVertically(int moveAmount, GameObject ignoreBuilding = null)
 	{
 		if (moveAmount == 0)
 		{
 			return true;
 		}
-		BuildingAttachPoint component = GetComponent<BuildingAttachPoint>();
-		AttachableBuilding component2 = GetComponent<AttachableBuilding>();
+		BuildingAttachPoint component = base.GetComponent<BuildingAttachPoint>();
+		AttachableBuilding component2 = base.GetComponent<AttachableBuilding>();
 		if (moveAmount > 0)
 		{
-			if (component != null && component.points[0].attachedBuilding != null && component.points[0].attachedBuilding.gameObject != ignoreBuilding && component.points[0].attachedBuilding.HasTag(GameTags.RocketModule) && !component.points[0].attachedBuilding.GetComponent<ReorderableBuilding>().CanMoveVertically(moveAmount))
+			if (component != null && component.points[0].attachedBuilding != null && component.points[0].attachedBuilding.gameObject != ignoreBuilding && component.points[0].attachedBuilding.HasTag(GameTags.RocketModule) && !component.points[0].attachedBuilding.GetComponent<ReorderableBuilding>().CanMoveVertically(moveAmount, null))
 			{
 				return false;
 			}
@@ -327,15 +343,14 @@ public class ReorderableBuilding : KMonoBehaviour
 		else if (component2 != null)
 		{
 			BuildingAttachPoint attachedTo = component2.GetAttachedTo();
-			if (attachedTo != null && attachedTo.gameObject != ignoreBuilding && !component2.GetAttachedTo().GetComponent<ReorderableBuilding>().CanMoveVertically(moveAmount))
+			if (attachedTo != null && attachedTo.gameObject != ignoreBuilding && !component2.GetAttachedTo().GetComponent<ReorderableBuilding>().CanMoveVertically(moveAmount, null))
 			{
 				return false;
 			}
 		}
-		CellOffset[] occupiedOffsets = GetOccupiedOffsets();
-		foreach (CellOffset offset in occupiedOffsets)
+		foreach (CellOffset offset in this.GetOccupiedOffsets())
 		{
-			if (!CheckCellClear(Grid.OffsetCell(Grid.OffsetCell(Grid.PosToCell(base.gameObject), offset), 0, moveAmount), base.gameObject))
+			if (!ReorderableBuilding.CheckCellClear(Grid.OffsetCell(Grid.OffsetCell(Grid.PosToCell(base.gameObject), offset), 0, moveAmount), base.gameObject))
 			{
 				return false;
 			}
@@ -343,23 +358,17 @@ public class ReorderableBuilding : KMonoBehaviour
 		return true;
 	}
 
+	// Token: 0x06004F7B RID: 20347 RVA: 0x0026BD94 File Offset: 0x00269F94
 	public static bool CheckCellClear(int checkCell, GameObject ignoreObject = null)
 	{
-		if (!Grid.IsValidCell(checkCell) || !Grid.IsValidBuildingCell(checkCell) || Grid.Solid[checkCell] || Grid.WorldIdx[checkCell] == byte.MaxValue)
-		{
-			return false;
-		}
-		if (Grid.Objects[checkCell, 1] != null && Grid.Objects[checkCell, 1] != ignoreObject && Grid.Objects[checkCell, 1].GetComponent<ReorderableBuilding>() == null)
-		{
-			return false;
-		}
-		return true;
+		return Grid.IsValidCell(checkCell) && Grid.IsValidBuildingCell(checkCell) && !Grid.Solid[checkCell] && Grid.WorldIdx[checkCell] != byte.MaxValue && (!(Grid.Objects[checkCell, 1] != null) || !(Grid.Objects[checkCell, 1] != ignoreObject) || !(Grid.Objects[checkCell, 1].GetComponent<ReorderableBuilding>() == null));
 	}
 
+	// Token: 0x06004F7C RID: 20348 RVA: 0x0026BE14 File Offset: 0x0026A014
 	public GameObject ConvertModule(BuildingDef toModule, IList<Tag> materials)
 	{
 		int cell = Grid.PosToCell(base.gameObject);
-		int num = toModule.HeightInCells - GetComponent<Building>().Def.HeightInCells;
+		int num = toModule.HeightInCells - base.GetComponent<Building>().Def.HeightInCells;
 		base.gameObject.GetComponent<Building>();
 		BuildingAttachPoint component = base.gameObject.GetComponent<BuildingAttachPoint>();
 		GameObject gameObject = null;
@@ -369,20 +378,21 @@ public class ReorderableBuilding : KMonoBehaviour
 			component.points[0].attachedBuilding = null;
 			Components.BuildingAttachPoints.Remove(component);
 		}
-		UnmarkBuilding(base.gameObject, null);
+		ReorderableBuilding.UnmarkBuilding(base.gameObject, null);
 		if (num != 0 && gameObject != null)
 		{
 			gameObject.GetComponent<ReorderableBuilding>().MoveVertical(num);
 		}
-		if (!DebugHandler.InstantBuildMode && !toModule.IsValidPlaceLocation(base.gameObject, cell, Orientation.Neutral, out var fail_reason))
+		string text;
+		if (!DebugHandler.InstantBuildMode && !toModule.IsValidPlaceLocation(base.gameObject, cell, Orientation.Neutral, out text))
 		{
-			PopFXManager.Instance.SpawnFX(PopFXManager.Instance.sprite_Building, fail_reason, base.transform);
+			PopFXManager.Instance.SpawnFX(PopFXManager.Instance.sprite_Building, text, base.transform, 1.5f, false);
 			if (num != 0 && gameObject != null)
 			{
 				num *= -1;
 				gameObject.GetComponent<ReorderableBuilding>().MoveVertical(num);
 			}
-			MarkBuilding(base.gameObject, (gameObject != null) ? gameObject.GetComponent<AttachableBuilding>() : null);
+			ReorderableBuilding.MarkBuilding(base.gameObject, (gameObject != null) ? gameObject.GetComponent<AttachableBuilding>() : null);
 			if (component != null && gameObject != null)
 			{
 				component.points[0].attachedBuilding = gameObject.GetComponent<AttachableBuilding>();
@@ -394,18 +404,25 @@ public class ReorderableBuilding : KMonoBehaviour
 		{
 			materials = toModule.DefaultElements();
 		}
-		GameObject gameObject2 = null;
-		gameObject2 = ((!DebugHandler.InstantBuildMode && (!Game.Instance.SandboxModeActive || !SandboxToolParameterMenu.instance.settings.InstantBuild)) ? toModule.TryPlace(base.gameObject, Grid.CellToPosCBC(cell, toModule.SceneLayer), Orientation.Neutral, materials) : toModule.Build(cell, Orientation.Neutral, null, materials, 273.15f, playsound: true, GameClock.Instance.GetTime()));
-		RocketModuleCluster component2 = GetComponent<RocketModuleCluster>();
+		GameObject gameObject2;
+		if (DebugHandler.InstantBuildMode || (Game.Instance.SandboxModeActive && SandboxToolParameterMenu.instance.settings.InstantBuild))
+		{
+			gameObject2 = toModule.Build(cell, Orientation.Neutral, null, materials, 273.15f, true, GameClock.Instance.GetTime());
+		}
+		else
+		{
+			gameObject2 = toModule.TryPlace(base.gameObject, Grid.CellToPosCBC(cell, toModule.SceneLayer), Orientation.Neutral, materials, 0);
+		}
+		RocketModuleCluster component2 = base.GetComponent<RocketModuleCluster>();
 		RocketModuleCluster component3 = gameObject2.GetComponent<RocketModuleCluster>();
 		if (component2 != null && component3 != null)
 		{
 			component2.CraftInterface.AddModule(component3);
 		}
-		Deconstructable component4 = GetComponent<Deconstructable>();
+		Deconstructable component4 = base.GetComponent<Deconstructable>();
 		if (component4 != null)
 		{
-			component4.SetAllowDeconstruction(allow: true);
+			component4.SetAllowDeconstruction(true);
 			component4.ForceDestroyAndGetMaterials();
 		}
 		else
@@ -415,37 +432,39 @@ public class ReorderableBuilding : KMonoBehaviour
 		return gameObject2;
 	}
 
+	// Token: 0x06004F7D RID: 20349 RVA: 0x0026C05C File Offset: 0x0026A25C
 	private CellOffset[] GetOccupiedOffsets()
 	{
-		OccupyArea component = GetComponent<OccupyArea>();
+		OccupyArea component = base.GetComponent<OccupyArea>();
 		if (component != null)
 		{
 			return component.OccupiedCellsOffsets;
 		}
-		return GetComponent<BuildingUnderConstruction>().Def.PlacementOffsets;
+		return base.GetComponent<BuildingUnderConstruction>().Def.PlacementOffsets;
 	}
 
+	// Token: 0x06004F7E RID: 20350 RVA: 0x0026C090 File Offset: 0x0026A290
 	public bool CanChangeModule()
 	{
-		if (GetComponent<BuildingUnderConstruction>() != null)
+		if (base.GetComponent<BuildingUnderConstruction>() != null)
 		{
-			_ = GetComponent<BuildingUnderConstruction>().Def.PrefabID;
+			string prefabID = base.GetComponent<BuildingUnderConstruction>().Def.PrefabID;
 		}
 		else
 		{
-			_ = GetComponent<Building>().Def.PrefabID;
+			string prefabID2 = base.GetComponent<Building>().Def.PrefabID;
 		}
-		RocketModuleCluster component = GetComponent<RocketModuleCluster>();
+		RocketModuleCluster component = base.GetComponent<RocketModuleCluster>();
 		if (component != null)
 		{
 			if (component.CraftInterface != null)
 			{
-				if (component.CraftInterface.GetComponent<Clustercraft>().Status != 0)
+				if (component.CraftInterface.GetComponent<Clustercraft>().Status != Clustercraft.CraftStatus.Grounded)
 				{
 					return false;
 				}
 			}
-			else if (component.conditionManager != null && SpacecraftManager.instance.GetSpacecraftFromLaunchConditionManager(component.conditionManager).state != 0)
+			else if (component.conditionManager != null && SpacecraftManager.instance.GetSpacecraftFromLaunchConditionManager(component.conditionManager).state != Spacecraft.MissionState.Grounded)
 			{
 				return false;
 			}
@@ -453,85 +472,54 @@ public class ReorderableBuilding : KMonoBehaviour
 		return true;
 	}
 
+	// Token: 0x06004F7F RID: 20351 RVA: 0x000A65EC File Offset: 0x000A47EC
 	public bool CanRemoveModule()
 	{
 		return true;
 	}
 
+	// Token: 0x06004F80 RID: 20352 RVA: 0x0026C12C File Offset: 0x0026A32C
 	public bool CanSwapUp(bool alsoCheckAboveCanSwapDown = true)
 	{
-		BuildingAttachPoint component = GetComponent<BuildingAttachPoint>();
+		BuildingAttachPoint component = base.GetComponent<BuildingAttachPoint>();
 		if (component == null)
 		{
 			return false;
 		}
-		if (GetComponent<AttachableBuilding>() == null || GetComponent<RocketEngineCluster>() != null)
+		if (base.GetComponent<AttachableBuilding>() == null || base.GetComponent<RocketEngineCluster>() != null)
 		{
 			return false;
 		}
 		AttachableBuilding attachedBuilding = component.points[0].attachedBuilding;
-		if (attachedBuilding == null)
-		{
-			return false;
-		}
-		if (attachedBuilding.GetComponent<BuildingAttachPoint>() == null || attachedBuilding.HasTag(GameTags.NoseRocketModule))
-		{
-			return false;
-		}
-		if (!CanMoveVertically(attachedBuilding.GetComponent<Building>().Def.HeightInCells, attachedBuilding.gameObject))
-		{
-			return false;
-		}
-		if (alsoCheckAboveCanSwapDown && !attachedBuilding.GetComponent<ReorderableBuilding>().CanSwapDown(alsoCheckBelowCanSwapUp: false))
-		{
-			return false;
-		}
-		return true;
+		return !(attachedBuilding == null) && !(attachedBuilding.GetComponent<BuildingAttachPoint>() == null) && !attachedBuilding.HasTag(GameTags.NoseRocketModule) && this.CanMoveVertically(attachedBuilding.GetComponent<Building>().Def.HeightInCells, attachedBuilding.gameObject) && (!alsoCheckAboveCanSwapDown || attachedBuilding.GetComponent<ReorderableBuilding>().CanSwapDown(false));
 	}
 
+	// Token: 0x06004F81 RID: 20353 RVA: 0x0026C1D8 File Offset: 0x0026A3D8
 	public bool CanSwapDown(bool alsoCheckBelowCanSwapUp = true)
 	{
 		if (base.gameObject.HasTag(GameTags.NoseRocketModule))
 		{
 			return false;
 		}
-		AttachableBuilding component = GetComponent<AttachableBuilding>();
+		AttachableBuilding component = base.GetComponent<AttachableBuilding>();
 		if (component == null)
 		{
 			return false;
 		}
 		BuildingAttachPoint attachedTo = component.GetAttachedTo();
-		if (attachedTo == null)
-		{
-			return false;
-		}
-		if (GetComponent<BuildingAttachPoint>() == null)
-		{
-			return false;
-		}
-		if (attachedTo.GetComponent<AttachableBuilding>() == null || attachedTo.GetComponent<RocketEngineCluster>() != null)
-		{
-			return false;
-		}
-		if (!CanMoveVertically(attachedTo.GetComponent<Building>().Def.HeightInCells * -1, attachedTo.gameObject))
-		{
-			return false;
-		}
-		if (alsoCheckBelowCanSwapUp && !attachedTo.GetComponent<ReorderableBuilding>().CanSwapUp(alsoCheckAboveCanSwapDown: false))
-		{
-			return false;
-		}
-		return true;
+		return !(attachedTo == null) && !(base.GetComponent<BuildingAttachPoint>() == null) && !(attachedTo.GetComponent<AttachableBuilding>() == null) && !(attachedTo.GetComponent<RocketEngineCluster>() != null) && this.CanMoveVertically(attachedTo.GetComponent<Building>().Def.HeightInCells * -1, attachedTo.gameObject) && (!alsoCheckBelowCanSwapUp || attachedTo.GetComponent<ReorderableBuilding>().CanSwapUp(false));
 	}
 
+	// Token: 0x06004F82 RID: 20354 RVA: 0x000D3CCD File Offset: 0x000D1ECD
 	public void ShowReorderArm(bool show)
 	{
-		if (reorderArmController != null)
+		if (this.reorderArmController != null)
 		{
-			reorderArmController.gameObject.SetActive(show);
+			this.reorderArmController.gameObject.SetActive(show);
 		}
 	}
 
+	// Token: 0x06004F83 RID: 20355 RVA: 0x0026C284 File Offset: 0x0026A484
 	private static void RebuildNetworks()
 	{
 		Game.Instance.logicCircuitSystem.ForceRebuildNetworks();
@@ -541,6 +529,7 @@ public class ReorderableBuilding : KMonoBehaviour
 		Game.Instance.solidConduitSystem.ForceRebuildNetworks();
 	}
 
+	// Token: 0x06004F84 RID: 20356 RVA: 0x0026C2DC File Offset: 0x0026A4DC
 	private static void UnmarkBuilding(GameObject go, AttachableBuilding aboveBuilding)
 	{
 		int cell = Grid.PosToCell(go);
@@ -549,11 +538,11 @@ public class ReorderableBuilding : KMonoBehaviour
 		AttachableBuilding component2 = go.GetComponent<AttachableBuilding>();
 		if (component2 != null)
 		{
-			component2.RegisterWithAttachPoint(register: false);
+			component2.RegisterWithAttachPoint(false);
 		}
 		if (aboveBuilding != null)
 		{
-			aboveBuilding.RegisterWithAttachPoint(register: false);
+			aboveBuilding.RegisterWithAttachPoint(false);
 		}
 		RocketModule component3 = go.GetComponent<RocketModule>();
 		if (component3 != null)
@@ -580,6 +569,7 @@ public class ReorderableBuilding : KMonoBehaviour
 		}
 	}
 
+	// Token: 0x06004F85 RID: 20357 RVA: 0x0026C3B0 File Offset: 0x0026A5B0
 	private static void MarkBuilding(GameObject go, AttachableBuilding aboveBuilding)
 	{
 		int cell = Grid.PosToCell(go);
@@ -590,14 +580,14 @@ public class ReorderableBuilding : KMonoBehaviour
 			component.GetComponent<OccupyArea>().UpdateOccupiedArea();
 		}
 		LogicPorts component2 = component.GetComponent<LogicPorts>();
-		if ((bool)component2 && go.GetComponent<BuildingComplete>() != null)
+		if (component2 && go.GetComponent<BuildingComplete>() != null)
 		{
 			component2.OnMove();
 		}
-		component.GetComponent<AttachableBuilding>().RegisterWithAttachPoint(register: true);
+		component.GetComponent<AttachableBuilding>().RegisterWithAttachPoint(true);
 		if (aboveBuilding != null)
 		{
-			aboveBuilding.RegisterWithAttachPoint(register: true);
+			aboveBuilding.RegisterWithAttachPoint(true);
 		}
 		RocketModule component3 = go.GetComponent<RocketModule>();
 		if (component3 != null)
@@ -627,5 +617,42 @@ public class ReorderableBuilding : KMonoBehaviour
 				array2[i].AddConduitPortToNetwork();
 			}
 		}
+	}
+
+	// Token: 0x04003770 RID: 14192
+	private bool cancelShield;
+
+	// Token: 0x04003771 RID: 14193
+	private bool reorderingAnimUnderway;
+
+	// Token: 0x04003772 RID: 14194
+	private KBatchedAnimController animController;
+
+	// Token: 0x04003773 RID: 14195
+	public List<SelectModuleCondition> buildConditions = new List<SelectModuleCondition>();
+
+	// Token: 0x04003774 RID: 14196
+	private KBatchedAnimController reorderArmController;
+
+	// Token: 0x04003775 RID: 14197
+	private KAnimLink m_animLink;
+
+	// Token: 0x04003776 RID: 14198
+	[MyCmpAdd]
+	private LoopingSounds loopingSounds;
+
+	// Token: 0x04003777 RID: 14199
+	private string reorderSound = "RocketModuleSwitchingArm_moving_LP";
+
+	// Token: 0x04003778 RID: 14200
+	private static List<ReorderableBuilding> toBeRemoved = new List<ReorderableBuilding>();
+
+	// Token: 0x02000F56 RID: 3926
+	public enum MoveSource
+	{
+		// Token: 0x0400377A RID: 14202
+		Push,
+		// Token: 0x0400377B RID: 14203
+		Pull
 	}
 }

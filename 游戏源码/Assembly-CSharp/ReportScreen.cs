@@ -1,64 +1,40 @@
+﻿using System;
 using System.Collections.Generic;
 using STRINGS;
 using UnityEngine;
 
+// Token: 0x02001EC1 RID: 7873
 public class ReportScreen : KScreen
 {
-	[SerializeField]
-	private LocText title;
-
-	[SerializeField]
-	private KButton closeButton;
-
-	[SerializeField]
-	private KButton prevButton;
-
-	[SerializeField]
-	private KButton nextButton;
-
-	[SerializeField]
-	private KButton summaryButton;
-
-	[SerializeField]
-	private GameObject lineItem;
-
-	[SerializeField]
-	private GameObject lineItemSpacer;
-
-	[SerializeField]
-	private GameObject lineItemHeader;
-
-	[SerializeField]
-	private GameObject contentFolder;
-
-	private Dictionary<string, GameObject> lineItems = new Dictionary<string, GameObject>();
-
-	private ReportManager.DailyReport currentReport;
-
+	// Token: 0x17000A9E RID: 2718
+	// (get) Token: 0x0600A56A RID: 42346 RVA: 0x0010B589 File Offset: 0x00109789
+	// (set) Token: 0x0600A56B RID: 42347 RVA: 0x0010B590 File Offset: 0x00109790
 	public static ReportScreen Instance { get; private set; }
 
+	// Token: 0x0600A56C RID: 42348 RVA: 0x0010B598 File Offset: 0x00109798
 	public static void DestroyInstance()
 	{
-		Instance = null;
+		ReportScreen.Instance = null;
 	}
 
+	// Token: 0x0600A56D RID: 42349 RVA: 0x003EC624 File Offset: 0x003EA824
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		Instance = this;
-		closeButton.onClick += delegate
+		ReportScreen.Instance = this;
+		this.closeButton.onClick += delegate()
 		{
 			ManagementMenu.Instance.CloseAll();
 		};
-		prevButton.onClick += delegate
+		this.prevButton.onClick += delegate()
 		{
-			ShowReport(currentReport.day - 1);
+			this.ShowReport(this.currentReport.day - 1);
 		};
-		nextButton.onClick += delegate
+		this.nextButton.onClick += delegate()
 		{
-			ShowReport(currentReport.day + 1);
+			this.ShowReport(this.currentReport.day + 1);
 		};
-		summaryButton.onClick += delegate
+		this.summaryButton.onClick += delegate()
 		{
 			RetiredColonyData currentColonyRetiredColonyData = RetireColonyUtility.GetCurrentColonyRetiredColonyData();
 			MainMenu.ActivateRetiredColoniesScreenFromData(PauseScreen.Instance.transform.parent.gameObject, currentColonyRetiredColonyData);
@@ -66,157 +42,209 @@ public class ReportScreen : KScreen
 		base.ConsumeMouseScroll = true;
 	}
 
+	// Token: 0x0600A56E RID: 42350 RVA: 0x0010197B File Offset: 0x000FFB7B
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
 	}
 
+	// Token: 0x0600A56F RID: 42351 RVA: 0x0010B5A0 File Offset: 0x001097A0
 	protected override void OnShow(bool bShow)
 	{
 		base.OnShow(bShow);
 		if (ReportManager.Instance != null)
 		{
-			currentReport = ReportManager.Instance.TodaysReport;
+			this.currentReport = ReportManager.Instance.TodaysReport;
 		}
 	}
 
+	// Token: 0x0600A570 RID: 42352 RVA: 0x0010B5C6 File Offset: 0x001097C6
 	public void SetTitle(string title)
 	{
 		this.title.text = title;
 	}
 
+	// Token: 0x0600A571 RID: 42353 RVA: 0x0010B5D4 File Offset: 0x001097D4
 	public override void ScreenUpdate(bool b)
 	{
 		base.ScreenUpdate(b);
-		Refresh();
+		this.Refresh();
 	}
 
+	// Token: 0x0600A572 RID: 42354 RVA: 0x003EC6C8 File Offset: 0x003EA8C8
 	private void Refresh()
 	{
-		Debug.Assert(currentReport != null);
-		if (currentReport.day == ReportManager.Instance.TodaysReport.day)
+		global::Debug.Assert(this.currentReport != null);
+		if (this.currentReport.day == ReportManager.Instance.TodaysReport.day)
 		{
-			SetTitle(string.Format(UI.ENDOFDAYREPORT.DAY_TITLE_TODAY, currentReport.day));
+			this.SetTitle(string.Format(UI.ENDOFDAYREPORT.DAY_TITLE_TODAY, this.currentReport.day));
 		}
-		else if (currentReport.day == ReportManager.Instance.TodaysReport.day - 1)
+		else if (this.currentReport.day == ReportManager.Instance.TodaysReport.day - 1)
 		{
-			SetTitle(string.Format(UI.ENDOFDAYREPORT.DAY_TITLE_YESTERDAY, currentReport.day));
+			this.SetTitle(string.Format(UI.ENDOFDAYREPORT.DAY_TITLE_YESTERDAY, this.currentReport.day));
 		}
 		else
 		{
-			SetTitle(string.Format(UI.ENDOFDAYREPORT.DAY_TITLE, currentReport.day));
+			this.SetTitle(string.Format(UI.ENDOFDAYREPORT.DAY_TITLE, this.currentReport.day));
 		}
-		bool flag = currentReport.day < ReportManager.Instance.TodaysReport.day;
-		nextButton.isInteractable = flag;
+		bool flag = this.currentReport.day < ReportManager.Instance.TodaysReport.day;
+		this.nextButton.isInteractable = flag;
 		if (flag)
 		{
-			nextButton.GetComponent<ToolTip>().toolTip = string.Format(UI.ENDOFDAYREPORT.DAY_TITLE, currentReport.day + 1);
-			nextButton.GetComponent<ToolTip>().enabled = true;
+			this.nextButton.GetComponent<ToolTip>().toolTip = string.Format(UI.ENDOFDAYREPORT.DAY_TITLE, this.currentReport.day + 1);
+			this.nextButton.GetComponent<ToolTip>().enabled = true;
 		}
 		else
 		{
-			nextButton.GetComponent<ToolTip>().enabled = false;
+			this.nextButton.GetComponent<ToolTip>().enabled = false;
 		}
-		flag = currentReport.day > 1;
-		prevButton.isInteractable = flag;
+		flag = (this.currentReport.day > 1);
+		this.prevButton.isInteractable = flag;
 		if (flag)
 		{
-			prevButton.GetComponent<ToolTip>().toolTip = string.Format(UI.ENDOFDAYREPORT.DAY_TITLE, currentReport.day - 1);
-			prevButton.GetComponent<ToolTip>().enabled = true;
+			this.prevButton.GetComponent<ToolTip>().toolTip = string.Format(UI.ENDOFDAYREPORT.DAY_TITLE, this.currentReport.day - 1);
+			this.prevButton.GetComponent<ToolTip>().enabled = true;
 		}
 		else
 		{
-			prevButton.GetComponent<ToolTip>().enabled = false;
+			this.prevButton.GetComponent<ToolTip>().enabled = false;
 		}
-		AddSpacer(0);
+		this.AddSpacer(0);
 		int num = 1;
-		foreach (KeyValuePair<ReportManager.ReportType, ReportManager.ReportGroup> reportGroup in ReportManager.Instance.ReportGroups)
+		foreach (KeyValuePair<ReportManager.ReportType, ReportManager.ReportGroup> keyValuePair in ReportManager.Instance.ReportGroups)
 		{
-			ReportManager.ReportEntry entry = currentReport.GetEntry(reportGroup.Key);
-			if (num != reportGroup.Value.group)
+			ReportManager.ReportEntry entry = this.currentReport.GetEntry(keyValuePair.Key);
+			if (num != keyValuePair.Value.group)
 			{
-				num = reportGroup.Value.group;
-				AddSpacer(num);
+				num = keyValuePair.Value.group;
+				this.AddSpacer(num);
 			}
-			bool flag2 = entry.accumulate != 0f || reportGroup.Value.reportIfZero;
-			if (reportGroup.Value.isHeader)
+			bool flag2 = entry.accumulate != 0f || keyValuePair.Value.reportIfZero;
+			if (keyValuePair.Value.isHeader)
 			{
-				CreateHeader(reportGroup.Value);
+				this.CreateHeader(keyValuePair.Value);
 			}
 			else if (flag2)
 			{
-				CreateOrUpdateLine(entry, reportGroup.Value, flag2);
+				this.CreateOrUpdateLine(entry, keyValuePair.Value, flag2);
 			}
 		}
 	}
 
+	// Token: 0x0600A573 RID: 42355 RVA: 0x0010B5E3 File Offset: 0x001097E3
 	public void ShowReport(int day)
 	{
-		currentReport = ReportManager.Instance.FindReport(day);
-		Debug.Assert(currentReport != null, "Can't find report for day: " + day);
-		Refresh();
+		this.currentReport = ReportManager.Instance.FindReport(day);
+		global::Debug.Assert(this.currentReport != null, "Can't find report for day: " + day.ToString());
+		this.Refresh();
 	}
 
+	// Token: 0x0600A574 RID: 42356 RVA: 0x003EC964 File Offset: 0x003EAB64
 	private GameObject AddSpacer(int group)
 	{
-		GameObject gameObject = null;
-		if (lineItems.ContainsKey(group.ToString()))
+		GameObject gameObject;
+		if (this.lineItems.ContainsKey(group.ToString()))
 		{
-			gameObject = lineItems[group.ToString()];
+			gameObject = this.lineItems[group.ToString()];
 		}
 		else
 		{
-			gameObject = Util.KInstantiateUI(lineItemSpacer, contentFolder);
-			gameObject.name = "Spacer" + group;
-			lineItems[group.ToString()] = gameObject;
+			gameObject = Util.KInstantiateUI(this.lineItemSpacer, this.contentFolder, false);
+			gameObject.name = "Spacer" + group.ToString();
+			this.lineItems[group.ToString()] = gameObject;
 		}
-		gameObject.SetActive(value: true);
+		gameObject.SetActive(true);
 		return gameObject;
 	}
 
+	// Token: 0x0600A575 RID: 42357 RVA: 0x003EC9E4 File Offset: 0x003EABE4
 	private GameObject CreateHeader(ReportManager.ReportGroup reportGroup)
 	{
-		GameObject value = null;
-		lineItems.TryGetValue(reportGroup.stringKey, out value);
-		if (value == null)
+		GameObject gameObject = null;
+		this.lineItems.TryGetValue(reportGroup.stringKey, out gameObject);
+		if (gameObject == null)
 		{
-			value = Util.KInstantiateUI(lineItemHeader, contentFolder, force_active: true);
-			value.name = "LineItemHeader" + lineItems.Count;
-			lineItems[reportGroup.stringKey] = value;
+			gameObject = Util.KInstantiateUI(this.lineItemHeader, this.contentFolder, true);
+			gameObject.name = "LineItemHeader" + this.lineItems.Count.ToString();
+			this.lineItems[reportGroup.stringKey] = gameObject;
 		}
-		value.SetActive(value: true);
-		value.GetComponent<ReportScreenHeader>().SetMainEntry(reportGroup);
-		return value;
+		gameObject.SetActive(true);
+		gameObject.GetComponent<ReportScreenHeader>().SetMainEntry(reportGroup);
+		return gameObject;
 	}
 
+	// Token: 0x0600A576 RID: 42358 RVA: 0x003ECA6C File Offset: 0x003EAC6C
 	private GameObject CreateOrUpdateLine(ReportManager.ReportEntry entry, ReportManager.ReportGroup reportGroup, bool is_line_active)
 	{
-		GameObject value = null;
-		lineItems.TryGetValue(reportGroup.stringKey, out value);
+		GameObject gameObject = null;
+		this.lineItems.TryGetValue(reportGroup.stringKey, out gameObject);
 		if (!is_line_active)
 		{
-			if (value != null && value.activeSelf)
+			if (gameObject != null && gameObject.activeSelf)
 			{
-				value.SetActive(value: false);
+				gameObject.SetActive(false);
 			}
 		}
 		else
 		{
-			if (value == null)
+			if (gameObject == null)
 			{
-				value = Util.KInstantiateUI(lineItem, contentFolder, force_active: true);
-				value.name = "LineItem" + lineItems.Count;
-				lineItems[reportGroup.stringKey] = value;
+				gameObject = Util.KInstantiateUI(this.lineItem, this.contentFolder, true);
+				gameObject.name = "LineItem" + this.lineItems.Count.ToString();
+				this.lineItems[reportGroup.stringKey] = gameObject;
 			}
-			value.SetActive(value: true);
-			value.GetComponent<ReportScreenEntry>().SetMainEntry(entry, reportGroup);
+			gameObject.SetActive(true);
+			gameObject.GetComponent<ReportScreenEntry>().SetMainEntry(entry, reportGroup);
 		}
-		return value;
+		return gameObject;
 	}
 
+	// Token: 0x0600A577 RID: 42359 RVA: 0x0010B61B File Offset: 0x0010981B
 	private void OnClickClose()
 	{
-		PlaySound3D(GlobalAssets.GetSound("HUD_Click_Close"));
-		Show(show: false);
+		base.PlaySound3D(GlobalAssets.GetSound("HUD_Click_Close", false));
+		this.Show(false);
 	}
+
+	// Token: 0x04008197 RID: 33175
+	[SerializeField]
+	private LocText title;
+
+	// Token: 0x04008198 RID: 33176
+	[SerializeField]
+	private KButton closeButton;
+
+	// Token: 0x04008199 RID: 33177
+	[SerializeField]
+	private KButton prevButton;
+
+	// Token: 0x0400819A RID: 33178
+	[SerializeField]
+	private KButton nextButton;
+
+	// Token: 0x0400819B RID: 33179
+	[SerializeField]
+	private KButton summaryButton;
+
+	// Token: 0x0400819C RID: 33180
+	[SerializeField]
+	private GameObject lineItem;
+
+	// Token: 0x0400819D RID: 33181
+	[SerializeField]
+	private GameObject lineItemSpacer;
+
+	// Token: 0x0400819E RID: 33182
+	[SerializeField]
+	private GameObject lineItemHeader;
+
+	// Token: 0x0400819F RID: 33183
+	[SerializeField]
+	private GameObject contentFolder;
+
+	// Token: 0x040081A0 RID: 33184
+	private Dictionary<string, GameObject> lineItems = new Dictionary<string, GameObject>();
+
+	// Token: 0x040081A1 RID: 33185
+	private ReportManager.DailyReport currentReport;
 }

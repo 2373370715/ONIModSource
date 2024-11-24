@@ -1,244 +1,292 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using STRINGS;
 using UnityEngine;
 using UnityEngine.UI;
 
+// Token: 0x02001CB8 RID: 7352
 [AddComponentMenu("KMonoBehaviour/scripts/DropDown")]
 public class DropDown : KMonoBehaviour
 {
-	public GameObject targetDropDownContainer;
-
-	public LocText selectedLabel;
-
-	public KButton openButton;
-
-	public Transform contentContainer;
-
-	public GameObject scrollRect;
-
-	public RectTransform dropdownAlignmentTarget;
-
-	public GameObject rowEntryPrefab;
-
-	public bool addEmptyRow = true;
-
-	private static Vector2 edgePadding = new Vector2(8f, 8f);
-
-	public object targetData;
-
-	private List<IListableOption> entries = new List<IListableOption>();
-
-	private Action<IListableOption, object> onEntrySelectedAction;
-
-	private Action<DropDownEntry, object> rowRefreshAction;
-
-	public Dictionary<IListableOption, GameObject> rowLookup = new Dictionary<IListableOption, GameObject>();
-
-	private Func<IListableOption, IListableOption, object, int> sortFunction;
-
-	private GameObject emptyRow;
-
-	private string emptyRowLabel;
-
-	private Sprite emptyRowSprite;
-
-	private bool built;
-
-	private bool displaySelectedValueWhenClosed = true;
-
-	private const int ROWS_BEFORE_SCROLL = 8;
-
-	private KCanvasScaler canvasScaler;
-
+	// Token: 0x17000A20 RID: 2592
+	// (get) Token: 0x06009986 RID: 39302 RVA: 0x00103F1E File Offset: 0x0010211E
+	// (set) Token: 0x06009987 RID: 39303 RVA: 0x00103F26 File Offset: 0x00102126
 	public bool open { get; private set; }
 
-	public List<IListableOption> Entries => entries;
+	// Token: 0x17000A21 RID: 2593
+	// (get) Token: 0x06009988 RID: 39304 RVA: 0x00103F2F File Offset: 0x0010212F
+	public List<IListableOption> Entries
+	{
+		get
+		{
+			return this.entries;
+		}
+	}
 
+	// Token: 0x06009989 RID: 39305 RVA: 0x003B5728 File Offset: 0x003B3928
 	public void Initialize(IEnumerable<IListableOption> contentKeys, Action<IListableOption, object> onEntrySelectedAction, Func<IListableOption, IListableOption, object, int> sortFunction = null, Action<DropDownEntry, object> refreshAction = null, bool displaySelectedValueWhenClosed = true, object targetData = null)
 	{
 		this.targetData = targetData;
 		this.sortFunction = sortFunction;
 		this.onEntrySelectedAction = onEntrySelectedAction;
 		this.displaySelectedValueWhenClosed = displaySelectedValueWhenClosed;
-		rowRefreshAction = refreshAction;
-		ChangeContent(contentKeys);
-		openButton.ClearOnClick();
-		openButton.onClick += delegate
+		this.rowRefreshAction = refreshAction;
+		this.ChangeContent(contentKeys);
+		this.openButton.ClearOnClick();
+		this.openButton.onClick += delegate()
 		{
-			OnClick();
+			this.OnClick();
 		};
-		canvasScaler = GameScreenManager.Instance.ssOverlayCanvas.GetComponent<KCanvasScaler>();
+		this.canvasScaler = GameScreenManager.Instance.ssOverlayCanvas.GetComponent<KCanvasScaler>();
 	}
 
+	// Token: 0x0600998A RID: 39306 RVA: 0x00103F37 File Offset: 0x00102137
 	public void CustomizeEmptyRow(string txt, Sprite icon)
 	{
-		emptyRowLabel = txt;
-		emptyRowSprite = icon;
+		this.emptyRowLabel = txt;
+		this.emptyRowSprite = icon;
 	}
 
+	// Token: 0x0600998B RID: 39307 RVA: 0x00103F47 File Offset: 0x00102147
 	public void OnClick()
 	{
-		if (!open)
+		if (!this.open)
 		{
-			Open();
+			this.Open();
+			return;
 		}
-		else
-		{
-			Close();
-		}
+		this.Close();
 	}
 
+	// Token: 0x0600998C RID: 39308 RVA: 0x003B579C File Offset: 0x003B399C
 	public void ChangeContent(IEnumerable<IListableOption> contentKeys)
 	{
-		entries.Clear();
-		foreach (IListableOption contentKey in contentKeys)
+		this.entries.Clear();
+		foreach (IListableOption item in contentKeys)
 		{
-			entries.Add(contentKey);
+			this.entries.Add(item);
 		}
-		built = false;
+		this.built = false;
 	}
 
+	// Token: 0x0600998D RID: 39309 RVA: 0x003B57FC File Offset: 0x003B39FC
 	private void Update()
 	{
-		if (open && (Input.GetMouseButtonDown(0) || Input.GetAxis("Mouse ScrollWheel") != 0f || KInputManager.steamInputInterpreter.GetSteamInputActionIsDown(Action.MouseLeft)))
+		if (!this.open)
 		{
-			float canvasScale = canvasScaler.GetCanvasScale();
-			if (scrollRect.rectTransform().GetPosition().x + scrollRect.rectTransform().sizeDelta.x * canvasScale < KInputManager.GetMousePos().x || scrollRect.rectTransform().GetPosition().x > KInputManager.GetMousePos().x || scrollRect.rectTransform().GetPosition().y - scrollRect.rectTransform().sizeDelta.y * canvasScale > KInputManager.GetMousePos().y || scrollRect.rectTransform().GetPosition().y < KInputManager.GetMousePos().y)
-			{
-				Close();
-			}
+			return;
+		}
+		if (!Input.GetMouseButtonDown(0) && Input.GetAxis("Mouse ScrollWheel") == 0f && !KInputManager.steamInputInterpreter.GetSteamInputActionIsDown(global::Action.MouseLeft))
+		{
+			return;
+		}
+		float canvasScale = this.canvasScaler.GetCanvasScale();
+		if (this.scrollRect.rectTransform().GetPosition().x + this.scrollRect.rectTransform().sizeDelta.x * canvasScale < KInputManager.GetMousePos().x || this.scrollRect.rectTransform().GetPosition().x > KInputManager.GetMousePos().x || this.scrollRect.rectTransform().GetPosition().y - this.scrollRect.rectTransform().sizeDelta.y * canvasScale > KInputManager.GetMousePos().y || this.scrollRect.rectTransform().GetPosition().y < KInputManager.GetMousePos().y)
+		{
+			this.Close();
 		}
 	}
 
+	// Token: 0x0600998E RID: 39310 RVA: 0x003B5900 File Offset: 0x003B3B00
 	private void Build(List<IListableOption> contentKeys)
 	{
-		built = true;
-		for (int num = contentContainer.childCount - 1; num >= 0; num--)
+		this.built = true;
+		for (int i = this.contentContainer.childCount - 1; i >= 0; i--)
 		{
-			Util.KDestroyGameObject(contentContainer.GetChild(num));
+			Util.KDestroyGameObject(this.contentContainer.GetChild(i));
 		}
-		rowLookup.Clear();
-		if (addEmptyRow)
+		this.rowLookup.Clear();
+		if (this.addEmptyRow)
 		{
-			emptyRow = Util.KInstantiateUI(rowEntryPrefab, contentContainer.gameObject, force_active: true);
-			emptyRow.GetComponent<KButton>().onClick += delegate
+			this.emptyRow = Util.KInstantiateUI(this.rowEntryPrefab, this.contentContainer.gameObject, true);
+			this.emptyRow.GetComponent<KButton>().onClick += delegate()
 			{
-				onEntrySelectedAction(null, targetData);
-				if (displaySelectedValueWhenClosed)
+				this.onEntrySelectedAction(null, this.targetData);
+				if (this.displaySelectedValueWhenClosed)
 				{
-					selectedLabel.text = emptyRowLabel ?? ((string)UI.DROPDOWN.NONE);
+					this.selectedLabel.text = (this.emptyRowLabel ?? UI.DROPDOWN.NONE);
 				}
-				Close();
+				this.Close();
 			};
-			string text = emptyRowLabel ?? ((string)UI.DROPDOWN.NONE);
-			emptyRow.GetComponent<DropDownEntry>().label.text = text;
-			if (emptyRowSprite != null)
+			string text = this.emptyRowLabel ?? UI.DROPDOWN.NONE;
+			this.emptyRow.GetComponent<DropDownEntry>().label.text = text;
+			if (this.emptyRowSprite != null)
 			{
-				emptyRow.GetComponent<DropDownEntry>().image.sprite = emptyRowSprite;
+				this.emptyRow.GetComponent<DropDownEntry>().image.sprite = this.emptyRowSprite;
 			}
 		}
-		for (int i = 0; i < contentKeys.Count; i++)
+		for (int j = 0; j < contentKeys.Count; j++)
 		{
-			GameObject gameObject = Util.KInstantiateUI(rowEntryPrefab, contentContainer.gameObject, force_active: true);
-			IListableOption id = contentKeys[i];
+			GameObject gameObject = Util.KInstantiateUI(this.rowEntryPrefab, this.contentContainer.gameObject, true);
+			IListableOption id = contentKeys[j];
 			gameObject.GetComponent<DropDownEntry>().entryData = id;
-			gameObject.GetComponent<KButton>().onClick += delegate
+			gameObject.GetComponent<KButton>().onClick += delegate()
 			{
-				onEntrySelectedAction(id, targetData);
-				if (displaySelectedValueWhenClosed)
+				this.onEntrySelectedAction(id, this.targetData);
+				if (this.displaySelectedValueWhenClosed)
 				{
-					selectedLabel.text = id.GetProperName();
+					this.selectedLabel.text = id.GetProperName();
 				}
-				Close();
+				this.Close();
 			};
-			rowLookup.Add(id, gameObject);
+			this.rowLookup.Add(id, gameObject);
 		}
-		RefreshEntries();
-		Close();
-		scrollRect.gameObject.transform.SetParent(targetDropDownContainer.transform);
-		scrollRect.gameObject.SetActive(value: false);
+		this.RefreshEntries();
+		this.Close();
+		this.scrollRect.gameObject.transform.SetParent(this.targetDropDownContainer.transform);
+		this.scrollRect.gameObject.SetActive(false);
 	}
 
+	// Token: 0x0600998F RID: 39311 RVA: 0x003B5AA0 File Offset: 0x003B3CA0
 	private void RefreshEntries()
 	{
-		foreach (KeyValuePair<IListableOption, GameObject> item in rowLookup)
+		foreach (KeyValuePair<IListableOption, GameObject> keyValuePair in this.rowLookup)
 		{
-			DropDownEntry component = item.Value.GetComponent<DropDownEntry>();
-			component.label.text = item.Key.GetProperName();
-			if (component.portrait != null && item.Key is IAssignableIdentity)
+			DropDownEntry component = keyValuePair.Value.GetComponent<DropDownEntry>();
+			component.label.text = keyValuePair.Key.GetProperName();
+			if (component.portrait != null && keyValuePair.Key is IAssignableIdentity)
 			{
-				component.portrait.SetIdentityObject(item.Key as IAssignableIdentity);
+				component.portrait.SetIdentityObject(keyValuePair.Key as IAssignableIdentity, true);
 			}
 		}
-		if (sortFunction != null)
+		if (this.sortFunction != null)
 		{
-			entries.Sort((IListableOption a, IListableOption b) => sortFunction(a, b, targetData));
-			for (int i = 0; i < entries.Count; i++)
+			this.entries.Sort((IListableOption a, IListableOption b) => this.sortFunction(a, b, this.targetData));
+			for (int i = 0; i < this.entries.Count; i++)
 			{
-				rowLookup[entries[i]].transform.SetAsFirstSibling();
+				this.rowLookup[this.entries[i]].transform.SetAsFirstSibling();
 			}
-			if (emptyRow != null)
+			if (this.emptyRow != null)
 			{
-				emptyRow.transform.SetAsFirstSibling();
+				this.emptyRow.transform.SetAsFirstSibling();
 			}
 		}
-		foreach (KeyValuePair<IListableOption, GameObject> item2 in rowLookup)
+		foreach (KeyValuePair<IListableOption, GameObject> keyValuePair2 in this.rowLookup)
 		{
-			DropDownEntry component2 = item2.Value.GetComponent<DropDownEntry>();
-			rowRefreshAction(component2, targetData);
+			DropDownEntry component2 = keyValuePair2.Value.GetComponent<DropDownEntry>();
+			this.rowRefreshAction(component2, this.targetData);
 		}
-		if (emptyRow != null)
+		if (this.emptyRow != null)
 		{
-			rowRefreshAction(emptyRow.GetComponent<DropDownEntry>(), targetData);
+			this.rowRefreshAction(this.emptyRow.GetComponent<DropDownEntry>(), this.targetData);
 		}
 	}
 
+	// Token: 0x06009990 RID: 39312 RVA: 0x00103F5E File Offset: 0x0010215E
 	protected override void OnCleanUp()
 	{
-		Util.KDestroyGameObject(scrollRect);
+		Util.KDestroyGameObject(this.scrollRect);
 		base.OnCleanUp();
 	}
 
+	// Token: 0x06009991 RID: 39313 RVA: 0x003B5C44 File Offset: 0x003B3E44
 	public void Open()
 	{
-		if (open)
+		if (this.open)
 		{
 			return;
 		}
-		if (!built)
+		if (!this.built)
 		{
-			Build(entries);
+			this.Build(this.entries);
 		}
 		else
 		{
-			RefreshEntries();
+			this.RefreshEntries();
 		}
-		open = true;
-		scrollRect.gameObject.SetActive(value: true);
-		scrollRect.rectTransform().localScale = Vector3.one;
-		foreach (KeyValuePair<IListableOption, GameObject> item in rowLookup)
+		this.open = true;
+		this.scrollRect.gameObject.SetActive(true);
+		this.scrollRect.rectTransform().localScale = Vector3.one;
+		foreach (KeyValuePair<IListableOption, GameObject> keyValuePair in this.rowLookup)
 		{
-			item.Value.SetActive(value: true);
+			keyValuePair.Value.SetActive(true);
 		}
-		scrollRect.rectTransform().sizeDelta = new Vector2(scrollRect.rectTransform().sizeDelta.x, 32f * (float)Mathf.Min(contentContainer.childCount, 8));
-		Vector3 position = dropdownAlignmentTarget.TransformPoint(dropdownAlignmentTarget.rect.x, dropdownAlignmentTarget.rect.y, 0f);
-		Vector2 vector = new Vector2(Mathf.Min(0f, (float)Screen.width - (position.x + (rowEntryPrefab.GetComponent<LayoutElement>().minWidth * canvasScaler.GetCanvasScale() + edgePadding.x))), 0f - Mathf.Min(0f, position.y - (scrollRect.rectTransform().sizeDelta.y * canvasScaler.GetCanvasScale() + edgePadding.y)));
-		position += (Vector3)vector;
-		scrollRect.rectTransform().SetPosition(position);
+		float num = Mathf.Max(32f, this.rowEntryPrefab.GetComponent<LayoutElement>().preferredHeight);
+		this.scrollRect.rectTransform().sizeDelta = new Vector2(this.scrollRect.rectTransform().sizeDelta.x, num * (float)Mathf.Min(this.contentContainer.childCount, 8));
+		Vector3 vector = this.dropdownAlignmentTarget.TransformPoint(this.dropdownAlignmentTarget.rect.x, this.dropdownAlignmentTarget.rect.y, 0f);
+		Vector2 v = new Vector2(Mathf.Min(0f, (float)Screen.width - (vector.x + (this.rowEntryPrefab.GetComponent<LayoutElement>().minWidth * this.canvasScaler.GetCanvasScale() + DropDown.edgePadding.x))), -Mathf.Min(0f, vector.y - (this.scrollRect.rectTransform().sizeDelta.y * this.canvasScaler.GetCanvasScale() + DropDown.edgePadding.y)));
+		vector += v;
+		this.scrollRect.rectTransform().SetPosition(vector);
 	}
 
+	// Token: 0x06009992 RID: 39314 RVA: 0x003B5E28 File Offset: 0x003B4028
 	public void Close()
 	{
-		if (!open)
+		if (!this.open)
 		{
 			return;
 		}
-		open = false;
-		foreach (KeyValuePair<IListableOption, GameObject> item in rowLookup)
+		this.open = false;
+		foreach (KeyValuePair<IListableOption, GameObject> keyValuePair in this.rowLookup)
 		{
-			item.Value.SetActive(value: false);
+			keyValuePair.Value.SetActive(false);
 		}
-		scrollRect.SetActive(value: false);
+		this.scrollRect.SetActive(false);
 	}
+
+	// Token: 0x040077C2 RID: 30658
+	public GameObject targetDropDownContainer;
+
+	// Token: 0x040077C3 RID: 30659
+	public LocText selectedLabel;
+
+	// Token: 0x040077C5 RID: 30661
+	public KButton openButton;
+
+	// Token: 0x040077C6 RID: 30662
+	public Transform contentContainer;
+
+	// Token: 0x040077C7 RID: 30663
+	public GameObject scrollRect;
+
+	// Token: 0x040077C8 RID: 30664
+	public RectTransform dropdownAlignmentTarget;
+
+	// Token: 0x040077C9 RID: 30665
+	public GameObject rowEntryPrefab;
+
+	// Token: 0x040077CA RID: 30666
+	public bool addEmptyRow = true;
+
+	// Token: 0x040077CB RID: 30667
+	private static Vector2 edgePadding = new Vector2(8f, 8f);
+
+	// Token: 0x040077CC RID: 30668
+	public object targetData;
+
+	// Token: 0x040077CD RID: 30669
+	private List<IListableOption> entries = new List<IListableOption>();
+
+	// Token: 0x040077CE RID: 30670
+	private Action<IListableOption, object> onEntrySelectedAction;
+
+	// Token: 0x040077CF RID: 30671
+	private Action<DropDownEntry, object> rowRefreshAction;
+
+	// Token: 0x040077D0 RID: 30672
+	public Dictionary<IListableOption, GameObject> rowLookup = new Dictionary<IListableOption, GameObject>();
+
+	// Token: 0x040077D1 RID: 30673
+	private Func<IListableOption, IListableOption, object, int> sortFunction;
+
+	// Token: 0x040077D2 RID: 30674
+	private GameObject emptyRow;
+
+	// Token: 0x040077D3 RID: 30675
+	private string emptyRowLabel;
+
+	// Token: 0x040077D4 RID: 30676
+	private Sprite emptyRowSprite;
+
+	// Token: 0x040077D5 RID: 30677
+	private bool built;
+
+	// Token: 0x040077D6 RID: 30678
+	private bool displaySelectedValueWhenClosed = true;
+
+	// Token: 0x040077D7 RID: 30679
+	private const int ROWS_BEFORE_SCROLL = 8;
+
+	// Token: 0x040077D8 RID: 30680
+	private KCanvasScaler canvasScaler;
 }

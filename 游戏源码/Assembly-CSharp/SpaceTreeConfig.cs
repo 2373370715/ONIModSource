@@ -1,74 +1,37 @@
+﻿using System;
 using System.Collections.Generic;
 using Klei.AI;
 using STRINGS;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x020002CA RID: 714
 public class SpaceTreeConfig : IEntityConfig
 {
-	public const string ID = "SpaceTree";
-
-	public const string SEED_ID = "SpaceTreeSeed";
-
-	public const float Temperature_lethal_low = 173.15f;
-
-	public const float Temperature_warning_low = 198.15f;
-
-	public const float Temperature_warning_high = 258.15f;
-
-	public const float Temperature_lethal_high = 293.15f;
-
-	public const float SNOW_RATE = 1f / 6f;
-
-	public const float ENTOMB_DEFENSE_COOLDOWN = 5f;
-
-	public static CellOffset OUTPUT_CONDUIT_CELL_OFFSET = new CellOffset(0, 1);
-
-	public const float TRUNK_GROWTH_DURATION = 2700f;
-
-	public const int MAX_BRANCH_NUMBER = 5;
-
-	public const int OPTIMAL_LUX = 10000;
-
-	public const float MIN_REQUIRED_LIGHT_TO_GROW_BRANCHES = 300f;
-
-	public const float SUGAR_WATER_PRODUCTION_DURATION = 150f;
-
-	public const float SUGAR_WATER_CAPACITY = 20f;
-
-	public const string MANUAL_HARVEST_PRE_ANIM_NAME = "syrup_harvest_trunk_pre";
-
-	public const string MANUAL_HARVEST_LOOP_ANIM_NAME = "syrup_harvest_trunk_loop";
-
-	public const string MANUAL_HARVEST_PST_ANIM_NAME = "syrup_harvest_trunk_pst";
-
-	public const string MANUAL_HARVEST_INTERRUPT_ANIM_NAME = "syrup_harvest_trunk_loop";
-
-	private static readonly List<Storage.StoredItemModifier> storedItemModifiers = new List<Storage.StoredItemModifier>
-	{
-		Storage.StoredItemModifier.Hide,
-		Storage.StoredItemModifier.Preserve,
-		Storage.StoredItemModifier.Insulate,
-		Storage.StoredItemModifier.Seal
-	};
-
+	// Token: 0x06000AE9 RID: 2793 RVA: 0x000A9B1E File Offset: 0x000A7D1E
 	public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_DLC_2;
 	}
 
+	// Token: 0x06000AEA RID: 2794 RVA: 0x0016D764 File Offset: 0x0016B964
 	public GameObject CreatePrefab()
 	{
-		GameObject gameObject = EntityTemplates.CreatePlacedEntity("SpaceTree", STRINGS.CREATURES.SPECIES.SPACETREE.NAME, STRINGS.CREATURES.SPECIES.SPACETREE.DESC, 1f, decor: DECOR.PENALTY.TIER1, anim: Assets.GetAnim("syrup_tree_kanim"), initialAnim: "idle_empty", sceneLayer: Grid.SceneLayer.BuildingBack, width: 1, height: 2, noise: default(EffectorValues), element: SimHashes.Creature, additionalTags: null, defaultTemperature: 255f);
+		string id = "SpaceTree";
+		string name = STRINGS.CREATURES.SPECIES.SPACETREE.NAME;
+		string desc = STRINGS.CREATURES.SPECIES.SPACETREE.DESC;
+		float mass = 1f;
+		EffectorValues tier = DECOR.PENALTY.TIER1;
+		GameObject gameObject = EntityTemplates.CreatePlacedEntity(id, name, desc, mass, Assets.GetAnim("syrup_tree_kanim"), "idle_empty", Grid.SceneLayer.BuildingBack, 1, 2, tier, default(EffectorValues), SimHashes.Creature, null, 255f);
 		string text = "SpaceTreeOriginal";
-		EntityTemplates.ExtendEntityToBasicPlant(gameObject, 173.15f, 198.15f, 258.15f, 293.15f, new SimHashes[5]
+		EntityTemplates.ExtendEntityToBasicPlant(gameObject, 173.15f, 198.15f, 258.15f, 293.15f, new SimHashes[]
 		{
 			SimHashes.Oxygen,
 			SimHashes.ContaminatedOxygen,
 			SimHashes.CarbonDioxide,
 			SimHashes.Snow,
 			SimHashes.Vacuum
-		}, pressure_sensitive: false, 0f, 0.15f, null, can_drown: true, can_tinker: false, require_solid_tile: true, should_grow_old: false, 2400f, 0f, 12200f, text, STRINGS.CREATURES.SPECIES.SPACETREE.NAME);
+		}, false, 0f, 0.15f, null, true, false, true, false, 2400f, 0f, 12200f, text, STRINGS.CREATURES.SPECIES.SPACETREE.NAME);
 		WiltCondition component = gameObject.GetComponent<WiltCondition>();
 		component.WiltDelay = 0f;
 		component.RecoveryDelay = 0f;
@@ -79,9 +42,9 @@ public class SpaceTreeConfig : IEntityConfig
 			component2.initialTraits.Add(text);
 		}
 		Crop.CropVal cropval = CROPS.CROP_TYPES.Find((Crop.CropVal m) => m.cropId == SimHashes.SugarWater.CreateTag());
-		Trait trait = Db.Get().traits.Get(component2.initialTraits[0]);
+		Klei.AI.Modifier modifier = Db.Get().traits.Get(component2.initialTraits[0]);
 		component2.initialAmounts.Add(Db.Get().Amounts.Maturity.Id);
-		trait.Add(new AttributeModifier(Db.Get().Amounts.Maturity.maxAttribute.Id, 4.5f, STRINGS.CREATURES.SPECIES.SPACETREE.NAME));
+		modifier.Add(new AttributeModifier(Db.Get().Amounts.Maturity.maxAttribute.Id, 4.5f, STRINGS.CREATURES.SPECIES.SPACETREE.NAME, false, false, true));
 		gameObject.AddOrGet<Crop>().Configure(cropval);
 		KPrefabID component3 = gameObject.GetComponent<KPrefabID>();
 		GeneratedBuildings.RegisterWithOverlay(OverlayScreen.HarvestableIDs, component3.PrefabID().ToString());
@@ -95,13 +58,26 @@ public class SpaceTreeConfig : IEntityConfig
 		growing.maxAge = 2400f;
 		gameObject.AddOrGet<HarvestDesignatable>();
 		gameObject.AddOrGet<LoopingSounds>();
-		GameObject seed = EntityTemplates.CreateAndRegisterSeedForPlant(gameObject, SeedProducer.ProductionType.Harvest, "SpaceTreeSeed", STRINGS.CREATURES.SPECIES.SEEDS.SPACETREE.NAME, STRINGS.CREATURES.SPECIES.SEEDS.SPACETREE.DESC, Assets.GetAnim("seed_syrup_tree_kanim"), "object", 1, new List<Tag> { GameTags.CropSeed }, SingleEntityReceptacle.ReceptacleDirection.Top, default(Tag), 1, STRINGS.CREATURES.SPECIES.SPACETREE.DOMESTICATEDDESC, EntityTemplates.CollisionShape.CIRCLE, 0.3f, 0.3f, null, "", ignoreDefaultSeedTag: false, GetDlcIds());
-		EntityTemplates.ExtendPlantToFertilizable(gameObject, new PlantElementAbsorber.ConsumeInfo[1]
+		GameObject plant = gameObject;
+		SeedProducer.ProductionType productionType = SeedProducer.ProductionType.Harvest;
+		string id2 = "SpaceTreeSeed";
+		string name2 = STRINGS.CREATURES.SPECIES.SEEDS.SPACETREE.NAME;
+		string desc2 = STRINGS.CREATURES.SPECIES.SEEDS.SPACETREE.DESC;
+		KAnimFile anim = Assets.GetAnim("seed_syrup_tree_kanim");
+		string initialAnim = "object";
+		int numberOfSeeds = 1;
+		List<Tag> list = new List<Tag>();
+		list.Add(GameTags.CropSeed);
+		SingleEntityReceptacle.ReceptacleDirection planterDirection = SingleEntityReceptacle.ReceptacleDirection.Top;
+		string domesticatedDescription = STRINGS.CREATURES.SPECIES.SPACETREE.DOMESTICATEDDESC;
+		string[] dlcIds = this.GetDlcIds();
+		GameObject seed = EntityTemplates.CreateAndRegisterSeedForPlant(plant, productionType, id2, name2, desc2, anim, initialAnim, numberOfSeeds, list, planterDirection, default(Tag), 1, domesticatedDescription, EntityTemplates.CollisionShape.CIRCLE, 0.3f, 0.3f, null, "", false, dlcIds);
+		EntityTemplates.ExtendPlantToFertilizable(gameObject, new PlantElementAbsorber.ConsumeInfo[]
 		{
 			new PlantElementAbsorber.ConsumeInfo
 			{
 				tag = SimHashes.Snow.CreateTag(),
-				massConsumptionRate = 1f / 6f
+				massConsumptionRate = 0.16666667f
 			}
 		});
 		EntityTemplates.CreateAndRegisterPreviewForPlant(seed, "SpaceTree_preview", Assets.GetAnim("syrup_tree_kanim"), "place", 1, 2);
@@ -111,29 +87,32 @@ public class SpaceTreeConfig : IEntityConfig
 		directlyEdiblePlant_StorageElement.tagToConsume = SimHashes.SugarWater.CreateTag();
 		directlyEdiblePlant_StorageElement.rateProducedPerCycle = 4f;
 		directlyEdiblePlant_StorageElement.storageCapacity = 20f;
-		directlyEdiblePlant_StorageElement.edibleCellOffsets = new CellOffset[4]
+		directlyEdiblePlant_StorageElement.edibleCellOffsets = new CellOffset[]
 		{
 			new CellOffset(-1, 0),
 			new CellOffset(1, 0),
 			new CellOffset(-1, 1),
 			new CellOffset(1, 1)
 		};
+		DirectlyEdiblePlant_TreeBranches directlyEdiblePlant_TreeBranches = gameObject.AddOrGet<DirectlyEdiblePlant_TreeBranches>();
+		directlyEdiblePlant_TreeBranches.overrideCropID = "SpaceTreeBranch";
+		directlyEdiblePlant_TreeBranches.MinimumEdibleMaturity = 1f;
 		Storage storage = gameObject.AddOrGet<Storage>();
 		storage.allowItemRemoval = false;
 		storage.showInUI = true;
 		storage.capacityKg = 20f;
-		storage.SetDefaultStoredItemModifiers(storedItemModifiers);
+		storage.SetDefaultStoredItemModifiers(SpaceTreeConfig.storedItemModifiers);
 		ConduitDispenser conduitDispenser = gameObject.AddOrGet<ConduitDispenser>();
-		conduitDispenser.noBuildingOutputCellOffset = OUTPUT_CONDUIT_CELL_OFFSET;
+		conduitDispenser.noBuildingOutputCellOffset = SpaceTreeConfig.OUTPUT_CONDUIT_CELL_OFFSET;
 		conduitDispenser.conduitType = ConduitType.Liquid;
 		conduitDispenser.alwaysDispense = true;
-		conduitDispenser.SetOnState(onState: false);
+		conduitDispenser.SetOnState(false);
 		gameObject.AddOrGet<SpaceTreeSyrupHarvestWorkable>();
 		UnstableEntombDefense.Def def = gameObject.AddOrGetDef<UnstableEntombDefense.Def>();
 		def.defaultAnimName = "shake_trunk";
 		def.Cooldown = 5f;
 		PlantBranchGrower.Def def2 = gameObject.AddOrGetDef<PlantBranchGrower.Def>();
-		def2.BRANCH_OFFSETS = new CellOffset[5]
+		def2.BRANCH_OFFSETS = new CellOffset[]
 		{
 			new CellOffset(-1, 1),
 			new CellOffset(-1, 2),
@@ -151,13 +130,81 @@ public class SpaceTreeConfig : IEntityConfig
 		return gameObject;
 	}
 
+	// Token: 0x06000AEB RID: 2795 RVA: 0x000A5E40 File Offset: 0x000A4040
 	public void OnPrefabInit(GameObject prefab)
 	{
 	}
 
+	// Token: 0x06000AEC RID: 2796 RVA: 0x0016DC1C File Offset: 0x0016BE1C
 	public void OnSpawn(GameObject inst)
 	{
 		EntityCellVisualizer entityCellVisualizer = inst.AddOrGet<EntityCellVisualizer>();
-		entityCellVisualizer.AddPort(EntityCellVisualizer.Ports.LiquidOut, OUTPUT_CONDUIT_CELL_OFFSET, entityCellVisualizer.Resources.liquidIOColours.output.connected);
+		entityCellVisualizer.AddPort(EntityCellVisualizer.Ports.LiquidOut, SpaceTreeConfig.OUTPUT_CONDUIT_CELL_OFFSET, entityCellVisualizer.Resources.liquidIOColours.output.connected);
 	}
+
+	// Token: 0x04000868 RID: 2152
+	public const string ID = "SpaceTree";
+
+	// Token: 0x04000869 RID: 2153
+	public const string SEED_ID = "SpaceTreeSeed";
+
+	// Token: 0x0400086A RID: 2154
+	public const float Temperature_lethal_low = 173.15f;
+
+	// Token: 0x0400086B RID: 2155
+	public const float Temperature_warning_low = 198.15f;
+
+	// Token: 0x0400086C RID: 2156
+	public const float Temperature_warning_high = 258.15f;
+
+	// Token: 0x0400086D RID: 2157
+	public const float Temperature_lethal_high = 293.15f;
+
+	// Token: 0x0400086E RID: 2158
+	public const float SNOW_RATE = 0.16666667f;
+
+	// Token: 0x0400086F RID: 2159
+	public const float ENTOMB_DEFENSE_COOLDOWN = 5f;
+
+	// Token: 0x04000870 RID: 2160
+	public static CellOffset OUTPUT_CONDUIT_CELL_OFFSET = new CellOffset(0, 1);
+
+	// Token: 0x04000871 RID: 2161
+	public const float TRUNK_GROWTH_DURATION = 2700f;
+
+	// Token: 0x04000872 RID: 2162
+	public const int MAX_BRANCH_NUMBER = 5;
+
+	// Token: 0x04000873 RID: 2163
+	public const int OPTIMAL_LUX = 10000;
+
+	// Token: 0x04000874 RID: 2164
+	public const float MIN_REQUIRED_LIGHT_TO_GROW_BRANCHES = 300f;
+
+	// Token: 0x04000875 RID: 2165
+	public const float SUGAR_WATER_PRODUCTION_DURATION = 150f;
+
+	// Token: 0x04000876 RID: 2166
+	public const float SUGAR_WATER_CAPACITY = 20f;
+
+	// Token: 0x04000877 RID: 2167
+	public const string MANUAL_HARVEST_PRE_ANIM_NAME = "syrup_harvest_trunk_pre";
+
+	// Token: 0x04000878 RID: 2168
+	public const string MANUAL_HARVEST_LOOP_ANIM_NAME = "syrup_harvest_trunk_loop";
+
+	// Token: 0x04000879 RID: 2169
+	public const string MANUAL_HARVEST_PST_ANIM_NAME = "syrup_harvest_trunk_pst";
+
+	// Token: 0x0400087A RID: 2170
+	public const string MANUAL_HARVEST_INTERRUPT_ANIM_NAME = "syrup_harvest_trunk_loop";
+
+	// Token: 0x0400087B RID: 2171
+	private static readonly List<Storage.StoredItemModifier> storedItemModifiers = new List<Storage.StoredItemModifier>
+	{
+		Storage.StoredItemModifier.Hide,
+		Storage.StoredItemModifier.Preserve,
+		Storage.StoredItemModifier.Insulate,
+		Storage.StoredItemModifier.Seal
+	};
 }

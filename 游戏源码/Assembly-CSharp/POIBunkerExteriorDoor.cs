@@ -1,13 +1,14 @@
+﻿using System;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x020004DF RID: 1247
 public class POIBunkerExteriorDoor : IBuildingConfig
 {
-	public const string ID = "POIBunkerExteriorDoor";
-
+	// Token: 0x06001601 RID: 5633 RVA: 0x00196078 File Offset: 0x00194278
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef("POIBunkerExteriorDoor", 1, 2, "door_poi_kanim", 30, 60f, BUILDINGS.CONSTRUCTION_MASS_KG.TIER3, MATERIALS.ALL_METALS, 1600f, BuildLocationRule.Anywhere, BUILDINGS.DECOR.PENALTY.TIER2, NOISE_POLLUTION.NONE);
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef("POIBunkerExteriorDoor", 1, 2, "door_poi_kanim", 30, 60f, BUILDINGS.CONSTRUCTION_MASS_KG.TIER3, MATERIALS.ALL_METALS, 1600f, BuildLocationRule.Anywhere, BUILDINGS.DECOR.PENALTY.TIER2, NOISE_POLLUTION.NONE, 0.2f);
 		buildingDef.Overheatable = false;
 		buildingDef.Repairable = false;
 		buildingDef.Floodable = false;
@@ -26,6 +27,7 @@ public class POIBunkerExteriorDoor : IBuildingConfig
 		return buildingDef;
 	}
 
+	// Token: 0x06001602 RID: 5634 RVA: 0x00196164 File Offset: 0x00194364
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		Door door = go.AddOrGet<Door>();
@@ -41,10 +43,14 @@ public class POIBunkerExteriorDoor : IBuildingConfig
 		go.AddOrGet<KBatchedAnimController>().fgLayer = Grid.SceneLayer.BuildingFront;
 	}
 
+	// Token: 0x06001603 RID: 5635 RVA: 0x000AFC52 File Offset: 0x000ADE52
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.GetComponent<AccessControl>().controlEnabled = false;
 		go.GetComponent<Deconstructable>().allowDeconstruction = false;
 		go.GetComponent<KBatchedAnimController>().initialAnim = "closed";
 	}
+
+	// Token: 0x04000EE4 RID: 3812
+	public const string ID = "POIBunkerExteriorDoor";
 }

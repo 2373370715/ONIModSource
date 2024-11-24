@@ -1,88 +1,94 @@
-using System;
+﻿using System;
 using Klei.AI;
 using STRINGS;
 using TUNING;
 
+// Token: 0x020006F1 RID: 1777
 public class RancherChore : Chore<RancherChore.RancherChoreStates.Instance>
 {
-	public class RancherChoreStates : GameStateMachine<RancherChoreStates, RancherChoreStates.Instance>
+	// Token: 0x06001FE0 RID: 8160 RVA: 0x001BA190 File Offset: 0x001B8390
+	public RancherChore(KPrefabID rancher_station)
 	{
-		private class RanchState : State
+		Chore.Precondition isOpenForRanching = default(Chore.Precondition);
+		isOpenForRanching.id = "IsCreatureAvailableForRanching";
+		isOpenForRanching.description = DUPLICANTS.CHORES.PRECONDITIONS.IS_CREATURE_AVAILABLE_FOR_RANCHING;
+		isOpenForRanching.sortOrder = -3;
+		isOpenForRanching.fn = delegate(ref Chore.Precondition.Context context, object data)
 		{
-			public State callForCritter;
+			RanchStation.Instance instance = data as RanchStation.Instance;
+			return !instance.HasRancher && instance.IsCritterAvailableForRanching;
+		};
+		this.IsOpenForRanching = isOpenForRanching;
+		base..ctor(Db.Get().ChoreTypes.Ranch, rancher_station, null, false, null, null, null, PriorityScreen.PriorityClass.basic, 5, false, true, 0, false, ReportManager.ReportType.WorkTime);
+		this.AddPrecondition(this.IsOpenForRanching, rancher_station.GetSMI<RanchStation.Instance>());
+		SkillPerkMissingComplainer component = base.GetComponent<SkillPerkMissingComplainer>();
+		this.AddPrecondition(ChorePreconditions.instance.HasSkillPerk, component.requiredSkillPerk);
+		this.AddPrecondition(ChorePreconditions.instance.IsScheduledTime, Db.Get().ScheduleBlockTypes.Work);
+		this.AddPrecondition(ChorePreconditions.instance.CanMoveTo, rancher_station.GetComponent<Building>());
+		Operational component2 = rancher_station.GetComponent<Operational>();
+		this.AddPrecondition(ChorePreconditions.instance.IsOperational, component2);
+		Deconstructable component3 = rancher_station.GetComponent<Deconstructable>();
+		this.AddPrecondition(ChorePreconditions.instance.IsNotMarkedForDeconstruction, component3);
+		BuildingEnabledButton component4 = rancher_station.GetComponent<BuildingEnabledButton>();
+		this.AddPrecondition(ChorePreconditions.instance.IsNotMarkedForDisable, component4);
+		base.smi = new RancherChore.RancherChoreStates.Instance(rancher_station);
+		base.SetPrioritizable(rancher_station.GetComponent<Prioritizable>());
+	}
 
-			public State working;
+	// Token: 0x06001FE1 RID: 8161 RVA: 0x000B4E6B File Offset: 0x000B306B
+	public override void Begin(Chore.Precondition.Context context)
+	{
+		base.smi.sm.rancher.Set(context.consumerState.gameObject, base.smi, false);
+		base.Begin(context);
+	}
 
-			public State pst;
-		}
+	// Token: 0x06001FE2 RID: 8162 RVA: 0x000B4E9C File Offset: 0x000B309C
+	protected override void End(string reason)
+	{
+		base.End(reason);
+		base.smi.sm.rancher.Set(null, base.smi);
+	}
 
-		public new class Instance : GameInstance
+	// Token: 0x040014BE RID: 5310
+	public Chore.Precondition IsOpenForRanching;
+
+	// Token: 0x020006F2 RID: 1778
+	public class RancherChoreStates : GameStateMachine<RancherChore.RancherChoreStates, RancherChore.RancherChoreStates.Instance>
+	{
+		// Token: 0x06001FE3 RID: 8163 RVA: 0x001BA2E4 File Offset: 0x001B84E4
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
-			private const float WAIT_FOR_RANCHABLE_TIMEOUT = 2f;
-
-			public RanchStation.Instance ranchStation;
-
-			private float waitTime;
-
-			public Instance(KPrefabID rancher_station)
-				: base((IStateMachineTarget)rancher_station)
-			{
-				ranchStation = rancher_station.GetSMI<RanchStation.Instance>();
-			}
-
-			public void WaitForAvailableRanchable(float dt)
-			{
-				waitTime += dt;
-				State state = (ranchStation.IsCritterAvailableForRanching ? base.sm.ranchCritter : null);
-				if (state != null || waitTime >= 2f)
-				{
-					waitTime = 0f;
-					GoTo(state);
-				}
-			}
-		}
-
-		public TargetParameter rancher;
-
-		private State moveToRanch;
-
-		private RanchState ranchCritter;
-
-		private State waitForAvailableRanchable;
-
-		public override void InitializeStates(out BaseState default_state)
-		{
-			default_state = moveToRanch;
-			Target(rancher);
-			root.Exit("TriggerRanchStationNoLongerAvailable", delegate(Instance smi)
+			default_state = this.moveToRanch;
+			base.Target(this.rancher);
+			this.root.Exit("TriggerRanchStationNoLongerAvailable", delegate(RancherChore.RancherChoreStates.Instance smi)
 			{
 				smi.ranchStation.TriggerRanchStationNoLongerAvailable();
 			});
-			moveToRanch.MoveTo((Instance smi) => Grid.PosToCell(smi.transform.GetPosition()), waitForAvailableRanchable);
-			waitForAvailableRanchable.Enter("FindRanchable", delegate(Instance smi)
+			this.moveToRanch.MoveTo((RancherChore.RancherChoreStates.Instance smi) => Grid.PosToCell(smi.transform.GetPosition()), this.waitForAvailableRanchable, null, false);
+			this.waitForAvailableRanchable.Enter("FindRanchable", delegate(RancherChore.RancherChoreStates.Instance smi)
 			{
 				smi.WaitForAvailableRanchable(0f);
-			}).Update("FindRanchable", delegate(Instance smi, float dt)
+			}).Update("FindRanchable", delegate(RancherChore.RancherChoreStates.Instance smi, float dt)
 			{
 				smi.WaitForAvailableRanchable(dt);
-			});
-			ranchCritter.ScheduleGoTo(0.5f, ranchCritter.callForCritter).EventTransition(GameHashes.CreatureAbandonedRanchStation, waitForAvailableRanchable);
-			ranchCritter.callForCritter.ToggleAnims("anim_interacts_rancherstation_kanim").PlayAnim("calling_loop", KAnim.PlayMode.Loop).ScheduleActionNextFrame("TellCreatureRancherIsReady", delegate(Instance smi)
+			}, UpdateRate.SIM_200ms, false);
+			this.ranchCritter.ScheduleGoTo(0.5f, this.ranchCritter.callForCritter).EventTransition(GameHashes.CreatureAbandonedRanchStation, this.waitForAvailableRanchable, null);
+			this.ranchCritter.callForCritter.ToggleAnims("anim_interacts_rancherstation_kanim", 0f).PlayAnim("calling_loop", KAnim.PlayMode.Loop).ScheduleActionNextFrame("TellCreatureRancherIsReady", delegate(RancherChore.RancherChoreStates.Instance smi)
 			{
 				smi.ranchStation.MessageRancherReady();
-			})
-				.Target(masterTarget)
-				.EventTransition(GameHashes.CreatureArrivedAtRanchStation, ranchCritter.working);
-			ranchCritter.working.ToggleWork<RancherWorkable>(masterTarget, ranchCritter.pst, waitForAvailableRanchable, null);
-			ranchCritter.pst.ToggleAnims((Func<Instance, HashedString>)GetRancherInteractAnim).QueueAnim("wipe_brow").OnAnimQueueComplete(waitForAvailableRanchable);
+			}).Target(this.masterTarget).EventTransition(GameHashes.CreatureArrivedAtRanchStation, this.ranchCritter.working, null);
+			this.ranchCritter.working.ToggleWork<RancherChore.RancherWorkable>(this.masterTarget, this.ranchCritter.pst, this.waitForAvailableRanchable, null);
+			this.ranchCritter.pst.ToggleAnims(new Func<RancherChore.RancherChoreStates.Instance, HashedString>(RancherChore.RancherChoreStates.GetRancherInteractAnim)).QueueAnim("wipe_brow", false, null).OnAnimQueueComplete(this.waitForAvailableRanchable);
 		}
 
-		private static HashedString GetRancherInteractAnim(Instance smi)
+		// Token: 0x06001FE4 RID: 8164 RVA: 0x000B4EC1 File Offset: 0x000B30C1
+		private static HashedString GetRancherInteractAnim(RancherChore.RancherChoreStates.Instance smi)
 		{
 			return smi.ranchStation.def.RancherInteractAnim;
 		}
 
-		public static bool TryRanchCreature(Instance smi)
+		// Token: 0x06001FE5 RID: 8165 RVA: 0x001BA4C0 File Offset: 0x001B86C0
+		public static bool TryRanchCreature(RancherChore.RancherChoreStates.Instance smi)
 		{
 			Debug.Assert(smi.ranchStation != null, "smi.ranchStation was null");
 			RanchedStates.Instance activeRanchable = smi.ranchStation.ActiveRanchable;
@@ -95,108 +101,140 @@ public class RancherChore : Chore<RancherChore.RancherChoreStates.Instance>
 			smi.ranchStation.RanchCreature();
 			return true;
 		}
+
+		// Token: 0x040014BF RID: 5311
+		public StateMachine<RancherChore.RancherChoreStates, RancherChore.RancherChoreStates.Instance, IStateMachineTarget, object>.TargetParameter rancher;
+
+		// Token: 0x040014C0 RID: 5312
+		private GameStateMachine<RancherChore.RancherChoreStates, RancherChore.RancherChoreStates.Instance, IStateMachineTarget, object>.State moveToRanch;
+
+		// Token: 0x040014C1 RID: 5313
+		private RancherChore.RancherChoreStates.RanchState ranchCritter;
+
+		// Token: 0x040014C2 RID: 5314
+		private GameStateMachine<RancherChore.RancherChoreStates, RancherChore.RancherChoreStates.Instance, IStateMachineTarget, object>.State waitForAvailableRanchable;
+
+		// Token: 0x020006F3 RID: 1779
+		private class RanchState : GameStateMachine<RancherChore.RancherChoreStates, RancherChore.RancherChoreStates.Instance, IStateMachineTarget, object>.State
+		{
+			// Token: 0x040014C3 RID: 5315
+			public GameStateMachine<RancherChore.RancherChoreStates, RancherChore.RancherChoreStates.Instance, IStateMachineTarget, object>.State callForCritter;
+
+			// Token: 0x040014C4 RID: 5316
+			public GameStateMachine<RancherChore.RancherChoreStates, RancherChore.RancherChoreStates.Instance, IStateMachineTarget, object>.State working;
+
+			// Token: 0x040014C5 RID: 5317
+			public GameStateMachine<RancherChore.RancherChoreStates, RancherChore.RancherChoreStates.Instance, IStateMachineTarget, object>.State pst;
+		}
+
+		// Token: 0x020006F4 RID: 1780
+		public new class Instance : GameStateMachine<RancherChore.RancherChoreStates, RancherChore.RancherChoreStates.Instance, IStateMachineTarget, object>.GameInstance
+		{
+			// Token: 0x06001FE8 RID: 8168 RVA: 0x000B4EE3 File Offset: 0x000B30E3
+			public Instance(KPrefabID rancher_station) : base(rancher_station)
+			{
+				this.ranchStation = rancher_station.GetSMI<RanchStation.Instance>();
+			}
+
+			// Token: 0x06001FE9 RID: 8169 RVA: 0x001BA530 File Offset: 0x001B8730
+			public void WaitForAvailableRanchable(float dt)
+			{
+				this.waitTime += dt;
+				GameStateMachine<RancherChore.RancherChoreStates, RancherChore.RancherChoreStates.Instance, IStateMachineTarget, object>.State state = this.ranchStation.IsCritterAvailableForRanching ? base.sm.ranchCritter : null;
+				if (state != null || this.waitTime >= 2f)
+				{
+					this.waitTime = 0f;
+					this.GoTo(state);
+				}
+			}
+
+			// Token: 0x040014C6 RID: 5318
+			private const float WAIT_FOR_RANCHABLE_TIMEOUT = 2f;
+
+			// Token: 0x040014C7 RID: 5319
+			public RanchStation.Instance ranchStation;
+
+			// Token: 0x040014C8 RID: 5320
+			private float waitTime;
+		}
 	}
 
+	// Token: 0x020006F6 RID: 1782
 	public class RancherWorkable : Workable
 	{
-		private RanchStation.Instance ranch;
-
-		private KBatchedAnimController critterAnimController;
-
+		// Token: 0x06001FF1 RID: 8177 RVA: 0x001BA58C File Offset: 0x001B878C
 		protected override void OnPrefabInit()
 		{
 			base.OnPrefabInit();
-			ranch = base.gameObject.GetSMI<RanchStation.Instance>();
-			overrideAnims = new KAnimFile[1] { Assets.GetAnim(ranch.def.RancherInteractAnim) };
-			SetWorkTime(ranch.def.WorkTime);
-			SetWorkerStatusItem(ranch.def.RanchingStatusItem);
-			attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.MOST_DAY_EXPERIENCE;
-			skillExperienceSkillGroup = Db.Get().SkillGroups.Ranching.Id;
-			skillExperienceMultiplier = SKILLS.MOST_DAY_EXPERIENCE;
-			lightEfficiencyBonus = false;
+			this.ranch = base.gameObject.GetSMI<RanchStation.Instance>();
+			this.overrideAnims = new KAnimFile[]
+			{
+				Assets.GetAnim(this.ranch.def.RancherInteractAnim)
+			};
+			base.SetWorkTime(this.ranch.def.WorkTime);
+			base.SetWorkerStatusItem(this.ranch.def.RanchingStatusItem);
+			this.attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.MOST_DAY_EXPERIENCE;
+			this.skillExperienceSkillGroup = Db.Get().SkillGroups.Ranching.Id;
+			this.skillExperienceMultiplier = SKILLS.MOST_DAY_EXPERIENCE;
+			this.lightEfficiencyBonus = false;
 		}
 
+		// Token: 0x06001FF2 RID: 8178 RVA: 0x000B4F34 File Offset: 0x000B3134
 		public override Klei.AI.Attribute GetWorkAttribute()
 		{
 			return Db.Get().Attributes.Ranching;
 		}
 
-		protected override void OnStartWork(Worker worker)
+		// Token: 0x06001FF3 RID: 8179 RVA: 0x001BA638 File Offset: 0x001B8838
+		protected override void OnStartWork(WorkerBase worker)
 		{
-			if (ranch != null)
+			if (this.ranch == null)
 			{
-				critterAnimController = ranch.ActiveRanchable.AnimController;
-				critterAnimController.Play(ranch.def.RanchedPreAnim);
-				critterAnimController.Queue(ranch.def.RanchedLoopAnim, KAnim.PlayMode.Loop);
+				return;
 			}
+			this.critterAnimController = this.ranch.ActiveRanchable.AnimController;
+			this.critterAnimController.Play(this.ranch.def.RanchedPreAnim, KAnim.PlayMode.Once, 1f, 0f);
+			this.critterAnimController.Queue(this.ranch.def.RanchedLoopAnim, KAnim.PlayMode.Loop, 1f, 0f);
 		}
 
-		protected override bool OnWorkTick(Worker worker, float dt)
+		// Token: 0x06001FF4 RID: 8180 RVA: 0x001BA6B0 File Offset: 0x001B88B0
+		protected override bool OnWorkTick(WorkerBase worker, float dt)
 		{
-			if (ranch.def.OnRanchWorkTick != null)
+			if (this.ranch.def.OnRanchWorkTick != null)
 			{
-				ranch.def.OnRanchWorkTick(ranch.ActiveRanchable.gameObject, dt, this);
+				this.ranch.def.OnRanchWorkTick(this.ranch.ActiveRanchable.gameObject, dt, this);
 			}
 			return base.OnWorkTick(worker, dt);
 		}
 
-		public override void OnPendingCompleteWork(Worker work)
+		// Token: 0x06001FF5 RID: 8181 RVA: 0x001BA700 File Offset: 0x001B8900
+		public override void OnPendingCompleteWork(WorkerBase work)
 		{
-			RancherChoreStates.Instance sMI = base.gameObject.GetSMI<RancherChoreStates.Instance>();
-			if (ranch != null && sMI != null && RancherChoreStates.TryRanchCreature(sMI))
+			RancherChore.RancherChoreStates.Instance smi = base.gameObject.GetSMI<RancherChore.RancherChoreStates.Instance>();
+			if (this.ranch == null || smi == null)
 			{
-				critterAnimController.Play(ranch.def.RanchedPstAnim);
+				return;
+			}
+			if (RancherChore.RancherChoreStates.TryRanchCreature(smi))
+			{
+				this.critterAnimController.Play(this.ranch.def.RanchedPstAnim, KAnim.PlayMode.Once, 1f, 0f);
 			}
 		}
 
-		protected override void OnAbortWork(Worker worker)
+		// Token: 0x06001FF6 RID: 8182 RVA: 0x000B4F45 File Offset: 0x000B3145
+		protected override void OnAbortWork(WorkerBase worker)
 		{
-			if (ranch != null && !(critterAnimController == null))
+			if (this.ranch == null || this.critterAnimController == null)
 			{
-				critterAnimController.Play(ranch.def.RanchedAbortAnim);
+				return;
 			}
+			this.critterAnimController.Play(this.ranch.def.RanchedAbortAnim, KAnim.PlayMode.Once, 1f, 0f);
 		}
-	}
 
-	public Precondition IsOpenForRanching = new Precondition
-	{
-		id = "IsCreatureAvailableForRanching",
-		description = DUPLICANTS.CHORES.PRECONDITIONS.IS_CREATURE_AVAILABLE_FOR_RANCHING,
-		sortOrder = -3,
-		fn = delegate(ref Precondition.Context context, object data)
-		{
-			RanchStation.Instance instance = data as RanchStation.Instance;
-			return !instance.HasRancher && instance.IsCritterAvailableForRanching;
-		}
-	};
+		// Token: 0x040014CF RID: 5327
+		private RanchStation.Instance ranch;
 
-	public RancherChore(KPrefabID rancher_station)
-		: base(Db.Get().ChoreTypes.Ranch, (IStateMachineTarget)rancher_station, (ChoreProvider)null, run_until_complete: false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.basic, 5, is_preemptable: false, allow_in_context_menu: true, 0, add_to_daily_report: false, ReportManager.ReportType.WorkTime)
-	{
-		AddPrecondition(IsOpenForRanching, rancher_station.GetSMI<RanchStation.Instance>());
-		SkillPerkMissingComplainer component = GetComponent<SkillPerkMissingComplainer>();
-		AddPrecondition(ChorePreconditions.instance.HasSkillPerk, component.requiredSkillPerk);
-		AddPrecondition(ChorePreconditions.instance.IsScheduledTime, Db.Get().ScheduleBlockTypes.Work);
-		AddPrecondition(ChorePreconditions.instance.CanMoveTo, rancher_station.GetComponent<Building>());
-		Operational component2 = rancher_station.GetComponent<Operational>();
-		AddPrecondition(ChorePreconditions.instance.IsOperational, component2);
-		Deconstructable component3 = rancher_station.GetComponent<Deconstructable>();
-		AddPrecondition(ChorePreconditions.instance.IsNotMarkedForDeconstruction, component3);
-		BuildingEnabledButton component4 = rancher_station.GetComponent<BuildingEnabledButton>();
-		AddPrecondition(ChorePreconditions.instance.IsNotMarkedForDisable, component4);
-		base.smi = new RancherChoreStates.Instance(rancher_station);
-		SetPrioritizable(rancher_station.GetComponent<Prioritizable>());
-	}
-
-	public override void Begin(Precondition.Context context)
-	{
-		base.smi.sm.rancher.Set(context.consumerState.gameObject, base.smi);
-		base.Begin(context);
-	}
-
-	protected override void End(string reason)
-	{
-		base.End(reason);
-		base.smi.sm.rancher.Set(null, base.smi);
+		// Token: 0x040014D0 RID: 5328
+		private KBatchedAnimController critterAnimController;
 	}
 }

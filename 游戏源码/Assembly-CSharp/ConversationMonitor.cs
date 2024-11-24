@@ -1,116 +1,137 @@
+﻿using System;
 using System.Collections.Generic;
 using KSerialization;
 using UnityEngine;
 
+// Token: 0x0200153F RID: 5439
 public class ConversationMonitor : GameStateMachine<ConversationMonitor, ConversationMonitor.Instance, IStateMachineTarget, ConversationMonitor.Def>
 {
-	public class Def : BaseDef
+	// Token: 0x06007165 RID: 29029 RVA: 0x002FA5AC File Offset: 0x002F87AC
+	public override void InitializeStates(out StateMachine.BaseState default_state)
+	{
+		default_state = this.root;
+		this.root.EventHandler(GameHashes.TopicDiscussed, delegate(ConversationMonitor.Instance smi, object obj)
+		{
+			smi.OnTopicDiscussed(obj);
+		}).EventHandler(GameHashes.TopicDiscovered, delegate(ConversationMonitor.Instance smi, object obj)
+		{
+			smi.OnTopicDiscovered(obj);
+		});
+	}
+
+	// Token: 0x040054AB RID: 21675
+	private const int MAX_RECENT_TOPICS = 5;
+
+	// Token: 0x040054AC RID: 21676
+	private const int MAX_FAVOURITE_TOPICS = 5;
+
+	// Token: 0x040054AD RID: 21677
+	private const float FAVOURITE_CHANCE = 0.033333335f;
+
+	// Token: 0x040054AE RID: 21678
+	private const float LEARN_CHANCE = 0.33333334f;
+
+	// Token: 0x02001540 RID: 5440
+	public class Def : StateMachine.BaseDef
 	{
 	}
 
+	// Token: 0x02001541 RID: 5441
 	[SerializationConfig(MemberSerialization.OptIn)]
-	public new class Instance : GameInstance
+	public new class Instance : GameStateMachine<ConversationMonitor, ConversationMonitor.Instance, IStateMachineTarget, ConversationMonitor.Def>.GameInstance
 	{
-		[Serialize]
-		private Queue<string> recentTopics;
-
-		[Serialize]
-		private List<string> favouriteTopics;
-
-		private List<string> personalTopics;
-
-		private static readonly List<string> randomTopics = new List<string> { "Headquarters" };
-
-		public Instance(IStateMachineTarget master, Def def)
-			: base(master, def)
+		// Token: 0x06007168 RID: 29032 RVA: 0x002FA61C File Offset: 0x002F881C
+		public Instance(IStateMachineTarget master, ConversationMonitor.Def def) : base(master, def)
 		{
-			recentTopics = new Queue<string>();
-			favouriteTopics = new List<string> { randomTopics[Random.Range(0, randomTopics.Count)] };
-			personalTopics = new List<string>();
+			this.recentTopics = new Queue<string>();
+			this.favouriteTopics = new List<string>
+			{
+				ConversationMonitor.Instance.randomTopics[UnityEngine.Random.Range(0, ConversationMonitor.Instance.randomTopics.Count)]
+			};
+			this.personalTopics = new List<string>();
 		}
 
+		// Token: 0x06007169 RID: 29033 RVA: 0x002FA674 File Offset: 0x002F8874
 		public string GetATopic()
 		{
-			int maxExclusive = recentTopics.Count + favouriteTopics.Count * 2 + personalTopics.Count;
-			int num = Random.Range(0, maxExclusive);
-			if (num < recentTopics.Count)
+			int maxExclusive = this.recentTopics.Count + this.favouriteTopics.Count * 2 + this.personalTopics.Count;
+			int num = UnityEngine.Random.Range(0, maxExclusive);
+			if (num < this.recentTopics.Count)
 			{
-				return recentTopics.Dequeue();
+				return this.recentTopics.Dequeue();
 			}
-			num -= recentTopics.Count;
-			if (num < favouriteTopics.Count)
+			num -= this.recentTopics.Count;
+			if (num < this.favouriteTopics.Count)
 			{
-				return favouriteTopics[num];
+				return this.favouriteTopics[num];
 			}
-			num -= favouriteTopics.Count;
-			if (num < favouriteTopics.Count)
+			num -= this.favouriteTopics.Count;
+			if (num < this.favouriteTopics.Count)
 			{
-				return favouriteTopics[num];
+				return this.favouriteTopics[num];
 			}
-			num -= favouriteTopics.Count;
-			if (num < personalTopics.Count)
+			num -= this.favouriteTopics.Count;
+			if (num < this.personalTopics.Count)
 			{
-				return personalTopics[num];
+				return this.personalTopics[num];
 			}
 			return "";
 		}
 
+		// Token: 0x0600716A RID: 29034 RVA: 0x002FA74C File Offset: 0x002F894C
 		public void OnTopicDiscovered(object data)
 		{
 			string item = (string)data;
-			if (!recentTopics.Contains(item))
+			if (!this.recentTopics.Contains(item))
 			{
-				recentTopics.Enqueue(item);
-				if (recentTopics.Count > 5)
+				this.recentTopics.Enqueue(item);
+				if (this.recentTopics.Count > 5)
 				{
-					string topic = recentTopics.Dequeue();
-					TryMakeFavouriteTopic(topic);
+					string topic = this.recentTopics.Dequeue();
+					this.TryMakeFavouriteTopic(topic);
 				}
 			}
 		}
 
+		// Token: 0x0600716B RID: 29035 RVA: 0x002FA79C File Offset: 0x002F899C
 		public void OnTopicDiscussed(object data)
 		{
 			string data2 = (string)data;
-			if (Random.value < 1f / 3f)
+			if (UnityEngine.Random.value < 0.33333334f)
 			{
-				OnTopicDiscovered(data2);
+				this.OnTopicDiscovered(data2);
 			}
 		}
 
+		// Token: 0x0600716C RID: 29036 RVA: 0x002FA7C4 File Offset: 0x002F89C4
 		private void TryMakeFavouriteTopic(string topic)
 		{
-			if (Random.value < 1f / 30f)
+			if (UnityEngine.Random.value < 0.033333335f)
 			{
-				if (favouriteTopics.Count < 5)
+				if (this.favouriteTopics.Count < 5)
 				{
-					favouriteTopics.Add(topic);
+					this.favouriteTopics.Add(topic);
+					return;
 				}
-				else
-				{
-					favouriteTopics[Random.Range(0, favouriteTopics.Count)] = topic;
-				}
+				this.favouriteTopics[UnityEngine.Random.Range(0, this.favouriteTopics.Count)] = topic;
 			}
 		}
-	}
 
-	private const int MAX_RECENT_TOPICS = 5;
+		// Token: 0x040054AF RID: 21679
+		[Serialize]
+		private Queue<string> recentTopics;
 
-	private const int MAX_FAVOURITE_TOPICS = 5;
+		// Token: 0x040054B0 RID: 21680
+		[Serialize]
+		private List<string> favouriteTopics;
 
-	private const float FAVOURITE_CHANCE = 1f / 30f;
+		// Token: 0x040054B1 RID: 21681
+		private List<string> personalTopics;
 
-	private const float LEARN_CHANCE = 1f / 3f;
-
-	public override void InitializeStates(out BaseState default_state)
-	{
-		default_state = root;
-		root.EventHandler(GameHashes.TopicDiscussed, delegate(Instance smi, object obj)
+		// Token: 0x040054B2 RID: 21682
+		private static readonly List<string> randomTopics = new List<string>
 		{
-			smi.OnTopicDiscussed(obj);
-		}).EventHandler(GameHashes.TopicDiscovered, delegate(Instance smi, object obj)
-		{
-			smi.OnTopicDiscovered(obj);
-		});
+			"Headquarters"
+		};
 	}
 }

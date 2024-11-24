@@ -1,35 +1,59 @@
+﻿using System;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x020003FC RID: 1020
 public class LuxuryBedConfig : IBuildingConfig
 {
-	public const string ID = "LuxuryBed";
-
+	// Token: 0x0600111E RID: 4382 RVA: 0x00183040 File Offset: 0x00181240
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef("LuxuryBed", 4, 2, "elegantbed_kanim", 10, 10f, BUILDINGS.CONSTRUCTION_MASS_KG.TIER3, MATERIALS.PLASTICS, 1600f, BuildLocationRule.OnFloor, noise: NOISE_POLLUTION.NONE, decor: BUILDINGS.DECOR.BONUS.TIER2);
-		obj.Overheatable = false;
-		obj.AudioCategory = "Metal";
-		return obj;
+		string id = "LuxuryBed";
+		int width = 4;
+		int height = 2;
+		string anim = "elegantbed_kanim";
+		int hitpoints = 10;
+		float construction_time = 10f;
+		float[] tier = BUILDINGS.CONSTRUCTION_MASS_KG.TIER3;
+		string[] plastics = MATERIALS.PLASTICS;
+		float melting_point = 1600f;
+		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
+		EffectorValues none = NOISE_POLLUTION.NONE;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, plastics, melting_point, build_location_rule, BUILDINGS.DECOR.BONUS.TIER2, none, 0.2f);
+		buildingDef.Overheatable = false;
+		buildingDef.AudioCategory = "Metal";
+		return buildingDef;
 	}
 
+	// Token: 0x0600111F RID: 4383 RVA: 0x000ADA53 File Offset: 0x000ABC53
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<LoopingSounds>();
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.BedType);
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.LuxuryBedType);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.BedType, false);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.LuxuryBedType, false);
 	}
 
+	// Token: 0x06001120 RID: 4384 RVA: 0x00183098 File Offset: 0x00181298
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.GetComponent<KAnimControllerBase>().initialAnim = "off";
 		Bed bed = go.AddOrGet<Bed>();
-		bed.effects = new string[2] { "LuxuryBedStamina", "BedHealth" };
+		bed.effects = new string[]
+		{
+			"LuxuryBedStamina",
+			"BedHealth"
+		};
 		bed.workLayer = Grid.SceneLayer.BuildingFront;
 		Sleepable sleepable = go.AddOrGet<Sleepable>();
-		sleepable.overrideAnims = new KAnimFile[1] { Assets.GetAnim("anim_sleep_bed_kanim") };
+		sleepable.overrideAnims = new KAnimFile[]
+		{
+			Assets.GetAnim("anim_sleep_bed_kanim")
+		};
 		sleepable.workLayer = Grid.SceneLayer.BuildingFront;
 		go.AddOrGet<Ownable>().slotID = Db.Get().AssignableSlots.Bed.Id;
 		go.AddOrGetDef<RocketUsageRestriction.Def>();
 	}
+
+	// Token: 0x04000BB5 RID: 2997
+	public const string ID = "LuxuryBed";
 }

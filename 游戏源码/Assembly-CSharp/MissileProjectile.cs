@@ -1,39 +1,91 @@
-using System;
+﻿using System;
 using KSerialization;
 using UnityEngine;
 
+// Token: 0x02000EC2 RID: 3778
 [SerializationConfig(MemberSerialization.OptIn)]
 public class MissileProjectile : GameStateMachine<MissileProjectile, MissileProjectile.StatesInstance, IStateMachineTarget, MissileProjectile.Def>
 {
-	public class Def : BaseDef
+	// Token: 0x06004C32 RID: 19506 RVA: 0x00261634 File Offset: 0x0025F834
+	public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
+		default_state = this.root;
+		this.root.ParamTransition<Comet>(this.meteorTarget, this.launch, (MissileProjectile.StatesInstance smi, Comet comet) => comet != null);
+		this.launch.Update("Launch", delegate(MissileProjectile.StatesInstance smi, float dt)
+		{
+			smi.UpdateLaunch(dt);
+		}, UpdateRate.SIM_EVERY_TICK, false).ParamTransition<bool>(this.triggerexplode, this.explode, GameStateMachine<MissileProjectile, MissileProjectile.StatesInstance, IStateMachineTarget, MissileProjectile.Def>.IsTrue).Enter(delegate(MissileProjectile.StatesInstance smi)
+		{
+			Vector3 position = smi.master.transform.GetPosition();
+			position.z = Grid.GetLayerZ(Grid.SceneLayer.BuildingBack);
+			smi.smokeTrailFX = Util.KInstantiate(EffectPrefabs.Instance.MissileSmokeTrailFX, position);
+			smi.smokeTrailFX.transform.SetParent(smi.master.transform);
+			smi.smokeTrailFX.SetActive(true);
+			smi.StartTakeoff();
+			KFMOD.PlayOneShot(GlobalAssets.GetSound("MissileLauncher_Missile_ignite", false), CameraController.Instance.GetVerticallyScaledPosition(position, false), 1f);
+		});
+		this.explode.Enter(delegate(MissileProjectile.StatesInstance smi)
+		{
+			smi.TriggerExplosion();
+			ParticleSystem[] componentsInChildren = smi.smokeTrailFX.GetComponentsInChildren<ParticleSystem>();
+			for (int i = 0; i < componentsInChildren.Length; i++)
+			{
+				componentsInChildren[i].emission.enabled = false;
+			}
+		});
+	}
+
+	// Token: 0x040034EB RID: 13547
+	public GameStateMachine<MissileProjectile, MissileProjectile.StatesInstance, IStateMachineTarget, MissileProjectile.Def>.State launch;
+
+	// Token: 0x040034EC RID: 13548
+	public GameStateMachine<MissileProjectile, MissileProjectile.StatesInstance, IStateMachineTarget, MissileProjectile.Def>.State explode;
+
+	// Token: 0x040034ED RID: 13549
+	public StateMachine<MissileProjectile, MissileProjectile.StatesInstance, IStateMachineTarget, MissileProjectile.Def>.BoolParameter triggerexplode = new StateMachine<MissileProjectile, MissileProjectile.StatesInstance, IStateMachineTarget, MissileProjectile.Def>.BoolParameter(false);
+
+	// Token: 0x040034EE RID: 13550
+	public StateMachine<MissileProjectile, MissileProjectile.StatesInstance, IStateMachineTarget, MissileProjectile.Def>.ObjectParameter<Comet> meteorTarget = new StateMachine<MissileProjectile, MissileProjectile.StatesInstance, IStateMachineTarget, MissileProjectile.Def>.ObjectParameter<Comet>();
+
+	// Token: 0x02000EC3 RID: 3779
+	public class Def : StateMachine.BaseDef
+	{
+		// Token: 0x040034EF RID: 13551
 		public float MeteorDebrisMassModifier = 0.25f;
 
+		// Token: 0x040034F0 RID: 13552
 		public float ExplosionRange = 2f;
 
+		// Token: 0x040034F1 RID: 13553
 		public float debrisSpeed = 6f;
 
+		// Token: 0x040034F2 RID: 13554
 		public float debrisMaxAngle = 40f;
 
+		// Token: 0x040034F3 RID: 13555
 		public string explosionEffectAnim = "missile_explosion_kanim";
 	}
 
-	public class StatesInstance : GameInstance
+	// Token: 0x02000EC4 RID: 3780
+	public class StatesInstance : GameStateMachine<MissileProjectile, MissileProjectile.StatesInstance, IStateMachineTarget, MissileProjectile.Def>.GameInstance
 	{
-		public KBatchedAnimController animController;
-
-		private float launchSpeed;
-
-		public GameObject smokeTrailFX;
-
-		private Vector3 Position => base.transform.position + animController.Offset;
-
-		public StatesInstance(IStateMachineTarget master, Def def)
-			: base(master, def)
+		// Token: 0x17000435 RID: 1077
+		// (get) Token: 0x06004C35 RID: 19509 RVA: 0x000D1551 File Offset: 0x000CF751
+		private Vector3 Position
 		{
-			animController = GetComponent<KBatchedAnimController>();
+			get
+			{
+				return base.transform.position + this.animController.Offset;
+			}
 		}
 
+		// Token: 0x06004C36 RID: 19510 RVA: 0x000D156E File Offset: 0x000CF76E
+		public StatesInstance(IStateMachineTarget master, MissileProjectile.Def def) : base(master, def)
+		{
+			this.animController = base.GetComponent<KBatchedAnimController>();
+		}
+
+		// Token: 0x06004C37 RID: 19511 RVA: 0x000D1584 File Offset: 0x000CF784
 		public void StartTakeoff()
 		{
 			if (GameComps.Fallers.Has(base.gameObject))
@@ -42,6 +94,7 @@ public class MissileProjectile : GameStateMachine<MissileProjectile, MissileProj
 			}
 		}
 
+		// Token: 0x06004C38 RID: 19512 RVA: 0x00261718 File Offset: 0x0025F918
 		public void UpdateLaunch(float dt)
 		{
 			int myWorldId = base.gameObject.GetMyWorldId();
@@ -49,26 +102,27 @@ public class MissileProjectile : GameStateMachine<MissileProjectile, MissileProj
 			if (!comet.IsNullOrDestroyed())
 			{
 				Vector3 targetPosition = comet.TargetPosition;
-				base.sm.triggerexplode.Set(InExplosionRange(targetPosition, Position), base.smi);
-				Vector3 v = Vector3.Normalize(targetPosition - Position);
-				Vector3 normalized = (targetPosition - Position).normalized;
+				base.sm.triggerexplode.Set(this.InExplosionRange(targetPosition, this.Position), base.smi, false);
+				Vector3 v = Vector3.Normalize(targetPosition - this.Position);
+				Vector3 normalized = (targetPosition - this.Position).normalized;
 				float rotation = MathUtil.AngleSigned(Vector3.up, v, Vector3.forward);
-				animController.Rotation = rotation;
-				if (Grid.IsValidCellInWorld(Grid.PosToCell(Position), myWorldId))
+				this.animController.Rotation = rotation;
+				if (Grid.IsValidCellInWorld(Grid.PosToCell(this.Position), myWorldId))
 				{
-					base.transform.SetPosition(base.transform.position + normalized * (launchSpeed * dt));
+					base.transform.SetPosition(base.transform.position + normalized * (this.launchSpeed * dt));
 				}
 				else
 				{
-					animController.Offset += normalized * (launchSpeed * dt);
+					this.animController.Offset += normalized * (this.launchSpeed * dt);
 				}
 				ParticleSystem[] componentsInChildren = base.smi.smokeTrailFX.GetComponentsInChildren<ParticleSystem>();
 				for (int i = 0; i < componentsInChildren.Length; i++)
 				{
-					componentsInChildren[i].gameObject.transform.SetPositionAndRotation(Position, Quaternion.identity);
+					componentsInChildren[i].gameObject.transform.SetPositionAndRotation(this.Position, Quaternion.identity);
 				}
+				return;
 			}
-			else if (!base.sm.triggerexplode.Get(base.smi))
+			if (!base.sm.triggerexplode.Get(base.smi))
 			{
 				if (!base.smi.smokeTrailFX.IsNullOrDestroyed())
 				{
@@ -83,30 +137,33 @@ public class MissileProjectile : GameStateMachine<MissileProjectile, MissileProj
 			}
 		}
 
+		// Token: 0x06004C39 RID: 19513 RVA: 0x002618F4 File Offset: 0x0025FAF4
 		public void PrepareLaunch(Comet meteor_target, float speed, Vector3 launchPos, float launchAngle)
 		{
 			base.gameObject.transform.SetParent(null);
 			base.gameObject.layer = LayerMask.NameToLayer("Default");
 			launchPos.z = Grid.GetLayerZ(Grid.SceneLayer.BuildingBack);
 			base.gameObject.transform.SetLocalPosition(launchPos);
-			animController.Rotation = launchAngle;
-			animController.Offset = Vector3.back;
-			animController.SetVisiblity(is_visible: true);
-			base.sm.triggerexplode.Set(value: false, base.smi);
-			base.sm.meteorTarget.Set(meteor_target, base.smi);
-			launchSpeed = speed;
+			this.animController.Rotation = launchAngle;
+			this.animController.Offset = Vector3.back;
+			this.animController.SetVisiblity(true);
+			base.sm.triggerexplode.Set(false, base.smi, false);
+			base.sm.meteorTarget.Set(meteor_target, base.smi, false);
+			this.launchSpeed = speed;
 		}
 
+		// Token: 0x06004C3A RID: 19514 RVA: 0x002619AC File Offset: 0x0025FBAC
 		public void TriggerExplosion()
 		{
 			if (!base.smi.sm.meteorTarget.IsNullOrDestroyed())
 			{
-				SpawnMeteorResources(base.smi.sm.meteorTarget.Get(base.smi));
+				this.SpawnMeteorResources(base.smi.sm.meteorTarget.Get(base.smi));
 				Util.KDestroyGameObject(base.smi.sm.meteorTarget.Get(base.smi));
 			}
-			Explode();
+			this.Explode();
 		}
 
+		// Token: 0x06004C3B RID: 19515 RVA: 0x00261A18 File Offset: 0x0025FC18
 		private void SpawnMeteorResources(Comet meteor)
 		{
 			PrimaryElement meteorPE = meteor.GetComponent<PrimaryElement>();
@@ -117,31 +174,32 @@ public class MissileProjectile : GameStateMachine<MissileProjectile, MissileProj
 				WorldContainer worldFromPosition = ClusterManager.Instance.GetWorldFromPosition(meteor.transform.GetPosition() - Vector3.down * Grid.CellSizeInMeters);
 				num = ((worldFromPosition == null) ? num : worldFromPosition.id);
 			}
-			bool num2 = Grid.IsValidCellInWorld(Grid.PosToCell(meteor.TargetPosition), num);
-			float num3 = meteor.ExplosionMass * base.def.MeteorDebrisMassModifier;
-			float num4 = meteor.AddTileMass * base.def.MeteorDebrisMassModifier;
+			bool flag = Grid.IsValidCellInWorld(Grid.PosToCell(meteor.TargetPosition), num);
+			float num2 = meteor.ExplosionMass * base.def.MeteorDebrisMassModifier;
+			float num3 = meteor.AddTileMass * base.def.MeteorDebrisMassModifier;
 			int num_nonTiles_ores = meteor.GetRandomNumOres();
-			float arg = ((num_nonTiles_ores > 0) ? (num3 / (float)num_nonTiles_ores) : 1f);
+			float arg = (num_nonTiles_ores > 0) ? (num2 / (float)num_nonTiles_ores) : 1f;
 			float temperature = meteor.GetRandomTemperatureForOres();
 			int num_tile_ores = meteor.addTiles;
-			float arg2 = ((num_tile_ores > 0) ? (num4 / (float)num_tile_ores) : 1f);
-			Vector3 normalized = (meteor.TargetPosition - Position).normalized;
+			float arg2 = (num_tile_ores > 0) ? (num3 / (float)num_tile_ores) : 1f;
+			Vector3 normalized = (meteor.TargetPosition - this.Position).normalized;
 			Vector2 vector = new Vector2(normalized.x, normalized.y);
-			new Vector2(vector.y, 0f - vector.x);
+			new Vector2(vector.y, -vector.x);
 			Func<int, int, float, Vector3> func = delegate(int objectIndex, int objectCount, float maxAngleAllowed)
 			{
-				int num6 = ((objectCount % 2 == 0) ? objectCount : (objectCount - 1));
-				float num7 = maxAngleAllowed * 2f / (float)num6;
-				bool flag = objectIndex % 2 == 0;
-				float num8 = num7 * (float)Mathf.CeilToInt((float)objectIndex / 2f) * ((float)Math.PI / 180f) * (float)(flag ? 1 : (-1));
-				return new Vector3(Mathf.Cos(4.712389f + num8), Mathf.Sin(4.712389f + num8), 0f).normalized * base.def.debrisSpeed;
+				int num5 = (objectCount % 2 == 0) ? objectCount : (objectCount - 1);
+				float num6 = maxAngleAllowed * 2f / (float)num5;
+				bool flag2 = objectIndex % 2 == 0;
+				float num7 = num6 * (float)Mathf.CeilToInt((float)objectIndex / 2f) * 0.017453292f * (float)(flag2 ? 1 : -1);
+				Vector3 vector4 = new Vector3(Mathf.Cos(4.712389f + num7), Mathf.Sin(4.712389f + num7), 0f);
+				return vector4.normalized * this.def.debrisSpeed;
 			};
 			Action<Substance, float, Vector3> action = delegate(Substance substance, float mass, Vector3 velocity)
 			{
-				Vector3 position2 = velocity.normalized * 0.75f;
-				position2 += new Vector3(0f, 0.55f, 0f);
-				position2 += Position;
-				GameObject go = substance.SpawnResource(position2, mass, temperature, meteorPE.DiseaseIdx, meteorPE.DiseaseCount / (num_nonTiles_ores + num_tile_ores));
+				Vector3 vector4 = velocity.normalized * 0.75f;
+				vector4 += new Vector3(0f, 0.55f, 0f);
+				vector4 += this.Position;
+				GameObject go = substance.SpawnResource(vector4, mass, temperature, meteorPE.DiseaseIdx, meteorPE.DiseaseCount / (num_nonTiles_ores + num_tile_ores), false, false, false);
 				if (GameComps.Fallers.Has(go))
 				{
 					GameComps.Fallers.Remove(go);
@@ -150,13 +208,13 @@ public class MissileProjectile : GameStateMachine<MissileProjectile, MissileProj
 			};
 			Action<string, Vector3> action2 = delegate(string prefabName, Vector3 velocity)
 			{
-				Vector3 vector3 = velocity.normalized * 0.75f;
-				vector3 += new Vector3(0f, 0.55f, 0f);
-				vector3 += Position;
-				GameObject gameObject = Scenario.SpawnPrefab(Grid.PosToCell(vector3), 0, 0, prefabName);
-				gameObject.SetActive(value: true);
-				vector3.z = gameObject.transform.position.z;
-				gameObject.transform.position = vector3;
+				Vector3 vector4 = velocity.normalized * 0.75f;
+				vector4 += new Vector3(0f, 0.55f, 0f);
+				vector4 += this.Position;
+				GameObject gameObject = Scenario.SpawnPrefab(Grid.PosToCell(vector4), 0, 0, prefabName, Grid.SceneLayer.Ore);
+				gameObject.SetActive(true);
+				vector4.z = gameObject.transform.position.z;
+				gameObject.transform.position = vector4;
 				if (GameComps.Fallers.Has(gameObject))
 				{
 					GameComps.Fallers.Remove(gameObject);
@@ -164,9 +222,9 @@ public class MissileProjectile : GameStateMachine<MissileProjectile, MissileProj
 				GameComps.Fallers.Add(gameObject, velocity);
 			};
 			Substance substance2 = element.substance;
-			if (num2)
+			if (flag)
 			{
-				int arg3 = num_nonTiles_ores + num_tile_ores + ((meteor.lootOnDestroyedByMissile != null) ? meteor.lootOnDestroyedByMissile.Length : 0);
+				int arg3 = num_nonTiles_ores + num_tile_ores + ((meteor.lootOnDestroyedByMissile == null) ? 0 : meteor.lootOnDestroyedByMissile.Length);
 				for (int i = 0; i < num_nonTiles_ores; i++)
 				{
 					Vector3 arg4 = func(i, arg3, base.def.debrisMaxAngle);
@@ -185,38 +243,35 @@ public class MissileProjectile : GameStateMachine<MissileProjectile, MissileProj
 						string arg7 = meteor.lootOnDestroyedByMissile[k];
 						action2(arg7, arg6);
 					}
+					return;
 				}
 			}
-			else
+			else if (num != -1 && num != 255)
 			{
-				if (num == -1 || num == 255)
+				int num4 = Grid.PosToCell(meteor.TargetPosition);
+				Vector3 vector2 = meteor.TargetPosition;
+				Vector2 vector3 = meteor.GetMyWorld().WorldOffset;
+				while (!Grid.IsValidCellInWorld(num4, num) && vector2.y > vector3.y)
 				{
-					return;
+					num4 = Grid.CellBelow(num4);
+					vector2 = Grid.CellToPos(num4);
 				}
-				int num5 = Grid.PosToCell(meteor.TargetPosition);
-				Vector3 position = meteor.TargetPosition;
-				Vector2 vector2 = meteor.GetMyWorld().WorldOffset;
-				while (!Grid.IsValidCellInWorld(num5, num) && position.y > vector2.y)
+				if (vector2.y > vector3.y)
 				{
-					num5 = Grid.CellBelow(num5);
-					position = Grid.CellToPos(num5);
-				}
-				if (!(position.y > vector2.y))
-				{
-					return;
-				}
-				substance2.SpawnResource(position, num3 + num4, temperature, meteorPE.DiseaseIdx, meteorPE.DiseaseCount);
-				if (meteor.lootOnDestroyedByMissile != null)
-				{
-					for (int l = 0; l < meteor.lootOnDestroyedByMissile.Length; l++)
+					substance2.SpawnResource(vector2, num2 + num3, temperature, meteorPE.DiseaseIdx, meteorPE.DiseaseCount, false, false, false);
+					if (meteor.lootOnDestroyedByMissile != null)
 					{
-						string name = meteor.lootOnDestroyedByMissile[l];
-						Scenario.SpawnPrefab(num5, 0, 0, name).SetActive(value: true);
+						for (int l = 0; l < meteor.lootOnDestroyedByMissile.Length; l++)
+						{
+							string name = meteor.lootOnDestroyedByMissile[l];
+							Scenario.SpawnPrefab(num4, 0, 0, name, Grid.SceneLayer.Ore).SetActive(true);
+						}
 					}
 				}
 			}
 		}
 
+		// Token: 0x06004C3C RID: 19516 RVA: 0x00261D90 File Offset: 0x0025FF90
 		private void Explode()
 		{
 			if (GameComps.Fallers.Has(base.gameObject))
@@ -225,62 +280,36 @@ public class MissileProjectile : GameStateMachine<MissileProjectile, MissileProj
 			}
 			Vector3 position = base.gameObject.transform.position;
 			position.z = Grid.GetLayerZ(Grid.SceneLayer.FXFront2);
-			SpawnExplosionFX(base.def.explosionEffectAnim, position, animController.Offset);
-			animController.SetSymbolVisiblity("missile_body", is_visible: false);
-			animController.SetSymbolVisiblity("missile_head", is_visible: false);
+			this.SpawnExplosionFX(base.def.explosionEffectAnim, position, this.animController.Offset);
+			this.animController.SetSymbolVisiblity("missile_body", false);
+			this.animController.SetSymbolVisiblity("missile_head", false);
 		}
 
+		// Token: 0x06004C3D RID: 19517 RVA: 0x000D15A8 File Offset: 0x000CF7A8
 		private bool InExplosionRange(Vector3 target_pos, Vector3 current_pos)
 		{
 			return Vector2.Distance(target_pos, current_pos) <= base.def.ExplosionRange;
 		}
 
+		// Token: 0x06004C3E RID: 19518 RVA: 0x00261E28 File Offset: 0x00260028
 		private void SpawnExplosionFX(string anim, Vector3 pos, Vector3 offset)
 		{
-			KBatchedAnimController kBatchedAnimController = FXHelpers.CreateEffect(anim, pos, base.gameObject.transform, update_looping_sounds_position: false, Grid.SceneLayer.FXFront2);
-			kBatchedAnimController.Offset = offset;
-			kBatchedAnimController.Play("idle");
-			kBatchedAnimController.onAnimComplete += delegate
+			KBatchedAnimController kbatchedAnimController = FXHelpers.CreateEffect(anim, pos, base.gameObject.transform, false, Grid.SceneLayer.FXFront2, false);
+			kbatchedAnimController.Offset = offset;
+			kbatchedAnimController.Play("idle", KAnim.PlayMode.Once, 1f, 0f);
+			kbatchedAnimController.onAnimComplete += delegate(HashedString obj)
 			{
 				Util.KDestroyGameObject(base.gameObject);
 			};
 		}
-	}
 
-	public State launch;
+		// Token: 0x040034F4 RID: 13556
+		public KBatchedAnimController animController;
 
-	public State explode;
+		// Token: 0x040034F5 RID: 13557
+		private float launchSpeed;
 
-	public BoolParameter triggerexplode = new BoolParameter(default_value: false);
-
-	public ObjectParameter<Comet> meteorTarget = new ObjectParameter<Comet>();
-
-	public override void InitializeStates(out BaseState default_state)
-	{
-		default_state = root;
-		root.ParamTransition(meteorTarget, launch, (StatesInstance smi, Comet comet) => comet != null);
-		launch.Update("Launch", delegate(StatesInstance smi, float dt)
-		{
-			smi.UpdateLaunch(dt);
-		}, UpdateRate.SIM_EVERY_TICK).ParamTransition(triggerexplode, explode, GameStateMachine<MissileProjectile, StatesInstance, IStateMachineTarget, Def>.IsTrue).Enter(delegate(StatesInstance smi)
-		{
-			Vector3 position = smi.master.transform.GetPosition();
-			position.z = Grid.GetLayerZ(Grid.SceneLayer.BuildingBack);
-			smi.smokeTrailFX = Util.KInstantiate(EffectPrefabs.Instance.MissileSmokeTrailFX, position);
-			smi.smokeTrailFX.transform.SetParent(smi.master.transform);
-			smi.smokeTrailFX.SetActive(value: true);
-			smi.StartTakeoff();
-			KFMOD.PlayOneShot(GlobalAssets.GetSound("MissileLauncher_Missile_ignite"), CameraController.Instance.GetVerticallyScaledPosition(position));
-		});
-		explode.Enter(delegate(StatesInstance smi)
-		{
-			smi.TriggerExplosion();
-			ParticleSystem[] componentsInChildren = smi.smokeTrailFX.GetComponentsInChildren<ParticleSystem>();
-			for (int i = 0; i < componentsInChildren.Length; i++)
-			{
-				ParticleSystem.EmissionModule emission = componentsInChildren[i].emission;
-				emission.enabled = false;
-			}
-		});
+		// Token: 0x040034F6 RID: 13558
+		public GameObject smokeTrailFX;
 	}
 }

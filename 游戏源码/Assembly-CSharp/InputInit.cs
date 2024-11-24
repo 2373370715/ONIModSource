@@ -1,24 +1,27 @@
+﻿using System;
 using UnityEngine;
 
+// Token: 0x02001412 RID: 5138
 internal class InputInit : MonoBehaviour
 {
+	// Token: 0x060069E1 RID: 27105 RVA: 0x002DC1DC File Offset: 0x002DA3DC
 	private void Awake()
 	{
 		GameInputManager inputManager = Global.GetInputManager();
 		for (int i = 0; i < inputManager.GetControllerCount(); i++)
 		{
 			KInputController controller = inputManager.GetController(i);
-			if (!controller.IsGamepad)
+			if (controller.IsGamepad)
 			{
-				continue;
-			}
-			Component[] components = base.gameObject.GetComponents<Component>();
-			for (int j = 0; j < components.Length; j++)
-			{
-				if (components[j] is IInputHandler inputHandler)
+				Component[] components = base.gameObject.GetComponents<Component>();
+				for (int j = 0; j < components.Length; j++)
 				{
-					KInputHandler.Add(controller, inputHandler);
-					inputManager.usedMenus.Add(inputHandler);
+					IInputHandler inputHandler = components[j] as IInputHandler;
+					if (inputHandler != null)
+					{
+						KInputHandler.Add(controller, inputHandler, 0);
+						inputManager.usedMenus.Add(inputHandler);
+					}
 				}
 			}
 		}

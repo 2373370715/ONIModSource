@@ -1,130 +1,157 @@
+﻿using System;
 using KSerialization;
 using STRINGS;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x02000991 RID: 2449
 [AddComponentMenu("KMonoBehaviour/Workable/AutoDisinfectable")]
 public class AutoDisinfectable : Workable
 {
-	private Chore chore;
-
-	private const float MAX_WORK_TIME = 10f;
-
-	private float diseasePerSecond;
-
-	[MyCmpGet]
-	private PrimaryElement primaryElement;
-
-	[Serialize]
-	private bool enableAutoDisinfect = true;
-
-	private static readonly EventSystem.IntraObjectHandler<AutoDisinfectable> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<AutoDisinfectable>(delegate(AutoDisinfectable component, object data)
-	{
-		component.OnRefreshUserMenu(data);
-	});
-
+	// Token: 0x06002C6F RID: 11375 RVA: 0x001EBE24 File Offset: 0x001EA024
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		SetOffsetTable(OffsetGroups.InvertedStandardTableWithCorners);
-		faceTargetWhenWorking = true;
-		synchronizeAnims = false;
-		workerStatusItem = Db.Get().DuplicantStatusItems.Disinfecting;
-		resetProgressOnStop = true;
-		multitoolContext = "disinfect";
-		multitoolHitEffectTag = "fx_disinfect_splash";
+		base.SetOffsetTable(OffsetGroups.InvertedStandardTableWithCorners);
+		this.faceTargetWhenWorking = true;
+		this.synchronizeAnims = false;
+		this.workerStatusItem = Db.Get().DuplicantStatusItems.Disinfecting;
+		this.resetProgressOnStop = true;
+		this.multitoolContext = "disinfect";
+		this.multitoolHitEffectTag = "fx_disinfect_splash";
 	}
 
+	// Token: 0x06002C70 RID: 11376 RVA: 0x001EBE8C File Offset: 0x001EA08C
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		Subscribe(493375141, OnRefreshUserMenuDelegate);
-		attributeConverter = Db.Get().AttributeConverters.TidyingSpeed;
-		attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.PART_DAY_EXPERIENCE;
-		skillExperienceSkillGroup = Db.Get().SkillGroups.Basekeeping.Id;
-		skillExperienceMultiplier = SKILLS.PART_DAY_EXPERIENCE;
-		SetWorkTime(10f);
-		shouldTransferDiseaseWithWorker = false;
+		base.Subscribe<AutoDisinfectable>(493375141, AutoDisinfectable.OnRefreshUserMenuDelegate);
+		this.attributeConverter = Db.Get().AttributeConverters.TidyingSpeed;
+		this.attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.PART_DAY_EXPERIENCE;
+		this.skillExperienceSkillGroup = Db.Get().SkillGroups.Basekeeping.Id;
+		this.skillExperienceMultiplier = SKILLS.PART_DAY_EXPERIENCE;
+		base.SetWorkTime(10f);
+		this.shouldTransferDiseaseWithWorker = false;
 	}
 
+	// Token: 0x06002C71 RID: 11377 RVA: 0x000BCBCC File Offset: 0x000BADCC
 	public void CancelChore()
 	{
-		if (chore != null)
+		if (this.chore != null)
 		{
-			chore.Cancel("AutoDisinfectable.CancelChore");
-			chore = null;
+			this.chore.Cancel("AutoDisinfectable.CancelChore");
+			this.chore = null;
 		}
 	}
 
+	// Token: 0x06002C72 RID: 11378 RVA: 0x001EBF08 File Offset: 0x001EA108
 	public void RefreshChore()
 	{
 		if (KMonoBehaviour.isLoadingScene)
 		{
 			return;
 		}
-		if (!enableAutoDisinfect || !SaveGame.Instance.enableAutoDisinfect)
+		if (!this.enableAutoDisinfect || !SaveGame.Instance.enableAutoDisinfect)
 		{
-			if (chore != null)
+			if (this.chore != null)
 			{
-				chore.Cancel("Autodisinfect Disabled");
-				chore = null;
+				this.chore.Cancel("Autodisinfect Disabled");
+				this.chore = null;
+				return;
 			}
 		}
-		else if (chore == null || !(chore.driver != null))
+		else if (this.chore == null || !(this.chore.driver != null))
 		{
-			int diseaseCount = primaryElement.DiseaseCount;
-			if (chore == null && diseaseCount > SaveGame.Instance.minGermCountForDisinfect)
+			int diseaseCount = this.primaryElement.DiseaseCount;
+			if (this.chore == null && diseaseCount > SaveGame.Instance.minGermCountForDisinfect)
 			{
-				chore = new WorkChore<AutoDisinfectable>(Db.Get().ChoreTypes.Disinfect, this, null, run_until_complete: true, null, null, null, allow_in_red_alert: true, null, ignore_schedule_block: false, only_when_operational: false, null, is_preemptable: false, allow_in_context_menu: true, allow_prioritization: true, PriorityScreen.PriorityClass.basic, 5, ignore_building_assignment: true);
+				this.chore = new WorkChore<AutoDisinfectable>(Db.Get().ChoreTypes.Disinfect, this, null, true, null, null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, true, true);
+				return;
 			}
-			else if (diseaseCount < SaveGame.Instance.minGermCountForDisinfect && chore != null)
+			if (diseaseCount < SaveGame.Instance.minGermCountForDisinfect && this.chore != null)
 			{
-				chore.Cancel("AutoDisinfectable.Update");
-				chore = null;
+				this.chore.Cancel("AutoDisinfectable.Update");
+				this.chore = null;
 			}
 		}
 	}
 
-	protected override void OnStartWork(Worker worker)
+	// Token: 0x06002C73 RID: 11379 RVA: 0x000BCBED File Offset: 0x000BADED
+	protected override void OnStartWork(WorkerBase worker)
 	{
 		base.OnStartWork(worker);
-		diseasePerSecond = (float)GetComponent<PrimaryElement>().DiseaseCount / 10f;
+		this.diseasePerSecond = (float)base.GetComponent<PrimaryElement>().DiseaseCount / 10f;
 	}
 
-	protected override bool OnWorkTick(Worker worker, float dt)
+	// Token: 0x06002C74 RID: 11380 RVA: 0x000BCC0E File Offset: 0x000BAE0E
+	protected override bool OnWorkTick(WorkerBase worker, float dt)
 	{
 		base.OnWorkTick(worker, dt);
-		PrimaryElement component = GetComponent<PrimaryElement>();
-		component.AddDisease(component.DiseaseIdx, -(int)(diseasePerSecond * dt + 0.5f), "Disinfectable.OnWorkTick");
+		PrimaryElement component = base.GetComponent<PrimaryElement>();
+		component.AddDisease(component.DiseaseIdx, -(int)(this.diseasePerSecond * dt + 0.5f), "Disinfectable.OnWorkTick");
 		return false;
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+	// Token: 0x06002C75 RID: 11381 RVA: 0x001EBFEC File Offset: 0x001EA1EC
+	protected override void OnCompleteWork(WorkerBase worker)
 	{
 		base.OnCompleteWork(worker);
-		PrimaryElement component = GetComponent<PrimaryElement>();
+		PrimaryElement component = base.GetComponent<PrimaryElement>();
 		component.AddDisease(component.DiseaseIdx, -component.DiseaseCount, "Disinfectable.OnCompleteWork");
-		GetComponent<KSelectable>().RemoveStatusItem(Db.Get().MiscStatusItems.MarkedForDisinfection, this);
-		chore = null;
+		base.GetComponent<KSelectable>().RemoveStatusItem(Db.Get().MiscStatusItems.MarkedForDisinfection, this);
+		this.chore = null;
 		Game.Instance.userMenu.Refresh(base.gameObject);
 	}
 
+	// Token: 0x06002C76 RID: 11382 RVA: 0x000BCC40 File Offset: 0x000BAE40
 	private void EnableAutoDisinfect()
 	{
-		enableAutoDisinfect = true;
-		RefreshChore();
+		this.enableAutoDisinfect = true;
+		this.RefreshChore();
 	}
 
+	// Token: 0x06002C77 RID: 11383 RVA: 0x000BCC4F File Offset: 0x000BAE4F
 	private void DisableAutoDisinfect()
 	{
-		enableAutoDisinfect = false;
-		RefreshChore();
+		this.enableAutoDisinfect = false;
+		this.RefreshChore();
 	}
 
+	// Token: 0x06002C78 RID: 11384 RVA: 0x001EC05C File Offset: 0x001EA25C
 	private void OnRefreshUserMenu(object data)
 	{
-		KIconButtonMenu.ButtonInfo buttonInfo = null;
-		buttonInfo = (enableAutoDisinfect ? new KIconButtonMenu.ButtonInfo("action_disinfect", STRINGS.BUILDINGS.AUTODISINFECTABLE.DISABLE_AUTODISINFECT.NAME, DisableAutoDisinfect, Action.NumActions, null, null, null, STRINGS.BUILDINGS.AUTODISINFECTABLE.DISABLE_AUTODISINFECT.TOOLTIP) : new KIconButtonMenu.ButtonInfo("action_disinfect", STRINGS.BUILDINGS.AUTODISINFECTABLE.ENABLE_AUTODISINFECT.NAME, EnableAutoDisinfect, Action.NumActions, null, null, null, STRINGS.BUILDINGS.AUTODISINFECTABLE.ENABLE_AUTODISINFECT.TOOLTIP));
-		Game.Instance.userMenu.AddButton(base.gameObject, buttonInfo, 10f);
+		KIconButtonMenu.ButtonInfo button;
+		if (!this.enableAutoDisinfect)
+		{
+			button = new KIconButtonMenu.ButtonInfo("action_disinfect", STRINGS.BUILDINGS.AUTODISINFECTABLE.ENABLE_AUTODISINFECT.NAME, new System.Action(this.EnableAutoDisinfect), global::Action.NumActions, null, null, null, STRINGS.BUILDINGS.AUTODISINFECTABLE.ENABLE_AUTODISINFECT.TOOLTIP, true);
+		}
+		else
+		{
+			button = new KIconButtonMenu.ButtonInfo("action_disinfect", STRINGS.BUILDINGS.AUTODISINFECTABLE.DISABLE_AUTODISINFECT.NAME, new System.Action(this.DisableAutoDisinfect), global::Action.NumActions, null, null, null, STRINGS.BUILDINGS.AUTODISINFECTABLE.DISABLE_AUTODISINFECT.TOOLTIP, true);
+		}
+		Game.Instance.userMenu.AddButton(base.gameObject, button, 10f);
 	}
+
+	// Token: 0x04001DCF RID: 7631
+	private Chore chore;
+
+	// Token: 0x04001DD0 RID: 7632
+	private const float MAX_WORK_TIME = 10f;
+
+	// Token: 0x04001DD1 RID: 7633
+	private float diseasePerSecond;
+
+	// Token: 0x04001DD2 RID: 7634
+	[MyCmpGet]
+	private PrimaryElement primaryElement;
+
+	// Token: 0x04001DD3 RID: 7635
+	[Serialize]
+	private bool enableAutoDisinfect = true;
+
+	// Token: 0x04001DD4 RID: 7636
+	private static readonly EventSystem.IntraObjectHandler<AutoDisinfectable> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<AutoDisinfectable>(delegate(AutoDisinfectable component, object data)
+	{
+		component.OnRefreshUserMenu(data);
+	});
 }

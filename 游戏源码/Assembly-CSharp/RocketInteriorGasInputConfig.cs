@@ -1,46 +1,57 @@
+﻿using System;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x0200055F RID: 1375
 public class RocketInteriorGasInputConfig : IBuildingConfig
 {
-	private const ConduitType CONDUIT_TYPE = ConduitType.Gas;
-
-	private const CargoBay.CargoType CARGO_TYPE = CargoBay.CargoType.Gasses;
-
-	public const string ID = "RocketInteriorGasInput";
-
-	public override string[] GetDlcIds()
+	// Token: 0x06001843 RID: 6211 RVA: 0x000A5F1F File Offset: 0x000A411F
+	public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
+	// Token: 0x06001844 RID: 6212 RVA: 0x0019ED2C File Offset: 0x0019CF2C
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef("RocketInteriorGasInput", 1, 1, "rocket_floor_plug_gas_kanim", 30, 3f, BUILDINGS.CONSTRUCTION_MASS_KG.TIER0, MATERIALS.ALL_METALS, 1600f, BuildLocationRule.OnRocketEnvelope, noise: NOISE_POLLUTION.NONE, decor: BUILDINGS.DECOR.PENALTY.TIER2);
-		obj.InputConduitType = ConduitType.Gas;
-		obj.UtilityInputOffset = new CellOffset(0, 0);
-		obj.Overheatable = false;
-		obj.Floodable = false;
-		obj.Entombable = false;
-		obj.ViewMode = OverlayModes.GasConduits.ID;
-		obj.ObjectLayer = ObjectLayer.Building;
-		obj.SceneLayer = Grid.SceneLayer.Building;
-		obj.AudioCategory = "Metal";
-		obj.AudioSize = "small";
-		obj.BaseTimeUntilRepair = -1f;
-		obj.PermittedRotations = PermittedRotations.R360;
-		obj.ShowInBuildMenu = true;
+		string id = "RocketInteriorGasInput";
+		int width = 1;
+		int height = 1;
+		string anim = "rocket_floor_plug_gas_kanim";
+		int hitpoints = 30;
+		float construction_time = 3f;
+		float[] tier = BUILDINGS.CONSTRUCTION_MASS_KG.TIER0;
+		string[] all_METALS = MATERIALS.ALL_METALS;
+		float melting_point = 1600f;
+		BuildLocationRule build_location_rule = BuildLocationRule.OnRocketEnvelope;
+		EffectorValues none = NOISE_POLLUTION.NONE;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, all_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.PENALTY.TIER2, none, 0.2f);
+		buildingDef.InputConduitType = ConduitType.Gas;
+		buildingDef.UtilityInputOffset = new CellOffset(0, 0);
+		buildingDef.Overheatable = false;
+		buildingDef.Floodable = false;
+		buildingDef.Entombable = false;
+		buildingDef.ViewMode = OverlayModes.GasConduits.ID;
+		buildingDef.ObjectLayer = ObjectLayer.Building;
+		buildingDef.SceneLayer = Grid.SceneLayer.Building;
+		buildingDef.AudioCategory = "Metal";
+		buildingDef.AudioSize = "small";
+		buildingDef.BaseTimeUntilRepair = -1f;
+		buildingDef.PermittedRotations = PermittedRotations.R360;
+		buildingDef.ShowInBuildMenu = true;
 		GeneratedBuildings.RegisterWithOverlay(OverlayScreen.GasVentIDs, "RocketInteriorGasInput");
-		return obj;
+		return buildingDef;
 	}
 
+	// Token: 0x06001845 RID: 6213 RVA: 0x000B04F0 File Offset: 0x000AE6F0
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		base.ConfigureBuildingTemplate(go, prefab_tag);
-		go.GetComponent<KPrefabID>().AddTag(GameTags.RocketInteriorBuilding);
+		go.GetComponent<KPrefabID>().AddTag(GameTags.RocketInteriorBuilding, false);
 		go.AddComponent<RequireInputs>();
 	}
 
+	// Token: 0x06001846 RID: 6214 RVA: 0x0019EDF4 File Offset: 0x0019CFF4
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGetDef<ActiveController.Def>();
@@ -57,4 +68,13 @@ public class RocketInteriorGasInputConfig : IBuildingConfig
 		conduitConsumer.alwaysConsume = true;
 		conduitConsumer.capacityKG = storage.capacityKg;
 	}
+
+	// Token: 0x04000FC4 RID: 4036
+	private const ConduitType CONDUIT_TYPE = ConduitType.Gas;
+
+	// Token: 0x04000FC5 RID: 4037
+	private const CargoBay.CargoType CARGO_TYPE = CargoBay.CargoType.Gasses;
+
+	// Token: 0x04000FC6 RID: 4038
+	public const string ID = "RocketInteriorGasInput";
 }

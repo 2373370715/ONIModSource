@@ -1,54 +1,53 @@
+﻿using System;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x020004DC RID: 1244
 public class OxyliteRefineryConfig : IBuildingConfig
 {
-	public const string ID = "OxyliteRefinery";
-
-	public const float EMIT_MASS = 10f;
-
-	public const float INPUT_O2_PER_SECOND = 0.6f;
-
-	public const float OXYLITE_PER_SECOND = 0.6f;
-
-	public const float GOLD_PER_SECOND = 0.003f;
-
-	public const float OUTPUT_TEMP = 303.15f;
-
-	public const float REFILL_RATE = 2400f;
-
-	public const float GOLD_STORAGE_AMOUNT = 7.2000003f;
-
-	public const float O2_STORAGE_AMOUNT = 6f;
-
-	public const float STORAGE_CAPACITY = 23.2f;
-
+	// Token: 0x060015F5 RID: 5621 RVA: 0x00195CFC File Offset: 0x00193EFC
 	public override BuildingDef CreateBuildingDef()
 	{
-		string[] array = new string[2] { "RefinedMetal", "Plastic" };
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef(construction_mass: new float[2]
+		string id = "OxyliteRefinery";
+		int width = 3;
+		int height = 4;
+		string anim = "oxylite_refinery_kanim";
+		int hitpoints = 100;
+		float construction_time = 480f;
+		string[] array = new string[]
+		{
+			"RefinedMetal",
+			"Plastic"
+		};
+		float[] construction_mass = new float[]
 		{
 			BUILDINGS.CONSTRUCTION_MASS_KG.TIER5[0],
 			BUILDINGS.CONSTRUCTION_MASS_KG.TIER2[0]
-		}, construction_materials: array, melting_point: 2400f, build_location_rule: BuildLocationRule.OnFloor, noise: NOISE_POLLUTION.NOISY.TIER5, id: "OxyliteRefinery", width: 3, height: 4, anim: "oxylite_refinery_kanim", hitpoints: 100, construction_time: 480f, decor: BUILDINGS.DECOR.PENALTY.TIER1);
-		obj.Overheatable = false;
-		obj.RequiresPowerInput = true;
-		obj.PowerInputOffset = new CellOffset(0, 0);
-		obj.EnergyConsumptionWhenActive = 1200f;
-		obj.ExhaustKilowattsWhenActive = 8f;
-		obj.SelfHeatKilowattsWhenActive = 4f;
-		obj.LogicInputPorts = LogicOperationalController.CreateSingleInputPortList(new CellOffset(0, 1));
-		obj.AudioCategory = "HollowMetal";
-		obj.InputConduitType = ConduitType.Gas;
-		obj.UtilityInputOffset = new CellOffset(1, 0);
-		return obj;
+		};
+		string[] construction_materials = array;
+		float melting_point = 2400f;
+		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
+		EffectorValues tier = NOISE_POLLUTION.NOISY.TIER5;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, construction_mass, construction_materials, melting_point, build_location_rule, BUILDINGS.DECOR.PENALTY.TIER1, tier, 0.2f);
+		buildingDef.Overheatable = false;
+		buildingDef.RequiresPowerInput = true;
+		buildingDef.PowerInputOffset = new CellOffset(0, 0);
+		buildingDef.EnergyConsumptionWhenActive = 1200f;
+		buildingDef.ExhaustKilowattsWhenActive = 8f;
+		buildingDef.SelfHeatKilowattsWhenActive = 4f;
+		buildingDef.LogicInputPorts = LogicOperationalController.CreateSingleInputPortList(new CellOffset(0, 1));
+		buildingDef.AudioCategory = "HollowMetal";
+		buildingDef.InputConduitType = ConduitType.Gas;
+		buildingDef.UtilityInputOffset = new CellOffset(1, 0);
+		return buildingDef;
 	}
 
+	// Token: 0x060015F6 RID: 5622 RVA: 0x00195DD8 File Offset: 0x00193FD8
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		Tag tag = SimHashes.Oxygen.CreateTag();
 		Tag tag2 = SimHashes.Gold.CreateTag();
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		OxyliteRefinery oxyliteRefinery = go.AddOrGet<OxyliteRefinery>();
 		oxyliteRefinery.emitTag = SimHashes.OxyRock.CreateTag();
 		oxyliteRefinery.emitMass = 10f;
@@ -71,21 +70,52 @@ public class OxyliteRefineryConfig : IBuildingConfig
 		manualDeliveryKG.capacity = 7.2000003f;
 		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.MachineFetch.IdHash;
 		ElementConverter elementConverter = go.AddOrGet<ElementConverter>();
-		elementConverter.consumedElements = new ElementConverter.ConsumedElement[2]
+		elementConverter.consumedElements = new ElementConverter.ConsumedElement[]
 		{
-			new ElementConverter.ConsumedElement(tag, 0.6f),
-			new ElementConverter.ConsumedElement(tag2, 0.003f)
+			new ElementConverter.ConsumedElement(tag, 0.6f, true),
+			new ElementConverter.ConsumedElement(tag2, 0.003f, true)
 		};
-		elementConverter.outputElements = new ElementConverter.OutputElement[1]
+		elementConverter.outputElements = new ElementConverter.OutputElement[]
 		{
-			new ElementConverter.OutputElement(0.6f, SimHashes.OxyRock, 303.15f, useEntityTemperature: false, storeOutput: true)
+			new ElementConverter.OutputElement(0.6f, SimHashes.OxyRock, 303.15f, false, true, 0f, 0.5f, 1f, byte.MaxValue, 0, true)
 		};
 		Prioritizable.AddRef(go);
 	}
 
+	// Token: 0x060015F7 RID: 5623 RVA: 0x000A5FB5 File Offset: 0x000A41B5
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicOperationalController>();
 		go.AddOrGetDef<PoweredActiveController.Def>();
 	}
+
+	// Token: 0x04000ED6 RID: 3798
+	public const string ID = "OxyliteRefinery";
+
+	// Token: 0x04000ED7 RID: 3799
+	public const float EMIT_MASS = 10f;
+
+	// Token: 0x04000ED8 RID: 3800
+	public const float INPUT_O2_PER_SECOND = 0.6f;
+
+	// Token: 0x04000ED9 RID: 3801
+	public const float OXYLITE_PER_SECOND = 0.6f;
+
+	// Token: 0x04000EDA RID: 3802
+	public const float GOLD_PER_SECOND = 0.003f;
+
+	// Token: 0x04000EDB RID: 3803
+	public const float OUTPUT_TEMP = 303.15f;
+
+	// Token: 0x04000EDC RID: 3804
+	public const float REFILL_RATE = 2400f;
+
+	// Token: 0x04000EDD RID: 3805
+	public const float GOLD_STORAGE_AMOUNT = 7.2000003f;
+
+	// Token: 0x04000EDE RID: 3806
+	public const float O2_STORAGE_AMOUNT = 6f;
+
+	// Token: 0x04000EDF RID: 3807
+	public const float STORAGE_CAPACITY = 23.2f;
 }

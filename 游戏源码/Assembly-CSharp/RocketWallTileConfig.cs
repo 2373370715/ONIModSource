@@ -1,43 +1,58 @@
+﻿using System;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x0200056A RID: 1386
 public class RocketWallTileConfig : IBuildingConfig
 {
-	public const string ID = "RocketWallTile";
-
-	public static readonly int BlockTileConnectorID = Hash.SDBMLower("tiles_rocket_wall_int");
-
-	public override string[] GetDlcIds()
+	// Token: 0x06001886 RID: 6278 RVA: 0x000A5F1F File Offset: 0x000A411F
+	public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
+	// Token: 0x06001887 RID: 6279 RVA: 0x0019FA64 File Offset: 0x0019DC64
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef("RocketWallTile", 1, 1, "floor_rocket_kanim", 1000, 60f, BUILDINGS.CONSTRUCTION_MASS_KG.TIER2, new string[1] { SimHashes.Steel.ToString() }, 800f, BuildLocationRule.Tile, noise: NOISE_POLLUTION.NONE, decor: BUILDINGS.DECOR.BONUS.TIER0);
-		obj.DebugOnly = true;
-		BuildingTemplates.CreateFoundationTileDef(obj);
-		obj.Floodable = false;
-		obj.Entombable = false;
-		obj.Overheatable = false;
-		obj.UseStructureTemperature = false;
-		obj.Replaceable = false;
-		obj.Invincible = true;
-		obj.AudioCategory = "Metal";
-		obj.AudioSize = "small";
-		obj.BaseTimeUntilRepair = -1f;
-		obj.SceneLayer = Grid.SceneLayer.TileMain;
-		obj.isKAnimTile = true;
-		obj.BlockTileAtlas = Assets.GetTextureAtlas("tiles_rocket_wall_int");
-		obj.BlockTilePlaceAtlas = Assets.GetTextureAtlas("tiles_rocket_wall_int_place");
-		obj.BlockTileMaterial = Assets.GetMaterial("tiles_solid");
-		obj.DecorBlockTileInfo = Assets.GetBlockTileDecorInfo("tiles_rocket_wall_ext_decor_info");
-		obj.DecorPlaceBlockTileInfo = Assets.GetBlockTileDecorInfo("tiles_rocket_wall_ext_place_decor_info");
-		obj.ConstructionOffsetFilter = BuildingDef.ConstructionOffsetFilter_OneDown;
-		obj.ShowInBuildMenu = false;
-		return obj;
+		string id = "RocketWallTile";
+		int width = 1;
+		int height = 1;
+		string anim = "floor_rocket_kanim";
+		int hitpoints = 1000;
+		float construction_time = 60f;
+		float[] tier = BUILDINGS.CONSTRUCTION_MASS_KG.TIER2;
+		string[] construction_materials = new string[]
+		{
+			SimHashes.Steel.ToString()
+		};
+		float melting_point = 800f;
+		BuildLocationRule build_location_rule = BuildLocationRule.Tile;
+		EffectorValues none = NOISE_POLLUTION.NONE;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, construction_materials, melting_point, build_location_rule, BUILDINGS.DECOR.BONUS.TIER0, none, 0.2f);
+		buildingDef.DebugOnly = true;
+		BuildingTemplates.CreateFoundationTileDef(buildingDef);
+		buildingDef.Floodable = false;
+		buildingDef.Entombable = false;
+		buildingDef.Overheatable = false;
+		buildingDef.UseStructureTemperature = false;
+		buildingDef.Replaceable = false;
+		buildingDef.Invincible = true;
+		buildingDef.AudioCategory = "Metal";
+		buildingDef.AudioSize = "small";
+		buildingDef.BaseTimeUntilRepair = -1f;
+		buildingDef.SceneLayer = Grid.SceneLayer.TileMain;
+		buildingDef.isKAnimTile = true;
+		buildingDef.BlockTileAtlas = Assets.GetTextureAtlas("tiles_rocket_wall_int");
+		buildingDef.BlockTilePlaceAtlas = Assets.GetTextureAtlas("tiles_rocket_wall_int_place");
+		buildingDef.BlockTileMaterial = Assets.GetMaterial("tiles_solid");
+		buildingDef.DecorBlockTileInfo = Assets.GetBlockTileDecorInfo("tiles_rocket_wall_ext_decor_info");
+		buildingDef.DecorPlaceBlockTileInfo = Assets.GetBlockTileDecorInfo("tiles_rocket_wall_ext_place_decor_info");
+		buildingDef.ConstructionOffsetFilter = BuildingDef.ConstructionOffsetFilter_OneDown;
+		buildingDef.ShowInBuildMenu = false;
+		return buildingDef;
 	}
 
+	// Token: 0x06001888 RID: 6280 RVA: 0x0019FB90 File Offset: 0x0019DD90
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		GeneratedBuildings.MakeBuildingAlwaysOperational(go);
@@ -46,24 +61,32 @@ public class RocketWallTileConfig : IBuildingConfig
 		simCellOccupier.strengthMultiplier = 10f;
 		simCellOccupier.notifyOnMelt = true;
 		go.AddOrGet<TileTemperature>();
-		go.AddOrGet<KAnimGridTileVisualizer>().blockTileConnectorID = BlockTileConnectorID;
+		go.AddOrGet<KAnimGridTileVisualizer>().blockTileConnectorID = RocketWallTileConfig.BlockTileConnectorID;
 		go.AddOrGet<BuildingHP>().destroyOnDamaged = true;
 	}
 
+	// Token: 0x06001889 RID: 6281 RVA: 0x0019FBF4 File Offset: 0x0019DDF4
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		GeneratedBuildings.RemoveLoopingSounds(go);
 		KPrefabID component = go.GetComponent<KPrefabID>();
-		component.AddTag(GameTags.Bunker);
-		component.AddTag(GameTags.FloorTiles);
-		component.AddTag(GameTags.RocketEnvelopeTile);
-		component.AddTag(GameTags.NoRocketRefund);
+		component.AddTag(GameTags.Bunker, false);
+		component.AddTag(GameTags.FloorTiles, false);
+		component.AddTag(GameTags.RocketEnvelopeTile, false);
+		component.AddTag(GameTags.NoRocketRefund, false);
 		go.GetComponent<Deconstructable>().allowDeconstruction = false;
 	}
 
+	// Token: 0x0600188A RID: 6282 RVA: 0x000A630A File Offset: 0x000A450A
 	public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 		base.DoPostConfigureUnderConstruction(go);
 		go.AddOrGet<KAnimGridTileVisualizer>();
 	}
+
+	// Token: 0x04000FDF RID: 4063
+	public const string ID = "RocketWallTile";
+
+	// Token: 0x04000FE0 RID: 4064
+	public static readonly int BlockTileConnectorID = Hash.SDBMLower("tiles_rocket_wall_int");
 }

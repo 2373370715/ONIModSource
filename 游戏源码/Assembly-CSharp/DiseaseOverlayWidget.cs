@@ -1,29 +1,15 @@
+﻿using System;
 using System.Collections.Generic;
 using Klei.AI;
 using STRINGS;
 using UnityEngine;
 using UnityEngine.UI;
 
+// Token: 0x02001CB7 RID: 7351
 [AddComponentMenu("KMonoBehaviour/scripts/DiseaseOverlayWidget")]
 public class DiseaseOverlayWidget : KMonoBehaviour
 {
-	[SerializeField]
-	private Image progressFill;
-
-	[SerializeField]
-	private ToolTip progressToolTip;
-
-	[SerializeField]
-	private Image germsImage;
-
-	[SerializeField]
-	private Vector3 offset;
-
-	[SerializeField]
-	private Image diseasedImage;
-
-	private List<Image> displayedDiseases = new List<Image>();
-
+	// Token: 0x06009984 RID: 39300 RVA: 0x003B5450 File Offset: 0x003B3650
 	public void Refresh(AmountInstance value_src)
 	{
 		GameObject gameObject = value_src.gameObject;
@@ -32,50 +18,73 @@ public class DiseaseOverlayWidget : KMonoBehaviour
 			return;
 		}
 		KAnimControllerBase component = gameObject.GetComponent<KAnimControllerBase>();
-		Vector3 vector = ((component != null) ? component.GetWorldPivot() : (gameObject.transform.GetPosition() + Vector3.down));
-		base.transform.SetPosition(vector + offset);
+		Vector3 a = (component != null) ? component.GetWorldPivot() : (gameObject.transform.GetPosition() + Vector3.down);
+		base.transform.SetPosition(a + this.offset);
 		if (value_src != null)
 		{
-			progressFill.transform.parent.gameObject.SetActive(value: true);
+			this.progressFill.transform.parent.gameObject.SetActive(true);
 			float num = value_src.value / value_src.GetMax();
-			Vector3 localScale = progressFill.rectTransform.localScale;
+			Vector3 localScale = this.progressFill.rectTransform.localScale;
 			localScale.y = num;
-			progressFill.rectTransform.localScale = localScale;
-			progressToolTip.toolTip = string.Concat(DUPLICANTS.ATTRIBUTES.IMMUNITY.NAME, " ", GameUtil.GetFormattedPercent(num * 100f));
+			this.progressFill.rectTransform.localScale = localScale;
+			this.progressToolTip.toolTip = DUPLICANTS.ATTRIBUTES.IMMUNITY.NAME + " " + GameUtil.GetFormattedPercent(num * 100f, GameUtil.TimeSlice.None);
 		}
 		else
 		{
-			progressFill.transform.parent.gameObject.SetActive(value: false);
+			this.progressFill.transform.parent.gameObject.SetActive(false);
 		}
 		int num2 = 0;
 		Amounts amounts = gameObject.GetComponent<Modifiers>().GetAmounts();
-		foreach (Disease resource in Db.Get().Diseases.resources)
+		foreach (Disease disease in Db.Get().Diseases.resources)
 		{
-			float value = amounts.Get(resource.amount).value;
+			float value = amounts.Get(disease.amount).value;
 			if (value > 0f)
 			{
-				Image image = null;
-				if (num2 < displayedDiseases.Count)
+				Image image;
+				if (num2 < this.displayedDiseases.Count)
 				{
-					image = displayedDiseases[num2];
+					image = this.displayedDiseases[num2];
 				}
 				else
 				{
-					image = Util.KInstantiateUI(germsImage.gameObject, germsImage.transform.parent.gameObject, force_active: true).GetComponent<Image>();
-					displayedDiseases.Add(image);
+					image = Util.KInstantiateUI(this.germsImage.gameObject, this.germsImage.transform.parent.gameObject, true).GetComponent<Image>();
+					this.displayedDiseases.Add(image);
 				}
-				image.color = GlobalAssets.Instance.colorSet.GetColorByName(resource.overlayColourName);
-				image.GetComponent<ToolTip>().toolTip = resource.Name + " " + GameUtil.GetFormattedDiseaseAmount((int)value);
+				image.color = GlobalAssets.Instance.colorSet.GetColorByName(disease.overlayColourName);
+				image.GetComponent<ToolTip>().toolTip = disease.Name + " " + GameUtil.GetFormattedDiseaseAmount((int)value, GameUtil.TimeSlice.None);
 				num2++;
 			}
 		}
-		for (int num3 = displayedDiseases.Count - 1; num3 >= num2; num3--)
+		for (int i = this.displayedDiseases.Count - 1; i >= num2; i--)
 		{
-			Util.KDestroyGameObject(displayedDiseases[num3].gameObject);
-			displayedDiseases.RemoveAt(num3);
+			Util.KDestroyGameObject(this.displayedDiseases[i].gameObject);
+			this.displayedDiseases.RemoveAt(i);
 		}
-		diseasedImage.enabled = false;
-		progressFill.transform.parent.gameObject.SetActive(displayedDiseases.Count > 0);
-		germsImage.transform.parent.gameObject.SetActive(displayedDiseases.Count > 0);
+		this.diseasedImage.enabled = false;
+		this.progressFill.transform.parent.gameObject.SetActive(this.displayedDiseases.Count > 0);
+		this.germsImage.transform.parent.gameObject.SetActive(this.displayedDiseases.Count > 0);
 	}
+
+	// Token: 0x040077BC RID: 30652
+	[SerializeField]
+	private Image progressFill;
+
+	// Token: 0x040077BD RID: 30653
+	[SerializeField]
+	private ToolTip progressToolTip;
+
+	// Token: 0x040077BE RID: 30654
+	[SerializeField]
+	private Image germsImage;
+
+	// Token: 0x040077BF RID: 30655
+	[SerializeField]
+	private Vector3 offset;
+
+	// Token: 0x040077C0 RID: 30656
+	[SerializeField]
+	private Image diseasedImage;
+
+	// Token: 0x040077C1 RID: 30657
+	private List<Image> displayedDiseases = new List<Image>();
 }

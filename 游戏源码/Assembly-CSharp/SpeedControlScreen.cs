@@ -1,337 +1,404 @@
-using System;
+﻿using System;
 using System.Collections;
 using FMOD.Studio;
 using STRINGS;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
+// Token: 0x0200200D RID: 8205
 public class SpeedControlScreen : KScreen
 {
-	public GameObject playButtonWidget;
-
-	public GameObject pauseButtonWidget;
-
-	public Image playIcon;
-
-	public Image pauseIcon;
-
-	[SerializeField]
-	private TextStyleSetting TooltipTextStyle;
-
-	public GameObject speedButtonWidget_slow;
-
-	public GameObject speedButtonWidget_medium;
-
-	public GameObject speedButtonWidget_fast;
-
-	public GameObject mainMenuWidget;
-
-	public float normalSpeed;
-
-	public float fastSpeed;
-
-	public float ultraSpeed;
-
-	private KToggle pauseButton;
-
-	private KToggle slowButton;
-
-	private KToggle mediumButton;
-
-	private KToggle fastButton;
-
-	private int speed;
-
-	private int pauseCount;
-
-	private float stepTime;
-
+	// Token: 0x17000B28 RID: 2856
+	// (get) Token: 0x0600AE74 RID: 44660 RVA: 0x00111829 File Offset: 0x0010FA29
+	// (set) Token: 0x0600AE75 RID: 44661 RVA: 0x00111830 File Offset: 0x0010FA30
 	public static SpeedControlScreen Instance { get; private set; }
 
-	public bool IsPaused => pauseCount > 0;
-
+	// Token: 0x0600AE76 RID: 44662 RVA: 0x00111838 File Offset: 0x0010FA38
 	public static void DestroyInstance()
 	{
-		Instance = null;
+		SpeedControlScreen.Instance = null;
 	}
 
+	// Token: 0x17000B29 RID: 2857
+	// (get) Token: 0x0600AE77 RID: 44663 RVA: 0x00111840 File Offset: 0x0010FA40
+	public bool IsPaused
+	{
+		get
+		{
+			return this.pauseCount > 0;
+		}
+	}
+
+	// Token: 0x0600AE78 RID: 44664 RVA: 0x004198D4 File Offset: 0x00417AD4
 	protected override void OnPrefabInit()
 	{
-		Instance = this;
-		pauseButton = pauseButtonWidget.GetComponent<KToggle>();
-		slowButton = speedButtonWidget_slow.GetComponent<KToggle>();
-		mediumButton = speedButtonWidget_medium.GetComponent<KToggle>();
-		fastButton = speedButtonWidget_fast.GetComponent<KToggle>();
-		KToggle[] array = new KToggle[4] { pauseButton, slowButton, mediumButton, fastButton };
+		SpeedControlScreen.Instance = this;
+		this.pauseButton = this.pauseButtonWidget.GetComponent<KToggle>();
+		this.slowButton = this.speedButtonWidget_slow.GetComponent<KToggle>();
+		this.mediumButton = this.speedButtonWidget_medium.GetComponent<KToggle>();
+		this.fastButton = this.speedButtonWidget_fast.GetComponent<KToggle>();
+		KToggle[] array = new KToggle[]
+		{
+			this.pauseButton,
+			this.slowButton,
+			this.mediumButton,
+			this.fastButton
+		};
 		for (int i = 0; i < array.Length; i++)
 		{
 			array[i].soundPlayer.Enabled = false;
 		}
-		slowButton.onClick += delegate
+		this.slowButton.onClick += delegate()
 		{
-			PlaySpeedChangeSound(1f);
-			SetSpeed(0);
+			this.PlaySpeedChangeSound(1f);
+			this.SetSpeed(0);
 		};
-		mediumButton.onClick += delegate
+		this.mediumButton.onClick += delegate()
 		{
-			PlaySpeedChangeSound(2f);
-			SetSpeed(1);
+			this.PlaySpeedChangeSound(2f);
+			this.SetSpeed(1);
 		};
-		fastButton.onClick += delegate
+		this.fastButton.onClick += delegate()
 		{
-			PlaySpeedChangeSound(3f);
-			SetSpeed(2);
+			this.PlaySpeedChangeSound(3f);
+			this.SetSpeed(2);
 		};
-		pauseButton.onClick += delegate
+		this.pauseButton.onClick += delegate()
 		{
-			TogglePause();
+			this.TogglePause(true);
 		};
-		speedButtonWidget_slow.GetComponent<ToolTip>().AddMultiStringTooltip(GameUtil.ReplaceHotkeyString(UI.TOOLTIPS.SPEEDBUTTON_SLOW, Action.CycleSpeed), TooltipTextStyle);
-		speedButtonWidget_medium.GetComponent<ToolTip>().AddMultiStringTooltip(GameUtil.ReplaceHotkeyString(UI.TOOLTIPS.SPEEDBUTTON_MEDIUM, Action.CycleSpeed), TooltipTextStyle);
-		speedButtonWidget_fast.GetComponent<ToolTip>().AddMultiStringTooltip(GameUtil.ReplaceHotkeyString(UI.TOOLTIPS.SPEEDBUTTON_FAST, Action.CycleSpeed), TooltipTextStyle);
-		playButtonWidget.GetComponent<KButton>().onClick += delegate
+		this.speedButtonWidget_slow.GetComponent<ToolTip>().AddMultiStringTooltip(GameUtil.ReplaceHotkeyString(UI.TOOLTIPS.SPEEDBUTTON_SLOW, global::Action.CycleSpeed), this.TooltipTextStyle);
+		this.speedButtonWidget_medium.GetComponent<ToolTip>().AddMultiStringTooltip(GameUtil.ReplaceHotkeyString(UI.TOOLTIPS.SPEEDBUTTON_MEDIUM, global::Action.CycleSpeed), this.TooltipTextStyle);
+		this.speedButtonWidget_fast.GetComponent<ToolTip>().AddMultiStringTooltip(GameUtil.ReplaceHotkeyString(UI.TOOLTIPS.SPEEDBUTTON_FAST, global::Action.CycleSpeed), this.TooltipTextStyle);
+		this.playButtonWidget.GetComponent<KButton>().onClick += delegate()
 		{
-			TogglePause();
+			this.TogglePause(true);
 		};
-		KInputManager.InputChange.AddListener(ResetToolTip);
+		KInputManager.InputChange.AddListener(new UnityAction(this.ResetToolTip));
 	}
 
+	// Token: 0x0600AE79 RID: 44665 RVA: 0x0011184B File Offset: 0x0010FA4B
 	protected override void OnSpawn()
 	{
 		if (SaveGame.Instance != null)
 		{
-			speed = SaveGame.Instance.GetSpeed();
-			SetSpeed(speed);
+			this.speed = SaveGame.Instance.GetSpeed();
+			this.SetSpeed(this.speed);
 		}
 		base.OnSpawn();
-		OnChanged();
+		this.OnChanged();
 	}
 
+	// Token: 0x0600AE7A RID: 44666 RVA: 0x00111882 File Offset: 0x0010FA82
 	protected override void OnForcedCleanUp()
 	{
-		KInputManager.InputChange.RemoveListener(ResetToolTip);
+		KInputManager.InputChange.RemoveListener(new UnityAction(this.ResetToolTip));
 		base.OnForcedCleanUp();
 	}
 
+	// Token: 0x0600AE7B RID: 44667 RVA: 0x001118A0 File Offset: 0x0010FAA0
 	public int GetSpeed()
 	{
-		return speed;
+		return this.speed;
 	}
 
+	// Token: 0x0600AE7C RID: 44668 RVA: 0x00419A78 File Offset: 0x00417C78
 	public void SetSpeed(int Speed)
 	{
-		speed = Speed % 3;
-		switch (speed)
+		this.speed = Speed % 3;
+		switch (this.speed)
 		{
 		case 0:
-			slowButton.Select();
-			slowButton.isOn = true;
-			mediumButton.isOn = false;
-			fastButton.isOn = false;
+			this.slowButton.Select();
+			this.slowButton.isOn = true;
+			this.mediumButton.isOn = false;
+			this.fastButton.isOn = false;
 			break;
 		case 1:
-			mediumButton.Select();
-			slowButton.isOn = false;
-			mediumButton.isOn = true;
-			fastButton.isOn = false;
+			this.mediumButton.Select();
+			this.slowButton.isOn = false;
+			this.mediumButton.isOn = true;
+			this.fastButton.isOn = false;
 			break;
 		case 2:
-			fastButton.Select();
-			slowButton.isOn = false;
-			mediumButton.isOn = false;
-			fastButton.isOn = true;
+			this.fastButton.Select();
+			this.slowButton.isOn = false;
+			this.mediumButton.isOn = false;
+			this.fastButton.isOn = true;
 			break;
 		}
-		OnSpeedChange();
+		this.OnSpeedChange();
 	}
 
+	// Token: 0x0600AE7D RID: 44669 RVA: 0x001118A8 File Offset: 0x0010FAA8
 	public void ToggleRidiculousSpeed()
 	{
-		if (ultraSpeed == 3f)
+		if (this.ultraSpeed == 3f)
 		{
-			ultraSpeed = 10f;
+			this.ultraSpeed = 10f;
 		}
 		else
 		{
-			ultraSpeed = 3f;
+			this.ultraSpeed = 3f;
 		}
-		speed = 2;
-		OnChanged();
+		this.speed = 2;
+		this.OnChanged();
 	}
 
+	// Token: 0x0600AE7E RID: 44670 RVA: 0x001118DC File Offset: 0x0010FADC
 	public void TogglePause(bool playsound = true)
 	{
-		if (IsPaused)
+		if (this.IsPaused)
 		{
-			Unpause(playsound);
+			this.Unpause(playsound);
+			return;
 		}
-		else
-		{
-			Pause(playsound);
-		}
+		this.Pause(playsound, false);
 	}
 
+	// Token: 0x0600AE7F RID: 44671 RVA: 0x00419B44 File Offset: 0x00417D44
 	public void ResetToolTip()
 	{
-		speedButtonWidget_slow.GetComponent<ToolTip>().ClearMultiStringTooltip();
-		speedButtonWidget_medium.GetComponent<ToolTip>().ClearMultiStringTooltip();
-		speedButtonWidget_fast.GetComponent<ToolTip>().ClearMultiStringTooltip();
-		speedButtonWidget_slow.GetComponent<ToolTip>().AddMultiStringTooltip(GameUtil.ReplaceHotkeyString(UI.TOOLTIPS.SPEEDBUTTON_SLOW, Action.CycleSpeed), TooltipTextStyle);
-		speedButtonWidget_medium.GetComponent<ToolTip>().AddMultiStringTooltip(GameUtil.ReplaceHotkeyString(UI.TOOLTIPS.SPEEDBUTTON_MEDIUM, Action.CycleSpeed), TooltipTextStyle);
-		speedButtonWidget_fast.GetComponent<ToolTip>().AddMultiStringTooltip(GameUtil.ReplaceHotkeyString(UI.TOOLTIPS.SPEEDBUTTON_FAST, Action.CycleSpeed), TooltipTextStyle);
-		if (pauseButton.isOn)
+		this.speedButtonWidget_slow.GetComponent<ToolTip>().ClearMultiStringTooltip();
+		this.speedButtonWidget_medium.GetComponent<ToolTip>().ClearMultiStringTooltip();
+		this.speedButtonWidget_fast.GetComponent<ToolTip>().ClearMultiStringTooltip();
+		this.speedButtonWidget_slow.GetComponent<ToolTip>().AddMultiStringTooltip(GameUtil.ReplaceHotkeyString(UI.TOOLTIPS.SPEEDBUTTON_SLOW, global::Action.CycleSpeed), this.TooltipTextStyle);
+		this.speedButtonWidget_medium.GetComponent<ToolTip>().AddMultiStringTooltip(GameUtil.ReplaceHotkeyString(UI.TOOLTIPS.SPEEDBUTTON_MEDIUM, global::Action.CycleSpeed), this.TooltipTextStyle);
+		this.speedButtonWidget_fast.GetComponent<ToolTip>().AddMultiStringTooltip(GameUtil.ReplaceHotkeyString(UI.TOOLTIPS.SPEEDBUTTON_FAST, global::Action.CycleSpeed), this.TooltipTextStyle);
+		if (this.pauseButton.isOn)
 		{
-			pauseButtonWidget.GetComponent<ToolTip>().ClearMultiStringTooltip();
-			pauseButtonWidget.GetComponent<ToolTip>().AddMultiStringTooltip(GameUtil.ReplaceHotkeyString(UI.TOOLTIPS.UNPAUSE, Action.TogglePause), TooltipTextStyle);
+			this.pauseButtonWidget.GetComponent<ToolTip>().ClearMultiStringTooltip();
+			this.pauseButtonWidget.GetComponent<ToolTip>().AddMultiStringTooltip(GameUtil.ReplaceHotkeyString(UI.TOOLTIPS.UNPAUSE, global::Action.TogglePause), this.TooltipTextStyle);
+			return;
 		}
-		else
-		{
-			pauseButtonWidget.GetComponent<ToolTip>().ClearMultiStringTooltip();
-			pauseButtonWidget.GetComponent<ToolTip>().AddMultiStringTooltip(GameUtil.ReplaceHotkeyString(UI.TOOLTIPS.PAUSE, Action.TogglePause), TooltipTextStyle);
-		}
+		this.pauseButtonWidget.GetComponent<ToolTip>().ClearMultiStringTooltip();
+		this.pauseButtonWidget.GetComponent<ToolTip>().AddMultiStringTooltip(GameUtil.ReplaceHotkeyString(UI.TOOLTIPS.PAUSE, global::Action.TogglePause), this.TooltipTextStyle);
 	}
 
+	// Token: 0x0600AE80 RID: 44672 RVA: 0x00419C74 File Offset: 0x00417E74
 	public void Pause(bool playSound = true, bool isCrashed = false)
 	{
-		pauseCount++;
-		if (pauseCount != 1)
+		this.pauseCount++;
+		if (this.pauseCount == 1)
 		{
-			return;
+			if (playSound)
+			{
+				if (isCrashed)
+				{
+					KMonoBehaviour.PlaySound(GlobalAssets.GetSound("Crash_Screen", false));
+				}
+				else
+				{
+					KMonoBehaviour.PlaySound(GlobalAssets.GetSound("Speed_Pause", false));
+				}
+				if (SoundListenerController.Instance != null)
+				{
+					SoundListenerController.Instance.SetLoopingVolume(0f);
+				}
+			}
+			AudioMixer.instance.Start(AudioMixerSnapshots.Get().SpeedPausedMigrated);
+			MusicManager.instance.SetDynamicMusicPaused();
+			this.pauseButtonWidget.GetComponent<ToolTip>().ClearMultiStringTooltip();
+			this.pauseButtonWidget.GetComponent<ToolTip>().AddMultiStringTooltip(GameUtil.ReplaceHotkeyString(UI.TOOLTIPS.UNPAUSE, global::Action.TogglePause), this.TooltipTextStyle);
+			this.pauseButton.isOn = true;
+			this.OnPause();
 		}
-		if (playSound)
-		{
-			if (isCrashed)
-			{
-				KMonoBehaviour.PlaySound(GlobalAssets.GetSound("Crash_Screen"));
-			}
-			else
-			{
-				KMonoBehaviour.PlaySound(GlobalAssets.GetSound("Speed_Pause"));
-			}
-			if (SoundListenerController.Instance != null)
-			{
-				SoundListenerController.Instance.SetLoopingVolume(0f);
-			}
-		}
-		AudioMixer.instance.Start(AudioMixerSnapshots.Get().SpeedPausedMigrated);
-		MusicManager.instance.SetDynamicMusicPaused();
-		pauseButtonWidget.GetComponent<ToolTip>().ClearMultiStringTooltip();
-		pauseButtonWidget.GetComponent<ToolTip>().AddMultiStringTooltip(GameUtil.ReplaceHotkeyString(UI.TOOLTIPS.UNPAUSE, Action.TogglePause), TooltipTextStyle);
-		pauseButton.isOn = true;
-		OnPause();
 	}
 
+	// Token: 0x0600AE81 RID: 44673 RVA: 0x00419D48 File Offset: 0x00417F48
 	public void Unpause(bool playSound = true)
 	{
-		pauseCount = Mathf.Max(0, pauseCount - 1);
-		if (pauseCount != 0)
+		this.pauseCount = Mathf.Max(0, this.pauseCount - 1);
+		if (this.pauseCount == 0)
+		{
+			if (playSound)
+			{
+				KMonoBehaviour.PlaySound(GlobalAssets.GetSound("Speed_Unpause", false));
+				if (SoundListenerController.Instance != null)
+				{
+					SoundListenerController.Instance.SetLoopingVolume(1f);
+				}
+			}
+			AudioMixer.instance.Stop(AudioMixerSnapshots.Get().SpeedPausedMigrated, STOP_MODE.ALLOWFADEOUT);
+			MusicManager.instance.SetDynamicMusicUnpaused();
+			this.pauseButtonWidget.GetComponent<ToolTip>().ClearMultiStringTooltip();
+			this.pauseButtonWidget.GetComponent<ToolTip>().AddMultiStringTooltip(GameUtil.ReplaceHotkeyString(UI.TOOLTIPS.PAUSE, global::Action.TogglePause), this.TooltipTextStyle);
+			this.pauseButton.isOn = false;
+			this.SetSpeed(this.speed);
+			this.OnPlay();
+		}
+	}
+
+	// Token: 0x0600AE82 RID: 44674 RVA: 0x001118F6 File Offset: 0x0010FAF6
+	private void OnPause()
+	{
+		this.OnChanged();
+	}
+
+	// Token: 0x0600AE83 RID: 44675 RVA: 0x001118F6 File Offset: 0x0010FAF6
+	private void OnPlay()
+	{
+		this.OnChanged();
+	}
+
+	// Token: 0x0600AE84 RID: 44676 RVA: 0x001118FE File Offset: 0x0010FAFE
+	public void OnSpeedChange()
+	{
+		if (Game.IsQuitting())
 		{
 			return;
 		}
-		if (playSound)
-		{
-			KMonoBehaviour.PlaySound(GlobalAssets.GetSound("Speed_Unpause"));
-			if (SoundListenerController.Instance != null)
-			{
-				SoundListenerController.Instance.SetLoopingVolume(1f);
-			}
-		}
-		AudioMixer.instance.Stop(AudioMixerSnapshots.Get().SpeedPausedMigrated);
-		MusicManager.instance.SetDynamicMusicUnpaused();
-		pauseButtonWidget.GetComponent<ToolTip>().ClearMultiStringTooltip();
-		pauseButtonWidget.GetComponent<ToolTip>().AddMultiStringTooltip(GameUtil.ReplaceHotkeyString(UI.TOOLTIPS.PAUSE, Action.TogglePause), TooltipTextStyle);
-		pauseButton.isOn = false;
-		SetSpeed(speed);
-		OnPlay();
+		this.OnChanged();
 	}
 
-	private void OnPause()
-	{
-		OnChanged();
-	}
-
-	private void OnPlay()
-	{
-		OnChanged();
-	}
-
-	public void OnSpeedChange()
-	{
-		if (!Game.IsQuitting())
-		{
-			OnChanged();
-		}
-	}
-
+	// Token: 0x0600AE85 RID: 44677 RVA: 0x00419E18 File Offset: 0x00418018
 	private void OnChanged()
 	{
-		if (IsPaused)
+		if (this.IsPaused)
 		{
 			Time.timeScale = 0f;
+			return;
 		}
-		else if (speed == 0)
+		if (this.speed == 0)
 		{
-			Time.timeScale = normalSpeed;
+			Time.timeScale = this.normalSpeed;
+			return;
 		}
-		else if (speed == 1)
+		if (this.speed == 1)
 		{
-			Time.timeScale = fastSpeed;
+			Time.timeScale = this.fastSpeed;
+			return;
 		}
-		else if (speed == 2)
+		if (this.speed == 2)
 		{
-			Time.timeScale = ultraSpeed;
+			Time.timeScale = this.ultraSpeed;
 		}
 	}
 
+	// Token: 0x0600AE86 RID: 44678 RVA: 0x00419E78 File Offset: 0x00418078
 	public override void OnKeyDown(KButtonEvent e)
 	{
-		if (e.TryConsume(Action.TogglePause))
+		if (e.TryConsume(global::Action.TogglePause))
 		{
-			TogglePause();
+			this.TogglePause(true);
+			return;
 		}
-		else if (e.TryConsume(Action.CycleSpeed))
+		if (e.TryConsume(global::Action.CycleSpeed))
 		{
-			PlaySpeedChangeSound((speed + 1) % 3 + 1);
-			SetSpeed(speed + 1);
-			OnSpeedChange();
+			this.PlaySpeedChangeSound((float)((this.speed + 1) % 3 + 1));
+			this.SetSpeed(this.speed + 1);
+			this.OnSpeedChange();
+			return;
 		}
-		else if (e.TryConsume(Action.SpeedUp))
+		if (e.TryConsume(global::Action.SpeedUp))
 		{
-			speed++;
-			speed = Math.Min(speed, 2);
-			SetSpeed(speed);
+			this.speed++;
+			this.speed = Math.Min(this.speed, 2);
+			this.SetSpeed(this.speed);
+			return;
 		}
-		else if (e.TryConsume(Action.SlowDown))
+		if (e.TryConsume(global::Action.SlowDown))
 		{
-			speed--;
-			speed = Math.Max(speed, 0);
-			SetSpeed(speed);
+			this.speed--;
+			this.speed = Math.Max(this.speed, 0);
+			this.SetSpeed(this.speed);
 		}
 	}
 
+	// Token: 0x0600AE87 RID: 44679 RVA: 0x00419F38 File Offset: 0x00418138
 	private void PlaySpeedChangeSound(float speed)
 	{
-		string sound = GlobalAssets.GetSound("Speed_Change");
+		string sound = GlobalAssets.GetSound("Speed_Change", false);
 		if (sound != null)
 		{
-			EventInstance instance = SoundEvent.BeginOneShot(sound, Vector3.zero);
-			instance.setParameterByName("Speed", speed);
+			EventInstance instance = SoundEvent.BeginOneShot(sound, Vector3.zero, 1f, false);
+			instance.setParameterByName("Speed", speed, false);
 			SoundEvent.EndOneShot(instance);
 		}
 	}
 
+	// Token: 0x0600AE88 RID: 44680 RVA: 0x00419F80 File Offset: 0x00418180
 	public void DebugStepFrame()
 	{
-		DebugUtil.LogArgs($"Stepping one frame {GameClock.Instance.GetTime()} ({GameClock.Instance.GetTime() / 600f})");
-		stepTime = Time.time;
-		Unpause(playSound: false);
-		StartCoroutine(DebugStepFrameDelay());
+		DebugUtil.LogArgs(new object[]
+		{
+			string.Format("Stepping one frame {0} ({1})", GameClock.Instance.GetTime(), GameClock.Instance.GetTime() / 600f)
+		});
+		this.stepTime = Time.time;
+		this.Unpause(false);
+		base.StartCoroutine(this.DebugStepFrameDelay());
 	}
 
+	// Token: 0x0600AE89 RID: 44681 RVA: 0x0011190E File Offset: 0x0010FB0E
 	private IEnumerator DebugStepFrameDelay()
 	{
 		yield return null;
-		DebugUtil.LogArgs("Stepped one frame", Time.time - stepTime, "seconds");
-		Pause(playSound: false);
+		DebugUtil.LogArgs(new object[]
+		{
+			"Stepped one frame",
+			Time.time - this.stepTime,
+			"seconds"
+		});
+		this.Pause(false, false);
+		yield break;
 	}
+
+	// Token: 0x04008933 RID: 35123
+	public GameObject playButtonWidget;
+
+	// Token: 0x04008934 RID: 35124
+	public GameObject pauseButtonWidget;
+
+	// Token: 0x04008935 RID: 35125
+	public Image playIcon;
+
+	// Token: 0x04008936 RID: 35126
+	public Image pauseIcon;
+
+	// Token: 0x04008937 RID: 35127
+	[SerializeField]
+	private TextStyleSetting TooltipTextStyle;
+
+	// Token: 0x04008938 RID: 35128
+	public GameObject speedButtonWidget_slow;
+
+	// Token: 0x04008939 RID: 35129
+	public GameObject speedButtonWidget_medium;
+
+	// Token: 0x0400893A RID: 35130
+	public GameObject speedButtonWidget_fast;
+
+	// Token: 0x0400893B RID: 35131
+	public GameObject mainMenuWidget;
+
+	// Token: 0x0400893C RID: 35132
+	public float normalSpeed;
+
+	// Token: 0x0400893D RID: 35133
+	public float fastSpeed;
+
+	// Token: 0x0400893E RID: 35134
+	public float ultraSpeed;
+
+	// Token: 0x0400893F RID: 35135
+	private KToggle pauseButton;
+
+	// Token: 0x04008940 RID: 35136
+	private KToggle slowButton;
+
+	// Token: 0x04008941 RID: 35137
+	private KToggle mediumButton;
+
+	// Token: 0x04008942 RID: 35138
+	private KToggle fastButton;
+
+	// Token: 0x04008943 RID: 35139
+	private int speed;
+
+	// Token: 0x04008944 RID: 35140
+	private int pauseCount;
+
+	// Token: 0x04008946 RID: 35142
+	private float stepTime;
 }

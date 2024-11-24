@@ -1,66 +1,76 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using STRINGS;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x02000D89 RID: 3465
 public class GammaRayOven : ComplexFabricator, IGameObjectEffectDescriptor
 {
-	[SerializeField]
-	private int diseaseCountKillRate = 100;
-
+	// Token: 0x060043ED RID: 17389 RVA: 0x000CA35A File Offset: 0x000C855A
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		choreType = Db.Get().ChoreTypes.Cook;
-		fetchChoreTypeIdHash = Db.Get().ChoreTypes.CookFetch.IdHash;
+		this.choreType = Db.Get().ChoreTypes.Cook;
+		this.fetchChoreTypeIdHash = Db.Get().ChoreTypes.CookFetch.IdHash;
 	}
 
+	// Token: 0x060043EE RID: 17390 RVA: 0x00246730 File Offset: 0x00244930
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		workable.WorkerStatusItem = Db.Get().DuplicantStatusItems.Cooking;
-		workable.overrideAnims = new KAnimFile[1] { Assets.GetAnim("anim_interacts_cookstation_kanim") };
-		workable.AttributeConverter = Db.Get().AttributeConverters.CookingSpeed;
-		workable.AttributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.MOST_DAY_EXPERIENCE;
-		workable.SkillExperienceSkillGroup = Db.Get().SkillGroups.Cooking.Id;
-		workable.SkillExperienceMultiplier = SKILLS.MOST_DAY_EXPERIENCE;
-		ComplexFabricatorWorkable complexFabricatorWorkable = workable;
-		complexFabricatorWorkable.OnWorkTickActions = (Action<Worker, float>)Delegate.Combine(complexFabricatorWorkable.OnWorkTickActions, (Action<Worker, float>)delegate(Worker worker, float dt)
+		this.workable.WorkerStatusItem = Db.Get().DuplicantStatusItems.Cooking;
+		this.workable.overrideAnims = new KAnimFile[]
 		{
-			Debug.Assert(worker != null, "How did we get a null worker?");
-			if (diseaseCountKillRate > 0)
+			Assets.GetAnim("anim_interacts_cookstation_kanim")
+		};
+		this.workable.AttributeConverter = Db.Get().AttributeConverters.CookingSpeed;
+		this.workable.AttributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.MOST_DAY_EXPERIENCE;
+		this.workable.SkillExperienceSkillGroup = Db.Get().SkillGroups.Cooking.Id;
+		this.workable.SkillExperienceMultiplier = SKILLS.MOST_DAY_EXPERIENCE;
+		ComplexFabricatorWorkable workable = this.workable;
+		workable.OnWorkTickActions = (Action<WorkerBase, float>)Delegate.Combine(workable.OnWorkTickActions, new Action<WorkerBase, float>(delegate(WorkerBase worker, float dt)
+		{
+			global::Debug.Assert(worker != null, "How did we get a null worker?");
+			if (this.diseaseCountKillRate > 0)
 			{
-				PrimaryElement component = GetComponent<PrimaryElement>();
-				int num = Math.Max(1, (int)((float)diseaseCountKillRate * dt));
+				PrimaryElement component = base.GetComponent<PrimaryElement>();
+				int num = Math.Max(1, (int)((float)this.diseaseCountKillRate * dt));
 				component.ModifyDiseaseCount(-num, "GammaRayOven");
 			}
-		});
-		GetComponent<Radiator>().emitter.enabled = false;
-		Subscribe(824508782, UpdateRadiator);
+		}));
+		base.GetComponent<Radiator>().emitter.enabled = false;
+		base.Subscribe(824508782, new Action<object>(this.UpdateRadiator));
 	}
 
+	// Token: 0x060043EF RID: 17391 RVA: 0x000CBE80 File Offset: 0x000CA080
 	private void UpdateRadiator(object data)
 	{
-		GetComponent<Radiator>().emitter.enabled = operational.IsActive;
+		base.GetComponent<Radiator>().emitter.enabled = this.operational.IsActive;
 	}
 
+	// Token: 0x060043F0 RID: 17392 RVA: 0x0024682C File Offset: 0x00244A2C
 	protected override List<GameObject> SpawnOrderProduct(ComplexRecipe recipe)
 	{
 		List<GameObject> list = base.SpawnOrderProduct(recipe);
-		foreach (GameObject item in list)
+		foreach (GameObject gameObject in list)
 		{
-			PrimaryElement component = item.GetComponent<PrimaryElement>();
+			PrimaryElement component = gameObject.GetComponent<PrimaryElement>();
 			component.ModifyDiseaseCount(-component.DiseaseCount, "GammaRayOven.CompleteOrder");
 		}
-		GetComponent<Operational>().SetActive(value: false);
+		base.GetComponent<Operational>().SetActive(false, false);
 		return list;
 	}
 
+	// Token: 0x060043F1 RID: 17393 RVA: 0x000CA391 File Offset: 0x000C8591
 	public override List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> descriptors = base.GetDescriptors(go);
-		descriptors.Add(new Descriptor(UI.BUILDINGEFFECTS.REMOVES_DISEASE, UI.BUILDINGEFFECTS.TOOLTIPS.REMOVES_DISEASE));
+		descriptors.Add(new Descriptor(UI.BUILDINGEFFECTS.REMOVES_DISEASE, UI.BUILDINGEFFECTS.TOOLTIPS.REMOVES_DISEASE, Descriptor.DescriptorType.Effect, false));
 		return descriptors;
 	}
+
+	// Token: 0x04002E9C RID: 11932
+	[SerializeField]
+	private int diseaseCountKillRate = 100;
 }

@@ -1,91 +1,75 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using ImGuiNET;
 using UnityEngine;
 
+// Token: 0x02000BC7 RID: 3015
 public class DevToolSceneInspector : DevTool
 {
-	private class StackItem
-	{
-		public object Obj;
-
-		public string Filter;
-	}
-
-	private class ViewInfo
-	{
-		public string Name;
-
-		public Action<object, string> Callback;
-
-		public ViewInfo(string s, Action<object, string> a)
-		{
-			Name = s;
-			Callback = a;
-		}
-	}
-
-	private List<StackItem> Stack = new List<StackItem>();
-
-	private int StackIndex = -1;
-
-	private Dictionary<Type, ViewInfo> CustomTypeViews;
-
+	// Token: 0x060039A9 RID: 14761 RVA: 0x002229C8 File Offset: 0x00220BC8
 	public DevToolSceneInspector()
 	{
-		drawFlags = ImGuiWindowFlags.MenuBar;
-		CustomTypeViews = new Dictionary<Type, ViewInfo>
+		this.drawFlags = ImGuiWindowFlags.MenuBar;
+		this.CustomTypeViews = new Dictionary<Type, DevToolSceneInspector.ViewInfo>
 		{
 			{
 				typeof(GameObject),
-				new ViewInfo("Components", delegate(object o, string f)
+				new DevToolSceneInspector.ViewInfo("Components", delegate(object o, string f)
 				{
-					CustomGameObjectDisplay(o, f);
+					this.CustomGameObjectDisplay(o, f);
 				})
 			},
 			{
 				typeof(KPrefabID),
-				new ViewInfo("Prefab tags", delegate(object o, string f)
+				new DevToolSceneInspector.ViewInfo("Prefab tags", delegate(object o, string f)
 				{
-					CustomPrefabTagView(o, f);
+					this.CustomPrefabTagView(o, f);
 				})
 			}
 		};
 	}
 
+	// Token: 0x060039AA RID: 14762 RVA: 0x000C5466 File Offset: 0x000C3666
 	public static void Inspect(object obj)
 	{
 		DevToolManager.Instance.panels.AddOrGetDevTool<DevToolSceneInspector>().PushObject(obj);
 	}
 
+	// Token: 0x060039AB RID: 14763 RVA: 0x00222A50 File Offset: 0x00220C50
 	public void PushObject(object obj)
 	{
-		if (obj != null && (StackIndex < 0 || StackIndex >= Stack.Count || obj != Stack[StackIndex].Obj))
+		if (obj == null)
 		{
-			if (Stack.Count > StackIndex + 1)
-			{
-				Stack.RemoveRange(StackIndex + 1, Stack.Count - (StackIndex + 1));
-			}
-			StackItem stackItem = new StackItem();
-			stackItem.Obj = obj;
-			stackItem.Filter = "";
-			Stack.Add(stackItem);
-			StackIndex++;
+			return;
 		}
+		if (this.StackIndex >= 0 && this.StackIndex < this.Stack.Count && obj == this.Stack[this.StackIndex].Obj)
+		{
+			return;
+		}
+		if (this.Stack.Count > this.StackIndex + 1)
+		{
+			this.Stack.RemoveRange(this.StackIndex + 1, this.Stack.Count - (this.StackIndex + 1));
+		}
+		DevToolSceneInspector.StackItem stackItem = new DevToolSceneInspector.StackItem();
+		stackItem.Obj = obj;
+		stackItem.Filter = "";
+		this.Stack.Add(stackItem);
+		this.StackIndex++;
 	}
 
+	// Token: 0x060039AC RID: 14764 RVA: 0x00222B08 File Offset: 0x00220D08
 	protected override void RenderTo(DevPanel panel)
 	{
-		for (int num = Stack.Count - 1; num >= 0; num--)
+		for (int i = this.Stack.Count - 1; i >= 0; i--)
 		{
-			if (Stack[num].Obj.IsNullOrDestroyed())
+			if (this.Stack[i].Obj.IsNullOrDestroyed())
 			{
-				Stack.RemoveAt(num);
-				if (StackIndex >= num)
+				this.Stack.RemoveAt(i);
+				if (this.StackIndex >= i)
 				{
-					StackIndex--;
+					this.StackIndex--;
 				}
 			}
 		}
@@ -93,87 +77,111 @@ public class DevToolSceneInspector : DevTool
 		{
 			if (ImGui.BeginMenu("Utils"))
 			{
-				if (ImGui.MenuItem("Goto current selection") && SelectTool.Instance?.selected?.gameObject != null)
+				if (ImGui.MenuItem("Goto current selection"))
 				{
-					PushObject(SelectTool.Instance?.selected?.gameObject);
+					SelectTool instance = SelectTool.Instance;
+					UnityEngine.Object x;
+					if (instance == null)
+					{
+						x = null;
+					}
+					else
+					{
+						KSelectable selected = instance.selected;
+						x = ((selected != null) ? selected.gameObject : null);
+					}
+					if (x != null)
+					{
+						SelectTool instance2 = SelectTool.Instance;
+						object obj;
+						if (instance2 == null)
+						{
+							obj = null;
+						}
+						else
+						{
+							KSelectable selected2 = instance2.selected;
+							obj = ((selected2 != null) ? selected2.gameObject : null);
+						}
+						this.PushObject(obj);
+					}
 				}
 				ImGui.EndMenu();
 			}
 			ImGui.EndMenuBar();
 		}
-		if (ImGui.Button(" < ") && StackIndex > 0)
+		if (ImGui.Button(" < ") && this.StackIndex > 0)
 		{
-			StackIndex--;
+			this.StackIndex--;
 		}
 		ImGui.SameLine();
-		if (ImGui.Button(" > ") && StackIndex + 1 < Stack.Count)
+		if (ImGui.Button(" > ") && this.StackIndex + 1 < this.Stack.Count)
 		{
-			StackIndex++;
+			this.StackIndex++;
 		}
-		if (Stack.Count == 0)
+		if (this.Stack.Count == 0)
 		{
 			ImGui.Text("No Selection.");
 			return;
 		}
-		StackItem stackItem = Stack[StackIndex];
-		object obj = stackItem.Obj;
-		Type type = obj.GetType();
+		DevToolSceneInspector.StackItem stackItem = this.Stack[this.StackIndex];
+		object obj2 = stackItem.Obj;
+		Type type = obj2.GetType();
 		ImGui.LabelText("Type", type.Name);
 		if (ImGui.Button("Clear"))
 		{
 			stackItem.Filter = "";
 		}
 		ImGui.SameLine();
-		ImGui.InputText("Filter", ref stackItem.Filter, 64u);
-		ImGui.PushID(StackIndex);
+		ImGui.InputText("Filter", ref stackItem.Filter, 64U);
+		ImGui.PushID(this.StackIndex);
 		if (ImGui.BeginTabBar("##tabs", ImGuiTabBarFlags.None))
 		{
-			if (CustomTypeViews.TryGetValue(type, out var value) && ImGui.BeginTabItem(value.Name))
+			DevToolSceneInspector.ViewInfo viewInfo;
+			if (this.CustomTypeViews.TryGetValue(type, out viewInfo) && ImGui.BeginTabItem(viewInfo.Name))
 			{
-				value.Callback(obj, stackItem.Filter);
+				viewInfo.Callback(obj2, stackItem.Filter);
 				ImGui.EndTabItem();
 			}
 			if (ImGui.BeginTabItem("Raw view"))
 			{
-				ImGui.BeginChild("ScrollRegion", new Vector2(0f, 0f), border: true, ImGuiWindowFlags.None);
-				if (obj is IEnumerable)
+				ImGui.BeginChild("ScrollRegion", new Vector2(0f, 0f), true, ImGuiWindowFlags.None);
+				if (obj2 is IEnumerable)
 				{
-					IEnumerator enumerator = (obj as IEnumerable).GetEnumerator();
-					int num2 = 0;
+					IEnumerator enumerator = (obj2 as IEnumerable).GetEnumerator();
+					int num = 0;
 					while (enumerator.MoveNext())
 					{
-						object obj2 = enumerator.Current;
-						DisplayField("[" + num2 + "]", obj2.GetType(), ref obj2);
-						num2++;
+						object obj3 = enumerator.Current;
+						this.DisplayField("[" + num.ToString() + "]", obj3.GetType(), ref obj3);
+						num++;
 					}
 				}
 				else
 				{
-					FieldInfo[] fields = type.GetFields();
-					foreach (FieldInfo fieldInfo in fields)
+					foreach (FieldInfo fieldInfo in type.GetFields())
 					{
-						object obj3 = fieldInfo.GetValue(obj);
+						object value = fieldInfo.GetValue(obj2);
 						Type fieldType = fieldInfo.FieldType;
-						if (fieldInfo.GetCustomAttributes(typeof(ObsoleteAttribute), inherit: false).Length == 0 && (!(stackItem.Filter != "") || fieldInfo.Name.IndexOf(stackItem.Filter, 0, StringComparison.CurrentCultureIgnoreCase) != -1 || fieldType.Name.IndexOf(stackItem.Filter, 0, StringComparison.CurrentCultureIgnoreCase) != -1) && DisplayField(fieldInfo.Name, fieldType, ref obj3) && !fieldInfo.IsLiteral && !fieldInfo.IsInitOnly)
+						if (fieldInfo.GetCustomAttributes(typeof(ObsoleteAttribute), false).Length == 0 && (!(stackItem.Filter != "") || fieldInfo.Name.IndexOf(stackItem.Filter, 0, StringComparison.CurrentCultureIgnoreCase) != -1 || fieldType.Name.IndexOf(stackItem.Filter, 0, StringComparison.CurrentCultureIgnoreCase) != -1) && this.DisplayField(fieldInfo.Name, fieldType, ref value) && !fieldInfo.IsLiteral && !fieldInfo.IsInitOnly)
 						{
-							fieldInfo.SetValue(obj, obj3);
+							fieldInfo.SetValue(obj2, value);
 						}
 					}
 					BindingFlags bindingAttr = BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
-					PropertyInfo[] properties = type.GetProperties(bindingAttr);
-					foreach (PropertyInfo propertyInfo in properties)
+					foreach (PropertyInfo propertyInfo in type.GetProperties(bindingAttr))
 					{
 						if (!propertyInfo.CanRead)
 						{
 							ImGui.LabelText(propertyInfo.Name, "Unreadable");
 						}
-						else if (propertyInfo.GetIndexParameters().Length == 0 && propertyInfo.GetCustomAttributes(typeof(ObsoleteAttribute), inherit: false).Length == 0)
+						else if (propertyInfo.GetIndexParameters().Length == 0 && propertyInfo.GetCustomAttributes(typeof(ObsoleteAttribute), false).Length == 0)
 						{
 							Type propertyType = propertyInfo.PropertyType;
-							object obj4 = propertyInfo.GetValue(obj);
-							if ((!(stackItem.Filter != "") || propertyInfo.Name.IndexOf(stackItem.Filter, 0, StringComparison.CurrentCultureIgnoreCase) != -1 || propertyType.Name.IndexOf(stackItem.Filter, 0, StringComparison.CurrentCultureIgnoreCase) != -1) && DisplayField(propertyInfo.Name, propertyType, ref obj4) && propertyInfo.CanWrite)
+							object value2 = propertyInfo.GetValue(obj2);
+							if ((!(stackItem.Filter != "") || propertyInfo.Name.IndexOf(stackItem.Filter, 0, StringComparison.CurrentCultureIgnoreCase) != -1 || propertyType.Name.IndexOf(stackItem.Filter, 0, StringComparison.CurrentCultureIgnoreCase) != -1) && this.DisplayField(propertyInfo.Name, propertyType, ref value2) && propertyInfo.CanWrite)
 							{
-								propertyInfo.SetValue(obj, obj4);
+								propertyInfo.SetValue(obj2, value2);
 							}
 						}
 					}
@@ -186,6 +194,7 @@ public class DevToolSceneInspector : DevTool
 		ImGui.PopID();
 	}
 
+	// Token: 0x060039AD RID: 14765 RVA: 0x00222F3C File Offset: 0x0022113C
 	private bool DisplayField(string name, Type ft, ref object obj)
 	{
 		bool result = false;
@@ -195,118 +204,155 @@ public class DevToolSceneInspector : DevTool
 		}
 		else if (ft == typeof(int))
 		{
-			int v = (int)obj;
-			if (ImGui.InputInt(name, ref v))
+			int num = (int)obj;
+			if (ImGui.InputInt(name, ref num))
 			{
-				obj = v;
+				obj = num;
 				result = true;
 			}
 		}
 		else if (ft == typeof(uint))
 		{
-			int v2 = (int)(uint)obj;
-			if (ImGui.InputInt(name, ref v2))
+			int val = (int)((uint)obj);
+			if (ImGui.InputInt(name, ref val))
 			{
-				obj = (uint)Math.Max(v2, 0);
+				obj = (uint)Math.Max(val, 0);
 				result = true;
 			}
 		}
 		else if (ft == typeof(bool))
 		{
-			bool v3 = (bool)obj;
-			if (ImGui.Checkbox(name, ref v3))
+			bool flag = (bool)obj;
+			if (ImGui.Checkbox(name, ref flag))
 			{
-				obj = v3;
+				obj = flag;
 				result = true;
 			}
 		}
 		else if (ft == typeof(float))
 		{
-			float v4 = (float)obj;
-			if (ImGui.InputFloat(name, ref v4))
+			float num2 = (float)obj;
+			if (ImGui.InputFloat(name, ref num2))
 			{
-				obj = v4;
+				obj = num2;
 				result = true;
 			}
 		}
 		else if (ft == typeof(Vector2))
 		{
-			Vector2 v5 = (Vector2)obj;
-			if (ImGui.InputFloat2(name, ref v5))
+			Vector2 vector = (Vector2)obj;
+			if (ImGui.InputFloat2(name, ref vector))
 			{
-				obj = v5;
+				obj = vector;
 				result = true;
 			}
 		}
 		else if (ft == typeof(Vector3))
 		{
-			Vector3 v6 = (Vector3)obj;
-			if (ImGui.InputFloat3(name, ref v6))
+			Vector3 vector2 = (Vector3)obj;
+			if (ImGui.InputFloat3(name, ref vector2))
 			{
-				obj = v6;
+				obj = vector2;
 				result = true;
 			}
 		}
 		else if (ft == typeof(string))
 		{
-			string input = (string)obj;
-			if (ImGui.InputText(name, ref input, 256u))
+			string text = (string)obj;
+			if (ImGui.InputText(name, ref text, 256U))
 			{
-				obj = input;
+				obj = text;
 				result = true;
 			}
 		}
-		else if (ImGui.Selectable(name + " (" + ft.Name + ")", selected: false, ImGuiSelectableFlags.AllowDoubleClick) && ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left))
+		else if (ImGui.Selectable(name + " (" + ft.Name + ")", false, ImGuiSelectableFlags.AllowDoubleClick) && ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left))
 		{
-			PushObject(obj);
+			this.PushObject(obj);
 		}
 		return result;
 	}
 
+	// Token: 0x060039AE RID: 14766 RVA: 0x0022310C File Offset: 0x0022130C
 	private void CustomGameObjectDisplay(object obj, string filter)
 	{
-		GameObject obj2 = (GameObject)obj;
-		ImGui.BeginChild("ScrollRegion", new Vector2(0f, 0f), border: true, ImGuiWindowFlags.None);
+		GameObject gameObject = (GameObject)obj;
+		ImGui.BeginChild("ScrollRegion", new Vector2(0f, 0f), true, ImGuiWindowFlags.None);
 		int num = 0;
-		Behaviour[] components = obj2.GetComponents<Behaviour>();
-		foreach (Behaviour behaviour in components)
+		foreach (Behaviour behaviour in gameObject.GetComponents<Behaviour>())
 		{
 			Type type = behaviour.GetType();
 			if (!(filter != "") || type.Name.IndexOf(filter, 0, StringComparison.CurrentCultureIgnoreCase) != -1)
 			{
 				ImGui.PushID(num++);
-				bool v = behaviour.enabled;
-				if (ImGui.Checkbox("", ref v))
+				bool enabled = behaviour.enabled;
+				if (ImGui.Checkbox("", ref enabled))
 				{
-					behaviour.enabled = v;
+					behaviour.enabled = enabled;
 				}
 				ImGui.PopID();
 				ImGui.SameLine();
-				if (ImGui.Selectable(type.Name, selected: false, ImGuiSelectableFlags.AllowDoubleClick) && ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left))
+				if (ImGui.Selectable(type.Name, false, ImGuiSelectableFlags.AllowDoubleClick) && ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left))
 				{
-					PushObject(behaviour);
+					this.PushObject(behaviour);
 				}
 			}
 		}
 		ImGui.EndChild();
 	}
 
+	// Token: 0x060039AF RID: 14767 RVA: 0x002231D8 File Offset: 0x002213D8
 	private void CustomPrefabTagView(object obj, string filter)
 	{
-		KPrefabID obj2 = (KPrefabID)obj;
-		ImGui.BeginChild("ScrollRegion", new Vector2(0f, 0f), border: true, ImGuiWindowFlags.None);
-		string input = obj2.PrefabTag.Name;
-		ImGui.InputText("PrefabID: ", ref input, 128u);
+		KPrefabID kprefabID = (KPrefabID)obj;
+		ImGui.BeginChild("ScrollRegion", new Vector2(0f, 0f), true, ImGuiWindowFlags.None);
+		string name = kprefabID.PrefabTag.Name;
+		ImGui.InputText("PrefabID: ", ref name, 128U);
 		int num = 0;
-		foreach (Tag tag in obj2.Tags)
+		foreach (Tag tag in kprefabID.Tags)
 		{
-			string input2 = tag.Name;
-			if (!(filter != "") || input2.IndexOf(filter, 0, StringComparison.CurrentCultureIgnoreCase) != -1)
+			string name2 = tag.Name;
+			if (!(filter != "") || name2.IndexOf(filter, 0, StringComparison.CurrentCultureIgnoreCase) != -1)
 			{
-				ImGui.InputText("[" + num + "]", ref input2, 128u);
+				ImGui.InputText("[" + num.ToString() + "]", ref name2, 128U);
 				num++;
 			}
 		}
 		ImGui.EndChild();
+	}
+
+	// Token: 0x0400274B RID: 10059
+	private List<DevToolSceneInspector.StackItem> Stack = new List<DevToolSceneInspector.StackItem>();
+
+	// Token: 0x0400274C RID: 10060
+	private int StackIndex = -1;
+
+	// Token: 0x0400274D RID: 10061
+	private Dictionary<Type, DevToolSceneInspector.ViewInfo> CustomTypeViews;
+
+	// Token: 0x02000BC8 RID: 3016
+	private class StackItem
+	{
+		// Token: 0x0400274E RID: 10062
+		public object Obj;
+
+		// Token: 0x0400274F RID: 10063
+		public string Filter;
+	}
+
+	// Token: 0x02000BC9 RID: 3017
+	private class ViewInfo
+	{
+		// Token: 0x060039B3 RID: 14771 RVA: 0x000C5491 File Offset: 0x000C3691
+		public ViewInfo(string s, Action<object, string> a)
+		{
+			this.Name = s;
+			this.Callback = a;
+		}
+
+		// Token: 0x04002750 RID: 10064
+		public string Name;
+
+		// Token: 0x04002751 RID: 10065
+		public Action<object, string> Callback;
 	}
 }

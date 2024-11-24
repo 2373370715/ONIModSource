@@ -1,35 +1,25 @@
+﻿using System;
 using Unity.Collections;
 using UnityEngine;
 
+// Token: 0x02001A81 RID: 6785
 public class RocketLaunchConditionVisualizerEffect : VisualizerEffect
 {
-	public enum EvaluationState : byte
-	{
-		NotEvaluated,
-		Clear,
-		Obstructed
-	}
-
-	public Color highlightColor = new Color(0f, 1f, 0.8f, 1f);
-
-	public Color highlightColor2 = new Color(1f, 0.32f, 0f, 1f);
-
-	private static EvaluationState[] clearPathToSpaceColumn = new EvaluationState[7];
-
-	private static int clearPathToSpaceColumn_middleIndex = Mathf.FloorToInt(3.5f);
-
+	// Token: 0x06008DE1 RID: 36321 RVA: 0x000FCAD7 File Offset: 0x000FACD7
 	protected override void SetupMaterial()
 	{
-		material = new Material(Shader.Find("Klei/PostFX/RocketLaunchCondition"));
+		this.material = new Material(Shader.Find("Klei/PostFX/RocketLaunchCondition"));
 	}
 
+	// Token: 0x06008DE2 RID: 36322 RVA: 0x000FCAEE File Offset: 0x000FACEE
 	protected override void SetupOcclusionTex()
 	{
-		OcclusionTex = new Texture2D(512, 1, TextureFormat.RGFloat, mipChain: false);
-		OcclusionTex.filterMode = FilterMode.Point;
-		OcclusionTex.wrapMode = TextureWrapMode.Clamp;
+		this.OcclusionTex = new Texture2D(512, 1, TextureFormat.RGFloat, false);
+		this.OcclusionTex.filterMode = FilterMode.Point;
+		this.OcclusionTex.wrapMode = TextureWrapMode.Clamp;
 	}
 
+	// Token: 0x06008DE3 RID: 36323 RVA: 0x0036E2C0 File Offset: 0x0036C4C0
 	protected override void OnPostRender()
 	{
 		RocketLaunchConditionVisualizer rocketLaunchConditionVisualizer = null;
@@ -49,111 +39,114 @@ public class RocketLaunchConditionVisualizerEffect : VisualizerEffect
 				}
 			}
 		}
-		if (!(rocketLaunchConditionVisualizer != null))
+		if (rocketLaunchConditionVisualizer != null)
 		{
-			return;
-		}
-		FindWorldBounds(out var world_min, out var world_max);
-		if (world_max.x - world_min.x > OcclusionTex.width)
-		{
-			return;
-		}
-		NativeArray<float> pixelData = OcclusionTex.GetPixelData<float>(0);
-		for (int i = 0; i < OcclusionTex.width; i++)
-		{
-			pixelData[2 * i] = 0f;
-			pixelData[2 * i + 1] = 0f;
-		}
-		for (int j = 0; j < clearPathToSpaceColumn.Length; j++)
-		{
-			clearPathToSpaceColumn[j] = EvaluationState.NotEvaluated;
-		}
-		for (int k = 0; k < rocketLaunchConditionVisualizer.moduleVisualizeData.Length; k++)
-		{
-			ComputeVisibility(rocketLaunchConditionVisualizer.moduleVisualizeData[k], pixelData, world_min, world_max);
-		}
-		OcclusionTex.Apply(updateMipmaps: false, makeNoLongerReadable: false);
-		Vector2I vector2I = world_min;
-		Vector2I vector2I2 = world_max;
-		if (myCamera == null)
-		{
-			myCamera = GetComponent<Camera>();
-			if (myCamera == null)
+			Vector2I vector2I;
+			Vector2I vector2I2;
+			RocketLaunchConditionVisualizerEffect.FindWorldBounds(out vector2I, out vector2I2);
+			if (vector2I2.x - vector2I.x > this.OcclusionTex.width)
 			{
 				return;
 			}
+			NativeArray<float> pixelData = this.OcclusionTex.GetPixelData<float>(0);
+			for (int i = 0; i < this.OcclusionTex.width; i++)
+			{
+				pixelData[2 * i] = 0f;
+				pixelData[2 * i + 1] = 0f;
+			}
+			for (int j = 0; j < RocketLaunchConditionVisualizerEffect.clearPathToSpaceColumn.Length; j++)
+			{
+				RocketLaunchConditionVisualizerEffect.clearPathToSpaceColumn[j] = RocketLaunchConditionVisualizerEffect.EvaluationState.NotEvaluated;
+			}
+			for (int k = 0; k < rocketLaunchConditionVisualizer.moduleVisualizeData.Length; k++)
+			{
+				RocketLaunchConditionVisualizerEffect.ComputeVisibility(rocketLaunchConditionVisualizer.moduleVisualizeData[k], pixelData, vector2I, vector2I2);
+			}
+			this.OcclusionTex.Apply(false, false);
+			Vector2I vector2I3 = vector2I;
+			Vector2I vector2I4 = vector2I2;
+			if (this.myCamera == null)
+			{
+				this.myCamera = base.GetComponent<Camera>();
+				if (this.myCamera == null)
+				{
+					return;
+				}
+			}
+			Ray ray = this.myCamera.ViewportPointToRay(Vector3.zero);
+			float distance = Mathf.Abs(ray.origin.z / ray.direction.z);
+			Vector3 point = ray.GetPoint(distance);
+			Vector4 vector;
+			vector.x = point.x;
+			vector.y = point.y;
+			ray = this.myCamera.ViewportPointToRay(Vector3.one);
+			distance = Mathf.Abs(ray.origin.z / ray.direction.z);
+			point = ray.GetPoint(distance);
+			vector.z = point.x - vector.x;
+			vector.w = point.y - vector.y;
+			this.material.SetVector("_UVOffsetScale", vector);
+			Vector4 value;
+			value.x = (float)vector2I3.x;
+			value.y = (float)vector2I3.y;
+			value.z = (float)vector2I4.x;
+			value.w = (float)vector2I4.y;
+			this.material.SetVector("_RangeParams", value);
+			this.material.SetColor("_HighlightColor", this.highlightColor);
+			this.material.SetColor("_HighlightColor2", this.highlightColor2);
+			Vector4 value2;
+			value2.x = 1f / (float)this.OcclusionTex.width;
+			value2.y = 1f / (float)this.OcclusionTex.height;
+			value2.z = 0f;
+			value2.w = 0f;
+			this.material.SetVector("_OcclusionParams", value2);
+			this.material.SetTexture("_OcclusionTex", this.OcclusionTex);
+			Vector4 value3;
+			value3.x = (float)Grid.WidthInCells;
+			value3.y = (float)Grid.HeightInCells;
+			value3.z = 1f / (float)Grid.WidthInCells;
+			value3.w = 1f / (float)Grid.HeightInCells;
+			this.material.SetVector("_WorldParams", value3);
+			GL.PushMatrix();
+			this.material.SetPass(0);
+			GL.LoadOrtho();
+			GL.Begin(5);
+			GL.Color(Color.white);
+			GL.Vertex3(0f, 0f, 0f);
+			GL.Vertex3(0f, 1f, 0f);
+			GL.Vertex3(1f, 0f, 0f);
+			GL.Vertex3(1f, 1f, 0f);
+			GL.End();
+			GL.PopMatrix();
 		}
-		Ray ray = myCamera.ViewportPointToRay(Vector3.zero);
-		float distance = Mathf.Abs(ray.origin.z / ray.direction.z);
-		Vector3 point = ray.GetPoint(distance);
-		Vector4 value = default(Vector4);
-		value.x = point.x;
-		value.y = point.y;
-		ray = myCamera.ViewportPointToRay(Vector3.one);
-		distance = Mathf.Abs(ray.origin.z / ray.direction.z);
-		point = ray.GetPoint(distance);
-		value.z = point.x - value.x;
-		value.w = point.y - value.y;
-		material.SetVector("_UVOffsetScale", value);
-		Vector4 value2 = default(Vector4);
-		value2.x = vector2I.x;
-		value2.y = vector2I.y;
-		value2.z = vector2I2.x;
-		value2.w = vector2I2.y;
-		material.SetVector("_RangeParams", value2);
-		material.SetColor("_HighlightColor", highlightColor);
-		material.SetColor("_HighlightColor2", highlightColor2);
-		Vector4 value3 = default(Vector4);
-		value3.x = 1f / (float)OcclusionTex.width;
-		value3.y = 1f / (float)OcclusionTex.height;
-		value3.z = 0f;
-		value3.w = 0f;
-		material.SetVector("_OcclusionParams", value3);
-		material.SetTexture("_OcclusionTex", OcclusionTex);
-		Vector4 value4 = default(Vector4);
-		value4.x = Grid.WidthInCells;
-		value4.y = Grid.HeightInCells;
-		value4.z = 1f / (float)Grid.WidthInCells;
-		value4.w = 1f / (float)Grid.HeightInCells;
-		material.SetVector("_WorldParams", value4);
-		GL.PushMatrix();
-		material.SetPass(0);
-		GL.LoadOrtho();
-		GL.Begin(5);
-		GL.Color(Color.white);
-		GL.Vertex3(0f, 0f, 0f);
-		GL.Vertex3(0f, 1f, 0f);
-		GL.Vertex3(1f, 0f, 0f);
-		GL.Vertex3(1f, 1f, 0f);
-		GL.End();
-		GL.PopMatrix();
 	}
 
+	// Token: 0x06008DE4 RID: 36324 RVA: 0x0036E6CC File Offset: 0x0036C8CC
 	private static void ComputeVisibility(RocketLaunchConditionVisualizer.RocketModuleVisualizeData moduleData, NativeArray<float> pixels, Vector2I world_min, Vector2I world_max)
 	{
-		Vector2I vector2I = Grid.PosToXY(moduleData.Module.transform.GetPosition());
+		Vector2I u = Grid.PosToXY(moduleData.Module.transform.GetPosition());
 		int rangeMin = moduleData.RangeMin;
 		int rangeMax = moduleData.RangeMax;
-		Vector2I vector2I2 = vector2I + moduleData.OriginOffset;
-		for (int num = 0; num >= rangeMin; num--)
+		Vector2I vector2I = u + moduleData.OriginOffset;
+		for (int i = 0; i >= rangeMin; i--)
 		{
-			int x_abs = vector2I2.x + num;
-			int y = vector2I2.y;
-			EvaluationState clearPathEvaluation = clearPathToSpaceColumn[clearPathToSpaceColumn_middleIndex + num];
-			ComputeVisibility(x_abs, y, pixels, world_min, world_max, ref clearPathEvaluation);
-			clearPathToSpaceColumn[clearPathToSpaceColumn_middleIndex + num] = clearPathEvaluation;
+			int x_abs = vector2I.x + i;
+			int y = vector2I.y;
+			RocketLaunchConditionVisualizerEffect.EvaluationState evaluationState = RocketLaunchConditionVisualizerEffect.clearPathToSpaceColumn[RocketLaunchConditionVisualizerEffect.clearPathToSpaceColumn_middleIndex + i];
+			RocketLaunchConditionVisualizerEffect.ComputeVisibility(x_abs, y, pixels, world_min, world_max, ref evaluationState);
+			RocketLaunchConditionVisualizerEffect.clearPathToSpaceColumn[RocketLaunchConditionVisualizerEffect.clearPathToSpaceColumn_middleIndex + i] = evaluationState;
 		}
-		for (int i = 0; i <= rangeMax; i++)
+		for (int j = 0; j <= rangeMax; j++)
 		{
-			int x_abs2 = vector2I2.x + i;
-			int y2 = vector2I2.y;
-			EvaluationState clearPathEvaluation2 = clearPathToSpaceColumn[clearPathToSpaceColumn_middleIndex + i];
-			ComputeVisibility(x_abs2, y2, pixels, world_min, world_max, ref clearPathEvaluation2);
-			clearPathToSpaceColumn[clearPathToSpaceColumn_middleIndex + i] = clearPathEvaluation2;
+			int x_abs2 = vector2I.x + j;
+			int y2 = vector2I.y;
+			RocketLaunchConditionVisualizerEffect.EvaluationState evaluationState2 = RocketLaunchConditionVisualizerEffect.clearPathToSpaceColumn[RocketLaunchConditionVisualizerEffect.clearPathToSpaceColumn_middleIndex + j];
+			RocketLaunchConditionVisualizerEffect.ComputeVisibility(x_abs2, y2, pixels, world_min, world_max, ref evaluationState2);
+			RocketLaunchConditionVisualizerEffect.clearPathToSpaceColumn[RocketLaunchConditionVisualizerEffect.clearPathToSpaceColumn_middleIndex + j] = evaluationState2;
 		}
 	}
 
-	private static void ComputeVisibility(int x_abs, int y_abs, NativeArray<float> pixels, Vector2I world_min, Vector2I world_max, ref EvaluationState clearPathEvaluation)
+	// Token: 0x06008DE5 RID: 36325 RVA: 0x0036E7A4 File Offset: 0x0036C9A4
+	private static void ComputeVisibility(int x_abs, int y_abs, NativeArray<float> pixels, Vector2I world_min, Vector2I world_max, ref RocketLaunchConditionVisualizerEffect.EvaluationState clearPathEvaluation)
 	{
 		int num = x_abs - world_min.x;
 		if (x_abs < world_min.x || x_abs > world_max.x || y_abs < world_min.y || y_abs >= world_max.y)
@@ -161,29 +154,29 @@ public class RocketLaunchConditionVisualizerEffect : VisualizerEffect
 			return;
 		}
 		int cell = Grid.XYToCell(x_abs, y_abs);
-		if (clearPathEvaluation == EvaluationState.NotEvaluated)
+		if (clearPathEvaluation == RocketLaunchConditionVisualizerEffect.EvaluationState.NotEvaluated)
 		{
-			clearPathEvaluation = (HasClearPathToSpace(cell, world_max) ? EvaluationState.Clear : EvaluationState.Obstructed);
+			clearPathEvaluation = (RocketLaunchConditionVisualizerEffect.HasClearPathToSpace(cell, world_max) ? RocketLaunchConditionVisualizerEffect.EvaluationState.Clear : RocketLaunchConditionVisualizerEffect.EvaluationState.Obstructed);
 		}
-		bool flag = clearPathEvaluation == EvaluationState.Clear;
-		if (pixels[2 * num] != 2f)
+		bool flag = clearPathEvaluation == RocketLaunchConditionVisualizerEffect.EvaluationState.Clear;
+		if (pixels[2 * num] == 2f)
 		{
-			pixels[2 * num] = ((!flag) ? 1 : 2);
-			if (pixels[2 * num] == 1f && pixels[2 * num + 1] != 0f)
+			if (flag)
 			{
-				pixels[2 * num + 1] = Mathf.Min(pixels[2 * num + 1], y_abs);
+				pixels[2 * num + 1] = Mathf.Min(pixels[2 * num + 1], (float)y_abs);
 			}
-			else
-			{
-				pixels[2 * num + 1] = y_abs;
-			}
+			return;
 		}
-		else if (flag)
+		pixels[2 * num] = (float)(flag ? 2 : 1);
+		if (pixels[2 * num] == 1f && pixels[2 * num + 1] != 0f)
 		{
-			pixels[2 * num + 1] = Mathf.Min(pixels[2 * num + 1], y_abs);
+			pixels[2 * num + 1] = Mathf.Min(pixels[2 * num + 1], (float)y_abs);
+			return;
 		}
+		pixels[2 * num + 1] = (float)y_abs;
 	}
 
+	// Token: 0x06008DE6 RID: 36326 RVA: 0x0036E8A0 File Offset: 0x0036CAA0
 	private static void FindWorldBounds(out Vector2I world_min, out Vector2I world_max)
 	{
 		if (ClusterManager.Instance != null)
@@ -191,16 +184,15 @@ public class RocketLaunchConditionVisualizerEffect : VisualizerEffect
 			WorldContainer activeWorld = ClusterManager.Instance.activeWorld;
 			world_min = activeWorld.WorldOffset;
 			world_max = activeWorld.WorldOffset + activeWorld.WorldSize;
+			return;
 		}
-		else
-		{
-			world_min.x = 0;
-			world_min.y = 0;
-			world_max.x = Grid.WidthInCells;
-			world_max.y = Grid.HeightInCells;
-		}
+		world_min.x = 0;
+		world_min.y = 0;
+		world_max.x = Grid.WidthInCells;
+		world_max.y = Grid.HeightInCells;
 	}
 
+	// Token: 0x06008DE7 RID: 36327 RVA: 0x0036E910 File Offset: 0x0036CB10
 	private static bool HasClearPathToSpace(int cell, Vector2I worldMax)
 	{
 		if (!Grid.IsValidCell(cell))
@@ -212,10 +204,29 @@ public class RocketLaunchConditionVisualizerEffect : VisualizerEffect
 		{
 			cell2 = Grid.CellAbove(cell2);
 		}
-		if (!Grid.IsSolidCell(cell2) && Grid.CellToXY(cell2).y == worldMax.y)
-		{
-			return true;
-		}
-		return false;
+		return !Grid.IsSolidCell(cell2) && Grid.CellToXY(cell2).y == worldMax.y;
+	}
+
+	// Token: 0x04006A97 RID: 27287
+	public Color highlightColor = new Color(0f, 1f, 0.8f, 1f);
+
+	// Token: 0x04006A98 RID: 27288
+	public Color highlightColor2 = new Color(1f, 0.32f, 0f, 1f);
+
+	// Token: 0x04006A99 RID: 27289
+	private static RocketLaunchConditionVisualizerEffect.EvaluationState[] clearPathToSpaceColumn = new RocketLaunchConditionVisualizerEffect.EvaluationState[7];
+
+	// Token: 0x04006A9A RID: 27290
+	private static int clearPathToSpaceColumn_middleIndex = Mathf.FloorToInt(3.5f);
+
+	// Token: 0x02001A82 RID: 6786
+	public enum EvaluationState : byte
+	{
+		// Token: 0x04006A9C RID: 27292
+		NotEvaluated,
+		// Token: 0x04006A9D RID: 27293
+		Clear,
+		// Token: 0x04006A9E RID: 27294
+		Obstructed
 	}
 }

@@ -1,25 +1,25 @@
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using ImGuiNET;
 using ImGuiObjectDrawer;
 using UnityEngine;
 
+// Token: 0x02000BB0 RID: 2992
 public class DevToolEntity_RanchStation : DevTool
 {
-	private Option<DevToolEntityTarget.ForWorldGameObject> targetOpt;
-
-	private bool shouldDrawBoundingBox = true;
-
-	public DevToolEntity_RanchStation()
-		: this(Option.None)
+	// Token: 0x0600394C RID: 14668 RVA: 0x000C5185 File Offset: 0x000C3385
+	public DevToolEntity_RanchStation() : this(Option.None)
 	{
 	}
 
+	// Token: 0x0600394D RID: 14669 RVA: 0x000C5197 File Offset: 0x000C3397
 	public DevToolEntity_RanchStation(Option<DevToolEntityTarget.ForWorldGameObject> target)
 	{
-		targetOpt = target;
+		this.targetOpt = target;
 	}
 
+	// Token: 0x0600394E RID: 14670 RVA: 0x0021EDE4 File Offset: 0x0021CFE4
 	protected override void RenderTo(DevPanel panel)
 	{
 		if (ImGui.BeginMenuBar())
@@ -28,88 +28,88 @@ public class DevToolEntity_RanchStation : DevTool
 			{
 				panel.PushDevTool(new DevToolEntity_EyeDrop(delegate(DevToolEntityTarget target)
 				{
-					targetOpt = (DevToolEntityTarget.ForWorldGameObject)target;
-				}, GetErrorForCandidateTarget));
+					this.targetOpt = (DevToolEntityTarget.ForWorldGameObject)target;
+				}, new Func<DevToolEntityTarget, Option<string>>(DevToolEntity_RanchStation.GetErrorForCandidateTarget)));
 			}
 			ImGui.EndMenuBar();
 		}
-		Name = "RanchStation debug";
-		if (targetOpt.IsNone())
+		this.Name = "RanchStation debug";
+		if (this.targetOpt.IsNone())
 		{
 			ImGui.TextWrapped("No Target selected");
 			return;
 		}
-		DevToolEntityTarget.ForWorldGameObject forWorldGameObject = targetOpt.Unwrap();
-		Option<string> errorForCandidateTarget = GetErrorForCandidateTarget(forWorldGameObject);
+		DevToolEntityTarget.ForWorldGameObject forWorldGameObject = this.targetOpt.Unwrap();
+		Option<string> errorForCandidateTarget = DevToolEntity_RanchStation.GetErrorForCandidateTarget(forWorldGameObject);
 		if (errorForCandidateTarget.IsSome())
 		{
 			ImGui.TextWrapped(errorForCandidateTarget.Unwrap());
 			return;
 		}
-		Name = "RanchStation debug for: " + DevToolEntity.GetNameFor(forWorldGameObject.gameObject);
-		RanchStation.Instance sMI = forWorldGameObject.gameObject.GetSMI<RanchStation.Instance>();
+		this.Name = "RanchStation debug for: " + DevToolEntity.GetNameFor(forWorldGameObject.gameObject);
+		RanchStation.Instance smi = forWorldGameObject.gameObject.GetSMI<RanchStation.Instance>();
 		RanchStation.Def def = forWorldGameObject.gameObject.GetDef<RanchStation.Def>();
-		StateMachine stateMachine = sMI.GetStateMachine();
-		DrawRanchableCollection("Target Ranchables", sMI.DEBUG_GetTargetRanchables());
+		StateMachine stateMachine = smi.GetStateMachine();
+		DevToolEntity_RanchStation.DrawRanchableCollection("Target Ranchables", smi.DEBUG_GetTargetRanchables());
 		if (ImGui.CollapsingHeader("Full Debug Info"))
 		{
-			ImGuiEx.DrawObject("State Machine Instance", sMI, new MemberDrawContext(hide_default_values: false, default_open: false));
-			ImGuiEx.DrawObject("State Machine Def", def, new MemberDrawContext(hide_default_values: false, default_open: false));
-			ImGuiEx.DrawObject("State Machine", stateMachine, new MemberDrawContext(hide_default_values: false, default_open: false));
+			ImGuiEx.DrawObject("State Machine Instance", smi, new MemberDrawContext?(new MemberDrawContext(false, false)));
+			ImGuiEx.DrawObject("State Machine Def", def, new MemberDrawContext?(new MemberDrawContext(false, false)));
+			ImGuiEx.DrawObject("State Machine", stateMachine, new MemberDrawContext?(new MemberDrawContext(false, false)));
 		}
-		if (!shouldDrawBoundingBox)
+		if (this.shouldDrawBoundingBox)
 		{
-			return;
-		}
-		Option<(Vector2, Vector2)> screenRect = forWorldGameObject.GetScreenRect();
-		if (screenRect.IsSome())
-		{
-			DevToolEntity.DrawBoundingBox(screenRect.Unwrap(), "[Ranching Station]", ImGui.IsWindowFocused());
-		}
-		List<RanchableMonitor.Instance> list = sMI.DEBUG_GetTargetRanchables();
-		for (int i = 0; i < list.Count; i++)
-		{
-			RanchableMonitor.Instance instance = list[i];
-			if (!instance.gameObject.IsNullOrDestroyed())
+			Option<ValueTuple<Vector2, Vector2>> screenRect = forWorldGameObject.GetScreenRect();
+			if (screenRect.IsSome())
 			{
-				Option<(Vector2, Vector2)> screenRect2 = new DevToolEntityTarget.ForWorldGameObject(instance.gameObject).GetScreenRect();
-				if (screenRect2.IsSome())
+				DevToolEntity.DrawBoundingBox(screenRect.Unwrap(), "[Ranching Station]", ImGui.IsWindowFocused());
+			}
+			List<RanchableMonitor.Instance> list = smi.DEBUG_GetTargetRanchables();
+			for (int i = 0; i < list.Count; i++)
+			{
+				RanchableMonitor.Instance instance = list[i];
+				if (!instance.gameObject.IsNullOrDestroyed())
 				{
-					DevToolEntity.DrawBoundingBox(screenRect2.Unwrap(), $"[Target Ranchable @ Index {i}]", ImGui.IsWindowFocused());
+					Option<ValueTuple<Vector2, Vector2>> screenRect2 = new DevToolEntityTarget.ForWorldGameObject(instance.gameObject).GetScreenRect();
+					if (screenRect2.IsSome())
+					{
+						DevToolEntity.DrawBoundingBox(screenRect2.Unwrap(), string.Format("[Target Ranchable @ Index {0}]", i), ImGui.IsWindowFocused());
+					}
 				}
 			}
 		}
 	}
 
+	// Token: 0x0600394F RID: 14671 RVA: 0x0021EFBC File Offset: 0x0021D1BC
 	public static void DrawRanchableCollection(string name, IEnumerable<RanchableMonitor.Instance> ranchables)
 	{
-		if (!ImGui.CollapsingHeader(name))
+		if (ImGui.CollapsingHeader(name))
 		{
-			return;
-		}
-		if (ranchables.IsNullOrDestroyed())
-		{
-			ImGui.Text("List is null");
-			return;
-		}
-		if (ranchables.Count() == 0)
-		{
-			ImGui.Text("List is empty");
-			return;
-		}
-		int num = 0;
-		foreach (RanchableMonitor.Instance ranchable in ranchables)
-		{
-			ImGui.Text(ranchable.IsNullOrDestroyed() ? "<null RanchableMonitor>" : DevToolEntity.GetNameFor(ranchable.gameObject));
-			ImGui.SameLine();
-			if (ImGui.Button($"DevTool Inspect###ID_Inspect_{num}"))
+			if (ranchables.IsNullOrDestroyed())
 			{
-				DevToolSceneInspector.Inspect(ranchable);
+				ImGui.Text("List is null");
+				return;
 			}
-			num++;
+			if (ranchables.Count<RanchableMonitor.Instance>() == 0)
+			{
+				ImGui.Text("List is empty");
+				return;
+			}
+			int num = 0;
+			foreach (RanchableMonitor.Instance instance in ranchables)
+			{
+				ImGui.Text(instance.IsNullOrDestroyed() ? "<null RanchableMonitor>" : DevToolEntity.GetNameFor(instance.gameObject));
+				ImGui.SameLine();
+				if (ImGui.Button(string.Format("DevTool Inspect###ID_Inspect_{0}", num)))
+				{
+					DevToolSceneInspector.Inspect(instance);
+				}
+				num++;
+			}
 		}
 	}
 
+	// Token: 0x06003950 RID: 14672 RVA: 0x0021F078 File Offset: 0x0021D278
 	public static Option<string> GetErrorForCandidateTarget(DevToolEntityTarget uncastTarget)
 	{
 		if (!(uncastTarget is DevToolEntityTarget.ForWorldGameObject))
@@ -127,4 +127,10 @@ public class DevToolEntity_RanchStation : DevTool
 		}
 		return Option.None;
 	}
+
+	// Token: 0x040026EE RID: 9966
+	private Option<DevToolEntityTarget.ForWorldGameObject> targetOpt;
+
+	// Token: 0x040026EF RID: 9967
+	private bool shouldDrawBoundingBox = true;
 }

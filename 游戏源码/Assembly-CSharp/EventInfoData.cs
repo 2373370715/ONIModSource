@@ -1,100 +1,12 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using STRINGS;
 using UnityEngine;
 
+// Token: 0x0200078B RID: 1931
 public class EventInfoData
 {
-	public class OptionIcon
-	{
-		public enum ContainerType
-		{
-			Neutral,
-			Positive,
-			Negative,
-			Information
-		}
-
-		public ContainerType containerType;
-
-		public Sprite sprite;
-
-		public string tooltip;
-
-		public float scale;
-
-		public OptionIcon(Sprite sprite, ContainerType containerType, string tooltip, float scale = 1f)
-		{
-			this.sprite = sprite;
-			this.containerType = containerType;
-			this.tooltip = tooltip;
-			this.scale = scale;
-		}
-	}
-
-	public class Option
-	{
-		public string mainText;
-
-		public string description;
-
-		public string tooltip;
-
-		public System.Action callback;
-
-		public List<OptionIcon> informationIcons = new List<OptionIcon>();
-
-		public List<OptionIcon> consequenceIcons = new List<OptionIcon>();
-
-		public bool allowed = true;
-
-		public void AddInformationIcon(string tooltip, float scale = 1f)
-		{
-			informationIcons.Add(new OptionIcon(null, OptionIcon.ContainerType.Information, tooltip, scale));
-		}
-
-		public void AddPositiveIcon(Sprite sprite, string tooltip, float scale = 1f)
-		{
-			consequenceIcons.Add(new OptionIcon(sprite, OptionIcon.ContainerType.Positive, tooltip, scale));
-		}
-
-		public void AddNeutralIcon(Sprite sprite, string tooltip, float scale = 1f)
-		{
-			consequenceIcons.Add(new OptionIcon(sprite, OptionIcon.ContainerType.Neutral, tooltip, scale));
-		}
-
-		public void AddNegativeIcon(Sprite sprite, string tooltip, float scale = 1f)
-		{
-			consequenceIcons.Add(new OptionIcon(sprite, OptionIcon.ContainerType.Negative, tooltip, scale));
-		}
-	}
-
-	public string title;
-
-	public string description;
-
-	public string location;
-
-	public string whenDescription;
-
-	public Transform clickFocus;
-
-	public GameObject[] minions;
-
-	public GameObject artifact;
-
-	public HashedString animFileName;
-
-	public HashedString mainAnim = "event";
-
-	public Dictionary<string, string> textParameters = new Dictionary<string, string>();
-
-	public List<Option> options = new List<Option>();
-
-	public System.Action showCallback;
-
-	private bool dirty;
-
+	// Token: 0x060022BA RID: 8890 RVA: 0x001C3F00 File Offset: 0x001C2100
 	public EventInfoData(string title, string description, HashedString animFileName)
 	{
 		this.title = title;
@@ -102,107 +14,240 @@ public class EventInfoData
 		this.animFileName = animFileName;
 	}
 
-	public List<Option> GetOptions()
+	// Token: 0x060022BB RID: 8891 RVA: 0x000B692A File Offset: 0x000B4B2A
+	public List<EventInfoData.Option> GetOptions()
 	{
-		FinalizeText();
-		return options;
+		this.FinalizeText();
+		return this.options;
 	}
 
-	public Option AddOption(string mainText, string description = null)
+	// Token: 0x060022BC RID: 8892 RVA: 0x001C3F50 File Offset: 0x001C2150
+	public EventInfoData.Option AddOption(string mainText, string description = null)
 	{
-		Option option = new Option
+		EventInfoData.Option option = new EventInfoData.Option
 		{
 			mainText = mainText,
 			description = description
 		};
-		options.Add(option);
-		dirty = true;
+		this.options.Add(option);
+		this.dirty = true;
 		return option;
 	}
 
-	public Option SimpleOption(string mainText, System.Action callback)
+	// Token: 0x060022BD RID: 8893 RVA: 0x001C3F88 File Offset: 0x001C2188
+	public EventInfoData.Option SimpleOption(string mainText, System.Action callback)
 	{
-		Option option = new Option
+		EventInfoData.Option option = new EventInfoData.Option
 		{
 			mainText = mainText,
 			callback = callback
 		};
-		options.Add(option);
-		dirty = true;
+		this.options.Add(option);
+		this.dirty = true;
 		return option;
 	}
 
-	public Option AddDefaultOption(System.Action callback = null)
+	// Token: 0x060022BE RID: 8894 RVA: 0x000B6938 File Offset: 0x000B4B38
+	public EventInfoData.Option AddDefaultOption(System.Action callback = null)
 	{
-		return SimpleOption(GAMEPLAY_EVENTS.DEFAULT_OPTION_NAME, callback);
+		return this.SimpleOption(GAMEPLAY_EVENTS.DEFAULT_OPTION_NAME, callback);
 	}
 
-	public Option AddDefaultConsiderLaterOption(System.Action callback = null)
+	// Token: 0x060022BF RID: 8895 RVA: 0x000B694B File Offset: 0x000B4B4B
+	public EventInfoData.Option AddDefaultConsiderLaterOption(System.Action callback = null)
 	{
-		return SimpleOption(GAMEPLAY_EVENTS.DEFAULT_OPTION_CONSIDER_NAME, callback);
+		return this.SimpleOption(GAMEPLAY_EVENTS.DEFAULT_OPTION_CONSIDER_NAME, callback);
 	}
 
+	// Token: 0x060022C0 RID: 8896 RVA: 0x000B695E File Offset: 0x000B4B5E
 	public void SetTextParameter(string key, string value)
 	{
-		textParameters[key] = value;
-		dirty = true;
+		this.textParameters[key] = value;
+		this.dirty = true;
 	}
 
+	// Token: 0x060022C1 RID: 8897 RVA: 0x001C3FC0 File Offset: 0x001C21C0
 	public void FinalizeText()
 	{
-		if (!dirty)
+		if (!this.dirty)
 		{
 			return;
 		}
-		dirty = false;
-		foreach (KeyValuePair<string, string> textParameter in textParameters)
+		this.dirty = false;
+		foreach (KeyValuePair<string, string> keyValuePair in this.textParameters)
 		{
-			string oldValue = "{" + textParameter.Key + "}";
-			if (title != null)
+			string oldValue = "{" + keyValuePair.Key + "}";
+			if (this.title != null)
 			{
-				title = title.Replace(oldValue, textParameter.Value);
+				this.title = this.title.Replace(oldValue, keyValuePair.Value);
 			}
-			if (description != null)
+			if (this.description != null)
 			{
-				description = description.Replace(oldValue, textParameter.Value);
+				this.description = this.description.Replace(oldValue, keyValuePair.Value);
 			}
-			if (location != null)
+			if (this.location != null)
 			{
-				location = location.Replace(oldValue, textParameter.Value);
+				this.location = this.location.Replace(oldValue, keyValuePair.Value);
 			}
-			if (whenDescription != null)
+			if (this.whenDescription != null)
 			{
-				whenDescription = whenDescription.Replace(oldValue, textParameter.Value);
+				this.whenDescription = this.whenDescription.Replace(oldValue, keyValuePair.Value);
 			}
-			foreach (Option option in options)
+			foreach (EventInfoData.Option option in this.options)
 			{
 				if (option.mainText != null)
 				{
-					option.mainText = option.mainText.Replace(oldValue, textParameter.Value);
+					option.mainText = option.mainText.Replace(oldValue, keyValuePair.Value);
 				}
 				if (option.description != null)
 				{
-					option.description = option.description.Replace(oldValue, textParameter.Value);
+					option.description = option.description.Replace(oldValue, keyValuePair.Value);
 				}
 				if (option.tooltip != null)
 				{
-					option.tooltip = option.tooltip.Replace(oldValue, textParameter.Value);
+					option.tooltip = option.tooltip.Replace(oldValue, keyValuePair.Value);
 				}
-				foreach (OptionIcon informationIcon in option.informationIcons)
+				foreach (EventInfoData.OptionIcon optionIcon in option.informationIcons)
 				{
-					if (informationIcon.tooltip != null)
+					if (optionIcon.tooltip != null)
 					{
-						informationIcon.tooltip = informationIcon.tooltip.Replace(oldValue, textParameter.Value);
+						optionIcon.tooltip = optionIcon.tooltip.Replace(oldValue, keyValuePair.Value);
 					}
 				}
-				foreach (OptionIcon consequenceIcon in option.consequenceIcons)
+				foreach (EventInfoData.OptionIcon optionIcon2 in option.consequenceIcons)
 				{
-					if (consequenceIcon.tooltip != null)
+					if (optionIcon2.tooltip != null)
 					{
-						consequenceIcon.tooltip = consequenceIcon.tooltip.Replace(oldValue, textParameter.Value);
+						optionIcon2.tooltip = optionIcon2.tooltip.Replace(oldValue, keyValuePair.Value);
 					}
 				}
 			}
 		}
+	}
+
+	// Token: 0x040016E1 RID: 5857
+	public string title;
+
+	// Token: 0x040016E2 RID: 5858
+	public string description;
+
+	// Token: 0x040016E3 RID: 5859
+	public string location;
+
+	// Token: 0x040016E4 RID: 5860
+	public string whenDescription;
+
+	// Token: 0x040016E5 RID: 5861
+	public Transform clickFocus;
+
+	// Token: 0x040016E6 RID: 5862
+	public GameObject[] minions;
+
+	// Token: 0x040016E7 RID: 5863
+	public GameObject artifact;
+
+	// Token: 0x040016E8 RID: 5864
+	public HashedString animFileName;
+
+	// Token: 0x040016E9 RID: 5865
+	public HashedString mainAnim = "event";
+
+	// Token: 0x040016EA RID: 5866
+	public Dictionary<string, string> textParameters = new Dictionary<string, string>();
+
+	// Token: 0x040016EB RID: 5867
+	public List<EventInfoData.Option> options = new List<EventInfoData.Option>();
+
+	// Token: 0x040016EC RID: 5868
+	public System.Action showCallback;
+
+	// Token: 0x040016ED RID: 5869
+	private bool dirty;
+
+	// Token: 0x0200078C RID: 1932
+	public class OptionIcon
+	{
+		// Token: 0x060022C2 RID: 8898 RVA: 0x000B6974 File Offset: 0x000B4B74
+		public OptionIcon(Sprite sprite, EventInfoData.OptionIcon.ContainerType containerType, string tooltip, float scale = 1f)
+		{
+			this.sprite = sprite;
+			this.containerType = containerType;
+			this.tooltip = tooltip;
+			this.scale = scale;
+		}
+
+		// Token: 0x040016EE RID: 5870
+		public EventInfoData.OptionIcon.ContainerType containerType;
+
+		// Token: 0x040016EF RID: 5871
+		public Sprite sprite;
+
+		// Token: 0x040016F0 RID: 5872
+		public string tooltip;
+
+		// Token: 0x040016F1 RID: 5873
+		public float scale;
+
+		// Token: 0x0200078D RID: 1933
+		public enum ContainerType
+		{
+			// Token: 0x040016F3 RID: 5875
+			Neutral,
+			// Token: 0x040016F4 RID: 5876
+			Positive,
+			// Token: 0x040016F5 RID: 5877
+			Negative,
+			// Token: 0x040016F6 RID: 5878
+			Information
+		}
+	}
+
+	// Token: 0x0200078E RID: 1934
+	public class Option
+	{
+		// Token: 0x060022C3 RID: 8899 RVA: 0x000B6999 File Offset: 0x000B4B99
+		public void AddInformationIcon(string tooltip, float scale = 1f)
+		{
+			this.informationIcons.Add(new EventInfoData.OptionIcon(null, EventInfoData.OptionIcon.ContainerType.Information, tooltip, scale));
+		}
+
+		// Token: 0x060022C4 RID: 8900 RVA: 0x000B69AF File Offset: 0x000B4BAF
+		public void AddPositiveIcon(Sprite sprite, string tooltip, float scale = 1f)
+		{
+			this.consequenceIcons.Add(new EventInfoData.OptionIcon(sprite, EventInfoData.OptionIcon.ContainerType.Positive, tooltip, scale));
+		}
+
+		// Token: 0x060022C5 RID: 8901 RVA: 0x000B69C5 File Offset: 0x000B4BC5
+		public void AddNeutralIcon(Sprite sprite, string tooltip, float scale = 1f)
+		{
+			this.consequenceIcons.Add(new EventInfoData.OptionIcon(sprite, EventInfoData.OptionIcon.ContainerType.Neutral, tooltip, scale));
+		}
+
+		// Token: 0x060022C6 RID: 8902 RVA: 0x000B69DB File Offset: 0x000B4BDB
+		public void AddNegativeIcon(Sprite sprite, string tooltip, float scale = 1f)
+		{
+			this.consequenceIcons.Add(new EventInfoData.OptionIcon(sprite, EventInfoData.OptionIcon.ContainerType.Negative, tooltip, scale));
+		}
+
+		// Token: 0x040016F7 RID: 5879
+		public string mainText;
+
+		// Token: 0x040016F8 RID: 5880
+		public string description;
+
+		// Token: 0x040016F9 RID: 5881
+		public string tooltip;
+
+		// Token: 0x040016FA RID: 5882
+		public System.Action callback;
+
+		// Token: 0x040016FB RID: 5883
+		public List<EventInfoData.OptionIcon> informationIcons = new List<EventInfoData.OptionIcon>();
+
+		// Token: 0x040016FC RID: 5884
+		public List<EventInfoData.OptionIcon> consequenceIcons = new List<EventInfoData.OptionIcon>();
+
+		// Token: 0x040016FD RID: 5885
+		public bool allowed = true;
 	}
 }

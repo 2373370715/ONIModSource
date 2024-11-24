@@ -1,35 +1,49 @@
+﻿using System;
 using System.Collections.Generic;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x02000592 RID: 1426
 public class SolidConduitInboxConfig : IBuildingConfig
 {
-	public const string ID = "SolidConduitInbox";
-
+	// Token: 0x0600194C RID: 6476 RVA: 0x001A29E8 File Offset: 0x001A0BE8
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef("SolidConduitInbox", 1, 2, "conveyorin_kanim", 100, 60f, BUILDINGS.CONSTRUCTION_MASS_KG.TIER3, MATERIALS.REFINED_METALS, 1600f, BuildLocationRule.Anywhere, noise: NOISE_POLLUTION.NONE, decor: BUILDINGS.DECOR.PENALTY.TIER1);
-		obj.RequiresPowerInput = true;
-		obj.EnergyConsumptionWhenActive = 120f;
-		obj.ExhaustKilowattsWhenActive = 0f;
-		obj.SelfHeatKilowattsWhenActive = 2f;
-		obj.Floodable = false;
-		obj.ViewMode = OverlayModes.SolidConveyor.ID;
-		obj.AudioCategory = "Metal";
-		obj.OutputConduitType = ConduitType.Solid;
-		obj.PowerInputOffset = new CellOffset(0, 1);
-		obj.UtilityOutputOffset = new CellOffset(0, 0);
-		obj.PermittedRotations = PermittedRotations.R360;
-		obj.LogicInputPorts = LogicOperationalController.CreateSingleInputPortList(new CellOffset(0, 1));
+		string id = "SolidConduitInbox";
+		int width = 1;
+		int height = 2;
+		string anim = "conveyorin_kanim";
+		int hitpoints = 100;
+		float construction_time = 60f;
+		float[] tier = BUILDINGS.CONSTRUCTION_MASS_KG.TIER3;
+		string[] refined_METALS = MATERIALS.REFINED_METALS;
+		float melting_point = 1600f;
+		BuildLocationRule build_location_rule = BuildLocationRule.Anywhere;
+		EffectorValues none = NOISE_POLLUTION.NONE;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, refined_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.PENALTY.TIER1, none, 0.2f);
+		buildingDef.RequiresPowerInput = true;
+		buildingDef.EnergyConsumptionWhenActive = 120f;
+		buildingDef.ExhaustKilowattsWhenActive = 0f;
+		buildingDef.SelfHeatKilowattsWhenActive = 2f;
+		buildingDef.Floodable = false;
+		buildingDef.ViewMode = OverlayModes.SolidConveyor.ID;
+		buildingDef.AudioCategory = "Metal";
+		buildingDef.OutputConduitType = ConduitType.Solid;
+		buildingDef.PowerInputOffset = new CellOffset(0, 1);
+		buildingDef.UtilityOutputOffset = new CellOffset(0, 0);
+		buildingDef.PermittedRotations = PermittedRotations.R360;
+		buildingDef.LogicInputPorts = LogicOperationalController.CreateSingleInputPortList(new CellOffset(0, 1));
 		GeneratedBuildings.RegisterWithOverlay(OverlayScreen.SolidConveyorIDs, "SolidConduitInbox");
-		return obj;
+		return buildingDef;
 	}
 
+	// Token: 0x0600194D RID: 6477 RVA: 0x000B098F File Offset: 0x000AEB8F
 	public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 		go.GetComponent<Constructable>().requiredSkillPerk = Db.Get().SkillPerks.ConveyorBuild.Id;
 	}
 
+	// Token: 0x0600194E RID: 6478 RVA: 0x001A2ABC File Offset: 0x001A0CBC
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicOperationalController>();
@@ -52,4 +66,7 @@ public class SolidConduitInboxConfig : IBuildingConfig
 		go.AddOrGet<SolidConduitInbox>();
 		go.AddOrGet<SolidConduitDispenser>();
 	}
+
+	// Token: 0x04001026 RID: 4134
+	public const string ID = "SolidConduitInbox";
 }

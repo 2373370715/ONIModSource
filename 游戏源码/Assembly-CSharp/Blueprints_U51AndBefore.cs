@@ -1,280 +1,288 @@
+﻿using System;
+using System.Runtime.CompilerServices;
 using Database;
 using STRINGS;
 
+// Token: 0x0200097E RID: 2430
 public class Blueprints_U51AndBefore : BlueprintProvider
 {
+	// Token: 0x06002BF6 RID: 11254 RVA: 0x000A6F3E File Offset: 0x000A513E
 	public override string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
+	// Token: 0x06002BF7 RID: 11255 RVA: 0x000BC7EF File Offset: 0x000BA9EF
 	public override void SetupBlueprints()
 	{
-		SetupBuildingFacades();
-		SetupArtables();
-		SetupClothingItems();
-		SetupClothingOutfits();
-		SetupBalloonArtistFacades();
+		this.SetupBuildingFacades();
+		this.SetupArtables();
+		this.SetupClothingItems();
+		this.SetupClothingOutfits();
+		this.SetupBalloonArtistFacades();
 	}
 
+	// Token: 0x06002BF8 RID: 11256 RVA: 0x001E2900 File Offset: 0x001E0B00
 	public void SetupBuildingFacades()
 	{
-		blueprintCollection.buildingFacades.AddRange(new BuildingFacadeInfo[203]
+		this.blueprintCollection.buildingFacades.AddRange(new BuildingFacadeInfo[]
 		{
-			new BuildingFacadeInfo("ExteriorWall_basic_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.BASIC_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.BASIC_WHITE.DESC, PermitRarity.Universal, "ExteriorWall", "walls_basic_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("FlowerVase_retro", BUILDINGS.PREFABS.FLOWERVASE.FACADES.RETRO_SUNNY.NAME, BUILDINGS.PREFABS.FLOWERVASE.FACADES.RETRO_SUNNY.DESC, PermitRarity.Common, "FlowerVase", "flowervase_retro_yellow_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("FlowerVase_retro_red", BUILDINGS.PREFABS.FLOWERVASE.FACADES.RETRO_BOLD.NAME, BUILDINGS.PREFABS.FLOWERVASE.FACADES.RETRO_BOLD.DESC, PermitRarity.Common, "FlowerVase", "flowervase_retro_red_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("FlowerVase_retro_white", BUILDINGS.PREFABS.FLOWERVASE.FACADES.RETRO_ELEGANT.NAME, BUILDINGS.PREFABS.FLOWERVASE.FACADES.RETRO_ELEGANT.DESC, PermitRarity.Common, "FlowerVase", "flowervase_retro_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("FlowerVase_retro_green", BUILDINGS.PREFABS.FLOWERVASE.FACADES.RETRO_BRIGHT.NAME, BUILDINGS.PREFABS.FLOWERVASE.FACADES.RETRO_BRIGHT.DESC, PermitRarity.Common, "FlowerVase", "flowervase_retro_green_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("FlowerVase_retro_blue", BUILDINGS.PREFABS.FLOWERVASE.FACADES.RETRO_DREAMY.NAME, BUILDINGS.PREFABS.FLOWERVASE.FACADES.RETRO_DREAMY.DESC, PermitRarity.Common, "FlowerVase", "flowervase_retro_blue_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("LuxuryBed_boat", BUILDINGS.PREFABS.LUXURYBED.FACADES.BOAT.NAME, BUILDINGS.PREFABS.LUXURYBED.FACADES.BOAT.DESC, PermitRarity.Splendid, "LuxuryBed", "elegantbed_boat_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("LuxuryBed_bouncy", BUILDINGS.PREFABS.LUXURYBED.FACADES.BOUNCY_BED.NAME, BUILDINGS.PREFABS.LUXURYBED.FACADES.BOUNCY_BED.DESC, PermitRarity.Splendid, "LuxuryBed", "elegantbed_bouncy_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("LuxuryBed_grandprix", BUILDINGS.PREFABS.LUXURYBED.FACADES.GRANDPRIX.NAME, BUILDINGS.PREFABS.LUXURYBED.FACADES.GRANDPRIX.DESC, PermitRarity.Splendid, "LuxuryBed", "elegantbed_grandprix_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("LuxuryBed_rocket", BUILDINGS.PREFABS.LUXURYBED.FACADES.ROCKET_BED.NAME, BUILDINGS.PREFABS.LUXURYBED.FACADES.ROCKET_BED.DESC, PermitRarity.Splendid, "LuxuryBed", "elegantbed_rocket_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("LuxuryBed_puft", BUILDINGS.PREFABS.LUXURYBED.FACADES.PUFT_BED.NAME, BUILDINGS.PREFABS.LUXURYBED.FACADES.PUFT_BED.DESC, PermitRarity.Loyalty, "LuxuryBed", "elegantbed_puft_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_pastel_pink", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PASTELPINK.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PASTELPINK.DESC, PermitRarity.Common, "ExteriorWall", "walls_pastel_pink_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_pastel_yellow", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PASTELYELLOW.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PASTELYELLOW.DESC, PermitRarity.Common, "ExteriorWall", "walls_pastel_yellow_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_pastel_green", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PASTELGREEN.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PASTELGREEN.DESC, PermitRarity.Common, "ExteriorWall", "walls_pastel_green_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_pastel_blue", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PASTELBLUE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PASTELBLUE.DESC, PermitRarity.Common, "ExteriorWall", "walls_pastel_blue_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_pastel_purple", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PASTELPURPLE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PASTELPURPLE.DESC, PermitRarity.Common, "ExteriorWall", "walls_pastel_purple_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_balm_lily", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.BALM_LILY.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.BALM_LILY.DESC, PermitRarity.Decent, "ExteriorWall", "walls_balm_lily_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_clouds", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.CLOUDS.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.CLOUDS.DESC, PermitRarity.Decent, "ExteriorWall", "walls_clouds_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_coffee", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.COFFEE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.COFFEE.DESC, PermitRarity.Decent, "ExteriorWall", "walls_coffee_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_mosaic", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.AQUATICMOSAIC.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.AQUATICMOSAIC.DESC, PermitRarity.Decent, "ExteriorWall", "walls_mosaic_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_mushbar", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.MUSHBAR.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.MUSHBAR.DESC, PermitRarity.Decent, "ExteriorWall", "walls_mushbar_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_plaid", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PLAID.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PLAID.DESC, PermitRarity.Decent, "ExteriorWall", "walls_plaid_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_rain", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.RAIN.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.RAIN.DESC, PermitRarity.Decent, "ExteriorWall", "walls_rain_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_rainbow", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.RAINBOW.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.RAINBOW.DESC, PermitRarity.Decent, "ExteriorWall", "walls_rainbow_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_snow", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.SNOW.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.SNOW.DESC, PermitRarity.Decent, "ExteriorWall", "walls_snow_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_sun", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.SUN.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.SUN.DESC, PermitRarity.Decent, "ExteriorWall", "walls_sun_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_polka", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PASTELPOLKA.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PASTELPOLKA.DESC, PermitRarity.Decent, "ExteriorWall", "walls_polka_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_diagonal_red_deep_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DIAGONAL_RED_DEEP_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DIAGONAL_RED_DEEP_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_diagonal_red_deep_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_diagonal_orange_satsuma_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DIAGONAL_ORANGE_SATSUMA_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DIAGONAL_ORANGE_SATSUMA_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_diagonal_orange_satsuma_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_diagonal_yellow_lemon_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DIAGONAL_YELLOW_LEMON_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DIAGONAL_YELLOW_LEMON_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_diagonal_yellow_lemon_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_diagonal_green_kelly_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DIAGONAL_GREEN_KELLY_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DIAGONAL_GREEN_KELLY_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_diagonal_green_kelly_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_diagonal_blue_cobalt_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DIAGONAL_BLUE_COBALT_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DIAGONAL_BLUE_COBALT_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_diagonal_blue_cobalt_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_diagonal_pink_flamingo_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DIAGONAL_PINK_FLAMINGO_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DIAGONAL_PINK_FLAMINGO_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_diagonal_pink_flamingo_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_diagonal_grey_charcoal_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DIAGONAL_GREY_CHARCOAL_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DIAGONAL_GREY_CHARCOAL_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_diagonal_grey_charcoal_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_circle_red_deep_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.CIRCLE_RED_DEEP_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.CIRCLE_RED_DEEP_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_circle_red_deep_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_circle_orange_satsuma_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.CIRCLE_ORANGE_SATSUMA_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.CIRCLE_ORANGE_SATSUMA_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_circle_orange_satsuma_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_circle_yellow_lemon_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.CIRCLE_YELLOW_LEMON_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.CIRCLE_YELLOW_LEMON_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_circle_yellow_lemon_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_circle_green_kelly_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.CIRCLE_GREEN_KELLY_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.CIRCLE_GREEN_KELLY_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_circle_green_kelly_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_circle_blue_cobalt_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.CIRCLE_BLUE_COBALT_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.CIRCLE_BLUE_COBALT_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_circle_blue_cobalt_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_circle_pink_flamingo_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.CIRCLE_PINK_FLAMINGO_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.CIRCLE_PINK_FLAMINGO_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_circle_pink_flamingo_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_circle_grey_charcoal_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.CIRCLE_GREY_CHARCOAL_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.CIRCLE_GREY_CHARCOAL_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_circle_grey_charcoal_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("Bed_star_curtain", BUILDINGS.PREFABS.BED.FACADES.STARCURTAIN.NAME, BUILDINGS.PREFABS.BED.FACADES.STARCURTAIN.DESC, PermitRarity.Nifty, "Bed", "bed_star_curtain_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("Bed_canopy", BUILDINGS.PREFABS.BED.FACADES.CREAKY.NAME, BUILDINGS.PREFABS.BED.FACADES.CREAKY.DESC, PermitRarity.Nifty, "Bed", "bed_canopy_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("Bed_rowan_tropical", BUILDINGS.PREFABS.BED.FACADES.STAYCATION.NAME, BUILDINGS.PREFABS.BED.FACADES.STAYCATION.DESC, PermitRarity.Nifty, "Bed", "bed_rowan_tropical_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("Bed_ada_science_lab", BUILDINGS.PREFABS.BED.FACADES.SCIENCELAB.NAME, BUILDINGS.PREFABS.BED.FACADES.SCIENCELAB.DESC, PermitRarity.Nifty, "Bed", "bed_ada_science_lab_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("CeilingLight_mining", BUILDINGS.PREFABS.CEILINGLIGHT.FACADES.MINING.NAME, BUILDINGS.PREFABS.CEILINGLIGHT.FACADES.MINING.DESC, PermitRarity.Common, "CeilingLight", "ceilinglight_mining_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("CeilingLight_flower", BUILDINGS.PREFABS.CEILINGLIGHT.FACADES.BLOSSOM.NAME, BUILDINGS.PREFABS.CEILINGLIGHT.FACADES.BLOSSOM.DESC, PermitRarity.Common, "CeilingLight", "ceilinglight_flower_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("CeilingLight_polka_lamp_shade", BUILDINGS.PREFABS.CEILINGLIGHT.FACADES.POLKADOT.NAME, BUILDINGS.PREFABS.CEILINGLIGHT.FACADES.POLKADOT.DESC, PermitRarity.Common, "CeilingLight", "ceilinglight_polka_lamp_shade_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("CeilingLight_burt_shower", BUILDINGS.PREFABS.CEILINGLIGHT.FACADES.FAUXPIPE.NAME, BUILDINGS.PREFABS.CEILINGLIGHT.FACADES.FAUXPIPE.DESC, PermitRarity.Common, "CeilingLight", "ceilinglight_burt_shower_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("CeilingLight_ada_flask_round", BUILDINGS.PREFABS.CEILINGLIGHT.FACADES.LABFLASK.NAME, BUILDINGS.PREFABS.CEILINGLIGHT.FACADES.LABFLASK.DESC, PermitRarity.Common, "CeilingLight", "ceilinglight_ada_flask_round_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("FlowerVaseWall_retro_green", BUILDINGS.PREFABS.FLOWERVASEWALL.FACADES.RETRO_GREEN.NAME, BUILDINGS.PREFABS.FLOWERVASEWALL.FACADES.RETRO_GREEN.DESC, PermitRarity.Common, "FlowerVaseWall", "flowervase_wall_retro_green_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("FlowerVaseWall_retro_yellow", BUILDINGS.PREFABS.FLOWERVASEWALL.FACADES.RETRO_YELLOW.NAME, BUILDINGS.PREFABS.FLOWERVASEWALL.FACADES.RETRO_YELLOW.DESC, PermitRarity.Common, "FlowerVaseWall", "flowervase_wall_retro_yellow_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("FlowerVaseWall_retro_red", BUILDINGS.PREFABS.FLOWERVASEWALL.FACADES.RETRO_RED.NAME, BUILDINGS.PREFABS.FLOWERVASEWALL.FACADES.RETRO_RED.DESC, PermitRarity.Common, "FlowerVaseWall", "flowervase_wall_retro_red_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("FlowerVaseWall_retro_blue", BUILDINGS.PREFABS.FLOWERVASEWALL.FACADES.RETRO_BLUE.NAME, BUILDINGS.PREFABS.FLOWERVASEWALL.FACADES.RETRO_BLUE.DESC, PermitRarity.Common, "FlowerVaseWall", "flowervase_wall_retro_blue_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("FlowerVaseWall_retro_white", BUILDINGS.PREFABS.FLOWERVASEWALL.FACADES.RETRO_WHITE.NAME, BUILDINGS.PREFABS.FLOWERVASEWALL.FACADES.RETRO_WHITE.DESC, PermitRarity.Common, "FlowerVaseWall", "flowervase_wall_retro_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_basic_blue_cobalt", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.BASIC_BLUE_COBALT.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.BASIC_BLUE_COBALT.DESC, PermitRarity.Common, "ExteriorWall", "walls_basic_blue_cobalt_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_basic_green_kelly", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.BASIC_GREEN_KELLY.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.BASIC_GREEN_KELLY.DESC, PermitRarity.Common, "ExteriorWall", "walls_basic_green_kelly_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_basic_grey_charcoal", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.BASIC_GREY_CHARCOAL.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.BASIC_GREY_CHARCOAL.DESC, PermitRarity.Common, "ExteriorWall", "walls_basic_grey_charcoal_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_basic_orange_satsuma", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.BASIC_ORANGE_SATSUMA.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.BASIC_ORANGE_SATSUMA.DESC, PermitRarity.Common, "ExteriorWall", "walls_basic_orange_satsuma_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_basic_pink_flamingo", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.BASIC_PINK_FLAMINGO.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.BASIC_PINK_FLAMINGO.DESC, PermitRarity.Common, "ExteriorWall", "walls_basic_pink_flamingo_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_basic_red_deep", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.BASIC_RED_DEEP.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.BASIC_RED_DEEP.DESC, PermitRarity.Common, "ExteriorWall", "walls_basic_red_deep_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_basic_yellow_lemon", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.BASIC_YELLOW_LEMON.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.BASIC_YELLOW_LEMON.DESC, PermitRarity.Common, "ExteriorWall", "walls_basic_yellow_lemon_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_blueberries", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.BLUEBERRIES.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.BLUEBERRIES.DESC, PermitRarity.Decent, "ExteriorWall", "walls_blueberries_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_grapes", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.GRAPES.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.GRAPES.DESC, PermitRarity.Decent, "ExteriorWall", "walls_grapes_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_lemon", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.LEMON.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.LEMON.DESC, PermitRarity.Decent, "ExteriorWall", "walls_lemon_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_lime", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.LIME.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.LIME.DESC, PermitRarity.Decent, "ExteriorWall", "walls_lime_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_satsuma", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.SATSUMA.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.SATSUMA.DESC, PermitRarity.Decent, "ExteriorWall", "walls_satsuma_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_strawberry", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRAWBERRY.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRAWBERRY.DESC, PermitRarity.Decent, "ExteriorWall", "walls_strawberry_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_watermelon", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.WATERMELON.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.WATERMELON.DESC, PermitRarity.Decent, "ExteriorWall", "walls_watermelon_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("FlowerVaseHanging_retro_red", BUILDINGS.PREFABS.FLOWERVASEHANGING.FACADES.RETRO_RED.NAME, BUILDINGS.PREFABS.FLOWERVASEHANGING.FACADES.RETRO_RED.DESC, PermitRarity.Common, "FlowerVaseHanging", "flowervase_hanging_retro_red_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("FlowerVaseHanging_retro_green", BUILDINGS.PREFABS.FLOWERVASEHANGING.FACADES.RETRO_GREEN.NAME, BUILDINGS.PREFABS.FLOWERVASEHANGING.FACADES.RETRO_GREEN.DESC, PermitRarity.Common, "FlowerVaseHanging", "flowervase_hanging_retro_green_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("FlowerVaseHanging_retro_blue", BUILDINGS.PREFABS.FLOWERVASEHANGING.FACADES.RETRO_BLUE.NAME, BUILDINGS.PREFABS.FLOWERVASEHANGING.FACADES.RETRO_BLUE.DESC, PermitRarity.Common, "FlowerVaseHanging", "flowervase_hanging_retro_blue_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("FlowerVaseHanging_retro_yellow", BUILDINGS.PREFABS.FLOWERVASEHANGING.FACADES.RETRO_YELLOW.NAME, BUILDINGS.PREFABS.FLOWERVASEHANGING.FACADES.RETRO_YELLOW.DESC, PermitRarity.Common, "FlowerVaseHanging", "flowervase_hanging_retro_yellow_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("FlowerVaseHanging_retro_white", BUILDINGS.PREFABS.FLOWERVASEHANGING.FACADES.RETRO_WHITE.NAME, BUILDINGS.PREFABS.FLOWERVASEHANGING.FACADES.RETRO_WHITE.DESC, PermitRarity.Common, "FlowerVaseHanging", "flowervase_hanging_retro_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_toiletpaper", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.TOILETPAPER.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.TOILETPAPER.DESC, PermitRarity.Decent, "ExteriorWall", "walls_toiletpaper_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_plunger", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PLUNGER.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PLUNGER.DESC, PermitRarity.Decent, "ExteriorWall", "walls_plunger_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_tropical", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.TROPICAL.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.TROPICAL.DESC, PermitRarity.Decent, "ExteriorWall", "walls_tropical_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ItemPedestal_hand", BUILDINGS.PREFABS.ITEMPEDESTAL.FACADES.HAND.NAME, BUILDINGS.PREFABS.ITEMPEDESTAL.FACADES.HAND.DESC, PermitRarity.Decent, "ItemPedestal", "pedestal_hand_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("MassageTable_shiatsu", BUILDINGS.PREFABS.MASSAGETABLE.FACADES.SHIATSU.NAME, BUILDINGS.PREFABS.MASSAGETABLE.FACADES.SHIATSU.DESC, PermitRarity.Splendid, "MassageTable", "masseur_shiatsu_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("RockCrusher_hands", BUILDINGS.PREFABS.ROCKCRUSHER.FACADES.HANDS.NAME, BUILDINGS.PREFABS.ROCKCRUSHER.FACADES.HANDS.DESC, PermitRarity.Splendid, "RockCrusher", "rockrefinery_hands_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("RockCrusher_teeth", BUILDINGS.PREFABS.ROCKCRUSHER.FACADES.TEETH.NAME, BUILDINGS.PREFABS.ROCKCRUSHER.FACADES.TEETH.DESC, PermitRarity.Splendid, "RockCrusher", "rockrefinery_teeth_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("WaterCooler_round_body", BUILDINGS.PREFABS.WATERCOOLER.FACADES.ROUND_BODY.NAME, BUILDINGS.PREFABS.WATERCOOLER.FACADES.ROUND_BODY.DESC, PermitRarity.Splendid, "WaterCooler", "watercooler_round_body_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_stripes_blue", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_BLUE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_BLUE.DESC, PermitRarity.Decent, "ExteriorWall", "walls_stripes_blue_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_stripes_diagonal_blue", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_DIAGONAL_BLUE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_DIAGONAL_BLUE.DESC, PermitRarity.Decent, "ExteriorWall", "walls_stripes_diagonal_blue_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_stripes_circle_blue", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_CIRCLE_BLUE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_CIRCLE_BLUE.DESC, PermitRarity.Decent, "ExteriorWall", "walls_stripes_circle_blue_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_squares_red_deep_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.SQUARES_RED_DEEP_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.SQUARES_RED_DEEP_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_squares_red_deep_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_squares_orange_satsuma_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.SQUARES_ORANGE_SATSUMA_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.SQUARES_ORANGE_SATSUMA_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_squares_orange_satsuma_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_squares_yellow_lemon_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.SQUARES_YELLOW_LEMON_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.SQUARES_YELLOW_LEMON_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_squares_yellow_lemon_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_squares_green_kelly_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.SQUARES_GREEN_KELLY_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.SQUARES_GREEN_KELLY_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_squares_green_kelly_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_squares_blue_cobalt_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.SQUARES_BLUE_COBALT_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.SQUARES_BLUE_COBALT_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_squares_blue_cobalt_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_squares_pink_flamingo_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.SQUARES_PINK_FLAMINGO_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.SQUARES_PINK_FLAMINGO_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_squares_pink_flamingo_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_squares_grey_charcoal_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.SQUARES_GREY_CHARCOAL_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.SQUARES_GREY_CHARCOAL_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_squares_grey_charcoal_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("EggCracker_beaker", BUILDINGS.PREFABS.EGGCRACKER.FACADES.BEAKER.NAME, BUILDINGS.PREFABS.EGGCRACKER.FACADES.BEAKER.DESC, PermitRarity.Nifty, "EggCracker", "egg_cracker_beaker_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("EggCracker_flower", BUILDINGS.PREFABS.EGGCRACKER.FACADES.FLOWER.NAME, BUILDINGS.PREFABS.EGGCRACKER.FACADES.FLOWER.DESC, PermitRarity.Nifty, "EggCracker", "egg_cracker_flower_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("EggCracker_hands", BUILDINGS.PREFABS.EGGCRACKER.FACADES.HANDS.NAME, BUILDINGS.PREFABS.EGGCRACKER.FACADES.HANDS.DESC, PermitRarity.Nifty, "EggCracker", "egg_cracker_hands_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("CeilingLight_rubiks", BUILDINGS.PREFABS.CEILINGLIGHT.FACADES.RUBIKS.NAME, BUILDINGS.PREFABS.CEILINGLIGHT.FACADES.RUBIKS.DESC, PermitRarity.Common, "CeilingLight", "ceilinglight_rubiks_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("FlowerVaseHanging_beaker", BUILDINGS.PREFABS.FLOWERVASEHANGING.FACADES.BEAKER.NAME, BUILDINGS.PREFABS.FLOWERVASEHANGING.FACADES.BEAKER.DESC, PermitRarity.Common, "FlowerVaseHanging", "flowervase_hanging_beaker_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("FlowerVaseHanging_rubiks", BUILDINGS.PREFABS.FLOWERVASEHANGING.FACADES.RUBIKS.NAME, BUILDINGS.PREFABS.FLOWERVASEHANGING.FACADES.RUBIKS.DESC, PermitRarity.Common, "FlowerVaseHanging", "flowervase_hanging_rubiks_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("LuxuryBed_hand", BUILDINGS.PREFABS.LUXURYBED.FACADES.HAND.NAME, BUILDINGS.PREFABS.LUXURYBED.FACADES.HAND.DESC, PermitRarity.Splendid, "LuxuryBed", "elegantbed_hand_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("LuxuryBed_rubiks", BUILDINGS.PREFABS.LUXURYBED.FACADES.RUBIKS.NAME, BUILDINGS.PREFABS.LUXURYBED.FACADES.RUBIKS.DESC, PermitRarity.Splendid, "LuxuryBed", "elegantbed_rubiks_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("RockCrusher_roundstamp", BUILDINGS.PREFABS.ROCKCRUSHER.FACADES.ROUNDSTAMP.NAME, BUILDINGS.PREFABS.ROCKCRUSHER.FACADES.ROUNDSTAMP.DESC, PermitRarity.Splendid, "RockCrusher", "rockrefinery_roundstamp_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("RockCrusher_spikebeds", BUILDINGS.PREFABS.ROCKCRUSHER.FACADES.SPIKEBEDS.NAME, BUILDINGS.PREFABS.ROCKCRUSHER.FACADES.SPIKEBEDS.DESC, PermitRarity.Splendid, "RockCrusher", "rockrefinery_spikebeds_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("StorageLocker_green_mush", BUILDINGS.PREFABS.STORAGELOCKER.FACADES.GREEN_MUSH.NAME, BUILDINGS.PREFABS.STORAGELOCKER.FACADES.GREEN_MUSH.DESC, PermitRarity.Nifty, "StorageLocker", "storagelocker_green_mush_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("StorageLocker_red_rose", BUILDINGS.PREFABS.STORAGELOCKER.FACADES.RED_ROSE.NAME, BUILDINGS.PREFABS.STORAGELOCKER.FACADES.RED_ROSE.DESC, PermitRarity.Nifty, "StorageLocker", "storagelocker_red_rose_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("StorageLocker_blue_babytears", BUILDINGS.PREFABS.STORAGELOCKER.FACADES.BLUE_BABYTEARS.NAME, BUILDINGS.PREFABS.STORAGELOCKER.FACADES.BLUE_BABYTEARS.DESC, PermitRarity.Nifty, "StorageLocker", "storagelocker_blue_babytears_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("StorageLocker_purple_brainfat", BUILDINGS.PREFABS.STORAGELOCKER.FACADES.PURPLE_BRAINFAT.NAME, BUILDINGS.PREFABS.STORAGELOCKER.FACADES.PURPLE_BRAINFAT.DESC, PermitRarity.Nifty, "StorageLocker", "storagelocker_purple_brainfat_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("StorageLocker_yellow_tartar", BUILDINGS.PREFABS.STORAGELOCKER.FACADES.YELLOW_TARTAR.NAME, BUILDINGS.PREFABS.STORAGELOCKER.FACADES.YELLOW_TARTAR.DESC, PermitRarity.Nifty, "StorageLocker", "storagelocker_yellow_tartar_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("PlanterBox_mealwood", BUILDINGS.PREFABS.PLANTERBOX.FACADES.MEALWOOD.NAME, BUILDINGS.PREFABS.PLANTERBOX.FACADES.MEALWOOD.DESC, PermitRarity.Common, "PlanterBox", "planterbox_skin_mealwood_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("PlanterBox_bristleblossom", BUILDINGS.PREFABS.PLANTERBOX.FACADES.BRISTLEBLOSSOM.NAME, BUILDINGS.PREFABS.PLANTERBOX.FACADES.BRISTLEBLOSSOM.DESC, PermitRarity.Common, "PlanterBox", "planterbox_skin_bristleblossom_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("PlanterBox_wheezewort", BUILDINGS.PREFABS.PLANTERBOX.FACADES.WHEEZEWORT.NAME, BUILDINGS.PREFABS.PLANTERBOX.FACADES.WHEEZEWORT.DESC, PermitRarity.Decent, "PlanterBox", "planterbox_skin_wheezewort_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("PlanterBox_sleetwheat", BUILDINGS.PREFABS.PLANTERBOX.FACADES.SLEETWHEAT.NAME, BUILDINGS.PREFABS.PLANTERBOX.FACADES.SLEETWHEAT.DESC, PermitRarity.Common, "PlanterBox", "planterbox_skin_sleetwheat_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("PlanterBox_salmon_pink", BUILDINGS.PREFABS.PLANTERBOX.FACADES.SALMON_PINK.NAME, BUILDINGS.PREFABS.PLANTERBOX.FACADES.SALMON_PINK.DESC, PermitRarity.Common, "PlanterBox", "planterbox_skin_salmon_pink_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("GasReservoir_lightgold", BUILDINGS.PREFABS.GASRESERVOIR.FACADES.LIGHTGOLD.NAME, BUILDINGS.PREFABS.GASRESERVOIR.FACADES.LIGHTGOLD.DESC, PermitRarity.Nifty, "GasReservoir", "gasstorage_lightgold_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("GasReservoir_peagreen", BUILDINGS.PREFABS.GASRESERVOIR.FACADES.PEAGREEN.NAME, BUILDINGS.PREFABS.GASRESERVOIR.FACADES.PEAGREEN.DESC, PermitRarity.Nifty, "GasReservoir", "gasstorage_peagreen_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("GasReservoir_lightcobalt", BUILDINGS.PREFABS.GASRESERVOIR.FACADES.LIGHTCOBALT.NAME, BUILDINGS.PREFABS.GASRESERVOIR.FACADES.LIGHTCOBALT.DESC, PermitRarity.Nifty, "GasReservoir", "gasstorage_lightcobalt_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("GasReservoir_polka_darkpurpleresin", BUILDINGS.PREFABS.GASRESERVOIR.FACADES.POLKA_DARKPURPLERESIN.NAME, BUILDINGS.PREFABS.GASRESERVOIR.FACADES.POLKA_DARKPURPLERESIN.DESC, PermitRarity.Splendid, "GasReservoir", "gasstorage_polka_darkpurpleresin_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("GasReservoir_polka_darknavynookgreen", BUILDINGS.PREFABS.GASRESERVOIR.FACADES.POLKA_DARKNAVYNOOKGREEN.NAME, BUILDINGS.PREFABS.GASRESERVOIR.FACADES.POLKA_DARKNAVYNOOKGREEN.DESC, PermitRarity.Splendid, "GasReservoir", "gasstorage_polka_darknavynookgreen_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_kitchen_retro1", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.KITCHEN_RETRO1.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.KITCHEN_RETRO1.DESC, PermitRarity.Decent, "ExteriorWall", "walls_kitchen_retro1_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_plus_red_deep_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PLUS_RED_DEEP_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PLUS_RED_DEEP_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_plus_red_deep_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_plus_orange_satsuma_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PLUS_ORANGE_SATSUMA_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PLUS_ORANGE_SATSUMA_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_plus_orange_satsuma_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_plus_yellow_lemon_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PLUS_YELLOW_LEMON_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PLUS_YELLOW_LEMON_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_plus_yellow_lemon_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_plus_green_kelly_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PLUS_GREEN_KELLY_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PLUS_GREEN_KELLY_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_plus_green_kelly_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_plus_blue_cobalt_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PLUS_BLUE_COBALT_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PLUS_BLUE_COBALT_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_plus_blue_cobalt_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_plus_pink_flamingo_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PLUS_PINK_FLAMINGO_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PLUS_PINK_FLAMINGO_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_plus_pink_flamingo_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_plus_grey_charcoal_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PLUS_GREY_CHARCOAL_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PLUS_GREY_CHARCOAL_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_plus_grey_charcoal_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("RockCrusher_chomp", BUILDINGS.PREFABS.ROCKCRUSHER.FACADES.CHOMP.NAME, BUILDINGS.PREFABS.ROCKCRUSHER.FACADES.CHOMP.DESC, PermitRarity.Splendid, "RockCrusher", "rockrefinery_chomp_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("RockCrusher_gears", BUILDINGS.PREFABS.ROCKCRUSHER.FACADES.GEARS.NAME, BUILDINGS.PREFABS.ROCKCRUSHER.FACADES.GEARS.DESC, PermitRarity.Splendid, "RockCrusher", "rockrefinery_gears_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("RockCrusher_balloon", BUILDINGS.PREFABS.ROCKCRUSHER.FACADES.BALLOON.NAME, BUILDINGS.PREFABS.ROCKCRUSHER.FACADES.BALLOON.DESC, PermitRarity.Splendid, "RockCrusher", "rockrefinery_balloon_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("StorageLocker_polka_darknavynookgreen", BUILDINGS.PREFABS.STORAGELOCKER.FACADES.POLKA_DARKNAVYNOOKGREEN.NAME, BUILDINGS.PREFABS.STORAGELOCKER.FACADES.POLKA_DARKNAVYNOOKGREEN.DESC, PermitRarity.Splendid, "StorageLocker", "storagelocker_polka_darknavynookgreen_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("StorageLocker_polka_darkpurpleresin", BUILDINGS.PREFABS.STORAGELOCKER.FACADES.POLKA_DARKPURPLERESIN.NAME, BUILDINGS.PREFABS.STORAGELOCKER.FACADES.POLKA_DARKPURPLERESIN.DESC, PermitRarity.Splendid, "StorageLocker", "storagelocker_polka_darkpurpleresin_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("GasReservoir_blue_babytears", BUILDINGS.PREFABS.GASRESERVOIR.FACADES.BLUE_BABYTEARS.NAME, BUILDINGS.PREFABS.GASRESERVOIR.FACADES.BLUE_BABYTEARS.DESC, PermitRarity.Nifty, "GasReservoir", "gasstorage_blue_babytears_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("GasReservoir_yellow_tartar", BUILDINGS.PREFABS.GASRESERVOIR.FACADES.YELLOW_TARTAR.NAME, BUILDINGS.PREFABS.GASRESERVOIR.FACADES.YELLOW_TARTAR.DESC, PermitRarity.Nifty, "GasReservoir", "gasstorage_yellow_tartar_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("GasReservoir_green_mush", BUILDINGS.PREFABS.GASRESERVOIR.FACADES.GREEN_MUSH.NAME, BUILDINGS.PREFABS.GASRESERVOIR.FACADES.GREEN_MUSH.DESC, PermitRarity.Nifty, "GasReservoir", "gasstorage_green_mush_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("GasReservoir_red_rose", BUILDINGS.PREFABS.GASRESERVOIR.FACADES.RED_ROSE.NAME, BUILDINGS.PREFABS.GASRESERVOIR.FACADES.RED_ROSE.DESC, PermitRarity.Nifty, "GasReservoir", "gasstorage_red_rose_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("GasReservoir_purple_brainfat", BUILDINGS.PREFABS.GASRESERVOIR.FACADES.PURPLE_BRAINFAT.NAME, BUILDINGS.PREFABS.GASRESERVOIR.FACADES.PURPLE_BRAINFAT.DESC, PermitRarity.Nifty, "GasReservoir", "gasstorage_purple_brainfat_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("MassageTable_balloon", BUILDINGS.PREFABS.MASSAGETABLE.FACADES.MASSEUR_BALLOON.NAME, BUILDINGS.PREFABS.MASSAGETABLE.FACADES.MASSEUR_BALLOON.DESC, PermitRarity.Splendid, "MassageTable", "masseur_balloon_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("WaterCooler_balloon", BUILDINGS.PREFABS.WATERCOOLER.FACADES.BALLOON.NAME, BUILDINGS.PREFABS.WATERCOOLER.FACADES.BALLOON.DESC, PermitRarity.Splendid, "WaterCooler", "watercooler_balloon_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("Bed_stringlights", BUILDINGS.PREFABS.BED.FACADES.STRINGLIGHTS.NAME, BUILDINGS.PREFABS.BED.FACADES.STRINGLIGHTS.DESC, PermitRarity.Nifty, "Bed", "bed_stringlights_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("CornerMoulding_shineornaments", BUILDINGS.PREFABS.CORNERMOULDING.FACADES.SHINEORNAMENTS.NAME, BUILDINGS.PREFABS.CORNERMOULDING.FACADES.SHINEORNAMENTS.DESC, PermitRarity.Decent, "CornerMoulding", "corner_tile_shineornaments_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("CrownMoulding_shineornaments", BUILDINGS.PREFABS.CROWNMOULDING.FACADES.SHINEORNAMENTS.NAME, BUILDINGS.PREFABS.CROWNMOULDING.FACADES.SHINEORNAMENTS.DESC, PermitRarity.Decent, "CrownMoulding", "crown_moulding_shineornaments_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("FloorLamp_leg", BUILDINGS.PREFABS.FLOORLAMP.FACADES.LEG.NAME, BUILDINGS.PREFABS.FLOORLAMP.FACADES.LEG.DESC, PermitRarity.Decent, "FloorLamp", "floorlamp_leg_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("FloorLamp_bristle_blossom", BUILDINGS.PREFABS.FLOORLAMP.FACADES.BRISTLEBLOSSOM.NAME, BUILDINGS.PREFABS.FLOORLAMP.FACADES.BRISTLEBLOSSOM.DESC, PermitRarity.Decent, "FloorLamp", "floorlamp_bristle_blossom_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_stripes_rose", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_ROSE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_ROSE.DESC, PermitRarity.Decent, "ExteriorWall", "walls_stripes_rose_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_stripes_diagonal_rose", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_DIAGONAL_ROSE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_DIAGONAL_ROSE.DESC, PermitRarity.Decent, "ExteriorWall", "walls_stripes_diagonal_rose_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_stripes_circle_rose", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_CIRCLE_ROSE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_CIRCLE_ROSE.DESC, PermitRarity.Decent, "ExteriorWall", "walls_stripes_circle_rose_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_stripes_mush", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_MUSH.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_MUSH.DESC, PermitRarity.Decent, "ExteriorWall", "walls_stripes_mush_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_stripes_diagonal_mush", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_DIAGONAL_MUSH.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_DIAGONAL_MUSH.DESC, PermitRarity.Decent, "ExteriorWall", "walls_stripes_diagonal_mush_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_stripes_circle_mush", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_CIRCLE_MUSH.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_CIRCLE_MUSH.DESC, PermitRarity.Decent, "ExteriorWall", "walls_stripes_circle_mush_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("StorageLocker_stripes_red_white", BUILDINGS.PREFABS.STORAGELOCKER.FACADES.STRIPES_RED_WHITE.NAME, BUILDINGS.PREFABS.STORAGELOCKER.FACADES.STRIPES_RED_WHITE.DESC, PermitRarity.Splendid, "StorageLocker", "storagelocker_stripes_red_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("Refrigerator_stripes_red_white", BUILDINGS.PREFABS.REFRIGERATOR.FACADES.STRIPES_RED_WHITE.NAME, BUILDINGS.PREFABS.REFRIGERATOR.FACADES.STRIPES_RED_WHITE.DESC, PermitRarity.Splendid, "Refrigerator", "fridge_stripes_red_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("Refrigerator_blue_babytears", BUILDINGS.PREFABS.REFRIGERATOR.FACADES.BLUE_BABYTEARS.NAME, BUILDINGS.PREFABS.REFRIGERATOR.FACADES.BLUE_BABYTEARS.DESC, PermitRarity.Nifty, "Refrigerator", "fridge_blue_babytears_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("Refrigerator_green_mush", BUILDINGS.PREFABS.REFRIGERATOR.FACADES.GREEN_MUSH.NAME, BUILDINGS.PREFABS.REFRIGERATOR.FACADES.GREEN_MUSH.DESC, PermitRarity.Nifty, "Refrigerator", "fridge_green_mush_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("Refrigerator_red_rose", BUILDINGS.PREFABS.REFRIGERATOR.FACADES.RED_ROSE.NAME, BUILDINGS.PREFABS.REFRIGERATOR.FACADES.RED_ROSE.DESC, PermitRarity.Nifty, "Refrigerator", "fridge_red_rose_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("Refrigerator_yellow_tartar", BUILDINGS.PREFABS.REFRIGERATOR.FACADES.YELLOW_TARTAR.NAME, BUILDINGS.PREFABS.REFRIGERATOR.FACADES.YELLOW_TARTAR.DESC, PermitRarity.Nifty, "Refrigerator", "fridge_yellow_tartar_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("Refrigerator_purple_brainfat", BUILDINGS.PREFABS.REFRIGERATOR.FACADES.PURPLE_BRAINFAT.NAME, BUILDINGS.PREFABS.REFRIGERATOR.FACADES.PURPLE_BRAINFAT.DESC, PermitRarity.Nifty, "Refrigerator", "fridge_purple_brainfat_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("MicrobeMusher_purple_brainfat", BUILDINGS.PREFABS.MICROBEMUSHER.FACADES.PURPLE_BRAINFAT.NAME, BUILDINGS.PREFABS.MICROBEMUSHER.FACADES.PURPLE_BRAINFAT.DESC, PermitRarity.Nifty, "MicrobeMusher", "microbemusher_purple_brainfat_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("MicrobeMusher_yellow_tartar", BUILDINGS.PREFABS.MICROBEMUSHER.FACADES.YELLOW_TARTAR.NAME, BUILDINGS.PREFABS.MICROBEMUSHER.FACADES.YELLOW_TARTAR.DESC, PermitRarity.Nifty, "MicrobeMusher", "microbemusher_yellow_tartar_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("MicrobeMusher_red_rose", BUILDINGS.PREFABS.MICROBEMUSHER.FACADES.RED_ROSE.NAME, BUILDINGS.PREFABS.MICROBEMUSHER.FACADES.RED_ROSE.DESC, PermitRarity.Nifty, "MicrobeMusher", "microbemusher_red_rose_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("MicrobeMusher_green_mush", BUILDINGS.PREFABS.MICROBEMUSHER.FACADES.GREEN_MUSH.NAME, BUILDINGS.PREFABS.MICROBEMUSHER.FACADES.GREEN_MUSH.DESC, PermitRarity.Nifty, "MicrobeMusher", "microbemusher_green_mush_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("MicrobeMusher_blue_babytears", BUILDINGS.PREFABS.MICROBEMUSHER.FACADES.BLUE_BABYTEARS.NAME, BUILDINGS.PREFABS.MICROBEMUSHER.FACADES.BLUE_BABYTEARS.DESC, PermitRarity.Nifty, "MicrobeMusher", "microbemusher_blue_babytears_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("WashSink_purple_brainfat", BUILDINGS.PREFABS.WASHSINK.FACADES.PURPLE_BRAINFAT.NAME, BUILDINGS.PREFABS.WASHSINK.FACADES.PURPLE_BRAINFAT.DESC, PermitRarity.Nifty, "WashSink", "wash_sink_purple_brainfat_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("WashSink_blue_babytears", BUILDINGS.PREFABS.WASHSINK.FACADES.BLUE_BABYTEARS.NAME, BUILDINGS.PREFABS.WASHSINK.FACADES.BLUE_BABYTEARS.DESC, PermitRarity.Nifty, "WashSink", "wash_sink_blue_babytears_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("WashSink_green_mush", BUILDINGS.PREFABS.WASHSINK.FACADES.GREEN_MUSH.NAME, BUILDINGS.PREFABS.WASHSINK.FACADES.GREEN_MUSH.DESC, PermitRarity.Nifty, "WashSink", "wash_sink_green_mush_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("WashSink_yellow_tartar", BUILDINGS.PREFABS.WASHSINK.FACADES.YELLOW_TARTAR.NAME, BUILDINGS.PREFABS.WASHSINK.FACADES.YELLOW_TARTAR.DESC, PermitRarity.Nifty, "WashSink", "wash_sink_yellow_tartar_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("WashSink_red_rose", BUILDINGS.PREFABS.WASHSINK.FACADES.RED_ROSE.NAME, BUILDINGS.PREFABS.WASHSINK.FACADES.RED_ROSE.DESC, PermitRarity.Nifty, "WashSink", "wash_sink_red_rose_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("FlushToilet_polka_darkpurpleresin", BUILDINGS.PREFABS.FLUSHTOILET.FACADES.POLKA_DARKPURPLERESIN.NAME, BUILDINGS.PREFABS.FLUSHTOILET.FACADES.POLKA_DARKPURPLERESIN.DESC, PermitRarity.Splendid, "FlushToilet", "toiletflush_polka_darkpurpleresin_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("FlushToilet_polka_darknavynookgreen", BUILDINGS.PREFABS.FLUSHTOILET.FACADES.POLKA_DARKNAVYNOOKGREEN.NAME, BUILDINGS.PREFABS.FLUSHTOILET.FACADES.POLKA_DARKNAVYNOOKGREEN.DESC, PermitRarity.Splendid, "FlushToilet", "toiletflush_polka_darknavynookgreen_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("FlushToilet_purple_brainfat", BUILDINGS.PREFABS.FLUSHTOILET.FACADES.PURPLE_BRAINFAT.NAME, BUILDINGS.PREFABS.FLUSHTOILET.FACADES.PURPLE_BRAINFAT.DESC, PermitRarity.Nifty, "FlushToilet", "toiletflush_purple_brainfat_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("FlushToilet_yellow_tartar", BUILDINGS.PREFABS.FLUSHTOILET.FACADES.YELLOW_TARTAR.NAME, BUILDINGS.PREFABS.FLUSHTOILET.FACADES.YELLOW_TARTAR.DESC, PermitRarity.Nifty, "FlushToilet", "toiletflush_yellow_tartar_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("FlushToilet_red_rose", BUILDINGS.PREFABS.FLUSHTOILET.FACADES.RED_ROSE.NAME, BUILDINGS.PREFABS.FLUSHTOILET.FACADES.RED_ROSE.DESC, PermitRarity.Nifty, "FlushToilet", "toiletflush_red_rose_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("FlushToilet_green_mush", BUILDINGS.PREFABS.FLUSHTOILET.FACADES.GREEN_MUSH.NAME, BUILDINGS.PREFABS.FLUSHTOILET.FACADES.GREEN_MUSH.DESC, PermitRarity.Nifty, "FlushToilet", "toiletflush_green_mush_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("FlushToilet_blue_babytears", BUILDINGS.PREFABS.FLUSHTOILET.FACADES.BLUE_BABYTEARS.NAME, BUILDINGS.PREFABS.FLUSHTOILET.FACADES.BLUE_BABYTEARS.DESC, PermitRarity.Nifty, "FlushToilet", "toiletflush_blue_babytears_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("LuxuryBed_red_rose", BUILDINGS.PREFABS.LUXURYBED.FACADES.RED_ROSE.NAME, BUILDINGS.PREFABS.LUXURYBED.FACADES.RED_ROSE.DESC, PermitRarity.Nifty, "LuxuryBed", "elegantbed_red_rose_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("LuxuryBed_green_mush", BUILDINGS.PREFABS.LUXURYBED.FACADES.GREEN_MUSH.NAME, BUILDINGS.PREFABS.LUXURYBED.FACADES.GREEN_MUSH.DESC, PermitRarity.Nifty, "LuxuryBed", "elegantbed_green_mush_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("LuxuryBed_yellow_tartar", BUILDINGS.PREFABS.LUXURYBED.FACADES.YELLOW_TARTAR.NAME, BUILDINGS.PREFABS.LUXURYBED.FACADES.YELLOW_TARTAR.DESC, PermitRarity.Nifty, "LuxuryBed", "elegantbed_yellow_tartar_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("LuxuryBed_purple_brainfat", BUILDINGS.PREFABS.LUXURYBED.FACADES.PURPLE_BRAINFAT.NAME, BUILDINGS.PREFABS.LUXURYBED.FACADES.PURPLE_BRAINFAT.DESC, PermitRarity.Nifty, "LuxuryBed", "elegantbed_purple_brainfat_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("WaterCooler_yellow_tartar", BUILDINGS.PREFABS.WATERCOOLER.FACADES.YELLOW_TARTAR.NAME, BUILDINGS.PREFABS.WATERCOOLER.FACADES.YELLOW_TARTAR.DESC, PermitRarity.Nifty, "WaterCooler", "watercooler_yellow_tartar_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("WaterCooler_red_rose", BUILDINGS.PREFABS.WATERCOOLER.FACADES.RED_ROSE.NAME, BUILDINGS.PREFABS.WATERCOOLER.FACADES.RED_ROSE.DESC, PermitRarity.Nifty, "WaterCooler", "watercooler_red_rose_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("WaterCooler_green_mush", BUILDINGS.PREFABS.WATERCOOLER.FACADES.GREEN_MUSH.NAME, BUILDINGS.PREFABS.WATERCOOLER.FACADES.GREEN_MUSH.DESC, PermitRarity.Nifty, "WaterCooler", "watercooler_green_mush_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("WaterCooler_purple_brainfat", BUILDINGS.PREFABS.WATERCOOLER.FACADES.PURPLE_BRAINFAT.NAME, BUILDINGS.PREFABS.WATERCOOLER.FACADES.PURPLE_BRAINFAT.DESC, PermitRarity.Nifty, "WaterCooler", "watercooler_purple_brainfat_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("WaterCooler_blue_babytears", BUILDINGS.PREFABS.WATERCOOLER.FACADES.BLUE_BABYTEARS.NAME, BUILDINGS.PREFABS.WATERCOOLER.FACADES.BLUE_BABYTEARS.DESC, PermitRarity.Nifty, "WaterCooler", "watercooler_blue_babytears_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_stripes_yellow_tartar", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_YELLOW_TARTAR.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_YELLOW_TARTAR.DESC, PermitRarity.Decent, "ExteriorWall", "walls_stripes_yellow_tartar_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_stripes_diagonal_yellow_tartar", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_DIAGONAL_YELLOW_TARTAR.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_DIAGONAL_YELLOW_TARTAR.DESC, PermitRarity.Decent, "ExteriorWall", "walls_stripes_diagonal_yellow_tartar_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_stripes_circle_yellow_tartar", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_CIRCLE_YELLOW_TARTAR.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_CIRCLE_YELLOW_TARTAR.DESC, PermitRarity.Decent, "ExteriorWall", "walls_stripes_circle_yellow_tartar_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_stripes_purple_brainfat", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_PURPLE_BRAINFAT.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_PURPLE_BRAINFAT.DESC, PermitRarity.Decent, "ExteriorWall", "walls_stripes_purple_brainfat_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_stripes_diagonal_purple_brainfat", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_DIAGONAL_PURPLE_BRAINFAT.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_DIAGONAL_PURPLE_BRAINFAT.DESC, PermitRarity.Decent, "ExteriorWall", "walls_stripes_diagonal_purple_brainfat_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_stripes_circle_purple_brainfat", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_CIRCLE_PURPLE_BRAINFAT.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_CIRCLE_PURPLE_BRAINFAT.DESC, PermitRarity.Decent, "ExteriorWall", "walls_stripes_circle_purple_brainfat_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_floppy_azulene_vitro", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.FLOPPY_AZULENE_VITRO.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.FLOPPY_AZULENE_VITRO.DESC, PermitRarity.Decent, "ExteriorWall", "walls_floppy_azulene_vitro_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_floppy_black_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.FLOPPY_BLACK_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.FLOPPY_BLACK_WHITE.DESC, PermitRarity.Decent, "ExteriorWall", "walls_floppy_black_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_floppy_peagreen_balmy", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.FLOPPY_PEAGREEN_BALMY.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.FLOPPY_PEAGREEN_BALMY.DESC, PermitRarity.Decent, "ExteriorWall", "walls_floppy_peagreen_balmy_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_floppy_satsuma_yellowcake", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.FLOPPY_SATSUMA_YELLOWCAKE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.FLOPPY_SATSUMA_YELLOWCAKE.DESC, PermitRarity.Decent, "ExteriorWall", "walls_floppy_satsuma_yellowcake_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_floppy_magma_amino", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.FLOPPY_MAGMA_AMINO.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.FLOPPY_MAGMA_AMINO.DESC, PermitRarity.Decent, "ExteriorWall", "walls_floppy_magma_amino_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_orange_juice", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.ORANGE_JUICE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.ORANGE_JUICE.DESC, PermitRarity.Decent, "ExteriorWall", "walls_orange_juice_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_paint_blots", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PAINT_BLOTS.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PAINT_BLOTS.DESC, PermitRarity.Decent, "ExteriorWall", "walls_paint_blots_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_telescope", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.TELESCOPE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.TELESCOPE.DESC, PermitRarity.Decent, "ExteriorWall", "walls_telescope_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_tictactoe_o", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.TICTACTOE_O.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.TICTACTOE_O.DESC, PermitRarity.Decent, "ExteriorWall", "walls_tictactoe_o_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_tictactoe_x", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.TICTACTOE_X.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.TICTACTOE_X.DESC, PermitRarity.Decent, "ExteriorWall", "walls_tictactoe_x_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_dice_1", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DICE_1.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DICE_1.DESC, PermitRarity.Decent, "ExteriorWall", "walls_dice_1_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_dice_2", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DICE_2.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DICE_2.DESC, PermitRarity.Decent, "ExteriorWall", "walls_dice_2_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_dice_3", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DICE_3.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DICE_3.DESC, PermitRarity.Decent, "ExteriorWall", "walls_dice_3_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_dice_4", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DICE_4.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DICE_4.DESC, PermitRarity.Decent, "ExteriorWall", "walls_dice_4_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_dice_5", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DICE_5.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DICE_5.DESC, PermitRarity.Decent, "ExteriorWall", "walls_dice_5_kanim", DlcManager.AVAILABLE_ALL_VERSIONS),
-			new BuildingFacadeInfo("ExteriorWall_dice_6", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DICE_6.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DICE_6.DESC, PermitRarity.Decent, "ExteriorWall", "walls_dice_6_kanim", DlcManager.AVAILABLE_ALL_VERSIONS)
+			new BuildingFacadeInfo("ExteriorWall_basic_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.BASIC_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.BASIC_WHITE.DESC, PermitRarity.Universal, "ExteriorWall", "walls_basic_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("FlowerVase_retro", BUILDINGS.PREFABS.FLOWERVASE.FACADES.RETRO_SUNNY.NAME, BUILDINGS.PREFABS.FLOWERVASE.FACADES.RETRO_SUNNY.DESC, PermitRarity.Common, "FlowerVase", "flowervase_retro_yellow_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("FlowerVase_retro_red", BUILDINGS.PREFABS.FLOWERVASE.FACADES.RETRO_BOLD.NAME, BUILDINGS.PREFABS.FLOWERVASE.FACADES.RETRO_BOLD.DESC, PermitRarity.Common, "FlowerVase", "flowervase_retro_red_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("FlowerVase_retro_white", BUILDINGS.PREFABS.FLOWERVASE.FACADES.RETRO_ELEGANT.NAME, BUILDINGS.PREFABS.FLOWERVASE.FACADES.RETRO_ELEGANT.DESC, PermitRarity.Common, "FlowerVase", "flowervase_retro_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("FlowerVase_retro_green", BUILDINGS.PREFABS.FLOWERVASE.FACADES.RETRO_BRIGHT.NAME, BUILDINGS.PREFABS.FLOWERVASE.FACADES.RETRO_BRIGHT.DESC, PermitRarity.Common, "FlowerVase", "flowervase_retro_green_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("FlowerVase_retro_blue", BUILDINGS.PREFABS.FLOWERVASE.FACADES.RETRO_DREAMY.NAME, BUILDINGS.PREFABS.FLOWERVASE.FACADES.RETRO_DREAMY.DESC, PermitRarity.Common, "FlowerVase", "flowervase_retro_blue_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("LuxuryBed_boat", BUILDINGS.PREFABS.LUXURYBED.FACADES.BOAT.NAME, BUILDINGS.PREFABS.LUXURYBED.FACADES.BOAT.DESC, PermitRarity.Splendid, "LuxuryBed", "elegantbed_boat_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("LuxuryBed_bouncy", BUILDINGS.PREFABS.LUXURYBED.FACADES.BOUNCY_BED.NAME, BUILDINGS.PREFABS.LUXURYBED.FACADES.BOUNCY_BED.DESC, PermitRarity.Splendid, "LuxuryBed", "elegantbed_bouncy_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("LuxuryBed_grandprix", BUILDINGS.PREFABS.LUXURYBED.FACADES.GRANDPRIX.NAME, BUILDINGS.PREFABS.LUXURYBED.FACADES.GRANDPRIX.DESC, PermitRarity.Splendid, "LuxuryBed", "elegantbed_grandprix_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("LuxuryBed_rocket", BUILDINGS.PREFABS.LUXURYBED.FACADES.ROCKET_BED.NAME, BUILDINGS.PREFABS.LUXURYBED.FACADES.ROCKET_BED.DESC, PermitRarity.Splendid, "LuxuryBed", "elegantbed_rocket_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("LuxuryBed_puft", BUILDINGS.PREFABS.LUXURYBED.FACADES.PUFT_BED.NAME, BUILDINGS.PREFABS.LUXURYBED.FACADES.PUFT_BED.DESC, PermitRarity.Loyalty, "LuxuryBed", "elegantbed_puft_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_pastel_pink", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PASTELPINK.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PASTELPINK.DESC, PermitRarity.Common, "ExteriorWall", "walls_pastel_pink_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_pastel_yellow", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PASTELYELLOW.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PASTELYELLOW.DESC, PermitRarity.Common, "ExteriorWall", "walls_pastel_yellow_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_pastel_green", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PASTELGREEN.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PASTELGREEN.DESC, PermitRarity.Common, "ExteriorWall", "walls_pastel_green_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_pastel_blue", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PASTELBLUE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PASTELBLUE.DESC, PermitRarity.Common, "ExteriorWall", "walls_pastel_blue_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_pastel_purple", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PASTELPURPLE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PASTELPURPLE.DESC, PermitRarity.Common, "ExteriorWall", "walls_pastel_purple_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_balm_lily", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.BALM_LILY.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.BALM_LILY.DESC, PermitRarity.Decent, "ExteriorWall", "walls_balm_lily_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_clouds", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.CLOUDS.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.CLOUDS.DESC, PermitRarity.Decent, "ExteriorWall", "walls_clouds_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_coffee", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.COFFEE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.COFFEE.DESC, PermitRarity.Decent, "ExteriorWall", "walls_coffee_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_mosaic", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.AQUATICMOSAIC.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.AQUATICMOSAIC.DESC, PermitRarity.Decent, "ExteriorWall", "walls_mosaic_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_mushbar", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.MUSHBAR.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.MUSHBAR.DESC, PermitRarity.Decent, "ExteriorWall", "walls_mushbar_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_plaid", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PLAID.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PLAID.DESC, PermitRarity.Decent, "ExteriorWall", "walls_plaid_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_rain", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.RAIN.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.RAIN.DESC, PermitRarity.Decent, "ExteriorWall", "walls_rain_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_rainbow", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.RAINBOW.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.RAINBOW.DESC, PermitRarity.Decent, "ExteriorWall", "walls_rainbow_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_snow", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.SNOW.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.SNOW.DESC, PermitRarity.Decent, "ExteriorWall", "walls_snow_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_sun", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.SUN.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.SUN.DESC, PermitRarity.Decent, "ExteriorWall", "walls_sun_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_polka", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PASTELPOLKA.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PASTELPOLKA.DESC, PermitRarity.Decent, "ExteriorWall", "walls_polka_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_diagonal_red_deep_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DIAGONAL_RED_DEEP_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DIAGONAL_RED_DEEP_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_diagonal_red_deep_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_diagonal_orange_satsuma_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DIAGONAL_ORANGE_SATSUMA_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DIAGONAL_ORANGE_SATSUMA_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_diagonal_orange_satsuma_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_diagonal_yellow_lemon_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DIAGONAL_YELLOW_LEMON_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DIAGONAL_YELLOW_LEMON_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_diagonal_yellow_lemon_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_diagonal_green_kelly_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DIAGONAL_GREEN_KELLY_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DIAGONAL_GREEN_KELLY_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_diagonal_green_kelly_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_diagonal_blue_cobalt_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DIAGONAL_BLUE_COBALT_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DIAGONAL_BLUE_COBALT_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_diagonal_blue_cobalt_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_diagonal_pink_flamingo_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DIAGONAL_PINK_FLAMINGO_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DIAGONAL_PINK_FLAMINGO_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_diagonal_pink_flamingo_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_diagonal_grey_charcoal_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DIAGONAL_GREY_CHARCOAL_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DIAGONAL_GREY_CHARCOAL_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_diagonal_grey_charcoal_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_circle_red_deep_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.CIRCLE_RED_DEEP_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.CIRCLE_RED_DEEP_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_circle_red_deep_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_circle_orange_satsuma_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.CIRCLE_ORANGE_SATSUMA_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.CIRCLE_ORANGE_SATSUMA_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_circle_orange_satsuma_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_circle_yellow_lemon_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.CIRCLE_YELLOW_LEMON_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.CIRCLE_YELLOW_LEMON_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_circle_yellow_lemon_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_circle_green_kelly_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.CIRCLE_GREEN_KELLY_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.CIRCLE_GREEN_KELLY_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_circle_green_kelly_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_circle_blue_cobalt_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.CIRCLE_BLUE_COBALT_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.CIRCLE_BLUE_COBALT_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_circle_blue_cobalt_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_circle_pink_flamingo_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.CIRCLE_PINK_FLAMINGO_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.CIRCLE_PINK_FLAMINGO_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_circle_pink_flamingo_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_circle_grey_charcoal_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.CIRCLE_GREY_CHARCOAL_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.CIRCLE_GREY_CHARCOAL_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_circle_grey_charcoal_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("Bed_star_curtain", BUILDINGS.PREFABS.BED.FACADES.STARCURTAIN.NAME, BUILDINGS.PREFABS.BED.FACADES.STARCURTAIN.DESC, PermitRarity.Nifty, "Bed", "bed_star_curtain_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("Bed_canopy", BUILDINGS.PREFABS.BED.FACADES.CREAKY.NAME, BUILDINGS.PREFABS.BED.FACADES.CREAKY.DESC, PermitRarity.Nifty, "Bed", "bed_canopy_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("Bed_rowan_tropical", BUILDINGS.PREFABS.BED.FACADES.STAYCATION.NAME, BUILDINGS.PREFABS.BED.FACADES.STAYCATION.DESC, PermitRarity.Nifty, "Bed", "bed_rowan_tropical_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("Bed_ada_science_lab", BUILDINGS.PREFABS.BED.FACADES.SCIENCELAB.NAME, BUILDINGS.PREFABS.BED.FACADES.SCIENCELAB.DESC, PermitRarity.Nifty, "Bed", "bed_ada_science_lab_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("CeilingLight_mining", BUILDINGS.PREFABS.CEILINGLIGHT.FACADES.MINING.NAME, BUILDINGS.PREFABS.CEILINGLIGHT.FACADES.MINING.DESC, PermitRarity.Common, "CeilingLight", "ceilinglight_mining_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("CeilingLight_flower", BUILDINGS.PREFABS.CEILINGLIGHT.FACADES.BLOSSOM.NAME, BUILDINGS.PREFABS.CEILINGLIGHT.FACADES.BLOSSOM.DESC, PermitRarity.Common, "CeilingLight", "ceilinglight_flower_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("CeilingLight_polka_lamp_shade", BUILDINGS.PREFABS.CEILINGLIGHT.FACADES.POLKADOT.NAME, BUILDINGS.PREFABS.CEILINGLIGHT.FACADES.POLKADOT.DESC, PermitRarity.Common, "CeilingLight", "ceilinglight_polka_lamp_shade_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("CeilingLight_burt_shower", BUILDINGS.PREFABS.CEILINGLIGHT.FACADES.FAUXPIPE.NAME, BUILDINGS.PREFABS.CEILINGLIGHT.FACADES.FAUXPIPE.DESC, PermitRarity.Common, "CeilingLight", "ceilinglight_burt_shower_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("CeilingLight_ada_flask_round", BUILDINGS.PREFABS.CEILINGLIGHT.FACADES.LABFLASK.NAME, BUILDINGS.PREFABS.CEILINGLIGHT.FACADES.LABFLASK.DESC, PermitRarity.Common, "CeilingLight", "ceilinglight_ada_flask_round_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("FlowerVaseWall_retro_green", BUILDINGS.PREFABS.FLOWERVASEWALL.FACADES.RETRO_GREEN.NAME, BUILDINGS.PREFABS.FLOWERVASEWALL.FACADES.RETRO_GREEN.DESC, PermitRarity.Common, "FlowerVaseWall", "flowervase_wall_retro_green_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("FlowerVaseWall_retro_yellow", BUILDINGS.PREFABS.FLOWERVASEWALL.FACADES.RETRO_YELLOW.NAME, BUILDINGS.PREFABS.FLOWERVASEWALL.FACADES.RETRO_YELLOW.DESC, PermitRarity.Common, "FlowerVaseWall", "flowervase_wall_retro_yellow_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("FlowerVaseWall_retro_red", BUILDINGS.PREFABS.FLOWERVASEWALL.FACADES.RETRO_RED.NAME, BUILDINGS.PREFABS.FLOWERVASEWALL.FACADES.RETRO_RED.DESC, PermitRarity.Common, "FlowerVaseWall", "flowervase_wall_retro_red_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("FlowerVaseWall_retro_blue", BUILDINGS.PREFABS.FLOWERVASEWALL.FACADES.RETRO_BLUE.NAME, BUILDINGS.PREFABS.FLOWERVASEWALL.FACADES.RETRO_BLUE.DESC, PermitRarity.Common, "FlowerVaseWall", "flowervase_wall_retro_blue_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("FlowerVaseWall_retro_white", BUILDINGS.PREFABS.FLOWERVASEWALL.FACADES.RETRO_WHITE.NAME, BUILDINGS.PREFABS.FLOWERVASEWALL.FACADES.RETRO_WHITE.DESC, PermitRarity.Common, "FlowerVaseWall", "flowervase_wall_retro_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_basic_blue_cobalt", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.BASIC_BLUE_COBALT.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.BASIC_BLUE_COBALT.DESC, PermitRarity.Common, "ExteriorWall", "walls_basic_blue_cobalt_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_basic_green_kelly", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.BASIC_GREEN_KELLY.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.BASIC_GREEN_KELLY.DESC, PermitRarity.Common, "ExteriorWall", "walls_basic_green_kelly_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_basic_grey_charcoal", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.BASIC_GREY_CHARCOAL.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.BASIC_GREY_CHARCOAL.DESC, PermitRarity.Common, "ExteriorWall", "walls_basic_grey_charcoal_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_basic_orange_satsuma", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.BASIC_ORANGE_SATSUMA.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.BASIC_ORANGE_SATSUMA.DESC, PermitRarity.Common, "ExteriorWall", "walls_basic_orange_satsuma_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_basic_pink_flamingo", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.BASIC_PINK_FLAMINGO.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.BASIC_PINK_FLAMINGO.DESC, PermitRarity.Common, "ExteriorWall", "walls_basic_pink_flamingo_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_basic_red_deep", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.BASIC_RED_DEEP.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.BASIC_RED_DEEP.DESC, PermitRarity.Common, "ExteriorWall", "walls_basic_red_deep_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_basic_yellow_lemon", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.BASIC_YELLOW_LEMON.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.BASIC_YELLOW_LEMON.DESC, PermitRarity.Common, "ExteriorWall", "walls_basic_yellow_lemon_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_blueberries", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.BLUEBERRIES.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.BLUEBERRIES.DESC, PermitRarity.Decent, "ExteriorWall", "walls_blueberries_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_grapes", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.GRAPES.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.GRAPES.DESC, PermitRarity.Decent, "ExteriorWall", "walls_grapes_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_lemon", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.LEMON.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.LEMON.DESC, PermitRarity.Decent, "ExteriorWall", "walls_lemon_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_lime", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.LIME.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.LIME.DESC, PermitRarity.Decent, "ExteriorWall", "walls_lime_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_satsuma", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.SATSUMA.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.SATSUMA.DESC, PermitRarity.Decent, "ExteriorWall", "walls_satsuma_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_strawberry", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRAWBERRY.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRAWBERRY.DESC, PermitRarity.Decent, "ExteriorWall", "walls_strawberry_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_watermelon", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.WATERMELON.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.WATERMELON.DESC, PermitRarity.Decent, "ExteriorWall", "walls_watermelon_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("FlowerVaseHanging_retro_red", BUILDINGS.PREFABS.FLOWERVASEHANGING.FACADES.RETRO_RED.NAME, BUILDINGS.PREFABS.FLOWERVASEHANGING.FACADES.RETRO_RED.DESC, PermitRarity.Common, "FlowerVaseHanging", "flowervase_hanging_retro_red_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("FlowerVaseHanging_retro_green", BUILDINGS.PREFABS.FLOWERVASEHANGING.FACADES.RETRO_GREEN.NAME, BUILDINGS.PREFABS.FLOWERVASEHANGING.FACADES.RETRO_GREEN.DESC, PermitRarity.Common, "FlowerVaseHanging", "flowervase_hanging_retro_green_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("FlowerVaseHanging_retro_blue", BUILDINGS.PREFABS.FLOWERVASEHANGING.FACADES.RETRO_BLUE.NAME, BUILDINGS.PREFABS.FLOWERVASEHANGING.FACADES.RETRO_BLUE.DESC, PermitRarity.Common, "FlowerVaseHanging", "flowervase_hanging_retro_blue_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("FlowerVaseHanging_retro_yellow", BUILDINGS.PREFABS.FLOWERVASEHANGING.FACADES.RETRO_YELLOW.NAME, BUILDINGS.PREFABS.FLOWERVASEHANGING.FACADES.RETRO_YELLOW.DESC, PermitRarity.Common, "FlowerVaseHanging", "flowervase_hanging_retro_yellow_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("FlowerVaseHanging_retro_white", BUILDINGS.PREFABS.FLOWERVASEHANGING.FACADES.RETRO_WHITE.NAME, BUILDINGS.PREFABS.FLOWERVASEHANGING.FACADES.RETRO_WHITE.DESC, PermitRarity.Common, "FlowerVaseHanging", "flowervase_hanging_retro_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_toiletpaper", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.TOILETPAPER.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.TOILETPAPER.DESC, PermitRarity.Decent, "ExteriorWall", "walls_toiletpaper_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_plunger", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PLUNGER.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PLUNGER.DESC, PermitRarity.Decent, "ExteriorWall", "walls_plunger_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_tropical", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.TROPICAL.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.TROPICAL.DESC, PermitRarity.Decent, "ExteriorWall", "walls_tropical_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ItemPedestal_hand", BUILDINGS.PREFABS.ITEMPEDESTAL.FACADES.HAND.NAME, BUILDINGS.PREFABS.ITEMPEDESTAL.FACADES.HAND.DESC, PermitRarity.Decent, "ItemPedestal", "pedestal_hand_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("MassageTable_shiatsu", BUILDINGS.PREFABS.MASSAGETABLE.FACADES.SHIATSU.NAME, BUILDINGS.PREFABS.MASSAGETABLE.FACADES.SHIATSU.DESC, PermitRarity.Splendid, "MassageTable", "masseur_shiatsu_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("RockCrusher_hands", BUILDINGS.PREFABS.ROCKCRUSHER.FACADES.HANDS.NAME, BUILDINGS.PREFABS.ROCKCRUSHER.FACADES.HANDS.DESC, PermitRarity.Splendid, "RockCrusher", "rockrefinery_hands_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("RockCrusher_teeth", BUILDINGS.PREFABS.ROCKCRUSHER.FACADES.TEETH.NAME, BUILDINGS.PREFABS.ROCKCRUSHER.FACADES.TEETH.DESC, PermitRarity.Splendid, "RockCrusher", "rockrefinery_teeth_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("WaterCooler_round_body", BUILDINGS.PREFABS.WATERCOOLER.FACADES.ROUND_BODY.NAME, BUILDINGS.PREFABS.WATERCOOLER.FACADES.ROUND_BODY.DESC, PermitRarity.Splendid, "WaterCooler", "watercooler_round_body_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_stripes_blue", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_BLUE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_BLUE.DESC, PermitRarity.Decent, "ExteriorWall", "walls_stripes_blue_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_stripes_diagonal_blue", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_DIAGONAL_BLUE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_DIAGONAL_BLUE.DESC, PermitRarity.Decent, "ExteriorWall", "walls_stripes_diagonal_blue_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_stripes_circle_blue", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_CIRCLE_BLUE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_CIRCLE_BLUE.DESC, PermitRarity.Decent, "ExteriorWall", "walls_stripes_circle_blue_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_squares_red_deep_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.SQUARES_RED_DEEP_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.SQUARES_RED_DEEP_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_squares_red_deep_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_squares_orange_satsuma_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.SQUARES_ORANGE_SATSUMA_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.SQUARES_ORANGE_SATSUMA_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_squares_orange_satsuma_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_squares_yellow_lemon_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.SQUARES_YELLOW_LEMON_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.SQUARES_YELLOW_LEMON_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_squares_yellow_lemon_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_squares_green_kelly_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.SQUARES_GREEN_KELLY_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.SQUARES_GREEN_KELLY_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_squares_green_kelly_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_squares_blue_cobalt_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.SQUARES_BLUE_COBALT_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.SQUARES_BLUE_COBALT_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_squares_blue_cobalt_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_squares_pink_flamingo_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.SQUARES_PINK_FLAMINGO_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.SQUARES_PINK_FLAMINGO_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_squares_pink_flamingo_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_squares_grey_charcoal_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.SQUARES_GREY_CHARCOAL_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.SQUARES_GREY_CHARCOAL_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_squares_grey_charcoal_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("EggCracker_beaker", BUILDINGS.PREFABS.EGGCRACKER.FACADES.BEAKER.NAME, BUILDINGS.PREFABS.EGGCRACKER.FACADES.BEAKER.DESC, PermitRarity.Nifty, "EggCracker", "egg_cracker_beaker_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("EggCracker_flower", BUILDINGS.PREFABS.EGGCRACKER.FACADES.FLOWER.NAME, BUILDINGS.PREFABS.EGGCRACKER.FACADES.FLOWER.DESC, PermitRarity.Nifty, "EggCracker", "egg_cracker_flower_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("EggCracker_hands", BUILDINGS.PREFABS.EGGCRACKER.FACADES.HANDS.NAME, BUILDINGS.PREFABS.EGGCRACKER.FACADES.HANDS.DESC, PermitRarity.Nifty, "EggCracker", "egg_cracker_hands_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("CeilingLight_rubiks", BUILDINGS.PREFABS.CEILINGLIGHT.FACADES.RUBIKS.NAME, BUILDINGS.PREFABS.CEILINGLIGHT.FACADES.RUBIKS.DESC, PermitRarity.Common, "CeilingLight", "ceilinglight_rubiks_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("FlowerVaseHanging_beaker", BUILDINGS.PREFABS.FLOWERVASEHANGING.FACADES.BEAKER.NAME, BUILDINGS.PREFABS.FLOWERVASEHANGING.FACADES.BEAKER.DESC, PermitRarity.Common, "FlowerVaseHanging", "flowervase_hanging_beaker_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("FlowerVaseHanging_rubiks", BUILDINGS.PREFABS.FLOWERVASEHANGING.FACADES.RUBIKS.NAME, BUILDINGS.PREFABS.FLOWERVASEHANGING.FACADES.RUBIKS.DESC, PermitRarity.Common, "FlowerVaseHanging", "flowervase_hanging_rubiks_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("LuxuryBed_hand", BUILDINGS.PREFABS.LUXURYBED.FACADES.HAND.NAME, BUILDINGS.PREFABS.LUXURYBED.FACADES.HAND.DESC, PermitRarity.Splendid, "LuxuryBed", "elegantbed_hand_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("LuxuryBed_rubiks", BUILDINGS.PREFABS.LUXURYBED.FACADES.RUBIKS.NAME, BUILDINGS.PREFABS.LUXURYBED.FACADES.RUBIKS.DESC, PermitRarity.Splendid, "LuxuryBed", "elegantbed_rubiks_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("RockCrusher_roundstamp", BUILDINGS.PREFABS.ROCKCRUSHER.FACADES.ROUNDSTAMP.NAME, BUILDINGS.PREFABS.ROCKCRUSHER.FACADES.ROUNDSTAMP.DESC, PermitRarity.Splendid, "RockCrusher", "rockrefinery_roundstamp_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("RockCrusher_spikebeds", BUILDINGS.PREFABS.ROCKCRUSHER.FACADES.SPIKEBEDS.NAME, BUILDINGS.PREFABS.ROCKCRUSHER.FACADES.SPIKEBEDS.DESC, PermitRarity.Splendid, "RockCrusher", "rockrefinery_spikebeds_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("StorageLocker_green_mush", BUILDINGS.PREFABS.STORAGELOCKER.FACADES.GREEN_MUSH.NAME, BUILDINGS.PREFABS.STORAGELOCKER.FACADES.GREEN_MUSH.DESC, PermitRarity.Nifty, "StorageLocker", "storagelocker_green_mush_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("StorageLocker_red_rose", BUILDINGS.PREFABS.STORAGELOCKER.FACADES.RED_ROSE.NAME, BUILDINGS.PREFABS.STORAGELOCKER.FACADES.RED_ROSE.DESC, PermitRarity.Nifty, "StorageLocker", "storagelocker_red_rose_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("StorageLocker_blue_babytears", BUILDINGS.PREFABS.STORAGELOCKER.FACADES.BLUE_BABYTEARS.NAME, BUILDINGS.PREFABS.STORAGELOCKER.FACADES.BLUE_BABYTEARS.DESC, PermitRarity.Nifty, "StorageLocker", "storagelocker_blue_babytears_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("StorageLocker_purple_brainfat", BUILDINGS.PREFABS.STORAGELOCKER.FACADES.PURPLE_BRAINFAT.NAME, BUILDINGS.PREFABS.STORAGELOCKER.FACADES.PURPLE_BRAINFAT.DESC, PermitRarity.Nifty, "StorageLocker", "storagelocker_purple_brainfat_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("StorageLocker_yellow_tartar", BUILDINGS.PREFABS.STORAGELOCKER.FACADES.YELLOW_TARTAR.NAME, BUILDINGS.PREFABS.STORAGELOCKER.FACADES.YELLOW_TARTAR.DESC, PermitRarity.Nifty, "StorageLocker", "storagelocker_yellow_tartar_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("PlanterBox_mealwood", BUILDINGS.PREFABS.PLANTERBOX.FACADES.MEALWOOD.NAME, BUILDINGS.PREFABS.PLANTERBOX.FACADES.MEALWOOD.DESC, PermitRarity.Common, "PlanterBox", "planterbox_skin_mealwood_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("PlanterBox_bristleblossom", BUILDINGS.PREFABS.PLANTERBOX.FACADES.BRISTLEBLOSSOM.NAME, BUILDINGS.PREFABS.PLANTERBOX.FACADES.BRISTLEBLOSSOM.DESC, PermitRarity.Common, "PlanterBox", "planterbox_skin_bristleblossom_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("PlanterBox_wheezewort", BUILDINGS.PREFABS.PLANTERBOX.FACADES.WHEEZEWORT.NAME, BUILDINGS.PREFABS.PLANTERBOX.FACADES.WHEEZEWORT.DESC, PermitRarity.Decent, "PlanterBox", "planterbox_skin_wheezewort_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("PlanterBox_sleetwheat", BUILDINGS.PREFABS.PLANTERBOX.FACADES.SLEETWHEAT.NAME, BUILDINGS.PREFABS.PLANTERBOX.FACADES.SLEETWHEAT.DESC, PermitRarity.Common, "PlanterBox", "planterbox_skin_sleetwheat_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("PlanterBox_salmon_pink", BUILDINGS.PREFABS.PLANTERBOX.FACADES.SALMON_PINK.NAME, BUILDINGS.PREFABS.PLANTERBOX.FACADES.SALMON_PINK.DESC, PermitRarity.Common, "PlanterBox", "planterbox_skin_salmon_pink_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("GasReservoir_lightgold", BUILDINGS.PREFABS.GASRESERVOIR.FACADES.LIGHTGOLD.NAME, BUILDINGS.PREFABS.GASRESERVOIR.FACADES.LIGHTGOLD.DESC, PermitRarity.Nifty, "GasReservoir", "gasstorage_lightgold_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("GasReservoir_peagreen", BUILDINGS.PREFABS.GASRESERVOIR.FACADES.PEAGREEN.NAME, BUILDINGS.PREFABS.GASRESERVOIR.FACADES.PEAGREEN.DESC, PermitRarity.Nifty, "GasReservoir", "gasstorage_peagreen_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("GasReservoir_lightcobalt", BUILDINGS.PREFABS.GASRESERVOIR.FACADES.LIGHTCOBALT.NAME, BUILDINGS.PREFABS.GASRESERVOIR.FACADES.LIGHTCOBALT.DESC, PermitRarity.Nifty, "GasReservoir", "gasstorage_lightcobalt_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("GasReservoir_polka_darkpurpleresin", BUILDINGS.PREFABS.GASRESERVOIR.FACADES.POLKA_DARKPURPLERESIN.NAME, BUILDINGS.PREFABS.GASRESERVOIR.FACADES.POLKA_DARKPURPLERESIN.DESC, PermitRarity.Splendid, "GasReservoir", "gasstorage_polka_darkpurpleresin_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("GasReservoir_polka_darknavynookgreen", BUILDINGS.PREFABS.GASRESERVOIR.FACADES.POLKA_DARKNAVYNOOKGREEN.NAME, BUILDINGS.PREFABS.GASRESERVOIR.FACADES.POLKA_DARKNAVYNOOKGREEN.DESC, PermitRarity.Splendid, "GasReservoir", "gasstorage_polka_darknavynookgreen_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_kitchen_retro1", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.KITCHEN_RETRO1.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.KITCHEN_RETRO1.DESC, PermitRarity.Decent, "ExteriorWall", "walls_kitchen_retro1_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_plus_red_deep_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PLUS_RED_DEEP_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PLUS_RED_DEEP_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_plus_red_deep_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_plus_orange_satsuma_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PLUS_ORANGE_SATSUMA_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PLUS_ORANGE_SATSUMA_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_plus_orange_satsuma_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_plus_yellow_lemon_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PLUS_YELLOW_LEMON_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PLUS_YELLOW_LEMON_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_plus_yellow_lemon_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_plus_green_kelly_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PLUS_GREEN_KELLY_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PLUS_GREEN_KELLY_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_plus_green_kelly_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_plus_blue_cobalt_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PLUS_BLUE_COBALT_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PLUS_BLUE_COBALT_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_plus_blue_cobalt_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_plus_pink_flamingo_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PLUS_PINK_FLAMINGO_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PLUS_PINK_FLAMINGO_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_plus_pink_flamingo_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_plus_grey_charcoal_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PLUS_GREY_CHARCOAL_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PLUS_GREY_CHARCOAL_WHITE.DESC, PermitRarity.Common, "ExteriorWall", "walls_plus_grey_charcoal_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("RockCrusher_chomp", BUILDINGS.PREFABS.ROCKCRUSHER.FACADES.CHOMP.NAME, BUILDINGS.PREFABS.ROCKCRUSHER.FACADES.CHOMP.DESC, PermitRarity.Splendid, "RockCrusher", "rockrefinery_chomp_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("RockCrusher_gears", BUILDINGS.PREFABS.ROCKCRUSHER.FACADES.GEARS.NAME, BUILDINGS.PREFABS.ROCKCRUSHER.FACADES.GEARS.DESC, PermitRarity.Splendid, "RockCrusher", "rockrefinery_gears_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("RockCrusher_balloon", BUILDINGS.PREFABS.ROCKCRUSHER.FACADES.BALLOON.NAME, BUILDINGS.PREFABS.ROCKCRUSHER.FACADES.BALLOON.DESC, PermitRarity.Splendid, "RockCrusher", "rockrefinery_balloon_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("StorageLocker_polka_darknavynookgreen", BUILDINGS.PREFABS.STORAGELOCKER.FACADES.POLKA_DARKNAVYNOOKGREEN.NAME, BUILDINGS.PREFABS.STORAGELOCKER.FACADES.POLKA_DARKNAVYNOOKGREEN.DESC, PermitRarity.Splendid, "StorageLocker", "storagelocker_polka_darknavynookgreen_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("StorageLocker_polka_darkpurpleresin", BUILDINGS.PREFABS.STORAGELOCKER.FACADES.POLKA_DARKPURPLERESIN.NAME, BUILDINGS.PREFABS.STORAGELOCKER.FACADES.POLKA_DARKPURPLERESIN.DESC, PermitRarity.Splendid, "StorageLocker", "storagelocker_polka_darkpurpleresin_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("GasReservoir_blue_babytears", BUILDINGS.PREFABS.GASRESERVOIR.FACADES.BLUE_BABYTEARS.NAME, BUILDINGS.PREFABS.GASRESERVOIR.FACADES.BLUE_BABYTEARS.DESC, PermitRarity.Nifty, "GasReservoir", "gasstorage_blue_babytears_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("GasReservoir_yellow_tartar", BUILDINGS.PREFABS.GASRESERVOIR.FACADES.YELLOW_TARTAR.NAME, BUILDINGS.PREFABS.GASRESERVOIR.FACADES.YELLOW_TARTAR.DESC, PermitRarity.Nifty, "GasReservoir", "gasstorage_yellow_tartar_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("GasReservoir_green_mush", BUILDINGS.PREFABS.GASRESERVOIR.FACADES.GREEN_MUSH.NAME, BUILDINGS.PREFABS.GASRESERVOIR.FACADES.GREEN_MUSH.DESC, PermitRarity.Nifty, "GasReservoir", "gasstorage_green_mush_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("GasReservoir_red_rose", BUILDINGS.PREFABS.GASRESERVOIR.FACADES.RED_ROSE.NAME, BUILDINGS.PREFABS.GASRESERVOIR.FACADES.RED_ROSE.DESC, PermitRarity.Nifty, "GasReservoir", "gasstorage_red_rose_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("GasReservoir_purple_brainfat", BUILDINGS.PREFABS.GASRESERVOIR.FACADES.PURPLE_BRAINFAT.NAME, BUILDINGS.PREFABS.GASRESERVOIR.FACADES.PURPLE_BRAINFAT.DESC, PermitRarity.Nifty, "GasReservoir", "gasstorage_purple_brainfat_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("MassageTable_balloon", BUILDINGS.PREFABS.MASSAGETABLE.FACADES.MASSEUR_BALLOON.NAME, BUILDINGS.PREFABS.MASSAGETABLE.FACADES.MASSEUR_BALLOON.DESC, PermitRarity.Splendid, "MassageTable", "masseur_balloon_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("WaterCooler_balloon", BUILDINGS.PREFABS.WATERCOOLER.FACADES.BALLOON.NAME, BUILDINGS.PREFABS.WATERCOOLER.FACADES.BALLOON.DESC, PermitRarity.Splendid, "WaterCooler", "watercooler_balloon_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("Bed_stringlights", BUILDINGS.PREFABS.BED.FACADES.STRINGLIGHTS.NAME, BUILDINGS.PREFABS.BED.FACADES.STRINGLIGHTS.DESC, PermitRarity.Nifty, "Bed", "bed_stringlights_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("CornerMoulding_shineornaments", BUILDINGS.PREFABS.CORNERMOULDING.FACADES.SHINEORNAMENTS.NAME, BUILDINGS.PREFABS.CORNERMOULDING.FACADES.SHINEORNAMENTS.DESC, PermitRarity.Decent, "CornerMoulding", "corner_tile_shineornaments_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("CrownMoulding_shineornaments", BUILDINGS.PREFABS.CROWNMOULDING.FACADES.SHINEORNAMENTS.NAME, BUILDINGS.PREFABS.CROWNMOULDING.FACADES.SHINEORNAMENTS.DESC, PermitRarity.Decent, "CrownMoulding", "crown_moulding_shineornaments_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("FloorLamp_leg", BUILDINGS.PREFABS.FLOORLAMP.FACADES.LEG.NAME, BUILDINGS.PREFABS.FLOORLAMP.FACADES.LEG.DESC, PermitRarity.Decent, "FloorLamp", "floorlamp_leg_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("FloorLamp_bristle_blossom", BUILDINGS.PREFABS.FLOORLAMP.FACADES.BRISTLEBLOSSOM.NAME, BUILDINGS.PREFABS.FLOORLAMP.FACADES.BRISTLEBLOSSOM.DESC, PermitRarity.Decent, "FloorLamp", "floorlamp_bristle_blossom_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_stripes_rose", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_ROSE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_ROSE.DESC, PermitRarity.Decent, "ExteriorWall", "walls_stripes_rose_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_stripes_diagonal_rose", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_DIAGONAL_ROSE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_DIAGONAL_ROSE.DESC, PermitRarity.Decent, "ExteriorWall", "walls_stripes_diagonal_rose_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_stripes_circle_rose", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_CIRCLE_ROSE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_CIRCLE_ROSE.DESC, PermitRarity.Decent, "ExteriorWall", "walls_stripes_circle_rose_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_stripes_mush", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_MUSH.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_MUSH.DESC, PermitRarity.Decent, "ExteriorWall", "walls_stripes_mush_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_stripes_diagonal_mush", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_DIAGONAL_MUSH.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_DIAGONAL_MUSH.DESC, PermitRarity.Decent, "ExteriorWall", "walls_stripes_diagonal_mush_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_stripes_circle_mush", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_CIRCLE_MUSH.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_CIRCLE_MUSH.DESC, PermitRarity.Decent, "ExteriorWall", "walls_stripes_circle_mush_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("StorageLocker_stripes_red_white", BUILDINGS.PREFABS.STORAGELOCKER.FACADES.STRIPES_RED_WHITE.NAME, BUILDINGS.PREFABS.STORAGELOCKER.FACADES.STRIPES_RED_WHITE.DESC, PermitRarity.Splendid, "StorageLocker", "storagelocker_stripes_red_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("Refrigerator_stripes_red_white", BUILDINGS.PREFABS.REFRIGERATOR.FACADES.STRIPES_RED_WHITE.NAME, BUILDINGS.PREFABS.REFRIGERATOR.FACADES.STRIPES_RED_WHITE.DESC, PermitRarity.Splendid, "Refrigerator", "fridge_stripes_red_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("Refrigerator_blue_babytears", BUILDINGS.PREFABS.REFRIGERATOR.FACADES.BLUE_BABYTEARS.NAME, BUILDINGS.PREFABS.REFRIGERATOR.FACADES.BLUE_BABYTEARS.DESC, PermitRarity.Nifty, "Refrigerator", "fridge_blue_babytears_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("Refrigerator_green_mush", BUILDINGS.PREFABS.REFRIGERATOR.FACADES.GREEN_MUSH.NAME, BUILDINGS.PREFABS.REFRIGERATOR.FACADES.GREEN_MUSH.DESC, PermitRarity.Nifty, "Refrigerator", "fridge_green_mush_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("Refrigerator_red_rose", BUILDINGS.PREFABS.REFRIGERATOR.FACADES.RED_ROSE.NAME, BUILDINGS.PREFABS.REFRIGERATOR.FACADES.RED_ROSE.DESC, PermitRarity.Nifty, "Refrigerator", "fridge_red_rose_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("Refrigerator_yellow_tartar", BUILDINGS.PREFABS.REFRIGERATOR.FACADES.YELLOW_TARTAR.NAME, BUILDINGS.PREFABS.REFRIGERATOR.FACADES.YELLOW_TARTAR.DESC, PermitRarity.Nifty, "Refrigerator", "fridge_yellow_tartar_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("Refrigerator_purple_brainfat", BUILDINGS.PREFABS.REFRIGERATOR.FACADES.PURPLE_BRAINFAT.NAME, BUILDINGS.PREFABS.REFRIGERATOR.FACADES.PURPLE_BRAINFAT.DESC, PermitRarity.Nifty, "Refrigerator", "fridge_purple_brainfat_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("MicrobeMusher_purple_brainfat", BUILDINGS.PREFABS.MICROBEMUSHER.FACADES.PURPLE_BRAINFAT.NAME, BUILDINGS.PREFABS.MICROBEMUSHER.FACADES.PURPLE_BRAINFAT.DESC, PermitRarity.Nifty, "MicrobeMusher", "microbemusher_purple_brainfat_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("MicrobeMusher_yellow_tartar", BUILDINGS.PREFABS.MICROBEMUSHER.FACADES.YELLOW_TARTAR.NAME, BUILDINGS.PREFABS.MICROBEMUSHER.FACADES.YELLOW_TARTAR.DESC, PermitRarity.Nifty, "MicrobeMusher", "microbemusher_yellow_tartar_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("MicrobeMusher_red_rose", BUILDINGS.PREFABS.MICROBEMUSHER.FACADES.RED_ROSE.NAME, BUILDINGS.PREFABS.MICROBEMUSHER.FACADES.RED_ROSE.DESC, PermitRarity.Nifty, "MicrobeMusher", "microbemusher_red_rose_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("MicrobeMusher_green_mush", BUILDINGS.PREFABS.MICROBEMUSHER.FACADES.GREEN_MUSH.NAME, BUILDINGS.PREFABS.MICROBEMUSHER.FACADES.GREEN_MUSH.DESC, PermitRarity.Nifty, "MicrobeMusher", "microbemusher_green_mush_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("MicrobeMusher_blue_babytears", BUILDINGS.PREFABS.MICROBEMUSHER.FACADES.BLUE_BABYTEARS.NAME, BUILDINGS.PREFABS.MICROBEMUSHER.FACADES.BLUE_BABYTEARS.DESC, PermitRarity.Nifty, "MicrobeMusher", "microbemusher_blue_babytears_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("WashSink_purple_brainfat", BUILDINGS.PREFABS.WASHSINK.FACADES.PURPLE_BRAINFAT.NAME, BUILDINGS.PREFABS.WASHSINK.FACADES.PURPLE_BRAINFAT.DESC, PermitRarity.Nifty, "WashSink", "wash_sink_purple_brainfat_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("WashSink_blue_babytears", BUILDINGS.PREFABS.WASHSINK.FACADES.BLUE_BABYTEARS.NAME, BUILDINGS.PREFABS.WASHSINK.FACADES.BLUE_BABYTEARS.DESC, PermitRarity.Nifty, "WashSink", "wash_sink_blue_babytears_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("WashSink_green_mush", BUILDINGS.PREFABS.WASHSINK.FACADES.GREEN_MUSH.NAME, BUILDINGS.PREFABS.WASHSINK.FACADES.GREEN_MUSH.DESC, PermitRarity.Nifty, "WashSink", "wash_sink_green_mush_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("WashSink_yellow_tartar", BUILDINGS.PREFABS.WASHSINK.FACADES.YELLOW_TARTAR.NAME, BUILDINGS.PREFABS.WASHSINK.FACADES.YELLOW_TARTAR.DESC, PermitRarity.Nifty, "WashSink", "wash_sink_yellow_tartar_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("WashSink_red_rose", BUILDINGS.PREFABS.WASHSINK.FACADES.RED_ROSE.NAME, BUILDINGS.PREFABS.WASHSINK.FACADES.RED_ROSE.DESC, PermitRarity.Nifty, "WashSink", "wash_sink_red_rose_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("FlushToilet_polka_darkpurpleresin", BUILDINGS.PREFABS.FLUSHTOILET.FACADES.POLKA_DARKPURPLERESIN.NAME, BUILDINGS.PREFABS.FLUSHTOILET.FACADES.POLKA_DARKPURPLERESIN.DESC, PermitRarity.Splendid, "FlushToilet", "toiletflush_polka_darkpurpleresin_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("FlushToilet_polka_darknavynookgreen", BUILDINGS.PREFABS.FLUSHTOILET.FACADES.POLKA_DARKNAVYNOOKGREEN.NAME, BUILDINGS.PREFABS.FLUSHTOILET.FACADES.POLKA_DARKNAVYNOOKGREEN.DESC, PermitRarity.Splendid, "FlushToilet", "toiletflush_polka_darknavynookgreen_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("FlushToilet_purple_brainfat", BUILDINGS.PREFABS.FLUSHTOILET.FACADES.PURPLE_BRAINFAT.NAME, BUILDINGS.PREFABS.FLUSHTOILET.FACADES.PURPLE_BRAINFAT.DESC, PermitRarity.Nifty, "FlushToilet", "toiletflush_purple_brainfat_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("FlushToilet_yellow_tartar", BUILDINGS.PREFABS.FLUSHTOILET.FACADES.YELLOW_TARTAR.NAME, BUILDINGS.PREFABS.FLUSHTOILET.FACADES.YELLOW_TARTAR.DESC, PermitRarity.Nifty, "FlushToilet", "toiletflush_yellow_tartar_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("FlushToilet_red_rose", BUILDINGS.PREFABS.FLUSHTOILET.FACADES.RED_ROSE.NAME, BUILDINGS.PREFABS.FLUSHTOILET.FACADES.RED_ROSE.DESC, PermitRarity.Nifty, "FlushToilet", "toiletflush_red_rose_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("FlushToilet_green_mush", BUILDINGS.PREFABS.FLUSHTOILET.FACADES.GREEN_MUSH.NAME, BUILDINGS.PREFABS.FLUSHTOILET.FACADES.GREEN_MUSH.DESC, PermitRarity.Nifty, "FlushToilet", "toiletflush_green_mush_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("FlushToilet_blue_babytears", BUILDINGS.PREFABS.FLUSHTOILET.FACADES.BLUE_BABYTEARS.NAME, BUILDINGS.PREFABS.FLUSHTOILET.FACADES.BLUE_BABYTEARS.DESC, PermitRarity.Nifty, "FlushToilet", "toiletflush_blue_babytears_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("LuxuryBed_red_rose", BUILDINGS.PREFABS.LUXURYBED.FACADES.RED_ROSE.NAME, BUILDINGS.PREFABS.LUXURYBED.FACADES.RED_ROSE.DESC, PermitRarity.Nifty, "LuxuryBed", "elegantbed_red_rose_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("LuxuryBed_green_mush", BUILDINGS.PREFABS.LUXURYBED.FACADES.GREEN_MUSH.NAME, BUILDINGS.PREFABS.LUXURYBED.FACADES.GREEN_MUSH.DESC, PermitRarity.Nifty, "LuxuryBed", "elegantbed_green_mush_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("LuxuryBed_yellow_tartar", BUILDINGS.PREFABS.LUXURYBED.FACADES.YELLOW_TARTAR.NAME, BUILDINGS.PREFABS.LUXURYBED.FACADES.YELLOW_TARTAR.DESC, PermitRarity.Nifty, "LuxuryBed", "elegantbed_yellow_tartar_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("LuxuryBed_purple_brainfat", BUILDINGS.PREFABS.LUXURYBED.FACADES.PURPLE_BRAINFAT.NAME, BUILDINGS.PREFABS.LUXURYBED.FACADES.PURPLE_BRAINFAT.DESC, PermitRarity.Nifty, "LuxuryBed", "elegantbed_purple_brainfat_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("WaterCooler_yellow_tartar", BUILDINGS.PREFABS.WATERCOOLER.FACADES.YELLOW_TARTAR.NAME, BUILDINGS.PREFABS.WATERCOOLER.FACADES.YELLOW_TARTAR.DESC, PermitRarity.Nifty, "WaterCooler", "watercooler_yellow_tartar_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("WaterCooler_red_rose", BUILDINGS.PREFABS.WATERCOOLER.FACADES.RED_ROSE.NAME, BUILDINGS.PREFABS.WATERCOOLER.FACADES.RED_ROSE.DESC, PermitRarity.Nifty, "WaterCooler", "watercooler_red_rose_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("WaterCooler_green_mush", BUILDINGS.PREFABS.WATERCOOLER.FACADES.GREEN_MUSH.NAME, BUILDINGS.PREFABS.WATERCOOLER.FACADES.GREEN_MUSH.DESC, PermitRarity.Nifty, "WaterCooler", "watercooler_green_mush_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("WaterCooler_purple_brainfat", BUILDINGS.PREFABS.WATERCOOLER.FACADES.PURPLE_BRAINFAT.NAME, BUILDINGS.PREFABS.WATERCOOLER.FACADES.PURPLE_BRAINFAT.DESC, PermitRarity.Nifty, "WaterCooler", "watercooler_purple_brainfat_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("WaterCooler_blue_babytears", BUILDINGS.PREFABS.WATERCOOLER.FACADES.BLUE_BABYTEARS.NAME, BUILDINGS.PREFABS.WATERCOOLER.FACADES.BLUE_BABYTEARS.DESC, PermitRarity.Nifty, "WaterCooler", "watercooler_blue_babytears_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_stripes_yellow_tartar", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_YELLOW_TARTAR.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_YELLOW_TARTAR.DESC, PermitRarity.Decent, "ExteriorWall", "walls_stripes_yellow_tartar_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_stripes_diagonal_yellow_tartar", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_DIAGONAL_YELLOW_TARTAR.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_DIAGONAL_YELLOW_TARTAR.DESC, PermitRarity.Decent, "ExteriorWall", "walls_stripes_diagonal_yellow_tartar_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_stripes_circle_yellow_tartar", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_CIRCLE_YELLOW_TARTAR.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_CIRCLE_YELLOW_TARTAR.DESC, PermitRarity.Decent, "ExteriorWall", "walls_stripes_circle_yellow_tartar_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_stripes_purple_brainfat", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_PURPLE_BRAINFAT.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_PURPLE_BRAINFAT.DESC, PermitRarity.Decent, "ExteriorWall", "walls_stripes_purple_brainfat_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_stripes_diagonal_purple_brainfat", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_DIAGONAL_PURPLE_BRAINFAT.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_DIAGONAL_PURPLE_BRAINFAT.DESC, PermitRarity.Decent, "ExteriorWall", "walls_stripes_diagonal_purple_brainfat_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_stripes_circle_purple_brainfat", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_CIRCLE_PURPLE_BRAINFAT.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.STRIPES_CIRCLE_PURPLE_BRAINFAT.DESC, PermitRarity.Decent, "ExteriorWall", "walls_stripes_circle_purple_brainfat_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_floppy_azulene_vitro", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.FLOPPY_AZULENE_VITRO.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.FLOPPY_AZULENE_VITRO.DESC, PermitRarity.Decent, "ExteriorWall", "walls_floppy_azulene_vitro_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_floppy_black_white", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.FLOPPY_BLACK_WHITE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.FLOPPY_BLACK_WHITE.DESC, PermitRarity.Decent, "ExteriorWall", "walls_floppy_black_white_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_floppy_peagreen_balmy", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.FLOPPY_PEAGREEN_BALMY.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.FLOPPY_PEAGREEN_BALMY.DESC, PermitRarity.Decent, "ExteriorWall", "walls_floppy_peagreen_balmy_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_floppy_satsuma_yellowcake", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.FLOPPY_SATSUMA_YELLOWCAKE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.FLOPPY_SATSUMA_YELLOWCAKE.DESC, PermitRarity.Decent, "ExteriorWall", "walls_floppy_satsuma_yellowcake_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_floppy_magma_amino", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.FLOPPY_MAGMA_AMINO.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.FLOPPY_MAGMA_AMINO.DESC, PermitRarity.Decent, "ExteriorWall", "walls_floppy_magma_amino_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_orange_juice", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.ORANGE_JUICE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.ORANGE_JUICE.DESC, PermitRarity.Decent, "ExteriorWall", "walls_orange_juice_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_paint_blots", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PAINT_BLOTS.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.PAINT_BLOTS.DESC, PermitRarity.Decent, "ExteriorWall", "walls_paint_blots_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_telescope", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.TELESCOPE.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.TELESCOPE.DESC, PermitRarity.Decent, "ExteriorWall", "walls_telescope_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_tictactoe_o", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.TICTACTOE_O.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.TICTACTOE_O.DESC, PermitRarity.Decent, "ExteriorWall", "walls_tictactoe_o_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_tictactoe_x", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.TICTACTOE_X.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.TICTACTOE_X.DESC, PermitRarity.Decent, "ExteriorWall", "walls_tictactoe_x_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_dice_1", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DICE_1.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DICE_1.DESC, PermitRarity.Decent, "ExteriorWall", "walls_dice_1_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_dice_2", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DICE_2.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DICE_2.DESC, PermitRarity.Decent, "ExteriorWall", "walls_dice_2_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_dice_3", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DICE_3.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DICE_3.DESC, PermitRarity.Decent, "ExteriorWall", "walls_dice_3_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_dice_4", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DICE_4.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DICE_4.DESC, PermitRarity.Decent, "ExteriorWall", "walls_dice_4_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_dice_5", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DICE_5.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DICE_5.DESC, PermitRarity.Decent, "ExteriorWall", "walls_dice_5_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null),
+			new BuildingFacadeInfo("ExteriorWall_dice_6", BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DICE_6.NAME, BUILDINGS.PREFABS.EXTERIORWALL.FACADES.DICE_6.DESC, PermitRarity.Decent, "ExteriorWall", "walls_dice_6_kanim", DlcManager.AVAILABLE_ALL_VERSIONS, null)
 		});
 	}
 
+	// Token: 0x06002BF9 RID: 11257 RVA: 0x001E5270 File Offset: 0x001E3470
 	private void SetupArtables()
 	{
-		blueprintCollection.artables.AddRange(new ArtableInfo[38]
+		this.blueprintCollection.artables.AddRange(new ArtableInfo[]
 		{
-			new ArtableInfo("Canvas_Good7", BUILDINGS.PREFABS.CANVAS.FACADES.ART_I.NAME, BUILDINGS.PREFABS.CANVAS.FACADES.ART_I.DESC, PermitRarity.Decent, "painting_art_i_kanim", "art_i", 15, cheer_on_complete: true, "LookingGreat", "Canvas", "canvas"),
-			new ArtableInfo("Canvas_Good8", BUILDINGS.PREFABS.CANVAS.FACADES.ART_J.NAME, BUILDINGS.PREFABS.CANVAS.FACADES.ART_J.DESC, PermitRarity.Decent, "painting_art_j_kanim", "art_j", 15, cheer_on_complete: true, "LookingGreat", "Canvas", "canvas"),
-			new ArtableInfo("Canvas_Good9", BUILDINGS.PREFABS.CANVAS.FACADES.ART_K.NAME, BUILDINGS.PREFABS.CANVAS.FACADES.ART_K.DESC, PermitRarity.Decent, "painting_art_k_kanim", "art_k", 15, cheer_on_complete: true, "LookingGreat", "Canvas", "canvas"),
-			new ArtableInfo("CanvasTall_Good5", BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_G.NAME, BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_G.DESC, PermitRarity.Decent, "painting_tall_art_g_kanim", "art_g", 15, cheer_on_complete: true, "LookingGreat", "CanvasTall", "canvas"),
-			new ArtableInfo("CanvasTall_Good6", BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_H.NAME, BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_H.DESC, PermitRarity.Decent, "painting_tall_art_h_kanim", "art_h", 15, cheer_on_complete: true, "LookingGreat", "CanvasTall", "canvas"),
-			new ArtableInfo("CanvasTall_Good7", BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_I.NAME, BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_I.DESC, PermitRarity.Decent, "painting_tall_art_i_kanim", "art_i", 15, cheer_on_complete: true, "LookingGreat", "CanvasTall", "canvas"),
-			new ArtableInfo("CanvasWide_Good5", BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_G.NAME, BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_G.DESC, PermitRarity.Decent, "painting_wide_art_g_kanim", "art_g", 15, cheer_on_complete: true, "LookingGreat", "CanvasWide", "canvas"),
-			new ArtableInfo("CanvasWide_Good6", BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_H.NAME, BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_H.DESC, PermitRarity.Decent, "painting_wide_art_h_kanim", "art_h", 15, cheer_on_complete: true, "LookingGreat", "CanvasWide", "canvas"),
-			new ArtableInfo("CanvasWide_Good7", BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_I.NAME, BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_I.DESC, PermitRarity.Decent, "painting_wide_art_i_kanim", "art_i", 15, cheer_on_complete: true, "LookingGreat", "CanvasWide", "canvas"),
-			new ArtableInfo("Sculpture_Good4", BUILDINGS.PREFABS.SCULPTURE.FACADES.SCULPTURE_AMAZING_4.NAME, BUILDINGS.PREFABS.SCULPTURE.FACADES.SCULPTURE_AMAZING_4.DESC, PermitRarity.Decent, "sculpture_amazing_4_kanim", "amazing_4", 15, cheer_on_complete: true, "LookingGreat", "Sculpture"),
-			new ArtableInfo("SmallSculpture_Good4", BUILDINGS.PREFABS.SMALLSCULPTURE.FACADES.SCULPTURE_1x2_AMAZING_4.NAME, BUILDINGS.PREFABS.SMALLSCULPTURE.FACADES.SCULPTURE_1x2_AMAZING_4.DESC, PermitRarity.Decent, "sculpture_1x2_amazing_4_kanim", "amazing_4", 15, cheer_on_complete: true, "LookingGreat", "SmallSculpture"),
-			new ArtableInfo("MetalSculpture_Good4", BUILDINGS.PREFABS.METALSCULPTURE.FACADES.SCULPTURE_METAL_AMAZING_4.NAME, BUILDINGS.PREFABS.METALSCULPTURE.FACADES.SCULPTURE_METAL_AMAZING_4.DESC, PermitRarity.Decent, "sculpture_metal_amazing_4_kanim", "amazing_4", 15, cheer_on_complete: true, "LookingGreat", "MetalSculpture"),
-			new ArtableInfo("MarbleSculpture_Good4", BUILDINGS.PREFABS.MARBLESCULPTURE.FACADES.SCULPTURE_MARBLE_AMAZING_4.NAME, BUILDINGS.PREFABS.MARBLESCULPTURE.FACADES.SCULPTURE_MARBLE_AMAZING_4.DESC, PermitRarity.Decent, "sculpture_marble_amazing_4_kanim", "amazing_4", 15, cheer_on_complete: true, "LookingGreat", "MarbleSculpture"),
-			new ArtableInfo("MarbleSculpture_Good5", BUILDINGS.PREFABS.MARBLESCULPTURE.FACADES.SCULPTURE_MARBLE_AMAZING_5.NAME, BUILDINGS.PREFABS.MARBLESCULPTURE.FACADES.SCULPTURE_MARBLE_AMAZING_5.DESC, PermitRarity.Decent, "sculpture_marble_amazing_5_kanim", "amazing_5", 15, cheer_on_complete: true, "LookingGreat", "MarbleSculpture"),
-			new ArtableInfo("IceSculpture_Average2", BUILDINGS.PREFABS.ICESCULPTURE.FACADES.ICESCULPTURE_AMAZING_2.NAME, BUILDINGS.PREFABS.ICESCULPTURE.FACADES.ICESCULPTURE_AMAZING_2.DESC, PermitRarity.Decent, "icesculpture_idle_2_kanim", "idle_2", 10, cheer_on_complete: false, "LookingOkay", "IceSculpture"),
-			new ArtableInfo("Canvas_Good10", BUILDINGS.PREFABS.CANVAS.FACADES.ART_L.NAME, BUILDINGS.PREFABS.CANVAS.FACADES.ART_L.DESC, PermitRarity.Decent, "painting_art_l_kanim", "art_l", 15, cheer_on_complete: true, "LookingGreat", "Canvas", "canvas"),
-			new ArtableInfo("Canvas_Good11", BUILDINGS.PREFABS.CANVAS.FACADES.ART_M.NAME, BUILDINGS.PREFABS.CANVAS.FACADES.ART_M.DESC, PermitRarity.Decent, "painting_art_m_kanim", "art_m", 15, cheer_on_complete: true, "LookingGreat", "Canvas", "canvas"),
-			new ArtableInfo("CanvasTall_Good8", BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_J.NAME, BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_J.DESC, PermitRarity.Decent, "painting_tall_art_j_kanim", "art_j", 15, cheer_on_complete: true, "LookingGreat", "CanvasTall", "canvas"),
-			new ArtableInfo("CanvasTall_Good9", BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_K.NAME, BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_K.DESC, PermitRarity.Decent, "painting_tall_art_k_kanim", "art_k", 15, cheer_on_complete: true, "LookingGreat", "CanvasTall", "canvas"),
-			new ArtableInfo("CanvasWide_Good8", BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_J.NAME, BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_J.DESC, PermitRarity.Decent, "painting_wide_art_j_kanim", "art_j", 15, cheer_on_complete: true, "LookingGreat", "CanvasWide", "canvas"),
-			new ArtableInfo("CanvasWide_Good9", BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_K.NAME, BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_K.DESC, PermitRarity.Decent, "painting_wide_art_k_kanim", "art_k", 15, cheer_on_complete: true, "LookingGreat", "CanvasWide", "canvas"),
-			new ArtableInfo("Canvas_Good13", BUILDINGS.PREFABS.CANVAS.FACADES.ART_O.NAME, BUILDINGS.PREFABS.CANVAS.FACADES.ART_O.DESC, PermitRarity.Decent, "painting_art_o_kanim", "art_o", 15, cheer_on_complete: true, "LookingGreat", "Canvas"),
-			new ArtableInfo("CanvasWide_Good10", BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_L.NAME, BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_L.DESC, PermitRarity.Decent, "painting_wide_art_l_kanim", "art_l", 15, cheer_on_complete: true, "LookingGreat", "CanvasWide"),
-			new ArtableInfo("CanvasTall_Good11", BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_M.NAME, BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_M.DESC, PermitRarity.Decent, "painting_tall_art_m_kanim", "art_m", 15, cheer_on_complete: true, "LookingGreat", "CanvasTall"),
-			new ArtableInfo("Sculpture_Good5", BUILDINGS.PREFABS.SCULPTURE.FACADES.SCULPTURE_AMAZING_5.NAME, BUILDINGS.PREFABS.SCULPTURE.FACADES.SCULPTURE_AMAZING_5.DESC, PermitRarity.Decent, "sculpture_amazing_5_kanim", "amazing_5", 15, cheer_on_complete: true, "LookingGreat", "Sculpture"),
-			new ArtableInfo("SmallSculpture_Good5", BUILDINGS.PREFABS.SMALLSCULPTURE.FACADES.SCULPTURE_1x2_AMAZING_5.NAME, BUILDINGS.PREFABS.SMALLSCULPTURE.FACADES.SCULPTURE_1x2_AMAZING_5.DESC, PermitRarity.Decent, "sculpture_1x2_amazing_5_kanim", "amazing_5", 15, cheer_on_complete: true, "LookingGreat", "SmallSculpture"),
-			new ArtableInfo("SmallSculpture_Good6", BUILDINGS.PREFABS.SMALLSCULPTURE.FACADES.SCULPTURE_1x2_AMAZING_6.NAME, BUILDINGS.PREFABS.SMALLSCULPTURE.FACADES.SCULPTURE_1x2_AMAZING_6.DESC, PermitRarity.Decent, "sculpture_1x2_amazing_6_kanim", "amazing_6", 15, cheer_on_complete: true, "LookingGreat", "SmallSculpture"),
-			new ArtableInfo("MetalSculpture_Good5", BUILDINGS.PREFABS.METALSCULPTURE.FACADES.SCULPTURE_METAL_AMAZING_5.NAME, BUILDINGS.PREFABS.METALSCULPTURE.FACADES.SCULPTURE_METAL_AMAZING_5.DESC, PermitRarity.Decent, "sculpture_metal_amazing_5_kanim", "amazing_5", 15, cheer_on_complete: true, "LookingGreat", "MetalSculpture"),
-			new ArtableInfo("IceSculpture_Average3", BUILDINGS.PREFABS.ICESCULPTURE.FACADES.ICESCULPTURE_AMAZING_3.NAME, BUILDINGS.PREFABS.ICESCULPTURE.FACADES.ICESCULPTURE_AMAZING_3.DESC, PermitRarity.Decent, "icesculpture_idle_3_kanim", "idle_3", 10, cheer_on_complete: true, "LookingOkay", "IceSculpture"),
-			new ArtableInfo("Canvas_Good12", BUILDINGS.PREFABS.CANVAS.FACADES.ART_N.NAME, BUILDINGS.PREFABS.CANVAS.FACADES.ART_N.DESC, PermitRarity.Decent, "painting_art_n_kanim", "art_n", 15, cheer_on_complete: true, "LookingGreat", "Canvas"),
-			new ArtableInfo("Canvas_Good14", BUILDINGS.PREFABS.CANVAS.FACADES.ART_P.NAME, BUILDINGS.PREFABS.CANVAS.FACADES.ART_P.DESC, PermitRarity.Decent, "painting_art_p_kanim", "art_p", 15, cheer_on_complete: true, "LookingGreat", "Canvas"),
-			new ArtableInfo("CanvasWide_Good11", BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_M.NAME, BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_M.DESC, PermitRarity.Decent, "painting_wide_art_m_kanim", "art_m", 15, cheer_on_complete: true, "LookingGreat", "CanvasWide"),
-			new ArtableInfo("CanvasTall_Good10", BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_L.NAME, BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_L.DESC, PermitRarity.Decent, "painting_tall_art_l_kanim", "art_l", 15, cheer_on_complete: true, "LookingGreat", "CanvasTall"),
-			new ArtableInfo("Sculpture_Good6", BUILDINGS.PREFABS.SCULPTURE.FACADES.SCULPTURE_AMAZING_6.NAME, BUILDINGS.PREFABS.SCULPTURE.FACADES.SCULPTURE_AMAZING_6.DESC, PermitRarity.Decent, "sculpture_amazing_6_kanim", "amazing_6", 15, cheer_on_complete: true, "LookingGreat", "Sculpture"),
-			new ArtableInfo("Canvas_Good15", BUILDINGS.PREFABS.CANVAS.FACADES.ART_Q.NAME, BUILDINGS.PREFABS.CANVAS.FACADES.ART_Q.DESC, PermitRarity.Decent, "painting_art_q_kanim", "art_q", 15, cheer_on_complete: true, "LookingGreat", "Canvas"),
-			new ArtableInfo("CanvasTall_Good14", BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_P.NAME, BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_P.DESC, PermitRarity.Decent, "painting_tall_art_p_kanim", "art_p", 15, cheer_on_complete: true, "LookingGreat", "CanvasTall"),
-			new ArtableInfo("Canvas_Good16", BUILDINGS.PREFABS.CANVAS.FACADES.ART_R.NAME, BUILDINGS.PREFABS.CANVAS.FACADES.ART_R.DESC, PermitRarity.Decent, "painting_art_r_kanim", "art_r", 15, cheer_on_complete: true, "LookingGreat", "Canvas"),
-			new ArtableInfo("CanvasWide_Good13", BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_O.NAME, BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_O.DESC, PermitRarity.Decent, "painting_wide_art_o_kanim", "art_o", 15, cheer_on_complete: true, "LookingGreat", "CanvasWide")
+			new ArtableInfo("Canvas_Good7", BUILDINGS.PREFABS.CANVAS.FACADES.ART_I.NAME, BUILDINGS.PREFABS.CANVAS.FACADES.ART_I.DESC, PermitRarity.Decent, "painting_art_i_kanim", "art_i", 15, true, "LookingGreat", "Canvas", "canvas"),
+			new ArtableInfo("Canvas_Good8", BUILDINGS.PREFABS.CANVAS.FACADES.ART_J.NAME, BUILDINGS.PREFABS.CANVAS.FACADES.ART_J.DESC, PermitRarity.Decent, "painting_art_j_kanim", "art_j", 15, true, "LookingGreat", "Canvas", "canvas"),
+			new ArtableInfo("Canvas_Good9", BUILDINGS.PREFABS.CANVAS.FACADES.ART_K.NAME, BUILDINGS.PREFABS.CANVAS.FACADES.ART_K.DESC, PermitRarity.Decent, "painting_art_k_kanim", "art_k", 15, true, "LookingGreat", "Canvas", "canvas"),
+			new ArtableInfo("CanvasTall_Good5", BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_G.NAME, BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_G.DESC, PermitRarity.Decent, "painting_tall_art_g_kanim", "art_g", 15, true, "LookingGreat", "CanvasTall", "canvas"),
+			new ArtableInfo("CanvasTall_Good6", BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_H.NAME, BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_H.DESC, PermitRarity.Decent, "painting_tall_art_h_kanim", "art_h", 15, true, "LookingGreat", "CanvasTall", "canvas"),
+			new ArtableInfo("CanvasTall_Good7", BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_I.NAME, BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_I.DESC, PermitRarity.Decent, "painting_tall_art_i_kanim", "art_i", 15, true, "LookingGreat", "CanvasTall", "canvas"),
+			new ArtableInfo("CanvasWide_Good5", BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_G.NAME, BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_G.DESC, PermitRarity.Decent, "painting_wide_art_g_kanim", "art_g", 15, true, "LookingGreat", "CanvasWide", "canvas"),
+			new ArtableInfo("CanvasWide_Good6", BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_H.NAME, BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_H.DESC, PermitRarity.Decent, "painting_wide_art_h_kanim", "art_h", 15, true, "LookingGreat", "CanvasWide", "canvas"),
+			new ArtableInfo("CanvasWide_Good7", BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_I.NAME, BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_I.DESC, PermitRarity.Decent, "painting_wide_art_i_kanim", "art_i", 15, true, "LookingGreat", "CanvasWide", "canvas"),
+			new ArtableInfo("Sculpture_Good4", BUILDINGS.PREFABS.SCULPTURE.FACADES.SCULPTURE_AMAZING_4.NAME, BUILDINGS.PREFABS.SCULPTURE.FACADES.SCULPTURE_AMAZING_4.DESC, PermitRarity.Decent, "sculpture_amazing_4_kanim", "amazing_4", 15, true, "LookingGreat", "Sculpture", ""),
+			new ArtableInfo("SmallSculpture_Good4", BUILDINGS.PREFABS.SMALLSCULPTURE.FACADES.SCULPTURE_1x2_AMAZING_4.NAME, BUILDINGS.PREFABS.SMALLSCULPTURE.FACADES.SCULPTURE_1x2_AMAZING_4.DESC, PermitRarity.Decent, "sculpture_1x2_amazing_4_kanim", "amazing_4", 15, true, "LookingGreat", "SmallSculpture", ""),
+			new ArtableInfo("MetalSculpture_Good4", BUILDINGS.PREFABS.METALSCULPTURE.FACADES.SCULPTURE_METAL_AMAZING_4.NAME, BUILDINGS.PREFABS.METALSCULPTURE.FACADES.SCULPTURE_METAL_AMAZING_4.DESC, PermitRarity.Decent, "sculpture_metal_amazing_4_kanim", "amazing_4", 15, true, "LookingGreat", "MetalSculpture", ""),
+			new ArtableInfo("MarbleSculpture_Good4", BUILDINGS.PREFABS.MARBLESCULPTURE.FACADES.SCULPTURE_MARBLE_AMAZING_4.NAME, BUILDINGS.PREFABS.MARBLESCULPTURE.FACADES.SCULPTURE_MARBLE_AMAZING_4.DESC, PermitRarity.Decent, "sculpture_marble_amazing_4_kanim", "amazing_4", 15, true, "LookingGreat", "MarbleSculpture", ""),
+			new ArtableInfo("MarbleSculpture_Good5", BUILDINGS.PREFABS.MARBLESCULPTURE.FACADES.SCULPTURE_MARBLE_AMAZING_5.NAME, BUILDINGS.PREFABS.MARBLESCULPTURE.FACADES.SCULPTURE_MARBLE_AMAZING_5.DESC, PermitRarity.Decent, "sculpture_marble_amazing_5_kanim", "amazing_5", 15, true, "LookingGreat", "MarbleSculpture", ""),
+			new ArtableInfo("IceSculpture_Average2", BUILDINGS.PREFABS.ICESCULPTURE.FACADES.ICESCULPTURE_AMAZING_2.NAME, BUILDINGS.PREFABS.ICESCULPTURE.FACADES.ICESCULPTURE_AMAZING_2.DESC, PermitRarity.Decent, "icesculpture_idle_2_kanim", "idle_2", 10, false, "LookingOkay", "IceSculpture", ""),
+			new ArtableInfo("Canvas_Good10", BUILDINGS.PREFABS.CANVAS.FACADES.ART_L.NAME, BUILDINGS.PREFABS.CANVAS.FACADES.ART_L.DESC, PermitRarity.Decent, "painting_art_l_kanim", "art_l", 15, true, "LookingGreat", "Canvas", "canvas"),
+			new ArtableInfo("Canvas_Good11", BUILDINGS.PREFABS.CANVAS.FACADES.ART_M.NAME, BUILDINGS.PREFABS.CANVAS.FACADES.ART_M.DESC, PermitRarity.Decent, "painting_art_m_kanim", "art_m", 15, true, "LookingGreat", "Canvas", "canvas"),
+			new ArtableInfo("CanvasTall_Good8", BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_J.NAME, BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_J.DESC, PermitRarity.Decent, "painting_tall_art_j_kanim", "art_j", 15, true, "LookingGreat", "CanvasTall", "canvas"),
+			new ArtableInfo("CanvasTall_Good9", BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_K.NAME, BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_K.DESC, PermitRarity.Decent, "painting_tall_art_k_kanim", "art_k", 15, true, "LookingGreat", "CanvasTall", "canvas"),
+			new ArtableInfo("CanvasWide_Good8", BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_J.NAME, BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_J.DESC, PermitRarity.Decent, "painting_wide_art_j_kanim", "art_j", 15, true, "LookingGreat", "CanvasWide", "canvas"),
+			new ArtableInfo("CanvasWide_Good9", BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_K.NAME, BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_K.DESC, PermitRarity.Decent, "painting_wide_art_k_kanim", "art_k", 15, true, "LookingGreat", "CanvasWide", "canvas"),
+			new ArtableInfo("Canvas_Good13", BUILDINGS.PREFABS.CANVAS.FACADES.ART_O.NAME, BUILDINGS.PREFABS.CANVAS.FACADES.ART_O.DESC, PermitRarity.Decent, "painting_art_o_kanim", "art_o", 15, true, "LookingGreat", "Canvas", ""),
+			new ArtableInfo("CanvasWide_Good10", BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_L.NAME, BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_L.DESC, PermitRarity.Decent, "painting_wide_art_l_kanim", "art_l", 15, true, "LookingGreat", "CanvasWide", ""),
+			new ArtableInfo("CanvasTall_Good11", BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_M.NAME, BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_M.DESC, PermitRarity.Decent, "painting_tall_art_m_kanim", "art_m", 15, true, "LookingGreat", "CanvasTall", ""),
+			new ArtableInfo("Sculpture_Good5", BUILDINGS.PREFABS.SCULPTURE.FACADES.SCULPTURE_AMAZING_5.NAME, BUILDINGS.PREFABS.SCULPTURE.FACADES.SCULPTURE_AMAZING_5.DESC, PermitRarity.Decent, "sculpture_amazing_5_kanim", "amazing_5", 15, true, "LookingGreat", "Sculpture", ""),
+			new ArtableInfo("SmallSculpture_Good5", BUILDINGS.PREFABS.SMALLSCULPTURE.FACADES.SCULPTURE_1x2_AMAZING_5.NAME, BUILDINGS.PREFABS.SMALLSCULPTURE.FACADES.SCULPTURE_1x2_AMAZING_5.DESC, PermitRarity.Decent, "sculpture_1x2_amazing_5_kanim", "amazing_5", 15, true, "LookingGreat", "SmallSculpture", ""),
+			new ArtableInfo("SmallSculpture_Good6", BUILDINGS.PREFABS.SMALLSCULPTURE.FACADES.SCULPTURE_1x2_AMAZING_6.NAME, BUILDINGS.PREFABS.SMALLSCULPTURE.FACADES.SCULPTURE_1x2_AMAZING_6.DESC, PermitRarity.Decent, "sculpture_1x2_amazing_6_kanim", "amazing_6", 15, true, "LookingGreat", "SmallSculpture", ""),
+			new ArtableInfo("MetalSculpture_Good5", BUILDINGS.PREFABS.METALSCULPTURE.FACADES.SCULPTURE_METAL_AMAZING_5.NAME, BUILDINGS.PREFABS.METALSCULPTURE.FACADES.SCULPTURE_METAL_AMAZING_5.DESC, PermitRarity.Decent, "sculpture_metal_amazing_5_kanim", "amazing_5", 15, true, "LookingGreat", "MetalSculpture", ""),
+			new ArtableInfo("IceSculpture_Average3", BUILDINGS.PREFABS.ICESCULPTURE.FACADES.ICESCULPTURE_AMAZING_3.NAME, BUILDINGS.PREFABS.ICESCULPTURE.FACADES.ICESCULPTURE_AMAZING_3.DESC, PermitRarity.Decent, "icesculpture_idle_3_kanim", "idle_3", 10, true, "LookingOkay", "IceSculpture", ""),
+			new ArtableInfo("Canvas_Good12", BUILDINGS.PREFABS.CANVAS.FACADES.ART_N.NAME, BUILDINGS.PREFABS.CANVAS.FACADES.ART_N.DESC, PermitRarity.Decent, "painting_art_n_kanim", "art_n", 15, true, "LookingGreat", "Canvas", ""),
+			new ArtableInfo("Canvas_Good14", BUILDINGS.PREFABS.CANVAS.FACADES.ART_P.NAME, BUILDINGS.PREFABS.CANVAS.FACADES.ART_P.DESC, PermitRarity.Decent, "painting_art_p_kanim", "art_p", 15, true, "LookingGreat", "Canvas", ""),
+			new ArtableInfo("CanvasWide_Good11", BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_M.NAME, BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_M.DESC, PermitRarity.Decent, "painting_wide_art_m_kanim", "art_m", 15, true, "LookingGreat", "CanvasWide", ""),
+			new ArtableInfo("CanvasTall_Good10", BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_L.NAME, BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_L.DESC, PermitRarity.Decent, "painting_tall_art_l_kanim", "art_l", 15, true, "LookingGreat", "CanvasTall", ""),
+			new ArtableInfo("Sculpture_Good6", BUILDINGS.PREFABS.SCULPTURE.FACADES.SCULPTURE_AMAZING_6.NAME, BUILDINGS.PREFABS.SCULPTURE.FACADES.SCULPTURE_AMAZING_6.DESC, PermitRarity.Decent, "sculpture_amazing_6_kanim", "amazing_6", 15, true, "LookingGreat", "Sculpture", ""),
+			new ArtableInfo("Canvas_Good15", BUILDINGS.PREFABS.CANVAS.FACADES.ART_Q.NAME, BUILDINGS.PREFABS.CANVAS.FACADES.ART_Q.DESC, PermitRarity.Decent, "painting_art_q_kanim", "art_q", 15, true, "LookingGreat", "Canvas", ""),
+			new ArtableInfo("CanvasTall_Good14", BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_P.NAME, BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_P.DESC, PermitRarity.Decent, "painting_tall_art_p_kanim", "art_p", 15, true, "LookingGreat", "CanvasTall", ""),
+			new ArtableInfo("Canvas_Good16", BUILDINGS.PREFABS.CANVAS.FACADES.ART_R.NAME, BUILDINGS.PREFABS.CANVAS.FACADES.ART_R.DESC, PermitRarity.Decent, "painting_art_r_kanim", "art_r", 15, true, "LookingGreat", "Canvas", ""),
+			new ArtableInfo("CanvasWide_Good13", BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_O.NAME, BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_O.DESC, PermitRarity.Decent, "painting_wide_art_o_kanim", "art_o", 15, true, "LookingGreat", "CanvasWide", "")
 		});
 	}
 
+	// Token: 0x06002BFA RID: 11258 RVA: 0x001E5BE8 File Offset: 0x001E3DE8
 	private void SetupClothingItems()
 	{
-		blueprintCollection.clothingItems.AddRange(new ClothingItemInfo[285]
+		this.blueprintCollection.clothingItems.AddRange(new ClothingItemInfo[]
 		{
 			new ClothingItemInfo("TopBasicBlack", EQUIPMENT.PREFABS.CLOTHING_TOPS.FACADES.BASIC_BLACK.NAME, EQUIPMENT.PREFABS.CLOTHING_TOPS.FACADES.BASIC_BLACK.DESC, PermitCategory.DupeTops, PermitRarity.Decent, "top_basic_black_kanim"),
 			new ClothingItemInfo("TopBasicWhite", EQUIPMENT.PREFABS.CLOTHING_TOPS.FACADES.BASIC_WHITE.NAME, EQUIPMENT.PREFABS.CLOTHING_TOPS.FACADES.BASIC_WHITE.DESC, PermitCategory.DupeTops, PermitRarity.Decent, "top_basic_white_kanim"),
@@ -564,95 +572,517 @@ public class Blueprints_U51AndBefore : BlueprintProvider
 		});
 	}
 
+	// Token: 0x06002BFB RID: 11259 RVA: 0x001E8BA4 File Offset: 0x001E6DA4
 	private void SetupClothingOutfits()
 	{
-		Add("BasicBlack", new string[4] { "TopBasicBlack", "BottomBasicBlack", "GlovesBasicBlack", "ShoesBasicBlack" }, UI.OUTFITS.BASIC_BLACK.NAME, OutfitType.Clothing);
-		Add("BasicWhite", new string[4] { "TopBasicWhite", "BottomBasicWhite", "GlovesBasicWhite", "ShoesBasicWhite" }, UI.OUTFITS.BASIC_WHITE.NAME, OutfitType.Clothing);
-		Add("BasicRed", new string[4] { "TopBasicRed", "BottomBasicRed", "GlovesBasicRed", "ShoesBasicRed" }, UI.OUTFITS.BASIC_RED.NAME, OutfitType.Clothing);
-		Add("BasicOrange", new string[4] { "TopBasicOrange", "BottomBasicOrange", "GlovesBasicOrange", "ShoesBasicOrange" }, UI.OUTFITS.BASIC_ORANGE.NAME, OutfitType.Clothing);
-		Add("BasicYellow", new string[4] { "TopBasicYellow", "BottomBasicYellow", "GlovesBasicYellow", "ShoesBasicYellow" }, UI.OUTFITS.BASIC_YELLOW.NAME, OutfitType.Clothing);
-		Add("BasicGreen", new string[4] { "TopBasicGreen", "BottomBasicGreen", "GlovesBasicGreen", "ShoesBasicGreen" }, UI.OUTFITS.BASIC_GREEN.NAME, OutfitType.Clothing);
-		Add("BasicAqua", new string[4] { "TopBasicAqua", "BottomBasicAqua", "GlovesBasicAqua", "ShoesBasicAqua" }, UI.OUTFITS.BASIC_AQUA.NAME, OutfitType.Clothing);
-		Add("BasicPurple", new string[4] { "TopBasicPurple", "BottomBasicPurple", "GlovesBasicPurple", "ShoesBasicPurple" }, UI.OUTFITS.BASIC_PURPLE.NAME, OutfitType.Clothing);
-		Add("BasicPinkOrchid", new string[4] { "TopBasicPinkOrchid", "BottomBasicPinkOrchid", "GlovesBasicPinkOrchid", "ShoesBasicPinkOrchid" }, UI.OUTFITS.BASIC_PINK_ORCHID.NAME, OutfitType.Clothing);
-		Add("BasicDeepRed", new string[4] { "TopRaglanDeepRed", "ShortsBasicDeepRed", "GlovesAthleticRedDeep", "SocksAthleticDeepRed" }, UI.OUTFITS.BASIC_DEEPRED.NAME, OutfitType.Clothing);
-		Add("BasicOrangeSatsuma", new string[4] { "TopRaglanSatsuma", "ShortsBasicSatsuma", "GlovesAthleticOrangeSatsuma", "SocksAthleticOrangeSatsuma" }, UI.OUTFITS.BASIC_SATSUMA.NAME, OutfitType.Clothing);
-		Add("BasicLemon", new string[4] { "TopRaglanLemon", "ShortsBasicYellowcake", "GlovesAthleticYellowLemon", "SocksAthleticYellowLemon" }, UI.OUTFITS.BASIC_LEMON.NAME, OutfitType.Clothing);
-		Add("BasicBlueCobalt", new string[4] { "TopRaglanCobalt", "ShortsBasicBlueCobalt", "GlovesAthleticBlueCobalt", "SocksAthleticBlueCobalt" }, UI.OUTFITS.BASIC_BLUE_COBALT.NAME, OutfitType.Clothing);
-		Add("BasicGreenKelly", new string[4] { "TopRaglanKellyGreen", "ShortsBasicKellyGreen", "GlovesAthleticGreenKelly", "SocksAthleticGreenKelly" }, UI.OUTFITS.BASIC_GREEN_KELLY.NAME, OutfitType.Clothing);
-		Add("BasicPinkFlamingo", new string[4] { "TopRaglanFlamingo", "ShortsBasicPinkFlamingo", "GlovesAthleticPinkFlamingo", "SocksAthleticPinkFlamingo" }, UI.OUTFITS.BASIC_PINK_FLAMINGO.NAME, OutfitType.Clothing);
-		Add("BasicGreyCharcoal", new string[4] { "TopRaglanCharcoal", "ShortsBasicCharcoal", "GlovesAthleticGreyCharcoal", "SocksAthleticGreyCharcoal" }, UI.OUTFITS.BASIC_GREY_CHARCOAL.NAME, OutfitType.Clothing);
-		Add("JellypuffBlueberry", new string[2] { "TopJellypuffJacketBlueberry", "GlovesCufflessBlueberry" }, UI.OUTFITS.JELLYPUFF_BLUEBERRY.NAME, OutfitType.Clothing);
-		Add("JellypuffGrape", new string[2] { "TopJellypuffJacketGrape", "GlovesCufflessGrape" }, UI.OUTFITS.JELLYPUFF_GRAPE.NAME, OutfitType.Clothing);
-		Add("JellypuffLemon", new string[2] { "TopJellypuffJacketLemon", "GlovesCufflessLemon" }, UI.OUTFITS.JELLYPUFF_LEMON.NAME, OutfitType.Clothing);
-		Add("JellypuffLime", new string[2] { "TopJellypuffJacketLime", "GlovesCufflessLime" }, UI.OUTFITS.JELLYPUFF_LIME.NAME, OutfitType.Clothing);
-		Add("JellypuffSatsuma", new string[2] { "TopJellypuffJacketSatsuma", "GlovesCufflessSatsuma" }, UI.OUTFITS.JELLYPUFF_SATSUMA.NAME, OutfitType.Clothing);
-		Add("JellypuffStrawberry", new string[2] { "TopJellypuffJacketStrawberry", "GlovesCufflessStrawberry" }, UI.OUTFITS.JELLYPUFF_STRAWBERRY.NAME, OutfitType.Clothing);
-		Add("JellypuffWatermelon", new string[2] { "TopJellypuffJacketWatermelon", "GlovesCufflessWatermelon" }, UI.OUTFITS.JELLYPUFF_WATERMELON.NAME, OutfitType.Clothing);
-		Add("Athlete", new string[4] { "TopAthlete", "PantsAthlete", "GlovesAthlete", "ShoesBasicBlack" }, UI.OUTFITS.ATHLETE.NAME, OutfitType.Clothing);
-		Add("Circuit", new string[3] { "TopCircuitGreen", "PantsCircuitGreen", "GlovesCircuitGreen" }, UI.OUTFITS.CIRCUIT.NAME, OutfitType.Clothing);
-		Add("AtmoLimone", new string[5] { "AtmoHelmetLimone", "AtmoSuitBasicYellow", "AtmoGlovesLime", "AtmoBeltBasicLime", "AtmoShoesBasicYellow" }, UI.OUTFITS.ATMOSUIT_LIMONE.NAME, OutfitType.AtmoSuit);
-		Add("AtmoPuft", new string[5] { "AtmoHelmetPuft", "AtmoSuitPuft", "AtmoGlovesPuft", "AtmoBeltPuft", "AtmoShoesPuft" }, UI.OUTFITS.ATMOSUIT_PUFT.NAME, OutfitType.AtmoSuit);
-		Add("AtmoSparkleRed", new string[5] { "AtmoHelmetSparkleRed", "AtmoSuitSparkleRed", "AtmoGlovesSparkleRed", "AtmoBeltSparkleRed", "AtmoShoesSparkleBlack" }, UI.OUTFITS.ATMOSUIT_SPARKLE_RED.NAME, OutfitType.AtmoSuit);
-		Add("AtmoSparkleBlue", new string[5] { "AtmoHelmetSparkleBlue", "AtmoSuitSparkleBlue", "AtmoGlovesSparkleBlue", "AtmoBeltSparkleBlue", "AtmoShoesSparkleBlack" }, UI.OUTFITS.ATMOSUIT_SPARKLE_BLUE.NAME, OutfitType.AtmoSuit);
-		Add("AtmoSparkleGreen", new string[5] { "AtmoHelmetSparkleGreen", "AtmoSuitSparkleGreen", "AtmoGlovesSparkleGreen", "AtmoBeltSparkleGreen", "AtmoShoesSparkleBlack" }, UI.OUTFITS.ATMOSUIT_SPARKLE_GREEN.NAME, OutfitType.AtmoSuit);
-		Add("AtmoSparkleLavender", new string[5] { "AtmoHelmetSparklePurple", "AtmoSuitSparkleLavender", "AtmoGlovesSparkleLavender", "AtmoBeltSparkleLavender", "AtmoShoesSparkleBlack" }, UI.OUTFITS.ATMOSUIT_SPARKLE_LAVENDER.NAME, OutfitType.AtmoSuit);
-		Add("AtmoConfetti", new string[5] { "AtmoHelmetConfetti", "AtmoSuitConfetti", "AtmoGlovesGold", "AtmoBeltBasicGold", "AtmoShoesStealth" }, UI.OUTFITS.ATMOSUIT_CONFETTI.NAME, OutfitType.AtmoSuit);
-		Add("AtmoEggplant", new string[5] { "AtmoHelmetEggplant", "AtmoSuitCrispEggplant", "AtmoGlovesEggplant", "AtmoBeltEggplant", "AtmoShoesEggplant" }, UI.OUTFITS.ATMOSUIT_BASIC_PURPLE.NAME, OutfitType.AtmoSuit);
-		Add("CanadianTuxedo", new string[4] { "TopDenimBlue", "PantsJeans", "GlovesDenimBlue", "ShoesDenimBlue" }, UI.OUTFITS.CANUXTUX.NAME, OutfitType.Clothing);
-		Add("Researcher", new string[4] { "TopResearcher", "PantsResearch", "GlovesBasicBrownKhaki", "ShoesBasicGray" }, UI.OUTFITS.NERD.NAME, OutfitType.Clothing);
-		Add("UndiesExec", new string[2] { "TopUndershirtExecutive", "BottomBriefsExecutive" }, UI.OUTFITS.GONCHIES_STRAWBERRY.NAME, OutfitType.Clothing);
-		Add("UndiesUnderling", new string[2] { "TopUndershirtUnderling", "BottomBriefsUnderling" }, UI.OUTFITS.GONCHIES_SATSUMA.NAME, OutfitType.Clothing);
-		Add("UndiesGroupthink", new string[2] { "TopUndershirtGroupthink", "BottomBriefsGroupthink" }, UI.OUTFITS.GONCHIES_LEMON.NAME, OutfitType.Clothing);
-		Add("UndiesStakeholder", new string[2] { "TopUndershirtStakeholder", "BottomBriefsStakeholder" }, UI.OUTFITS.GONCHIES_LIME.NAME, OutfitType.Clothing);
-		Add("UndiesAdmin", new string[2] { "TopUndershirtAdmin", "BottomBriefsAdmin" }, UI.OUTFITS.GONCHIES_BLUEBERRY.NAME, OutfitType.Clothing);
-		Add("UndiesBuzzword", new string[2] { "TopUndershirtBuzzword", "BottomBriefsBuzzword" }, UI.OUTFITS.GONCHIES_GRAPE.NAME, OutfitType.Clothing);
-		Add("UndiesSynergy", new string[2] { "TopUndershirtSynergy", "BottomBriefsSynergy" }, UI.OUTFITS.GONCHIES_WATERMELON.NAME, OutfitType.Clothing);
-		Add("RebelGiOutfit", new string[3] { "TopRebelGi", "PantsGiBeltWhiteBlack", "GlovesCufflessBlack" }, UI.OUTFITS.REBELGI.NAME, OutfitType.Clothing);
-		Add("AtmoPinkPurple", new string[5] { "AtmoBeltBasicNeonPink", "AtmoGlovesStripesLavender", "AtmoHelmetWorkoutLavender", "AtmoSuitBasicNeonPink", "AtmoShoesBasicLavender" }, UI.OUTFITS.ATMOSUIT_PINK_PURPLE.NAME, OutfitType.AtmoSuit);
-		Add("AtmoRedGrey", new string[4] { "AtmoBeltBasicGrey", "AtmoGlovesWhite", "AtmoHelmetCummerbundRed", "AtmoSuitMultiRedBlack" }, UI.OUTFITS.ATMOSUIT_RED_GREY.NAME, OutfitType.AtmoSuit);
-		Add("Donor", new string[3] { "TopJacketSmokingBurgundy", "BottomBasicBlack", "GlovesBasicBlack" }, UI.OUTFITS.DONOR.NAME, OutfitType.Clothing);
-		Add("EngineerCoveralls", new string[4] { "TopMechanic", "PantsBasicRedOrange", "GlovesBasicGrey", "ShoesBasicBlack" }, UI.OUTFITS.MECHANIC.NAME, OutfitType.Clothing);
-		Add("PhdVelour", new string[4] { "TopVelourBlack", "PantsVelourBlack", "GlovesBasicWhite", "ShoesVelourBlack" }, UI.OUTFITS.VELOUR_BLACK.NAME, OutfitType.Clothing);
-		Add("PhdDress", new string[3] { "DressSleevelessBowBw", "GlovesLongWhite", "ShoesMaryjaneSocksBw" }, UI.OUTFITS.SLEEVELESS_BOW_BW.NAME, OutfitType.Clothing);
-		Add("ShortwaveVelour", new string[4] { "TopVelourBlue", "PantsVelourBlue", "GlovesBasicWhite", "ShoesVelourBlue" }, UI.OUTFITS.VELOUR_BLUE.NAME, OutfitType.Clothing);
-		Add("GammaVelour", new string[4] { "TopVelourPink", "PantsVelourPink", "GlovesBasicPinksalmon", "ShoesVelourPink" }, UI.OUTFITS.VELOUR_PINK.NAME, OutfitType.Clothing);
-		Add("HvacCoveralls", new string[4] { "TopWater", "PantsBeltKhakiTan", "GlovesBasicTan", "ShoesBasicTan" }, UI.OUTFITS.WATER.NAME, OutfitType.Clothing);
-		Add("NobelPinstripe", new string[3] { "TopWaistcoatPinstripeSlate", "PantsPinstripeSlate", "GlovesBasicSlate" }, UI.OUTFITS.WAISTCOAT_PINSTRIPE_SLATE.NAME, OutfitType.Clothing);
-		Add("PowerBrunch", new string[4] { "TopTweedPinkOrchid", "SkirtTweedPinkOrchid", "Gloves2ToneCreamCharcoal", "ShoesClassicFlatsCreamCharcoal" }, UI.OUTFITS.TWEED_PINK_ORCHID.NAME, OutfitType.Clothing);
-		Add("Ballet", new string[4] { "BodysuitBallerinaPink", "SkirtBallerinaPink", "GlovesBallerinaPink", "ShoesBallerinaPink" }, UI.OUTFITS.BALLET.NAME, OutfitType.Clothing);
-		Add("AtmoRocketmelon", new string[5] { "AtmoHelmetRocketmelon", "AtmoSuitRocketmelon", "AtmoGlovesRocketmelon", "AtmoBeltRocketmelon", "AtmoBootsRocketmelon" }, UI.OUTFITS.ATMOSUIT_CANTALOUPE.NAME, OutfitType.AtmoSuit);
-		Add("TopXSporchid", new string[1] { "TopXSporchid" }, UI.OUTFITS.X_SPORCHID.NAME, OutfitType.Clothing);
-		Add("TopX1Pinchapeppernutbells", new string[1] { "TopX1Pinchapeppernutbells" }, UI.OUTFITS.X1_PINCHAPEPPERNUTBELLS.NAME, OutfitType.Clothing);
-		Add("TopPompomShinebugsPinkPeppernut", new string[1] { "TopPompomShinebugsPinkPeppernut" }, UI.OUTFITS.POMPOM_SHINEBUGS_PINK_PEPPERNUT.NAME, OutfitType.Clothing);
-		Add("TopSnowflakeBlue", new string[1] { "TopSnowflakeBlue" }, UI.OUTFITS.SNOWFLAKE_BLUE.NAME, OutfitType.Clothing);
-		Add("PolkaDotTracksuit", new string[3] { "TopKnitPolkadotTurq", "PantsKnitPolkadotTurq", "GlovesKnitMagenta" }, UI.OUTFITS.POLKADOT_TRACKSUIT.NAME, OutfitType.Clothing);
-		Add("Superstar", new string[4] { "TopFlashy", "ShoesFlashy", "GlovesSparkleWhite", "BottomBasicBlack" }, UI.OUTFITS.SUPERSTAR.NAME, OutfitType.Clothing);
-		Add("Spiffy", new string[4] { "AtmoHelmetOverallsRed", "AtmoSuitMultiBlueGreyBlack", "AtmoGlovesBrown", "AtmoBeltTwoToneBrown" }, UI.OUTFITS.ATMOSUIT_SPIFFY.NAME, OutfitType.AtmoSuit);
-		Add("Cubist", new string[4] { "AtmoHelmetMondrianBlueRedYellow", "AtmoSuitMultiBlueYellowRed", "AtmoGlovesGold", "AtmoBeltBasicGold" }, UI.OUTFITS.ATMOSUIT_CUBIST.NAME, OutfitType.AtmoSuit);
-		Add("Lucky", new string[1] { "PjCloversGlitchKelly" }, UI.OUTFITS.LUCKY.NAME, OutfitType.Clothing);
-		Add("Sweetheart", new string[1] { "PjHeartsChilliStrawberry" }, UI.OUTFITS.SWEETHEART.NAME, OutfitType.Clothing);
-		Add("GinchGluon", new string[4] { "TopGinchPinkSaltrock", "BottomGinchPinkGluon", "GlovesGinchPinkSaltrock", "SocksGinchPinkSaltrock" }, UI.OUTFITS.GINCH_GLUON.NAME, OutfitType.Clothing);
-		Add("GinchCortex", new string[4] { "TopGinchPurpleDusky", "BottomGinchPurpleCortex", "GlovesGinchPurpleDusky", "SocksGinchPurpleDusky" }, UI.OUTFITS.GINCH_CORTEX.NAME, OutfitType.Clothing);
-		Add("GinchFrosty", new string[4] { "TopGinchBlueBasin", "BottomGinchBlueFrosty", "GlovesGinchBlueBasin", "SocksGinchBlueBasin" }, UI.OUTFITS.GINCH_FROSTY.NAME, OutfitType.Clothing);
-		Add("GinchLocus", new string[4] { "TopGinchTealBalmy", "BottomGinchTealLocus", "GlovesGinchTealBalmy", "SocksGinchTealBalmy" }, UI.OUTFITS.GINCH_LOCUS.NAME, OutfitType.Clothing);
-		Add("GinchGoop", new string[4] { "TopGinchGreenLime", "BottomGinchGreenGoop", "GlovesGinchGreenLime", "SocksGinchGreenLime" }, UI.OUTFITS.GINCH_GOOP.NAME, OutfitType.Clothing);
-		Add("GinchBile", new string[4] { "TopGinchYellowYellowcake", "BottomGinchYellowBile", "GlovesGinchYellowYellowcake", "SocksGinchYellowYellowcake" }, UI.OUTFITS.GINCH_BILE.NAME, OutfitType.Clothing);
-		Add("GinchNybble", new string[4] { "TopGinchOrangeAtomic", "BottomGinchOrangeNybble", "GlovesGinchOrangeAtomic", "SocksGinchOrangeAtomic" }, UI.OUTFITS.GINCH_NYBBLE.NAME, OutfitType.Clothing);
-		Add("GinchIronbow", new string[4] { "TopGinchRedMagma", "BottomGinchRedIronbow", "GlovesGinchRedMagma", "SocksGinchRedMagma" }, UI.OUTFITS.GINCH_IRONBOW.NAME, OutfitType.Clothing);
-		Add("GinchPhlegm", new string[4] { "TopGinchGreyGrey", "BottomGinchGreyPhlegm", "GlovesGinchGreyGrey", "SocksGinchGreyGrey" }, UI.OUTFITS.GINCH_PHLEGM.NAME, OutfitType.Clothing);
-		Add("GinchObelus", new string[4] { "TopGinchGreyCharcoal", "BottomGinchGreyObelus", "GlovesGinchGreyCharcoal", "SocksGinchGreyCharcoal" }, UI.OUTFITS.GINCH_OBELUS.NAME, OutfitType.Clothing);
-		Add("HiVis", new string[4] { "TopBuilder", "PantsBasicOrangeSatsuma", "GlovesBasicYellow", "ShoesBasicBlack" }, UI.OUTFITS.HIVIS.NAME, OutfitType.Clothing);
-		Add("Downtime", new string[2] { "TopFloralPink", "GlovesKnitGold" }, UI.OUTFITS.DOWNTIME.NAME, OutfitType.Clothing);
-		void Add(string outfitId, string[] itemIds, string name, OutfitType outfitType)
+		this.<SetupClothingOutfits>g__Add|5_0("BasicBlack", new string[]
 		{
-			blueprintCollection.outfits.Add(new ClothingOutfitResource(outfitId, itemIds, name, (ClothingOutfitUtility.OutfitType)outfitType));
-		}
+			"TopBasicBlack",
+			"BottomBasicBlack",
+			"GlovesBasicBlack",
+			"ShoesBasicBlack"
+		}, UI.OUTFITS.BASIC_BLACK.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("BasicWhite", new string[]
+		{
+			"TopBasicWhite",
+			"BottomBasicWhite",
+			"GlovesBasicWhite",
+			"ShoesBasicWhite"
+		}, UI.OUTFITS.BASIC_WHITE.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("BasicRed", new string[]
+		{
+			"TopBasicRed",
+			"BottomBasicRed",
+			"GlovesBasicRed",
+			"ShoesBasicRed"
+		}, UI.OUTFITS.BASIC_RED.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("BasicOrange", new string[]
+		{
+			"TopBasicOrange",
+			"BottomBasicOrange",
+			"GlovesBasicOrange",
+			"ShoesBasicOrange"
+		}, UI.OUTFITS.BASIC_ORANGE.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("BasicYellow", new string[]
+		{
+			"TopBasicYellow",
+			"BottomBasicYellow",
+			"GlovesBasicYellow",
+			"ShoesBasicYellow"
+		}, UI.OUTFITS.BASIC_YELLOW.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("BasicGreen", new string[]
+		{
+			"TopBasicGreen",
+			"BottomBasicGreen",
+			"GlovesBasicGreen",
+			"ShoesBasicGreen"
+		}, UI.OUTFITS.BASIC_GREEN.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("BasicAqua", new string[]
+		{
+			"TopBasicAqua",
+			"BottomBasicAqua",
+			"GlovesBasicAqua",
+			"ShoesBasicAqua"
+		}, UI.OUTFITS.BASIC_AQUA.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("BasicPurple", new string[]
+		{
+			"TopBasicPurple",
+			"BottomBasicPurple",
+			"GlovesBasicPurple",
+			"ShoesBasicPurple"
+		}, UI.OUTFITS.BASIC_PURPLE.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("BasicPinkOrchid", new string[]
+		{
+			"TopBasicPinkOrchid",
+			"BottomBasicPinkOrchid",
+			"GlovesBasicPinkOrchid",
+			"ShoesBasicPinkOrchid"
+		}, UI.OUTFITS.BASIC_PINK_ORCHID.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("BasicDeepRed", new string[]
+		{
+			"TopRaglanDeepRed",
+			"ShortsBasicDeepRed",
+			"GlovesAthleticRedDeep",
+			"SocksAthleticDeepRed"
+		}, UI.OUTFITS.BASIC_DEEPRED.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("BasicOrangeSatsuma", new string[]
+		{
+			"TopRaglanSatsuma",
+			"ShortsBasicSatsuma",
+			"GlovesAthleticOrangeSatsuma",
+			"SocksAthleticOrangeSatsuma"
+		}, UI.OUTFITS.BASIC_SATSUMA.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("BasicLemon", new string[]
+		{
+			"TopRaglanLemon",
+			"ShortsBasicYellowcake",
+			"GlovesAthleticYellowLemon",
+			"SocksAthleticYellowLemon"
+		}, UI.OUTFITS.BASIC_LEMON.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("BasicBlueCobalt", new string[]
+		{
+			"TopRaglanCobalt",
+			"ShortsBasicBlueCobalt",
+			"GlovesAthleticBlueCobalt",
+			"SocksAthleticBlueCobalt"
+		}, UI.OUTFITS.BASIC_BLUE_COBALT.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("BasicGreenKelly", new string[]
+		{
+			"TopRaglanKellyGreen",
+			"ShortsBasicKellyGreen",
+			"GlovesAthleticGreenKelly",
+			"SocksAthleticGreenKelly"
+		}, UI.OUTFITS.BASIC_GREEN_KELLY.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("BasicPinkFlamingo", new string[]
+		{
+			"TopRaglanFlamingo",
+			"ShortsBasicPinkFlamingo",
+			"GlovesAthleticPinkFlamingo",
+			"SocksAthleticPinkFlamingo"
+		}, UI.OUTFITS.BASIC_PINK_FLAMINGO.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("BasicGreyCharcoal", new string[]
+		{
+			"TopRaglanCharcoal",
+			"ShortsBasicCharcoal",
+			"GlovesAthleticGreyCharcoal",
+			"SocksAthleticGreyCharcoal"
+		}, UI.OUTFITS.BASIC_GREY_CHARCOAL.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("JellypuffBlueberry", new string[]
+		{
+			"TopJellypuffJacketBlueberry",
+			"GlovesCufflessBlueberry"
+		}, UI.OUTFITS.JELLYPUFF_BLUEBERRY.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("JellypuffGrape", new string[]
+		{
+			"TopJellypuffJacketGrape",
+			"GlovesCufflessGrape"
+		}, UI.OUTFITS.JELLYPUFF_GRAPE.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("JellypuffLemon", new string[]
+		{
+			"TopJellypuffJacketLemon",
+			"GlovesCufflessLemon"
+		}, UI.OUTFITS.JELLYPUFF_LEMON.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("JellypuffLime", new string[]
+		{
+			"TopJellypuffJacketLime",
+			"GlovesCufflessLime"
+		}, UI.OUTFITS.JELLYPUFF_LIME.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("JellypuffSatsuma", new string[]
+		{
+			"TopJellypuffJacketSatsuma",
+			"GlovesCufflessSatsuma"
+		}, UI.OUTFITS.JELLYPUFF_SATSUMA.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("JellypuffStrawberry", new string[]
+		{
+			"TopJellypuffJacketStrawberry",
+			"GlovesCufflessStrawberry"
+		}, UI.OUTFITS.JELLYPUFF_STRAWBERRY.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("JellypuffWatermelon", new string[]
+		{
+			"TopJellypuffJacketWatermelon",
+			"GlovesCufflessWatermelon"
+		}, UI.OUTFITS.JELLYPUFF_WATERMELON.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("Athlete", new string[]
+		{
+			"TopAthlete",
+			"PantsAthlete",
+			"GlovesAthlete",
+			"ShoesBasicBlack"
+		}, UI.OUTFITS.ATHLETE.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("Circuit", new string[]
+		{
+			"TopCircuitGreen",
+			"PantsCircuitGreen",
+			"GlovesCircuitGreen"
+		}, UI.OUTFITS.CIRCUIT.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("AtmoLimone", new string[]
+		{
+			"AtmoHelmetLimone",
+			"AtmoSuitBasicYellow",
+			"AtmoGlovesLime",
+			"AtmoBeltBasicLime",
+			"AtmoShoesBasicYellow"
+		}, UI.OUTFITS.ATMOSUIT_LIMONE.NAME, BlueprintProvider.OutfitType.AtmoSuit);
+		this.<SetupClothingOutfits>g__Add|5_0("AtmoPuft", new string[]
+		{
+			"AtmoHelmetPuft",
+			"AtmoSuitPuft",
+			"AtmoGlovesPuft",
+			"AtmoBeltPuft",
+			"AtmoShoesPuft"
+		}, UI.OUTFITS.ATMOSUIT_PUFT.NAME, BlueprintProvider.OutfitType.AtmoSuit);
+		this.<SetupClothingOutfits>g__Add|5_0("AtmoSparkleRed", new string[]
+		{
+			"AtmoHelmetSparkleRed",
+			"AtmoSuitSparkleRed",
+			"AtmoGlovesSparkleRed",
+			"AtmoBeltSparkleRed",
+			"AtmoShoesSparkleBlack"
+		}, UI.OUTFITS.ATMOSUIT_SPARKLE_RED.NAME, BlueprintProvider.OutfitType.AtmoSuit);
+		this.<SetupClothingOutfits>g__Add|5_0("AtmoSparkleBlue", new string[]
+		{
+			"AtmoHelmetSparkleBlue",
+			"AtmoSuitSparkleBlue",
+			"AtmoGlovesSparkleBlue",
+			"AtmoBeltSparkleBlue",
+			"AtmoShoesSparkleBlack"
+		}, UI.OUTFITS.ATMOSUIT_SPARKLE_BLUE.NAME, BlueprintProvider.OutfitType.AtmoSuit);
+		this.<SetupClothingOutfits>g__Add|5_0("AtmoSparkleGreen", new string[]
+		{
+			"AtmoHelmetSparkleGreen",
+			"AtmoSuitSparkleGreen",
+			"AtmoGlovesSparkleGreen",
+			"AtmoBeltSparkleGreen",
+			"AtmoShoesSparkleBlack"
+		}, UI.OUTFITS.ATMOSUIT_SPARKLE_GREEN.NAME, BlueprintProvider.OutfitType.AtmoSuit);
+		this.<SetupClothingOutfits>g__Add|5_0("AtmoSparkleLavender", new string[]
+		{
+			"AtmoHelmetSparklePurple",
+			"AtmoSuitSparkleLavender",
+			"AtmoGlovesSparkleLavender",
+			"AtmoBeltSparkleLavender",
+			"AtmoShoesSparkleBlack"
+		}, UI.OUTFITS.ATMOSUIT_SPARKLE_LAVENDER.NAME, BlueprintProvider.OutfitType.AtmoSuit);
+		this.<SetupClothingOutfits>g__Add|5_0("AtmoConfetti", new string[]
+		{
+			"AtmoHelmetConfetti",
+			"AtmoSuitConfetti",
+			"AtmoGlovesGold",
+			"AtmoBeltBasicGold",
+			"AtmoShoesStealth"
+		}, UI.OUTFITS.ATMOSUIT_CONFETTI.NAME, BlueprintProvider.OutfitType.AtmoSuit);
+		this.<SetupClothingOutfits>g__Add|5_0("AtmoEggplant", new string[]
+		{
+			"AtmoHelmetEggplant",
+			"AtmoSuitCrispEggplant",
+			"AtmoGlovesEggplant",
+			"AtmoBeltEggplant",
+			"AtmoShoesEggplant"
+		}, UI.OUTFITS.ATMOSUIT_BASIC_PURPLE.NAME, BlueprintProvider.OutfitType.AtmoSuit);
+		this.<SetupClothingOutfits>g__Add|5_0("CanadianTuxedo", new string[]
+		{
+			"TopDenimBlue",
+			"PantsJeans",
+			"GlovesDenimBlue",
+			"ShoesDenimBlue"
+		}, UI.OUTFITS.CANUXTUX.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("Researcher", new string[]
+		{
+			"TopResearcher",
+			"PantsResearch",
+			"GlovesBasicBrownKhaki",
+			"ShoesBasicGray"
+		}, UI.OUTFITS.NERD.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("UndiesExec", new string[]
+		{
+			"TopUndershirtExecutive",
+			"BottomBriefsExecutive"
+		}, UI.OUTFITS.GONCHIES_STRAWBERRY.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("UndiesUnderling", new string[]
+		{
+			"TopUndershirtUnderling",
+			"BottomBriefsUnderling"
+		}, UI.OUTFITS.GONCHIES_SATSUMA.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("UndiesGroupthink", new string[]
+		{
+			"TopUndershirtGroupthink",
+			"BottomBriefsGroupthink"
+		}, UI.OUTFITS.GONCHIES_LEMON.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("UndiesStakeholder", new string[]
+		{
+			"TopUndershirtStakeholder",
+			"BottomBriefsStakeholder"
+		}, UI.OUTFITS.GONCHIES_LIME.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("UndiesAdmin", new string[]
+		{
+			"TopUndershirtAdmin",
+			"BottomBriefsAdmin"
+		}, UI.OUTFITS.GONCHIES_BLUEBERRY.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("UndiesBuzzword", new string[]
+		{
+			"TopUndershirtBuzzword",
+			"BottomBriefsBuzzword"
+		}, UI.OUTFITS.GONCHIES_GRAPE.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("UndiesSynergy", new string[]
+		{
+			"TopUndershirtSynergy",
+			"BottomBriefsSynergy"
+		}, UI.OUTFITS.GONCHIES_WATERMELON.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("RebelGiOutfit", new string[]
+		{
+			"TopRebelGi",
+			"PantsGiBeltWhiteBlack",
+			"GlovesCufflessBlack"
+		}, UI.OUTFITS.REBELGI.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("AtmoPinkPurple", new string[]
+		{
+			"AtmoBeltBasicNeonPink",
+			"AtmoGlovesStripesLavender",
+			"AtmoHelmetWorkoutLavender",
+			"AtmoSuitBasicNeonPink",
+			"AtmoShoesBasicLavender"
+		}, UI.OUTFITS.ATMOSUIT_PINK_PURPLE.NAME, BlueprintProvider.OutfitType.AtmoSuit);
+		this.<SetupClothingOutfits>g__Add|5_0("AtmoRedGrey", new string[]
+		{
+			"AtmoBeltBasicGrey",
+			"AtmoGlovesWhite",
+			"AtmoHelmetCummerbundRed",
+			"AtmoSuitMultiRedBlack"
+		}, UI.OUTFITS.ATMOSUIT_RED_GREY.NAME, BlueprintProvider.OutfitType.AtmoSuit);
+		this.<SetupClothingOutfits>g__Add|5_0("Donor", new string[]
+		{
+			"TopJacketSmokingBurgundy",
+			"BottomBasicBlack",
+			"GlovesBasicBlack"
+		}, UI.OUTFITS.DONOR.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("EngineerCoveralls", new string[]
+		{
+			"TopMechanic",
+			"PantsBasicRedOrange",
+			"GlovesBasicGrey",
+			"ShoesBasicBlack"
+		}, UI.OUTFITS.MECHANIC.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("PhdVelour", new string[]
+		{
+			"TopVelourBlack",
+			"PantsVelourBlack",
+			"GlovesBasicWhite",
+			"ShoesVelourBlack"
+		}, UI.OUTFITS.VELOUR_BLACK.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("PhdDress", new string[]
+		{
+			"DressSleevelessBowBw",
+			"GlovesLongWhite",
+			"ShoesMaryjaneSocksBw"
+		}, UI.OUTFITS.SLEEVELESS_BOW_BW.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("ShortwaveVelour", new string[]
+		{
+			"TopVelourBlue",
+			"PantsVelourBlue",
+			"GlovesBasicWhite",
+			"ShoesVelourBlue"
+		}, UI.OUTFITS.VELOUR_BLUE.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("GammaVelour", new string[]
+		{
+			"TopVelourPink",
+			"PantsVelourPink",
+			"GlovesBasicPinksalmon",
+			"ShoesVelourPink"
+		}, UI.OUTFITS.VELOUR_PINK.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("HvacCoveralls", new string[]
+		{
+			"TopWater",
+			"PantsBeltKhakiTan",
+			"GlovesBasicTan",
+			"ShoesBasicTan"
+		}, UI.OUTFITS.WATER.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("NobelPinstripe", new string[]
+		{
+			"TopWaistcoatPinstripeSlate",
+			"PantsPinstripeSlate",
+			"GlovesBasicSlate"
+		}, UI.OUTFITS.WAISTCOAT_PINSTRIPE_SLATE.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("PowerBrunch", new string[]
+		{
+			"TopTweedPinkOrchid",
+			"SkirtTweedPinkOrchid",
+			"Gloves2ToneCreamCharcoal",
+			"ShoesClassicFlatsCreamCharcoal"
+		}, UI.OUTFITS.TWEED_PINK_ORCHID.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("Ballet", new string[]
+		{
+			"BodysuitBallerinaPink",
+			"SkirtBallerinaPink",
+			"GlovesBallerinaPink",
+			"ShoesBallerinaPink"
+		}, UI.OUTFITS.BALLET.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("AtmoRocketmelon", new string[]
+		{
+			"AtmoHelmetRocketmelon",
+			"AtmoSuitRocketmelon",
+			"AtmoGlovesRocketmelon",
+			"AtmoBeltRocketmelon",
+			"AtmoBootsRocketmelon"
+		}, UI.OUTFITS.ATMOSUIT_CANTALOUPE.NAME, BlueprintProvider.OutfitType.AtmoSuit);
+		this.<SetupClothingOutfits>g__Add|5_0("TopXSporchid", new string[]
+		{
+			"TopXSporchid"
+		}, UI.OUTFITS.X_SPORCHID.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("TopX1Pinchapeppernutbells", new string[]
+		{
+			"TopX1Pinchapeppernutbells"
+		}, UI.OUTFITS.X1_PINCHAPEPPERNUTBELLS.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("TopPompomShinebugsPinkPeppernut", new string[]
+		{
+			"TopPompomShinebugsPinkPeppernut"
+		}, UI.OUTFITS.POMPOM_SHINEBUGS_PINK_PEPPERNUT.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("TopSnowflakeBlue", new string[]
+		{
+			"TopSnowflakeBlue"
+		}, UI.OUTFITS.SNOWFLAKE_BLUE.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("PolkaDotTracksuit", new string[]
+		{
+			"TopKnitPolkadotTurq",
+			"PantsKnitPolkadotTurq",
+			"GlovesKnitMagenta"
+		}, UI.OUTFITS.POLKADOT_TRACKSUIT.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("Superstar", new string[]
+		{
+			"TopFlashy",
+			"ShoesFlashy",
+			"GlovesSparkleWhite",
+			"BottomBasicBlack"
+		}, UI.OUTFITS.SUPERSTAR.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("Spiffy", new string[]
+		{
+			"AtmoHelmetOverallsRed",
+			"AtmoSuitMultiBlueGreyBlack",
+			"AtmoGlovesBrown",
+			"AtmoBeltTwoToneBrown"
+		}, UI.OUTFITS.ATMOSUIT_SPIFFY.NAME, BlueprintProvider.OutfitType.AtmoSuit);
+		this.<SetupClothingOutfits>g__Add|5_0("Cubist", new string[]
+		{
+			"AtmoHelmetMondrianBlueRedYellow",
+			"AtmoSuitMultiBlueYellowRed",
+			"AtmoGlovesGold",
+			"AtmoBeltBasicGold"
+		}, UI.OUTFITS.ATMOSUIT_CUBIST.NAME, BlueprintProvider.OutfitType.AtmoSuit);
+		this.<SetupClothingOutfits>g__Add|5_0("Lucky", new string[]
+		{
+			"PjCloversGlitchKelly"
+		}, UI.OUTFITS.LUCKY.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("Sweetheart", new string[]
+		{
+			"PjHeartsChilliStrawberry"
+		}, UI.OUTFITS.SWEETHEART.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("GinchGluon", new string[]
+		{
+			"TopGinchPinkSaltrock",
+			"BottomGinchPinkGluon",
+			"GlovesGinchPinkSaltrock",
+			"SocksGinchPinkSaltrock"
+		}, UI.OUTFITS.GINCH_GLUON.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("GinchCortex", new string[]
+		{
+			"TopGinchPurpleDusky",
+			"BottomGinchPurpleCortex",
+			"GlovesGinchPurpleDusky",
+			"SocksGinchPurpleDusky"
+		}, UI.OUTFITS.GINCH_CORTEX.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("GinchFrosty", new string[]
+		{
+			"TopGinchBlueBasin",
+			"BottomGinchBlueFrosty",
+			"GlovesGinchBlueBasin",
+			"SocksGinchBlueBasin"
+		}, UI.OUTFITS.GINCH_FROSTY.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("GinchLocus", new string[]
+		{
+			"TopGinchTealBalmy",
+			"BottomGinchTealLocus",
+			"GlovesGinchTealBalmy",
+			"SocksGinchTealBalmy"
+		}, UI.OUTFITS.GINCH_LOCUS.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("GinchGoop", new string[]
+		{
+			"TopGinchGreenLime",
+			"BottomGinchGreenGoop",
+			"GlovesGinchGreenLime",
+			"SocksGinchGreenLime"
+		}, UI.OUTFITS.GINCH_GOOP.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("GinchBile", new string[]
+		{
+			"TopGinchYellowYellowcake",
+			"BottomGinchYellowBile",
+			"GlovesGinchYellowYellowcake",
+			"SocksGinchYellowYellowcake"
+		}, UI.OUTFITS.GINCH_BILE.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("GinchNybble", new string[]
+		{
+			"TopGinchOrangeAtomic",
+			"BottomGinchOrangeNybble",
+			"GlovesGinchOrangeAtomic",
+			"SocksGinchOrangeAtomic"
+		}, UI.OUTFITS.GINCH_NYBBLE.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("GinchIronbow", new string[]
+		{
+			"TopGinchRedMagma",
+			"BottomGinchRedIronbow",
+			"GlovesGinchRedMagma",
+			"SocksGinchRedMagma"
+		}, UI.OUTFITS.GINCH_IRONBOW.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("GinchPhlegm", new string[]
+		{
+			"TopGinchGreyGrey",
+			"BottomGinchGreyPhlegm",
+			"GlovesGinchGreyGrey",
+			"SocksGinchGreyGrey"
+		}, UI.OUTFITS.GINCH_PHLEGM.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("GinchObelus", new string[]
+		{
+			"TopGinchGreyCharcoal",
+			"BottomGinchGreyObelus",
+			"GlovesGinchGreyCharcoal",
+			"SocksGinchGreyCharcoal"
+		}, UI.OUTFITS.GINCH_OBELUS.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("HiVis", new string[]
+		{
+			"TopBuilder",
+			"PantsBasicOrangeSatsuma",
+			"GlovesBasicYellow",
+			"ShoesBasicBlack"
+		}, UI.OUTFITS.HIVIS.NAME, BlueprintProvider.OutfitType.Clothing);
+		this.<SetupClothingOutfits>g__Add|5_0("Downtime", new string[]
+		{
+			"TopFloralPink",
+			"GlovesKnitGold"
+		}, UI.OUTFITS.DOWNTIME.NAME, BlueprintProvider.OutfitType.Clothing);
 	}
 
+	// Token: 0x06002BFC RID: 11260 RVA: 0x001E9C9C File Offset: 0x001E7E9C
 	private void SetupBalloonArtistFacades()
 	{
-		blueprintCollection.balloonArtistFacades.AddRange(new BalloonArtistFacadeInfo[21]
+		this.blueprintCollection.balloonArtistFacades.AddRange(new BalloonArtistFacadeInfo[]
 		{
 			new BalloonArtistFacadeInfo("BalloonRedFireEngineLongSparkles", EQUIPMENT.PREFABS.EQUIPPABLEBALLOON.FACADES.BALLOON_FIREENGINE_LONG_SPARKLES.NAME, EQUIPMENT.PREFABS.EQUIPPABLEBALLOON.FACADES.BALLOON_FIREENGINE_LONG_SPARKLES.DESC, PermitRarity.Common, "balloon_red_fireengine_long_sparkles_kanim", BalloonArtistFacadeType.ThreeSet),
 			new BalloonArtistFacadeInfo("BalloonYellowLongSparkles", EQUIPMENT.PREFABS.EQUIPPABLEBALLOON.FACADES.BALLOON_YELLOW_LONG_SPARKLES.NAME, EQUIPMENT.PREFABS.EQUIPPABLEBALLOON.FACADES.BALLOON_YELLOW_LONG_SPARKLES.DESC, PermitRarity.Common, "balloon_yellow_long_sparkles_kanim", BalloonArtistFacadeType.ThreeSet),
@@ -676,5 +1106,12 @@ public class Blueprints_U51AndBefore : BlueprintProvider
 			new BalloonArtistFacadeInfo("BalloonCandyWatermelon", EQUIPMENT.PREFABS.EQUIPPABLEBALLOON.FACADES.CANDY_WATERMELON.NAME, EQUIPMENT.PREFABS.EQUIPPABLEBALLOON.FACADES.CANDY_WATERMELON.DESC, PermitRarity.Decent, "balloon_candy_watermelon_kanim", BalloonArtistFacadeType.ThreeSet),
 			new BalloonArtistFacadeInfo("BalloonHandGold", EQUIPMENT.PREFABS.EQUIPPABLEBALLOON.FACADES.HAND_GOLD.NAME, EQUIPMENT.PREFABS.EQUIPPABLEBALLOON.FACADES.HAND_GOLD.DESC, PermitRarity.Decent, "balloon_hand_gold_kanim", BalloonArtistFacadeType.ThreeSet)
 		});
+	}
+
+	// Token: 0x06002BFE RID: 11262 RVA: 0x000BC80F File Offset: 0x000BAA0F
+	[CompilerGenerated]
+	private void <SetupClothingOutfits>g__Add|5_0(string outfitId, string[] itemIds, string name, BlueprintProvider.OutfitType outfitType)
+	{
+		this.blueprintCollection.outfits.Add(new ClothingOutfitResource(outfitId, itemIds, name, (ClothingOutfitUtility.OutfitType)outfitType));
 	}
 }

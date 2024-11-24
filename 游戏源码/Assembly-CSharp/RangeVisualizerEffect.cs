@@ -1,163 +1,183 @@
-using System;
+﻿using System;
 using Unity.Collections;
 using UnityEngine;
 
+// Token: 0x02001A7F RID: 6783
 public class RangeVisualizerEffect : MonoBehaviour
 {
-	private Material material;
-
-	private Camera myCamera;
-
-	public Color highlightColor = new Color(0f, 1f, 0.8f, 1f);
-
-	private Texture2D OcclusionTex;
-
-	private int LastVisibleTileCount;
-
+	// Token: 0x06008DDB RID: 36315 RVA: 0x000FCA8C File Offset: 0x000FAC8C
 	private void Start()
 	{
-		material = new Material(Shader.Find("Klei/PostFX/Range"));
+		this.material = new Material(Shader.Find("Klei/PostFX/Range"));
 	}
 
+	// Token: 0x06008DDC RID: 36316 RVA: 0x0036DACC File Offset: 0x0036BCCC
 	private void OnPostRender()
 	{
 		RangeVisualizer rangeVisualizer = null;
-		Vector2I vector2I = new Vector2I(0, 0);
+		Vector2I u = new Vector2I(0, 0);
 		if (SelectTool.Instance.selected != null)
 		{
-			Grid.PosToXY(SelectTool.Instance.selected.transform.GetPosition(), out vector2I.x, out vector2I.y);
+			Grid.PosToXY(SelectTool.Instance.selected.transform.GetPosition(), out u.x, out u.y);
 			rangeVisualizer = SelectTool.Instance.selected.GetComponent<RangeVisualizer>();
 		}
 		if (rangeVisualizer == null && BuildTool.Instance.visualizer != null)
 		{
-			Grid.PosToXY(BuildTool.Instance.visualizer.transform.GetPosition(), out vector2I.x, out vector2I.y);
+			Grid.PosToXY(BuildTool.Instance.visualizer.transform.GetPosition(), out u.x, out u.y);
 			rangeVisualizer = BuildTool.Instance.visualizer.GetComponent<RangeVisualizer>();
 		}
-		if (!(rangeVisualizer != null))
+		if (rangeVisualizer != null)
 		{
-			return;
-		}
-		if (OcclusionTex == null)
-		{
-			OcclusionTex = new Texture2D(64, 64, TextureFormat.Alpha8, mipChain: false);
-			OcclusionTex.filterMode = FilterMode.Point;
-			OcclusionTex.wrapMode = TextureWrapMode.Clamp;
-		}
-		FindWorldBounds(out var world_min, out var world_max);
-		Vector2I rangeMin = rangeVisualizer.RangeMin;
-		Vector2I rangeMax = rangeVisualizer.RangeMax;
-		Vector2I vector2I2 = rangeVisualizer.OriginOffset;
-		if (rangeVisualizer.TryGetComponent<Rotatable>(out var component))
-		{
-			vector2I2 = component.GetRotatedOffset(vector2I2);
-			Vector2I rotatedOffset = component.GetRotatedOffset(rangeMin);
-			Vector2I rotatedOffset2 = component.GetRotatedOffset(rangeMax);
-			rangeMin.x = ((rotatedOffset.x < rotatedOffset2.x) ? rotatedOffset.x : rotatedOffset2.x);
-			rangeMin.y = ((rotatedOffset.y < rotatedOffset2.y) ? rotatedOffset.y : rotatedOffset2.y);
-			rangeMax.x = ((rotatedOffset.x > rotatedOffset2.x) ? rotatedOffset.x : rotatedOffset2.x);
-			rangeMax.y = ((rotatedOffset.y > rotatedOffset2.y) ? rotatedOffset.y : rotatedOffset2.y);
-		}
-		Vector2I vector2I3 = vector2I + vector2I2;
-		int width = OcclusionTex.width;
-		NativeArray<byte> pixelData = OcclusionTex.GetPixelData<byte>(0);
-		int num = 0;
-		if (rangeVisualizer.TestLineOfSight)
-		{
-			for (int j = 0; j <= rangeMax.y - rangeMin.y; j++)
+			if (this.OcclusionTex == null)
 			{
-				int num2 = vector2I3.y + rangeMin.y + j;
-				for (int k = 0; k <= rangeMax.x - rangeMin.x; k++)
+				this.OcclusionTex = new Texture2D(64, 64, TextureFormat.Alpha8, false);
+				this.OcclusionTex.filterMode = FilterMode.Point;
+				this.OcclusionTex.wrapMode = TextureWrapMode.Clamp;
+			}
+			Vector2I vector2I;
+			Vector2I vector2I2;
+			this.FindWorldBounds(out vector2I, out vector2I2);
+			Vector2I rangeMin = rangeVisualizer.RangeMin;
+			Vector2I rangeMax = rangeVisualizer.RangeMax;
+			Vector2I vector2I3 = rangeVisualizer.OriginOffset;
+			Rotatable rotatable;
+			if (rangeVisualizer.TryGetComponent<Rotatable>(out rotatable))
+			{
+				vector2I3 = rotatable.GetRotatedOffset(vector2I3);
+				Vector2I rotatedOffset = rotatable.GetRotatedOffset(rangeMin);
+				Vector2I rotatedOffset2 = rotatable.GetRotatedOffset(rangeMax);
+				rangeMin.x = ((rotatedOffset.x < rotatedOffset2.x) ? rotatedOffset.x : rotatedOffset2.x);
+				rangeMin.y = ((rotatedOffset.y < rotatedOffset2.y) ? rotatedOffset.y : rotatedOffset2.y);
+				rangeMax.x = ((rotatedOffset.x > rotatedOffset2.x) ? rotatedOffset.x : rotatedOffset2.x);
+				rangeMax.y = ((rotatedOffset.y > rotatedOffset2.y) ? rotatedOffset.y : rotatedOffset2.y);
+			}
+			Vector2I vector2I4 = u + vector2I3;
+			int width = this.OcclusionTex.width;
+			NativeArray<byte> pixelData = this.OcclusionTex.GetPixelData<byte>(0);
+			int num = 0;
+			if (rangeVisualizer.TestLineOfSight)
+			{
+				Func<int, bool> <>9__0;
+				for (int m = 0; m <= rangeMax.y - rangeMin.y; m++)
 				{
-					int num3 = vector2I3.x + rangeMin.x + k;
-					Grid.XYToCell(num3, num2);
-					bool flag = num3 > world_min.x && num3 < world_max.x && num2 > world_min.y && (num2 < world_max.y || rangeVisualizer.AllowLineOfSightInvalidCells) && Grid.TestLineOfSight(vector2I3.x, vector2I3.y, num3, num2, rangeVisualizer.BlockingCb, (rangeVisualizer.BlockingVisibleCb == null) ? ((Func<int, bool>)((int i) => rangeVisualizer.BlockingTileVisible)) : rangeVisualizer.BlockingVisibleCb, rangeVisualizer.AllowLineOfSightInvalidCells);
-					pixelData[j * width + k] = (byte)(flag ? 255u : 0u);
-					if (flag)
+					int num2 = vector2I4.y + rangeMin.y + m;
+					for (int j = 0; j <= rangeMax.x - rangeMin.x; j++)
 					{
-						num++;
+						int num3 = vector2I4.x + rangeMin.x + j;
+						Grid.XYToCell(num3, num2);
+						bool flag;
+						if (num3 > vector2I.x && num3 < vector2I2.x && num2 > vector2I.y && (num2 < vector2I2.y || rangeVisualizer.AllowLineOfSightInvalidCells))
+						{
+							int x = vector2I4.x;
+							int y = vector2I4.y;
+							int x2 = num3;
+							int y2 = num2;
+							Func<int, bool> blockingCb = rangeVisualizer.BlockingCb;
+							Func<int, bool> blocking_tile_visible_cb;
+							if (rangeVisualizer.BlockingVisibleCb != null)
+							{
+								blocking_tile_visible_cb = rangeVisualizer.BlockingVisibleCb;
+							}
+							else if ((blocking_tile_visible_cb = <>9__0) == null)
+							{
+								blocking_tile_visible_cb = (<>9__0 = ((int i) => rangeVisualizer.BlockingTileVisible));
+							}
+							flag = Grid.TestLineOfSight(x, y, x2, y2, blockingCb, blocking_tile_visible_cb, rangeVisualizer.AllowLineOfSightInvalidCells);
+						}
+						else
+						{
+							flag = false;
+						}
+						bool flag2 = flag;
+						pixelData[m * width + j] = (flag2 ? byte.MaxValue : 0);
+						if (flag2)
+						{
+							num++;
+						}
 					}
 				}
 			}
-		}
-		else
-		{
-			for (int l = 0; l <= rangeMax.y - rangeMin.y; l++)
+			else
 			{
-				int num4 = vector2I3.y + rangeMin.y + l;
-				for (int m = 0; m <= rangeMax.x - rangeMin.x; m++)
+				for (int k = 0; k <= rangeMax.y - rangeMin.y; k++)
 				{
-					int num5 = vector2I3.x + rangeMin.x + m;
-					int arg = Grid.XYToCell(num5, num4);
-					bool flag2 = num5 > world_min.x && num5 < world_max.x && num4 > world_min.y && num4 < world_max.y && rangeVisualizer.BlockingCb(arg);
-					pixelData[l * width + m] = (byte)((!flag2) ? 255u : 0u);
-					if (!flag2)
+					int num4 = vector2I4.y + rangeMin.y + k;
+					for (int l = 0; l <= rangeMax.x - rangeMin.x; l++)
 					{
-						num++;
+						int num5 = vector2I4.x + rangeMin.x + l;
+						int arg = Grid.XYToCell(num5, num4);
+						bool flag3 = num5 > vector2I.x && num5 < vector2I2.x && num4 > vector2I.y && num4 < vector2I2.y && rangeVisualizer.BlockingCb(arg);
+						pixelData[k * width + l] = (flag3 ? 0 : byte.MaxValue);
+						if (!flag3)
+						{
+							num++;
+						}
 					}
 				}
 			}
-		}
-		OcclusionTex.Apply(updateMipmaps: false, makeNoLongerReadable: false);
-		Vector2I vector2I4 = rangeMin + vector2I3;
-		Vector2I vector2I5 = rangeMax + vector2I3;
-		if (myCamera == null)
-		{
-			myCamera = GetComponent<Camera>();
-			if (myCamera == null)
+			this.OcclusionTex.Apply(false, false);
+			Vector2I vector2I5 = rangeMin + vector2I4;
+			Vector2I vector2I6 = rangeMax + vector2I4;
+			if (this.myCamera == null)
 			{
-				return;
+				this.myCamera = base.GetComponent<Camera>();
+				if (this.myCamera == null)
+				{
+					return;
+				}
 			}
-		}
-		Ray ray = myCamera.ViewportPointToRay(Vector3.zero);
-		float distance = Mathf.Abs(ray.origin.z / ray.direction.z);
-		Vector3 point = ray.GetPoint(distance);
-		Vector4 value = default(Vector4);
-		value.x = point.x;
-		value.y = point.y;
-		ray = myCamera.ViewportPointToRay(Vector3.one);
-		distance = Mathf.Abs(ray.origin.z / ray.direction.z);
-		point = ray.GetPoint(distance);
-		value.z = point.x - value.x;
-		value.w = point.y - value.y;
-		material.SetVector("_UVOffsetScale", value);
-		Vector4 value2 = default(Vector4);
-		value2.x = vector2I4.x;
-		value2.y = vector2I4.y;
-		value2.z = vector2I5.x + 1;
-		value2.w = vector2I5.y + 1;
-		material.SetVector("_RangeParams", value2);
-		material.SetColor("_HighlightColor", highlightColor);
-		Vector4 value3 = default(Vector4);
-		value3.x = 1f / (float)OcclusionTex.width;
-		value3.y = 1f / (float)OcclusionTex.height;
-		value3.z = 0f;
-		value3.w = 0f;
-		material.SetVector("_OcclusionParams", value3);
-		material.SetTexture("_OcclusionTex", OcclusionTex);
-		Vector4 value4 = default(Vector4);
-		value4.x = Grid.WidthInCells;
-		value4.y = Grid.HeightInCells;
-		value4.z = 1f / (float)Grid.WidthInCells;
-		value4.w = 1f / (float)Grid.HeightInCells;
-		material.SetVector("_WorldParams", value4);
-		GL.PushMatrix();
-		material.SetPass(0);
-		GL.LoadOrtho();
-		GL.Begin(5);
-		GL.Color(Color.white);
-		GL.Vertex3(0f, 0f, 0f);
-		GL.Vertex3(0f, 1f, 0f);
-		GL.Vertex3(1f, 0f, 0f);
-		GL.Vertex3(1f, 1f, 0f);
-		GL.End();
-		GL.PopMatrix();
-		if (LastVisibleTileCount != num)
-		{
-			SoundEvent.PlayOneShot(GlobalAssets.GetSound("RangeVisualization_movement"), rangeVisualizer.transform.GetPosition());
-			LastVisibleTileCount = num;
+			Ray ray = this.myCamera.ViewportPointToRay(Vector3.zero);
+			float distance = Mathf.Abs(ray.origin.z / ray.direction.z);
+			Vector3 point = ray.GetPoint(distance);
+			Vector4 vector;
+			vector.x = point.x;
+			vector.y = point.y;
+			ray = this.myCamera.ViewportPointToRay(Vector3.one);
+			distance = Mathf.Abs(ray.origin.z / ray.direction.z);
+			point = ray.GetPoint(distance);
+			vector.z = point.x - vector.x;
+			vector.w = point.y - vector.y;
+			this.material.SetVector("_UVOffsetScale", vector);
+			Vector4 value;
+			value.x = (float)vector2I5.x;
+			value.y = (float)vector2I5.y;
+			value.z = (float)(vector2I6.x + 1);
+			value.w = (float)(vector2I6.y + 1);
+			this.material.SetVector("_RangeParams", value);
+			this.material.SetColor("_HighlightColor", this.highlightColor);
+			Vector4 value2;
+			value2.x = 1f / (float)this.OcclusionTex.width;
+			value2.y = 1f / (float)this.OcclusionTex.height;
+			value2.z = 0f;
+			value2.w = 0f;
+			this.material.SetVector("_OcclusionParams", value2);
+			this.material.SetTexture("_OcclusionTex", this.OcclusionTex);
+			Vector4 value3;
+			value3.x = (float)Grid.WidthInCells;
+			value3.y = (float)Grid.HeightInCells;
+			value3.z = 1f / (float)Grid.WidthInCells;
+			value3.w = 1f / (float)Grid.HeightInCells;
+			this.material.SetVector("_WorldParams", value3);
+			GL.PushMatrix();
+			this.material.SetPass(0);
+			GL.LoadOrtho();
+			GL.Begin(5);
+			GL.Color(Color.white);
+			GL.Vertex3(0f, 0f, 0f);
+			GL.Vertex3(0f, 1f, 0f);
+			GL.Vertex3(1f, 0f, 0f);
+			GL.Vertex3(1f, 1f, 0f);
+			GL.End();
+			GL.PopMatrix();
+			if (this.LastVisibleTileCount != num)
+			{
+				SoundEvent.PlayOneShot(GlobalAssets.GetSound("RangeVisualization_movement", false), rangeVisualizer.transform.GetPosition(), 1f);
+				this.LastVisibleTileCount = num;
+			}
 		}
 	}
 
+	// Token: 0x06008DDD RID: 36317 RVA: 0x0036E250 File Offset: 0x0036C450
 	private void FindWorldBounds(out Vector2I world_min, out Vector2I world_max)
 	{
 		if (ClusterManager.Instance != null)
@@ -165,13 +185,26 @@ public class RangeVisualizerEffect : MonoBehaviour
 			WorldContainer activeWorld = ClusterManager.Instance.activeWorld;
 			world_min = activeWorld.WorldOffset;
 			world_max = activeWorld.WorldOffset + activeWorld.WorldSize;
+			return;
 		}
-		else
-		{
-			world_min.x = 0;
-			world_min.y = 0;
-			world_max.x = Grid.WidthInCells;
-			world_max.y = Grid.HeightInCells;
-		}
+		world_min.x = 0;
+		world_min.y = 0;
+		world_max.x = Grid.WidthInCells;
+		world_max.y = Grid.HeightInCells;
 	}
+
+	// Token: 0x04006A90 RID: 27280
+	private Material material;
+
+	// Token: 0x04006A91 RID: 27281
+	private Camera myCamera;
+
+	// Token: 0x04006A92 RID: 27282
+	public Color highlightColor = new Color(0f, 1f, 0.8f, 1f);
+
+	// Token: 0x04006A93 RID: 27283
+	private Texture2D OcclusionTex;
+
+	// Token: 0x04006A94 RID: 27284
+	private int LastVisibleTileCount;
 }

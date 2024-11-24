@@ -1,55 +1,53 @@
+﻿using System;
 using STRINGS;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x02000374 RID: 884
 public class GravitasCreatureManipulatorConfig : IBuildingConfig
 {
-	public static class CRITTER_LORE_UNLOCK_ID
-	{
-		public static string For(Tag species)
-		{
-			return "story_trait_critter_manipulator_" + species.ToString().ToLower();
-		}
-	}
-
-	public const string ID = "GravitasCreatureManipulator";
-
-	public const string CODEX_ENTRY_ID = "STORYTRAITCRITTERMANIPULATOR";
-
-	public const string INITIAL_LORE_UNLOCK_ID = "story_trait_critter_manipulator_initial";
-
-	public const string PARKING_LORE_UNLOCK_ID = "story_trait_critter_manipulator_parking";
-
-	public const string COMPLETED_LORE_UNLOCK_ID = "story_trait_critter_manipulator_complete";
-
-	private const int HEIGHT = 4;
-
+	// Token: 0x06000E68 RID: 3688 RVA: 0x001789F8 File Offset: 0x00176BF8
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef("GravitasCreatureManipulator", 3, 4, "gravitas_critter_manipulator_kanim", 250, 120f, TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER5, MATERIALS.REFINED_METALS, 3200f, BuildLocationRule.OnFloor, noise: NOISE_POLLUTION.NOISY.TIER5, decor: TUNING.BUILDINGS.DECOR.BONUS.TIER2);
-		obj.ExhaustKilowattsWhenActive = 0f;
-		obj.SelfHeatKilowattsWhenActive = 0f;
-		obj.Floodable = false;
-		obj.Entombable = true;
-		obj.Overheatable = false;
-		obj.AudioCategory = "Metal";
-		obj.AudioSize = "medium";
-		obj.ForegroundLayer = Grid.SceneLayer.Ground;
-		obj.ShowInBuildMenu = false;
-		return obj;
+		string id = "GravitasCreatureManipulator";
+		int width = 3;
+		int height = 4;
+		string anim = "gravitas_critter_manipulator_kanim";
+		int hitpoints = 250;
+		float construction_time = 120f;
+		float[] tier = TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER5;
+		string[] refined_METALS = MATERIALS.REFINED_METALS;
+		float melting_point = 3200f;
+		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
+		EffectorValues tier2 = NOISE_POLLUTION.NOISY.TIER5;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, refined_METALS, melting_point, build_location_rule, TUNING.BUILDINGS.DECOR.BONUS.TIER2, tier2, 0.2f);
+		buildingDef.ExhaustKilowattsWhenActive = 0f;
+		buildingDef.SelfHeatKilowattsWhenActive = 0f;
+		buildingDef.Floodable = false;
+		buildingDef.Entombable = true;
+		buildingDef.Overheatable = false;
+		buildingDef.AudioCategory = "Metal";
+		buildingDef.AudioSize = "medium";
+		buildingDef.ForegroundLayer = Grid.SceneLayer.Ground;
+		buildingDef.ShowInBuildMenu = false;
+		return buildingDef;
 	}
 
+	// Token: 0x06000E69 RID: 3689 RVA: 0x00178A94 File Offset: 0x00176C94
 	public override void DoPostConfigureComplete(GameObject go)
 	{
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		PrimaryElement component = go.GetComponent<PrimaryElement>();
-		component.SetElement(SimHashes.Steel);
+		component.SetElement(SimHashes.Steel, true);
 		component.Temperature = 294.15f;
 		BuildingTemplates.ExtendBuildingToGravitas(go);
 		go.AddComponent<Storage>();
 		Activatable activatable = go.AddComponent<Activatable>();
 		activatable.synchronizeAnims = false;
-		activatable.overrideAnims = new KAnimFile[1] { Assets.GetAnim("anim_use_remote_kanim") };
+		activatable.overrideAnims = new KAnimFile[]
+		{
+			Assets.GetAnim("anim_use_remote_kanim")
+		};
 		activatable.SetWorkTime(30f);
 		GravitasCreatureManipulator.Def def = go.AddOrGetDef<GravitasCreatureManipulator.Def>();
 		def.pickupOffset = new CellOffset(-1, 0);
@@ -69,170 +67,203 @@ public class GravitasCreatureManipulatorConfig : IBuildingConfig
 		};
 	}
 
+	// Token: 0x06000E6A RID: 3690 RVA: 0x00178BAC File Offset: 0x00176DAC
 	public static Option<string> GetBodyContentForSpeciesTag(Tag species)
 	{
-		Option<string> nameForSpeciesTag = GetNameForSpeciesTag(species);
-		Option<string> descriptionForSpeciesTag = GetDescriptionForSpeciesTag(species);
+		Option<string> nameForSpeciesTag = GravitasCreatureManipulatorConfig.GetNameForSpeciesTag(species);
+		Option<string> descriptionForSpeciesTag = GravitasCreatureManipulatorConfig.GetDescriptionForSpeciesTag(species);
 		if (nameForSpeciesTag.HasValue && descriptionForSpeciesTag.HasValue)
 		{
-			return GetBodyContent(nameForSpeciesTag.Value, descriptionForSpeciesTag.Value);
+			return GravitasCreatureManipulatorConfig.GetBodyContent(nameForSpeciesTag.Value, descriptionForSpeciesTag.Value);
 		}
 		return Option.None;
 	}
 
+	// Token: 0x06000E6B RID: 3691 RVA: 0x000AC6FD File Offset: 0x000AA8FD
 	public static string GetBodyContentForUnknownSpecies()
 	{
-		return GetBodyContent(CODEX.STORY_TRAITS.CRITTER_MANIPULATOR.SPECIES_ENTRIES.UNKNOWN_TITLE, CODEX.STORY_TRAITS.CRITTER_MANIPULATOR.SPECIES_ENTRIES.UNKNOWN);
+		return GravitasCreatureManipulatorConfig.GetBodyContent(CODEX.STORY_TRAITS.CRITTER_MANIPULATOR.SPECIES_ENTRIES.UNKNOWN_TITLE, CODEX.STORY_TRAITS.CRITTER_MANIPULATOR.SPECIES_ENTRIES.UNKNOWN);
 	}
 
+	// Token: 0x06000E6C RID: 3692 RVA: 0x000AC718 File Offset: 0x000AA918
 	public static string GetBodyContent(string name, string desc)
 	{
 		return "<size=125%><b>" + name + "</b></size><line-height=150%>\n</line-height>" + desc;
 	}
 
+	// Token: 0x06000E6D RID: 3693 RVA: 0x00178BFC File Offset: 0x00176DFC
 	public static Option<string> GetNameForSpeciesTag(Tag species)
 	{
 		if (species == GameTags.Creatures.Species.HatchSpecies)
 		{
-			return Option.Some((string)STRINGS.CREATURES.FAMILY_PLURAL.HATCHSPECIES);
+			return Option.Some<string>(STRINGS.CREATURES.FAMILY_PLURAL.HATCHSPECIES);
 		}
 		if (species == GameTags.Creatures.Species.LightBugSpecies)
 		{
-			return Option.Some((string)STRINGS.CREATURES.FAMILY_PLURAL.LIGHTBUGSPECIES);
+			return Option.Some<string>(STRINGS.CREATURES.FAMILY_PLURAL.LIGHTBUGSPECIES);
 		}
 		if (species == GameTags.Creatures.Species.OilFloaterSpecies)
 		{
-			return Option.Some((string)STRINGS.CREATURES.FAMILY_PLURAL.OILFLOATERSPECIES);
+			return Option.Some<string>(STRINGS.CREATURES.FAMILY_PLURAL.OILFLOATERSPECIES);
 		}
 		if (species == GameTags.Creatures.Species.DreckoSpecies)
 		{
-			return Option.Some((string)STRINGS.CREATURES.FAMILY_PLURAL.DRECKOSPECIES);
+			return Option.Some<string>(STRINGS.CREATURES.FAMILY_PLURAL.DRECKOSPECIES);
 		}
 		if (species == GameTags.Creatures.Species.GlomSpecies)
 		{
-			return Option.Some((string)STRINGS.CREATURES.FAMILY_PLURAL.GLOMSPECIES);
+			return Option.Some<string>(STRINGS.CREATURES.FAMILY_PLURAL.GLOMSPECIES);
 		}
 		if (species == GameTags.Creatures.Species.PuftSpecies)
 		{
-			return Option.Some((string)STRINGS.CREATURES.FAMILY_PLURAL.PUFTSPECIES);
+			return Option.Some<string>(STRINGS.CREATURES.FAMILY_PLURAL.PUFTSPECIES);
 		}
 		if (species == GameTags.Creatures.Species.PacuSpecies)
 		{
-			return Option.Some((string)STRINGS.CREATURES.FAMILY_PLURAL.PACUSPECIES);
+			return Option.Some<string>(STRINGS.CREATURES.FAMILY_PLURAL.PACUSPECIES);
 		}
 		if (species == GameTags.Creatures.Species.MooSpecies)
 		{
-			return Option.Some((string)STRINGS.CREATURES.FAMILY_PLURAL.MOOSPECIES);
+			return Option.Some<string>(STRINGS.CREATURES.FAMILY_PLURAL.MOOSPECIES);
 		}
 		if (species == GameTags.Creatures.Species.MoleSpecies)
 		{
-			return Option.Some((string)STRINGS.CREATURES.FAMILY_PLURAL.MOLESPECIES);
+			return Option.Some<string>(STRINGS.CREATURES.FAMILY_PLURAL.MOLESPECIES);
 		}
 		if (species == GameTags.Creatures.Species.SquirrelSpecies)
 		{
-			return Option.Some((string)STRINGS.CREATURES.FAMILY_PLURAL.SQUIRRELSPECIES);
+			return Option.Some<string>(STRINGS.CREATURES.FAMILY_PLURAL.SQUIRRELSPECIES);
 		}
 		if (species == GameTags.Creatures.Species.CrabSpecies)
 		{
-			return Option.Some((string)STRINGS.CREATURES.FAMILY_PLURAL.CRABSPECIES);
+			return Option.Some<string>(STRINGS.CREATURES.FAMILY_PLURAL.CRABSPECIES);
 		}
 		if (species == GameTags.Creatures.Species.DivergentSpecies)
 		{
-			return Option.Some((string)STRINGS.CREATURES.FAMILY_PLURAL.DIVERGENTSPECIES);
+			return Option.Some<string>(STRINGS.CREATURES.FAMILY_PLURAL.DIVERGENTSPECIES);
 		}
 		if (species == GameTags.Creatures.Species.StaterpillarSpecies)
 		{
-			return Option.Some((string)STRINGS.CREATURES.FAMILY_PLURAL.STATERPILLARSPECIES);
+			return Option.Some<string>(STRINGS.CREATURES.FAMILY_PLURAL.STATERPILLARSPECIES);
 		}
 		if (species == GameTags.Creatures.Species.BeetaSpecies)
 		{
-			return Option.Some((string)STRINGS.CREATURES.FAMILY_PLURAL.BEETASPECIES);
+			return Option.Some<string>(STRINGS.CREATURES.FAMILY_PLURAL.BEETASPECIES);
 		}
 		if (species == GameTags.Creatures.Species.BellySpecies)
 		{
-			return Option.Some((string)STRINGS.CREATURES.FAMILY_PLURAL.BELLYSPECIES);
+			return Option.Some<string>(STRINGS.CREATURES.FAMILY_PLURAL.BELLYSPECIES);
 		}
 		if (species == GameTags.Creatures.Species.SealSpecies)
 		{
-			return Option.Some((string)STRINGS.CREATURES.FAMILY_PLURAL.SEALSPECIES);
+			return Option.Some<string>(STRINGS.CREATURES.FAMILY_PLURAL.SEALSPECIES);
 		}
 		if (species == GameTags.Creatures.Species.DeerSpecies)
 		{
-			return Option.Some((string)STRINGS.CREATURES.FAMILY_PLURAL.DEERSPECIES);
+			return Option.Some<string>(STRINGS.CREATURES.FAMILY_PLURAL.DEERSPECIES);
 		}
 		return Option.None;
 	}
 
+	// Token: 0x06000E6E RID: 3694 RVA: 0x00178E00 File Offset: 0x00177000
 	public static Option<string> GetDescriptionForSpeciesTag(Tag species)
 	{
 		if (species == GameTags.Creatures.Species.HatchSpecies)
 		{
-			return Option.Some((string)CODEX.STORY_TRAITS.CRITTER_MANIPULATOR.SPECIES_ENTRIES.HATCH);
+			return Option.Some<string>(CODEX.STORY_TRAITS.CRITTER_MANIPULATOR.SPECIES_ENTRIES.HATCH);
 		}
 		if (species == GameTags.Creatures.Species.LightBugSpecies)
 		{
-			return Option.Some((string)CODEX.STORY_TRAITS.CRITTER_MANIPULATOR.SPECIES_ENTRIES.LIGHTBUG);
+			return Option.Some<string>(CODEX.STORY_TRAITS.CRITTER_MANIPULATOR.SPECIES_ENTRIES.LIGHTBUG);
 		}
 		if (species == GameTags.Creatures.Species.OilFloaterSpecies)
 		{
-			return Option.Some((string)CODEX.STORY_TRAITS.CRITTER_MANIPULATOR.SPECIES_ENTRIES.OILFLOATER);
+			return Option.Some<string>(CODEX.STORY_TRAITS.CRITTER_MANIPULATOR.SPECIES_ENTRIES.OILFLOATER);
 		}
 		if (species == GameTags.Creatures.Species.DreckoSpecies)
 		{
-			return Option.Some((string)CODEX.STORY_TRAITS.CRITTER_MANIPULATOR.SPECIES_ENTRIES.DRECKO);
+			return Option.Some<string>(CODEX.STORY_TRAITS.CRITTER_MANIPULATOR.SPECIES_ENTRIES.DRECKO);
 		}
 		if (species == GameTags.Creatures.Species.GlomSpecies)
 		{
-			return Option.Some((string)CODEX.STORY_TRAITS.CRITTER_MANIPULATOR.SPECIES_ENTRIES.GLOM);
+			return Option.Some<string>(CODEX.STORY_TRAITS.CRITTER_MANIPULATOR.SPECIES_ENTRIES.GLOM);
 		}
 		if (species == GameTags.Creatures.Species.PuftSpecies)
 		{
-			return Option.Some((string)CODEX.STORY_TRAITS.CRITTER_MANIPULATOR.SPECIES_ENTRIES.PUFT);
+			return Option.Some<string>(CODEX.STORY_TRAITS.CRITTER_MANIPULATOR.SPECIES_ENTRIES.PUFT);
 		}
 		if (species == GameTags.Creatures.Species.PacuSpecies)
 		{
-			return Option.Some((string)CODEX.STORY_TRAITS.CRITTER_MANIPULATOR.SPECIES_ENTRIES.PACU);
+			return Option.Some<string>(CODEX.STORY_TRAITS.CRITTER_MANIPULATOR.SPECIES_ENTRIES.PACU);
 		}
 		if (species == GameTags.Creatures.Species.MooSpecies)
 		{
-			return Option.Some((string)CODEX.STORY_TRAITS.CRITTER_MANIPULATOR.SPECIES_ENTRIES.MOO);
+			return Option.Some<string>(CODEX.STORY_TRAITS.CRITTER_MANIPULATOR.SPECIES_ENTRIES.MOO);
 		}
 		if (species == GameTags.Creatures.Species.MoleSpecies)
 		{
-			return Option.Some((string)CODEX.STORY_TRAITS.CRITTER_MANIPULATOR.SPECIES_ENTRIES.MOLE);
+			return Option.Some<string>(CODEX.STORY_TRAITS.CRITTER_MANIPULATOR.SPECIES_ENTRIES.MOLE);
 		}
 		if (species == GameTags.Creatures.Species.SquirrelSpecies)
 		{
-			return Option.Some((string)CODEX.STORY_TRAITS.CRITTER_MANIPULATOR.SPECIES_ENTRIES.SQUIRREL);
+			return Option.Some<string>(CODEX.STORY_TRAITS.CRITTER_MANIPULATOR.SPECIES_ENTRIES.SQUIRREL);
 		}
 		if (species == GameTags.Creatures.Species.CrabSpecies)
 		{
-			return Option.Some((string)CODEX.STORY_TRAITS.CRITTER_MANIPULATOR.SPECIES_ENTRIES.CRAB);
+			return Option.Some<string>(CODEX.STORY_TRAITS.CRITTER_MANIPULATOR.SPECIES_ENTRIES.CRAB);
 		}
 		if (species == GameTags.Creatures.Species.DivergentSpecies)
 		{
-			return Option.Some((string)CODEX.STORY_TRAITS.CRITTER_MANIPULATOR.SPECIES_ENTRIES.DIVERGENTSPECIES);
+			return Option.Some<string>(CODEX.STORY_TRAITS.CRITTER_MANIPULATOR.SPECIES_ENTRIES.DIVERGENTSPECIES);
 		}
 		if (species == GameTags.Creatures.Species.StaterpillarSpecies)
 		{
-			return Option.Some((string)CODEX.STORY_TRAITS.CRITTER_MANIPULATOR.SPECIES_ENTRIES.STATERPILLAR);
+			return Option.Some<string>(CODEX.STORY_TRAITS.CRITTER_MANIPULATOR.SPECIES_ENTRIES.STATERPILLAR);
 		}
 		if (species == GameTags.Creatures.Species.BeetaSpecies)
 		{
-			return Option.Some((string)CODEX.STORY_TRAITS.CRITTER_MANIPULATOR.SPECIES_ENTRIES.BEETA);
+			return Option.Some<string>(CODEX.STORY_TRAITS.CRITTER_MANIPULATOR.SPECIES_ENTRIES.BEETA);
 		}
 		if (species == GameTags.Creatures.Species.BellySpecies)
 		{
-			return Option.Some((string)CODEX.STORY_TRAITS.CRITTER_MANIPULATOR.SPECIES_ENTRIES.ICEBELLY);
+			return Option.Some<string>(CODEX.STORY_TRAITS.CRITTER_MANIPULATOR.SPECIES_ENTRIES.ICEBELLY);
 		}
 		if (species == GameTags.Creatures.Species.SealSpecies)
 		{
-			return Option.Some((string)CODEX.STORY_TRAITS.CRITTER_MANIPULATOR.SPECIES_ENTRIES.SEAL);
+			return Option.Some<string>(CODEX.STORY_TRAITS.CRITTER_MANIPULATOR.SPECIES_ENTRIES.SEAL);
 		}
 		if (species == GameTags.Creatures.Species.DeerSpecies)
 		{
-			return Option.Some((string)CODEX.STORY_TRAITS.CRITTER_MANIPULATOR.SPECIES_ENTRIES.WOODDEER);
+			return Option.Some<string>(CODEX.STORY_TRAITS.CRITTER_MANIPULATOR.SPECIES_ENTRIES.WOODDEER);
 		}
 		return Option.None;
+	}
+
+	// Token: 0x04000A6C RID: 2668
+	public const string ID = "GravitasCreatureManipulator";
+
+	// Token: 0x04000A6D RID: 2669
+	public const string CODEX_ENTRY_ID = "STORYTRAITCRITTERMANIPULATOR";
+
+	// Token: 0x04000A6E RID: 2670
+	public const string INITIAL_LORE_UNLOCK_ID = "story_trait_critter_manipulator_initial";
+
+	// Token: 0x04000A6F RID: 2671
+	public const string PARKING_LORE_UNLOCK_ID = "story_trait_critter_manipulator_parking";
+
+	// Token: 0x04000A70 RID: 2672
+	public const string COMPLETED_LORE_UNLOCK_ID = "story_trait_critter_manipulator_complete";
+
+	// Token: 0x04000A71 RID: 2673
+	private const int HEIGHT = 4;
+
+	// Token: 0x02000375 RID: 885
+	public static class CRITTER_LORE_UNLOCK_ID
+	{
+		// Token: 0x06000E70 RID: 3696 RVA: 0x000AC72B File Offset: 0x000AA92B
+		public static string For(Tag species)
+		{
+			return "story_trait_critter_manipulator_" + species.ToString().ToLower();
+		}
 	}
 }

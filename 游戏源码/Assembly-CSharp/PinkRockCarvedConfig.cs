@@ -1,20 +1,22 @@
+﻿using System;
 using System.Collections.Generic;
 using STRINGS;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x02000486 RID: 1158
 public class PinkRockCarvedConfig : IEntityConfig
 {
-	public const string ID = "PinkRockCarved";
-
+	// Token: 0x06001458 RID: 5208 RVA: 0x000A9B1E File Offset: 0x000A7D1E
 	public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_DLC_2;
 	}
 
+	// Token: 0x06001459 RID: 5209 RVA: 0x001909A8 File Offset: 0x0018EBA8
 	public GameObject CreatePrefab()
 	{
-		GameObject gameObject = EntityTemplates.CreateLooseEntity("PinkRockCarved", STRINGS.CREATURES.SPECIES.PINKROCKCARVED.NAME, STRINGS.CREATURES.SPECIES.PINKROCKCARVED.DESC, 1f, unitMass: true, Assets.GetAnim("pinkrock_decor_kanim"), "idle", Grid.SceneLayer.Front, EntityTemplates.CollisionShape.CIRCLE, 0.5f, 0.5f, isPickupable: true, 0, SimHashes.Creature, new List<Tag>
+		GameObject gameObject = EntityTemplates.CreateLooseEntity("PinkRockCarved", STRINGS.CREATURES.SPECIES.PINKROCKCARVED.NAME, STRINGS.CREATURES.SPECIES.PINKROCKCARVED.DESC, 1f, true, Assets.GetAnim("pinkrock_decor_kanim"), "idle", Grid.SceneLayer.Ore, EntityTemplates.CollisionShape.CIRCLE, 0.5f, 0.5f, true, 0, SimHashes.Creature, new List<Tag>
 		{
 			GameTags.RareMaterials,
 			GameTags.MiscPickupable,
@@ -32,17 +34,23 @@ public class PinkRockCarvedConfig : IEntityConfig
 		light2D.Angle = 0f;
 		light2D.Direction = LIGHT2D.PINKROCK_DIRECTION;
 		light2D.Offset = LIGHT2D.PINKROCK_OFFSET;
-		light2D.shape = LightShape.Circle;
+		light2D.shape = global::LightShape.Circle;
 		light2D.drawOverlay = true;
+		light2D.disableOnStore = true;
 		gameObject.GetComponent<KCircleCollider2D>().offset = new Vector2(0f, 0.25f);
 		return gameObject;
 	}
 
+	// Token: 0x0600145A RID: 5210 RVA: 0x000A5E40 File Offset: 0x000A4040
 	public void OnPrefabInit(GameObject inst)
 	{
 	}
 
+	// Token: 0x0600145B RID: 5211 RVA: 0x000A5E40 File Offset: 0x000A4040
 	public void OnSpawn(GameObject inst)
 	{
 	}
+
+	// Token: 0x04000DB0 RID: 3504
+	public const string ID = "PinkRockCarved";
 }

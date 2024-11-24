@@ -1,66 +1,62 @@
+﻿using System;
 using STRINGS;
 using UnityEngine;
 
+// Token: 0x02001ACD RID: 6861
 public class HoverTextHelper
 {
-	private static readonly string[] massStrings = new string[4];
-
-	private static readonly string[] invalidCellMassStrings = new string[4] { "", "", "", "" };
-
-	private static float cachedMass = -1f;
-
-	private static Element cachedElement;
-
+	// Token: 0x06008FB0 RID: 36784 RVA: 0x000FDEA5 File Offset: 0x000FC0A5
 	public static void DestroyStatics()
 	{
-		cachedElement = null;
-		cachedMass = -1f;
+		HoverTextHelper.cachedElement = null;
+		HoverTextHelper.cachedMass = -1f;
 	}
 
+	// Token: 0x06008FB1 RID: 36785 RVA: 0x00377A84 File Offset: 0x00375C84
 	public static string[] MassStringsReadOnly(int cell)
 	{
 		if (!Grid.IsValidCell(cell))
 		{
-			return invalidCellMassStrings;
+			return HoverTextHelper.invalidCellMassStrings;
 		}
 		Element element = Grid.Element[cell];
 		float num = Grid.Mass[cell];
-		if (element == cachedElement && num == cachedMass)
+		if (element == HoverTextHelper.cachedElement && num == HoverTextHelper.cachedMass)
 		{
-			return massStrings;
+			return HoverTextHelper.massStrings;
 		}
-		cachedElement = element;
-		cachedMass = num;
-		massStrings[3] = " " + GameUtil.GetBreathableString(element, num);
+		HoverTextHelper.cachedElement = element;
+		HoverTextHelper.cachedMass = num;
+		HoverTextHelper.massStrings[3] = " " + GameUtil.GetBreathableString(element, num);
 		if (element.id == SimHashes.Vacuum)
 		{
-			massStrings[0] = UI.NA;
-			massStrings[1] = "";
-			massStrings[2] = "";
+			HoverTextHelper.massStrings[0] = UI.NA;
+			HoverTextHelper.massStrings[1] = "";
+			HoverTextHelper.massStrings[2] = "";
 		}
 		else if (element.id == SimHashes.Unobtanium)
 		{
-			massStrings[0] = UI.NEUTRONIUMMASS;
-			massStrings[1] = "";
-			massStrings[2] = "";
+			HoverTextHelper.massStrings[0] = UI.NEUTRONIUMMASS;
+			HoverTextHelper.massStrings[1] = "";
+			HoverTextHelper.massStrings[2] = "";
 		}
 		else
 		{
-			massStrings[2] = UI.UNITSUFFIXES.MASS.KILOGRAM;
+			HoverTextHelper.massStrings[2] = UI.UNITSUFFIXES.MASS.KILOGRAM;
 			if (num < 5f)
 			{
 				num *= 1000f;
-				massStrings[2] = UI.UNITSUFFIXES.MASS.GRAM;
+				HoverTextHelper.massStrings[2] = UI.UNITSUFFIXES.MASS.GRAM;
 			}
 			if (num < 5f)
 			{
 				num *= 1000f;
-				massStrings[2] = UI.UNITSUFFIXES.MASS.MILLIGRAM;
+				HoverTextHelper.massStrings[2] = UI.UNITSUFFIXES.MASS.MILLIGRAM;
 			}
 			if (num < 5f)
 			{
 				num *= 1000f;
-				massStrings[2] = UI.UNITSUFFIXES.MASS.MICROGRAM;
+				HoverTextHelper.massStrings[2] = UI.UNITSUFFIXES.MASS.MICROGRAM;
 				num = Mathf.Floor(num);
 			}
 			int num2 = Mathf.FloorToInt(num);
@@ -70,9 +66,27 @@ public class HoverTextHelper
 				num2++;
 				num3 = 0;
 			}
-			massStrings[0] = num2.ToString();
-			massStrings[1] = "." + num3;
+			HoverTextHelper.massStrings[0] = num2.ToString();
+			HoverTextHelper.massStrings[1] = "." + num3.ToString();
 		}
-		return massStrings;
+		return HoverTextHelper.massStrings;
 	}
+
+	// Token: 0x04006C75 RID: 27765
+	private static readonly string[] massStrings = new string[4];
+
+	// Token: 0x04006C76 RID: 27766
+	private static readonly string[] invalidCellMassStrings = new string[]
+	{
+		"",
+		"",
+		"",
+		""
+	};
+
+	// Token: 0x04006C77 RID: 27767
+	private static float cachedMass = -1f;
+
+	// Token: 0x04006C78 RID: 27768
+	private static Element cachedElement;
 }

@@ -1,23 +1,28 @@
+﻿using System;
 using UnityEngine;
 
+// Token: 0x02000D2B RID: 3371
 public class DevGenerator : Generator
 {
-	public float wattageRating = 100000f;
-
+	// Token: 0x060041E1 RID: 16865 RVA: 0x0023F9E0 File Offset: 0x0023DBE0
 	public override void EnergySim200ms(float dt)
 	{
 		base.EnergySim200ms(dt);
 		ushort circuitID = base.CircuitID;
-		operational.SetFlag(Generator.wireConnectedFlag, circuitID != ushort.MaxValue);
-		if (operational.IsOperational)
+		this.operational.SetFlag(Generator.wireConnectedFlag, circuitID != ushort.MaxValue);
+		if (!this.operational.IsOperational)
 		{
-			float num = wattageRating;
-			if (num > 0f)
-			{
-				num *= dt;
-				num = Mathf.Max(num, 1f * dt);
-				GenerateJoules(num);
-			}
+			return;
+		}
+		float num = this.wattageRating;
+		if (num > 0f)
+		{
+			num *= dt;
+			num = Mathf.Max(num, 1f * dt);
+			base.GenerateJoules(num, false);
 		}
 	}
+
+	// Token: 0x04002CF2 RID: 11506
+	public float wattageRating = 100000f;
 }

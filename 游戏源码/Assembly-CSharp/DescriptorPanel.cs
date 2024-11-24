@@ -1,42 +1,49 @@
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Token: 0x02001C9E RID: 7326
 [AddComponentMenu("KMonoBehaviour/scripts/DescriptorPanel")]
 public class DescriptorPanel : KMonoBehaviour
 {
-	[SerializeField]
-	private GameObject customLabelPrefab;
-
-	private List<GameObject> labels = new List<GameObject>();
-
+	// Token: 0x060098D5 RID: 39125 RVA: 0x00103796 File Offset: 0x00101996
 	public bool HasDescriptors()
 	{
-		return labels.Count > 0;
+		return this.labels.Count > 0;
 	}
 
+	// Token: 0x060098D6 RID: 39126 RVA: 0x003B1DA4 File Offset: 0x003AFFA4
 	public void SetDescriptors(IList<Descriptor> descriptors)
 	{
 		int i;
 		for (i = 0; i < descriptors.Count; i++)
 		{
-			GameObject gameObject = null;
-			if (i >= labels.Count)
+			GameObject gameObject;
+			if (i >= this.labels.Count)
 			{
-				gameObject = Util.KInstantiate((customLabelPrefab != null) ? customLabelPrefab : ScreenPrefabs.Instance.DescriptionLabel, base.gameObject);
+				gameObject = Util.KInstantiate((this.customLabelPrefab != null) ? this.customLabelPrefab : ScreenPrefabs.Instance.DescriptionLabel, base.gameObject, null);
 				gameObject.transform.localScale = new Vector3(1f, 1f, 1f);
-				labels.Add(gameObject);
+				this.labels.Add(gameObject);
 			}
 			else
 			{
-				gameObject = labels[i];
+				gameObject = this.labels[i];
 			}
 			gameObject.GetComponent<LocText>().text = descriptors[i].IndentedText();
 			gameObject.GetComponent<ToolTip>().toolTip = descriptors[i].tooltipText;
-			gameObject.SetActive(value: true);
+			gameObject.SetActive(true);
 		}
-		for (; i < labels.Count; i++)
+		while (i < this.labels.Count)
 		{
-			labels[i].SetActive(value: false);
+			this.labels[i].SetActive(false);
+			i++;
 		}
 	}
+
+	// Token: 0x04007716 RID: 30486
+	[SerializeField]
+	private GameObject customLabelPrefab;
+
+	// Token: 0x04007717 RID: 30487
+	private List<GameObject> labels = new List<GameObject>();
 }

@@ -1,66 +1,42 @@
+﻿using System;
 using STRINGS;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x020003FA RID: 1018
 public class LonelyMinionHouseConfig : IBuildingConfig
 {
-	public const string ID = "LonelyMinionHouse";
-
-	public const string LORE_UNLOCK_PREFIX = "story_trait_lonelyminion_";
-
-	public const int FriendshipQuestCount = 3;
-
-	public const string METER_TARGET = "meter_storage_target";
-
-	public const string METER_ANIM = "meter";
-
-	public static readonly string[] METER_SYMBOLS = new string[2] { "meter_storage", "meter_level" };
-
-	public const string BLINDS_TARGET = "blinds_target";
-
-	public const string BLINDS_PREFIX = "meter_blinds";
-
-	public static readonly string[] BLINDS_SYMBOLS = new string[4] { "blinds_target", "blind", "blind_string", "blinds" };
-
-	private const string LIGHTS_TARGET = "lights_target";
-
-	private static readonly string[] LIGHTS_SYMBOLS = new string[5] { "lights_target", "festive_lights", "lights_wire", "light_bulb", "snapTo_light_locator" };
-
-	public static readonly HashedString ANSWER = "answer";
-
-	public static readonly HashedString LIGHTS_OFF = "meter_lights_off";
-
-	public static readonly HashedString LIGHTS_ON = "meter_lights_on_loop";
-
-	public static readonly HashedString STORAGE = "storage_off";
-
-	public static readonly HashedString STORAGE_WORK_PST = "working_pst";
-
-	public static readonly HashedString[] STORAGE_WORKING = new HashedString[2] { "working_pre", "working_loop" };
-
-	public static readonly EffectorValues HOUSE_DECOR = new EffectorValues
-	{
-		amount = -25,
-		radius = 6
-	};
-
-	public static readonly EffectorValues STORAGE_DECOR = DECOR.PENALTY.TIER1;
-
+	// Token: 0x06001113 RID: 4371 RVA: 0x00182A44 File Offset: 0x00180C44
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef("LonelyMinionHouse", 4, 6, "lonely_dupe_home_kanim", 1000, 480f, TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER5, new string[1] { SimHashes.Steel.ToString() }, 9999f, BuildLocationRule.OnFloor, noise: NOISE_POLLUTION.NONE, decor: HOUSE_DECOR);
-		obj.DefaultAnimState = "on";
-		obj.ForegroundLayer = Grid.SceneLayer.BuildingFront;
-		obj.EnergyConsumptionWhenActive = 60f;
-		obj.AddLogicPowerPort = false;
-		obj.RequiresPowerInput = true;
-		obj.PowerInputOffset = new CellOffset(2, 1);
-		obj.ShowInBuildMenu = false;
-		obj.AudioCategory = "Metal";
-		obj.AudioSize = "large";
-		return obj;
+		string id = "LonelyMinionHouse";
+		int width = 4;
+		int height = 6;
+		string anim = "lonely_dupe_home_kanim";
+		int hitpoints = 1000;
+		float construction_time = 480f;
+		float[] tier = TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER5;
+		string[] construction_materials = new string[]
+		{
+			SimHashes.Steel.ToString()
+		};
+		float melting_point = 9999f;
+		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
+		EffectorValues none = NOISE_POLLUTION.NONE;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, construction_materials, melting_point, build_location_rule, LonelyMinionHouseConfig.HOUSE_DECOR, none, 0.2f);
+		buildingDef.DefaultAnimState = "on";
+		buildingDef.ForegroundLayer = Grid.SceneLayer.BuildingFront;
+		buildingDef.EnergyConsumptionWhenActive = 60f;
+		buildingDef.AddLogicPowerPort = false;
+		buildingDef.RequiresPowerInput = true;
+		buildingDef.PowerInputOffset = new CellOffset(2, 1);
+		buildingDef.ShowInBuildMenu = false;
+		buildingDef.AudioCategory = "Metal";
+		buildingDef.AudioSize = "large";
+		return buildingDef;
 	}
 
+	// Token: 0x06001114 RID: 4372 RVA: 0x00182AFC File Offset: 0x00180CFC
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<NonEssentialEnergyConsumer>();
@@ -79,9 +55,19 @@ public class LonelyMinionHouseConfig : IBuildingConfig
 		storage.showCapacityAsMainStatus = true;
 		knockKnock.triggerWorkReactions = false;
 		knockKnock.synchronizeAnims = false;
-		knockKnock.overrideAnims = new KAnimFile[1] { Assets.GetAnim("anim_interacts_doorknock_kanim") };
-		knockKnock.workAnims = new HashedString[2] { "knocking_pre", "knocking_loop" };
-		knockKnock.workingPstComplete = new HashedString[1] { "knocking_pst" };
+		knockKnock.overrideAnims = new KAnimFile[]
+		{
+			Assets.GetAnim("anim_interacts_doorknock_kanim")
+		};
+		knockKnock.workAnims = new HashedString[]
+		{
+			"knocking_pre",
+			"knocking_loop"
+		};
+		knockKnock.workingPstComplete = new HashedString[]
+		{
+			"knocking_pst"
+		};
 		knockKnock.workingPstFailed = null;
 		knockKnock.SetButtonTextOverride(new ButtonMenuTextOverride
 		{
@@ -117,35 +103,119 @@ public class LonelyMinionHouseConfig : IBuildingConfig
 		};
 	}
 
+	// Token: 0x06001115 RID: 4373 RVA: 0x000ADA22 File Offset: 0x000ABC22
 	public override void DoPostConfigureComplete(GameObject go)
 	{
-		Object.Destroy(go.GetComponent<BuildingEnabledButton>());
+		UnityEngine.Object.Destroy(go.GetComponent<BuildingEnabledButton>());
 		go.GetComponent<RequireInputs>().visualizeRequirements = RequireInputs.Requirements.None;
-		ConfigureLights(go);
+		this.ConfigureLights(go);
 	}
 
+	// Token: 0x06001116 RID: 4374 RVA: 0x00182D4C File Offset: 0x00180F4C
 	private void ConfigureLights(GameObject go)
 	{
 		GameObject gameObject = new GameObject("FestiveLights");
-		gameObject.SetActive(value: false);
+		gameObject.SetActive(false);
 		gameObject.transform.SetParent(go.transform);
 		gameObject.AddOrGet<Light2D>();
-		KBatchedAnimController kBatchedAnimController = gameObject.AddOrGet<KBatchedAnimController>();
+		KBatchedAnimController kbatchedAnimController = gameObject.AddOrGet<KBatchedAnimController>();
 		KBatchedAnimController component = go.GetComponent<KBatchedAnimController>();
-		kBatchedAnimController.AnimFiles = component.AnimFiles;
-		kBatchedAnimController.fgLayer = Grid.SceneLayer.NoLayer;
-		kBatchedAnimController.initialAnim = "meter_lights_off";
-		kBatchedAnimController.initialMode = KAnim.PlayMode.Loop;
-		kBatchedAnimController.isMovable = true;
-		kBatchedAnimController.FlipX = component.FlipX;
-		kBatchedAnimController.FlipY = component.FlipY;
-		KBatchedAnimTracker kBatchedAnimTracker = gameObject.AddComponent<KBatchedAnimTracker>();
-		kBatchedAnimTracker.SetAnimControllers(kBatchedAnimController, component);
-		kBatchedAnimTracker.symbol = "lights_target";
-		kBatchedAnimTracker.offset = Vector3.zero;
-		for (int i = 0; i < LIGHTS_SYMBOLS.Length; i++)
+		kbatchedAnimController.AnimFiles = component.AnimFiles;
+		kbatchedAnimController.fgLayer = Grid.SceneLayer.NoLayer;
+		kbatchedAnimController.initialAnim = "meter_lights_off";
+		kbatchedAnimController.initialMode = KAnim.PlayMode.Loop;
+		kbatchedAnimController.isMovable = true;
+		kbatchedAnimController.FlipX = component.FlipX;
+		kbatchedAnimController.FlipY = component.FlipY;
+		KBatchedAnimTracker kbatchedAnimTracker = gameObject.AddComponent<KBatchedAnimTracker>();
+		kbatchedAnimTracker.SetAnimControllers(kbatchedAnimController, component);
+		kbatchedAnimTracker.symbol = "lights_target";
+		kbatchedAnimTracker.offset = Vector3.zero;
+		for (int i = 0; i < LonelyMinionHouseConfig.LIGHTS_SYMBOLS.Length; i++)
 		{
-			component.SetSymbolVisiblity(LIGHTS_SYMBOLS[i], is_visible: false);
+			component.SetSymbolVisiblity(LonelyMinionHouseConfig.LIGHTS_SYMBOLS[i], false);
 		}
 	}
+
+	// Token: 0x04000BA0 RID: 2976
+	public const string ID = "LonelyMinionHouse";
+
+	// Token: 0x04000BA1 RID: 2977
+	public const string LORE_UNLOCK_PREFIX = "story_trait_lonelyminion_";
+
+	// Token: 0x04000BA2 RID: 2978
+	public const int FriendshipQuestCount = 3;
+
+	// Token: 0x04000BA3 RID: 2979
+	public const string METER_TARGET = "meter_storage_target";
+
+	// Token: 0x04000BA4 RID: 2980
+	public const string METER_ANIM = "meter";
+
+	// Token: 0x04000BA5 RID: 2981
+	public static readonly string[] METER_SYMBOLS = new string[]
+	{
+		"meter_storage",
+		"meter_level"
+	};
+
+	// Token: 0x04000BA6 RID: 2982
+	public const string BLINDS_TARGET = "blinds_target";
+
+	// Token: 0x04000BA7 RID: 2983
+	public const string BLINDS_PREFIX = "meter_blinds";
+
+	// Token: 0x04000BA8 RID: 2984
+	public static readonly string[] BLINDS_SYMBOLS = new string[]
+	{
+		"blinds_target",
+		"blind",
+		"blind_string",
+		"blinds"
+	};
+
+	// Token: 0x04000BA9 RID: 2985
+	private const string LIGHTS_TARGET = "lights_target";
+
+	// Token: 0x04000BAA RID: 2986
+	private static readonly string[] LIGHTS_SYMBOLS = new string[]
+	{
+		"lights_target",
+		"festive_lights",
+		"lights_wire",
+		"light_bulb",
+		"snapTo_light_locator"
+	};
+
+	// Token: 0x04000BAB RID: 2987
+	public static readonly HashedString ANSWER = "answer";
+
+	// Token: 0x04000BAC RID: 2988
+	public static readonly HashedString LIGHTS_OFF = "meter_lights_off";
+
+	// Token: 0x04000BAD RID: 2989
+	public static readonly HashedString LIGHTS_ON = "meter_lights_on_loop";
+
+	// Token: 0x04000BAE RID: 2990
+	public static readonly HashedString STORAGE = "storage_off";
+
+	// Token: 0x04000BAF RID: 2991
+	public static readonly HashedString STORAGE_WORK_PST = "working_pst";
+
+	// Token: 0x04000BB0 RID: 2992
+	public static readonly HashedString[] STORAGE_WORKING = new HashedString[]
+	{
+		"working_pre",
+		"working_loop"
+	};
+
+	// Token: 0x04000BB1 RID: 2993
+	public static readonly EffectorValues HOUSE_DECOR = new EffectorValues
+	{
+		amount = -25,
+		radius = 6
+	};
+
+	// Token: 0x04000BB2 RID: 2994
+	public static readonly EffectorValues STORAGE_DECOR = DECOR.PENALTY.TIER1;
 }

@@ -1,35 +1,18 @@
+﻿using System;
 using KSerialization;
 using UnityEngine;
 
+// Token: 0x02000C39 RID: 3129
 [AddComponentMenu("KMonoBehaviour/scripts/Baggable")]
 public class Baggable : KMonoBehaviour
 {
-	[SerializeField]
-	private KAnimFile minionAnimOverride;
-
-	public bool mustStandOntopOfTrapForPickup;
-
-	[Serialize]
-	public bool wrangled;
-
-	[Serialize]
-	public bool keepWrangledNextTimeRemovedFromStorage;
-
-	public bool useGunForPickup;
-
-	private static readonly EventSystem.IntraObjectHandler<Baggable> OnStoreDelegate = new EventSystem.IntraObjectHandler<Baggable>(delegate(Baggable component, object data)
-	{
-		component.OnStore(data);
-	});
-
-	public const string DEFAULT_BAGGED_ANIM_NAME = "trussed";
-
+	// Token: 0x06003BFC RID: 15356 RVA: 0x0022CA88 File Offset: 0x0022AC88
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		minionAnimOverride = Assets.GetAnim("anim_restrain_creature_kanim");
+		this.minionAnimOverride = Assets.GetAnim("anim_restrain_creature_kanim");
 		Pickupable pickupable = base.gameObject.AddOrGet<Pickupable>();
-		pickupable.workAnims = new HashedString[2]
+		pickupable.workAnims = new HashedString[]
 		{
 			new HashedString("capture"),
 			new HashedString("pickup")
@@ -37,58 +20,64 @@ public class Baggable : KMonoBehaviour
 		pickupable.workAnimPlayMode = KAnim.PlayMode.Once;
 		pickupable.workingPstComplete = null;
 		pickupable.workingPstFailed = null;
-		pickupable.overrideAnims = new KAnimFile[1] { minionAnimOverride };
+		pickupable.overrideAnims = new KAnimFile[]
+		{
+			this.minionAnimOverride
+		};
 		pickupable.trackOnPickup = false;
-		pickupable.useGunforPickup = useGunForPickup;
+		pickupable.useGunforPickup = this.useGunForPickup;
 		pickupable.synchronizeAnims = false;
 		pickupable.SetWorkTime(3f);
-		if (mustStandOntopOfTrapForPickup)
+		if (this.mustStandOntopOfTrapForPickup)
 		{
-			pickupable.SetOffsets(new CellOffset[2]
+			pickupable.SetOffsets(new CellOffset[]
 			{
 				default(CellOffset),
 				new CellOffset(0, -1)
 			});
 		}
-		Subscribe(856640610, OnStoreDelegate);
+		base.Subscribe<Baggable>(856640610, Baggable.OnStoreDelegate);
 		if (base.transform.parent != null)
 		{
 			if (base.transform.parent.GetComponent<Trap>() != null || base.transform.parent.GetSMI<ReusableTrap.Instance>() != null)
 			{
-				GetComponent<KBatchedAnimController>().enabled = true;
+				base.GetComponent<KBatchedAnimController>().enabled = true;
 			}
 			if (base.transform.parent.GetComponent<EggIncubator>() != null)
 			{
-				wrangled = true;
+				this.wrangled = true;
 			}
 		}
-		if (wrangled)
+		if (this.wrangled)
 		{
-			SetWrangled();
+			this.SetWrangled();
 		}
 	}
 
+	// Token: 0x06003BFD RID: 15357 RVA: 0x0022CBE4 File Offset: 0x0022ADE4
 	private void OnStore(object data)
 	{
 		Storage storage = data as Storage;
 		if (storage != null || (data != null && (bool)data))
 		{
 			base.gameObject.AddTag(GameTags.Creatures.Bagged);
-			if ((bool)storage && storage.IsPrefabID(GameTags.Minion))
+			if (storage && storage.HasTag(GameTags.BaseMinion))
 			{
-				SetVisible(visible: false);
+				this.SetVisible(false);
+				return;
 			}
 		}
 		else
 		{
-			if (!keepWrangledNextTimeRemovedFromStorage)
+			if (!this.keepWrangledNextTimeRemovedFromStorage)
 			{
-				Free();
+				this.Free();
 			}
-			keepWrangledNextTimeRemovedFromStorage = false;
+			this.keepWrangledNextTimeRemovedFromStorage = false;
 		}
 	}
 
+	// Token: 0x06003BFE RID: 15358 RVA: 0x0022CC54 File Offset: 0x0022AE54
 	private void SetVisible(bool visible)
 	{
 		KAnimControllerBase component = base.gameObject.GetComponent<KAnimControllerBase>();
@@ -103,6 +92,7 @@ public class Baggable : KMonoBehaviour
 		}
 	}
 
+	// Token: 0x06003BFF RID: 15359 RVA: 0x0022CCAC File Offset: 0x0022AEAC
 	public static string GetBaggedAnimName(GameObject baggableObject)
 	{
 		string result = "trussed";
@@ -122,22 +112,51 @@ public class Baggable : KMonoBehaviour
 		return result;
 	}
 
+	// Token: 0x06003C00 RID: 15360 RVA: 0x0022CCFC File Offset: 0x0022AEFC
 	public void SetWrangled()
 	{
-		wrangled = true;
-		Navigator component = GetComponent<Navigator>();
-		if ((bool)component && component.IsValidNavType(NavType.Floor))
+		this.wrangled = true;
+		Navigator component = base.GetComponent<Navigator>();
+		if (component && component.IsValidNavType(NavType.Floor))
 		{
 			component.SetCurrentNavType(NavType.Floor);
 		}
 		base.gameObject.AddTag(GameTags.Creatures.Bagged);
-		GetComponent<KAnimControllerBase>().Play(GetBaggedAnimName(base.gameObject), KAnim.PlayMode.Loop);
+		base.GetComponent<KAnimControllerBase>().Play(Baggable.GetBaggedAnimName(base.gameObject), KAnim.PlayMode.Loop, 1f, 0f);
 	}
 
+	// Token: 0x06003C01 RID: 15361 RVA: 0x000C6B6D File Offset: 0x000C4D6D
 	public void Free()
 	{
 		base.gameObject.RemoveTag(GameTags.Creatures.Bagged);
-		wrangled = false;
-		SetVisible(visible: true);
+		this.wrangled = false;
+		this.SetVisible(true);
 	}
+
+	// Token: 0x04002904 RID: 10500
+	[SerializeField]
+	private KAnimFile minionAnimOverride;
+
+	// Token: 0x04002905 RID: 10501
+	public bool mustStandOntopOfTrapForPickup;
+
+	// Token: 0x04002906 RID: 10502
+	[Serialize]
+	public bool wrangled;
+
+	// Token: 0x04002907 RID: 10503
+	[Serialize]
+	public bool keepWrangledNextTimeRemovedFromStorage;
+
+	// Token: 0x04002908 RID: 10504
+	public bool useGunForPickup;
+
+	// Token: 0x04002909 RID: 10505
+	private static readonly EventSystem.IntraObjectHandler<Baggable> OnStoreDelegate = new EventSystem.IntraObjectHandler<Baggable>(delegate(Baggable component, object data)
+	{
+		component.OnStore(data);
+	});
+
+	// Token: 0x0400290A RID: 10506
+	public const string DEFAULT_BAGGED_ANIM_NAME = "trussed";
 }

@@ -1,63 +1,35 @@
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+// Token: 0x0200202A RID: 8234
 public class TileScreen : KScreen
 {
-	public Text nameLabel;
-
-	public Text symbolLabel;
-
-	public Text massTitleLabel;
-
-	public Text massAmtLabel;
-
-	public Image massIcon;
-
-	public MinMaxSlider temperatureSlider;
-
-	public Text temperatureSliderText;
-
-	public Image temperatureSliderIcon;
-
-	public Image solidIcon;
-
-	public Image liquidIcon;
-
-	public Image gasIcon;
-
-	public Text solidText;
-
-	public Text gasText;
-
-	[SerializeField]
-	private Color temperatureDefaultColour;
-
-	[SerializeField]
-	private Color temperatureTransitionColour;
-
+	// Token: 0x0600AF50 RID: 44880 RVA: 0x0041F7EC File Offset: 0x0041D9EC
 	private bool SetSliderColour(float temperature, float transition_temperature)
 	{
 		if (Mathf.Abs(temperature - transition_temperature) < 5f)
 		{
-			temperatureSliderText.color = temperatureTransitionColour;
-			temperatureSliderIcon.color = temperatureTransitionColour;
+			this.temperatureSliderText.color = this.temperatureTransitionColour;
+			this.temperatureSliderIcon.color = this.temperatureTransitionColour;
 			return true;
 		}
-		temperatureSliderText.color = temperatureDefaultColour;
-		temperatureSliderIcon.color = temperatureDefaultColour;
+		this.temperatureSliderText.color = this.temperatureDefaultColour;
+		this.temperatureSliderIcon.color = this.temperatureDefaultColour;
 		return false;
 	}
 
+	// Token: 0x0600AF51 RID: 44881 RVA: 0x0041F850 File Offset: 0x0041DA50
 	private void DisplayTileInfo()
 	{
 		Vector3 mousePos = KInputManager.GetMousePos();
-		mousePos.z = 0f - Camera.main.transform.GetPosition().z - Grid.CellSizeInMeters;
+		mousePos.z = -Camera.main.transform.GetPosition().z - Grid.CellSizeInMeters;
 		int num = Grid.PosToCell(Camera.main.ScreenToWorldPoint(mousePos));
 		if (Grid.IsValidCell(num) && Grid.IsVisible(num))
 		{
 			Element element = Grid.Element[num];
-			nameLabel.text = element.name;
+			this.nameLabel.text = element.name;
 			float num2 = Grid.Mass[num];
 			string arg = "kg";
 			if (num2 < 5f)
@@ -76,142 +48,189 @@ public class TileScreen : KScreen
 				arg = "mcg";
 				num2 = Mathf.Floor(num2);
 			}
-			massAmtLabel.text = $"{num2:0.0} {arg}";
-			massTitleLabel.text = "mass";
+			this.massAmtLabel.text = string.Format("{0:0.0} {1}", num2, arg);
+			this.massTitleLabel.text = "mass";
 			float num3 = Grid.Temperature[num];
 			if (element.IsSolid)
 			{
-				solidIcon.gameObject.transform.parent.gameObject.SetActive(value: true);
-				gasIcon.gameObject.transform.parent.gameObject.SetActive(value: false);
-				massIcon.sprite = solidIcon.sprite;
-				solidText.text = ((int)element.highTemp).ToString();
-				gasText.text = "";
-				liquidIcon.rectTransform.SetParent(solidIcon.transform.parent, worldPositionStays: true);
-				liquidIcon.rectTransform.SetLocalPosition(new Vector3(0f, 64f));
-				SetSliderColour(num3, element.highTemp);
-				temperatureSlider.SetMinMaxValue(element.highTemp, Mathf.Min(element.highTemp + 100f, 4000f), Mathf.Max(element.highTemp - 100f, 0f), Mathf.Min(element.highTemp + 100f, 4000f));
+				this.solidIcon.gameObject.transform.parent.gameObject.SetActive(true);
+				this.gasIcon.gameObject.transform.parent.gameObject.SetActive(false);
+				this.massIcon.sprite = this.solidIcon.sprite;
+				this.solidText.text = ((int)element.highTemp).ToString();
+				this.gasText.text = "";
+				this.liquidIcon.rectTransform.SetParent(this.solidIcon.transform.parent, true);
+				this.liquidIcon.rectTransform.SetLocalPosition(new Vector3(0f, 64f));
+				this.SetSliderColour(num3, element.highTemp);
+				this.temperatureSlider.SetMinMaxValue(element.highTemp, Mathf.Min(element.highTemp + 100f, 4000f), Mathf.Max(element.highTemp - 100f, 0f), Mathf.Min(element.highTemp + 100f, 4000f));
 			}
 			else if (element.IsLiquid)
 			{
-				solidIcon.gameObject.transform.parent.gameObject.SetActive(value: true);
-				gasIcon.gameObject.transform.parent.gameObject.SetActive(value: true);
-				massIcon.sprite = liquidIcon.sprite;
-				solidText.text = ((int)element.lowTemp).ToString();
-				gasText.text = ((int)element.highTemp).ToString();
-				liquidIcon.rectTransform.SetParent(temperatureSlider.transform.parent, worldPositionStays: true);
-				liquidIcon.rectTransform.SetLocalPosition(new Vector3(-80f, 0f));
-				if (!SetSliderColour(num3, element.lowTemp))
+				this.solidIcon.gameObject.transform.parent.gameObject.SetActive(true);
+				this.gasIcon.gameObject.transform.parent.gameObject.SetActive(true);
+				this.massIcon.sprite = this.liquidIcon.sprite;
+				this.solidText.text = ((int)element.lowTemp).ToString();
+				this.gasText.text = ((int)element.highTemp).ToString();
+				this.liquidIcon.rectTransform.SetParent(this.temperatureSlider.transform.parent, true);
+				this.liquidIcon.rectTransform.SetLocalPosition(new Vector3(-80f, 0f));
+				if (!this.SetSliderColour(num3, element.lowTemp))
 				{
-					SetSliderColour(num3, element.highTemp);
+					this.SetSliderColour(num3, element.highTemp);
 				}
-				temperatureSlider.SetMinMaxValue(element.lowTemp, element.highTemp, Mathf.Max(element.lowTemp - 100f, 0f), Mathf.Min(element.highTemp + 100f, 5200f));
+				this.temperatureSlider.SetMinMaxValue(element.lowTemp, element.highTemp, Mathf.Max(element.lowTemp - 100f, 0f), Mathf.Min(element.highTemp + 100f, 5200f));
 			}
 			else if (element.IsGas)
 			{
-				solidText.text = "";
-				gasText.text = ((int)element.lowTemp).ToString();
-				solidIcon.gameObject.transform.parent.gameObject.SetActive(value: false);
-				gasIcon.gameObject.transform.parent.gameObject.SetActive(value: true);
-				massIcon.sprite = gasIcon.sprite;
-				SetSliderColour(num3, element.lowTemp);
-				liquidIcon.rectTransform.SetParent(gasIcon.transform.parent, worldPositionStays: true);
-				liquidIcon.rectTransform.SetLocalPosition(new Vector3(0f, -64f));
-				temperatureSlider.SetMinMaxValue(0f, Mathf.Max(element.lowTemp - 100f, 0f), 0f, element.lowTemp + 100f);
+				this.solidText.text = "";
+				this.gasText.text = ((int)element.lowTemp).ToString();
+				this.solidIcon.gameObject.transform.parent.gameObject.SetActive(false);
+				this.gasIcon.gameObject.transform.parent.gameObject.SetActive(true);
+				this.massIcon.sprite = this.gasIcon.sprite;
+				this.SetSliderColour(num3, element.lowTemp);
+				this.liquidIcon.rectTransform.SetParent(this.gasIcon.transform.parent, true);
+				this.liquidIcon.rectTransform.SetLocalPosition(new Vector3(0f, -64f));
+				this.temperatureSlider.SetMinMaxValue(0f, Mathf.Max(element.lowTemp - 100f, 0f), 0f, element.lowTemp + 100f);
 			}
-			temperatureSlider.SetExtraValue(num3);
-			temperatureSliderText.text = GameUtil.GetFormattedTemperature((int)num3);
+			this.temperatureSlider.SetExtraValue(num3);
+			this.temperatureSliderText.text = GameUtil.GetFormattedTemperature((float)((int)num3), GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false);
 			Dictionary<int, float> info = FallingWater.instance.GetInfo(num);
 			if (info.Count <= 0)
 			{
 				return;
 			}
 			List<Element> elements = ElementLoader.elements;
+			using (Dictionary<int, float>.Enumerator enumerator = info.GetEnumerator())
 			{
-				foreach (KeyValuePair<int, float> item in info)
+				while (enumerator.MoveNext())
 				{
-					Element element2 = elements[item.Key];
-					Text text = nameLabel;
-					text.text = text.text + "\n" + element2.name + $" {item.Value:0.00} kg";
+					KeyValuePair<int, float> keyValuePair = enumerator.Current;
+					Element element2 = elements[keyValuePair.Key];
+					Text text = this.nameLabel;
+					text.text = text.text + "\n" + element2.name + string.Format(" {0:0.00} kg", keyValuePair.Value);
 				}
 				return;
 			}
 		}
-		nameLabel.text = "Unknown";
+		this.nameLabel.text = "Unknown";
 	}
 
+	// Token: 0x0600AF52 RID: 44882 RVA: 0x0041FDC0 File Offset: 0x0041DFC0
 	private void DisplayConduitFlowInfo()
 	{
 		HashedString mode = OverlayScreen.Instance.GetMode();
-		UtilityNetworkManager<FlowUtilityNetwork, Vent> utilityNetworkManager = ((mode == OverlayModes.GasConduits.ID) ? Game.Instance.gasConduitSystem : Game.Instance.liquidConduitSystem);
-		ConduitFlow conduitFlow = ((mode == OverlayModes.LiquidConduits.ID) ? Game.Instance.gasConduitFlow : Game.Instance.liquidConduitFlow);
+		UtilityNetworkManager<FlowUtilityNetwork, Vent> utilityNetworkManager = (mode == OverlayModes.GasConduits.ID) ? Game.Instance.gasConduitSystem : Game.Instance.liquidConduitSystem;
+		ConduitFlow conduitFlow = (mode == OverlayModes.LiquidConduits.ID) ? Game.Instance.gasConduitFlow : Game.Instance.liquidConduitFlow;
 		Vector3 mousePos = KInputManager.GetMousePos();
-		mousePos.z = 0f - Camera.main.transform.GetPosition().z - Grid.CellSizeInMeters;
+		mousePos.z = -Camera.main.transform.GetPosition().z - Grid.CellSizeInMeters;
 		int cell = Grid.PosToCell(Camera.main.ScreenToWorldPoint(mousePos));
-		if (Grid.IsValidCell(cell) && utilityNetworkManager.GetConnections(cell, is_physical_building: true) != 0)
+		if (Grid.IsValidCell(cell) && utilityNetworkManager.GetConnections(cell, true) != (UtilityConnections)0)
 		{
 			ConduitFlow.ConduitContents contents = conduitFlow.GetContents(cell);
 			Element element = ElementLoader.FindElementByHash(contents.element);
 			float num = contents.mass;
 			float temperature = contents.temperature;
-			nameLabel.text = element.name;
+			this.nameLabel.text = element.name;
 			string arg = "kg";
 			if (num < 5f)
 			{
 				num *= 1000f;
 				arg = "g";
 			}
-			massAmtLabel.text = $"{num:0.0} {arg}";
-			massTitleLabel.text = "mass";
+			this.massAmtLabel.text = string.Format("{0:0.0} {1}", num, arg);
+			this.massTitleLabel.text = "mass";
 			if (element.IsLiquid)
 			{
-				solidIcon.gameObject.transform.parent.gameObject.SetActive(value: true);
-				gasIcon.gameObject.transform.parent.gameObject.SetActive(value: true);
-				massIcon.sprite = liquidIcon.sprite;
-				solidText.text = ((int)element.lowTemp).ToString();
-				gasText.text = ((int)element.highTemp).ToString();
-				liquidIcon.rectTransform.SetParent(temperatureSlider.transform.parent, worldPositionStays: true);
-				liquidIcon.rectTransform.SetLocalPosition(new Vector3(-80f, 0f));
-				if (!SetSliderColour(temperature, element.lowTemp))
+				this.solidIcon.gameObject.transform.parent.gameObject.SetActive(true);
+				this.gasIcon.gameObject.transform.parent.gameObject.SetActive(true);
+				this.massIcon.sprite = this.liquidIcon.sprite;
+				this.solidText.text = ((int)element.lowTemp).ToString();
+				this.gasText.text = ((int)element.highTemp).ToString();
+				this.liquidIcon.rectTransform.SetParent(this.temperatureSlider.transform.parent, true);
+				this.liquidIcon.rectTransform.SetLocalPosition(new Vector3(-80f, 0f));
+				if (!this.SetSliderColour(temperature, element.lowTemp))
 				{
-					SetSliderColour(temperature, element.highTemp);
+					this.SetSliderColour(temperature, element.highTemp);
 				}
-				temperatureSlider.SetMinMaxValue(element.lowTemp, element.highTemp, Mathf.Max(element.lowTemp - 100f, 0f), Mathf.Min(element.highTemp + 100f, 5200f));
+				this.temperatureSlider.SetMinMaxValue(element.lowTemp, element.highTemp, Mathf.Max(element.lowTemp - 100f, 0f), Mathf.Min(element.highTemp + 100f, 5200f));
 			}
 			else if (element.IsGas)
 			{
-				solidText.text = "";
-				gasText.text = ((int)element.lowTemp).ToString();
-				solidIcon.gameObject.transform.parent.gameObject.SetActive(value: false);
-				gasIcon.gameObject.transform.parent.gameObject.SetActive(value: true);
-				massIcon.sprite = gasIcon.sprite;
-				SetSliderColour(temperature, element.lowTemp);
-				liquidIcon.rectTransform.SetParent(gasIcon.transform.parent, worldPositionStays: true);
-				liquidIcon.rectTransform.SetLocalPosition(new Vector3(0f, -64f));
-				temperatureSlider.SetMinMaxValue(0f, Mathf.Max(element.lowTemp - 100f, 0f), 0f, element.lowTemp + 100f);
+				this.solidText.text = "";
+				this.gasText.text = ((int)element.lowTemp).ToString();
+				this.solidIcon.gameObject.transform.parent.gameObject.SetActive(false);
+				this.gasIcon.gameObject.transform.parent.gameObject.SetActive(true);
+				this.massIcon.sprite = this.gasIcon.sprite;
+				this.SetSliderColour(temperature, element.lowTemp);
+				this.liquidIcon.rectTransform.SetParent(this.gasIcon.transform.parent, true);
+				this.liquidIcon.rectTransform.SetLocalPosition(new Vector3(0f, -64f));
+				this.temperatureSlider.SetMinMaxValue(0f, Mathf.Max(element.lowTemp - 100f, 0f), 0f, element.lowTemp + 100f);
 			}
-			temperatureSlider.SetExtraValue(temperature);
-			temperatureSliderText.text = GameUtil.GetFormattedTemperature((int)temperature);
+			this.temperatureSlider.SetExtraValue(temperature);
+			this.temperatureSliderText.text = GameUtil.GetFormattedTemperature((float)((int)temperature), GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false);
+			return;
 		}
-		else
-		{
-			nameLabel.text = "No Conduit";
-			symbolLabel.text = "";
-			massAmtLabel.text = "";
-			massTitleLabel.text = "";
-		}
+		this.nameLabel.text = "No Conduit";
+		this.symbolLabel.text = "";
+		this.massAmtLabel.text = "";
+		this.massTitleLabel.text = "";
 	}
 
+	// Token: 0x0600AF53 RID: 44883 RVA: 0x004201C0 File Offset: 0x0041E3C0
 	private void Update()
 	{
 		base.transform.SetPosition(KInputManager.GetMousePos());
 		HashedString mode = OverlayScreen.Instance.GetMode();
 		if (mode == OverlayModes.GasConduits.ID || mode == OverlayModes.LiquidConduits.ID)
 		{
-			DisplayConduitFlowInfo();
+			this.DisplayConduitFlowInfo();
+			return;
 		}
-		else
-		{
-			DisplayTileInfo();
-		}
+		this.DisplayTileInfo();
 	}
+
+	// Token: 0x040089FC RID: 35324
+	public Text nameLabel;
+
+	// Token: 0x040089FD RID: 35325
+	public Text symbolLabel;
+
+	// Token: 0x040089FE RID: 35326
+	public Text massTitleLabel;
+
+	// Token: 0x040089FF RID: 35327
+	public Text massAmtLabel;
+
+	// Token: 0x04008A00 RID: 35328
+	public Image massIcon;
+
+	// Token: 0x04008A01 RID: 35329
+	public MinMaxSlider temperatureSlider;
+
+	// Token: 0x04008A02 RID: 35330
+	public Text temperatureSliderText;
+
+	// Token: 0x04008A03 RID: 35331
+	public Image temperatureSliderIcon;
+
+	// Token: 0x04008A04 RID: 35332
+	public Image solidIcon;
+
+	// Token: 0x04008A05 RID: 35333
+	public Image liquidIcon;
+
+	// Token: 0x04008A06 RID: 35334
+	public Image gasIcon;
+
+	// Token: 0x04008A07 RID: 35335
+	public Text solidText;
+
+	// Token: 0x04008A08 RID: 35336
+	public Text gasText;
+
+	// Token: 0x04008A09 RID: 35337
+	[SerializeField]
+	private Color temperatureDefaultColour;
+
+	// Token: 0x04008A0A RID: 35338
+	[SerializeField]
+	private Color temperatureTransitionColour;
 }

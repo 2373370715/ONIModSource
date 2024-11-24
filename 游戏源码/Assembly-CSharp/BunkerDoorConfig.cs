@@ -1,29 +1,48 @@
+﻿using System;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x02000039 RID: 57
 public class BunkerDoorConfig : IBuildingConfig
 {
-	public const string ID = "BunkerDoor";
-
+	// Token: 0x060000F6 RID: 246 RVA: 0x00142040 File Offset: 0x00140240
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef("BunkerDoor", 4, 1, "door_bunker_kanim", 1000, 120f, new float[1] { 500f }, new string[1] { SimHashes.Steel.ToString() }, 1600f, BuildLocationRule.Tile, noise: NOISE_POLLUTION.NONE, decor: BUILDINGS.DECOR.NONE, temperature_modification_mass_scale: 1f);
-		obj.RequiresPowerInput = true;
-		obj.EnergyConsumptionWhenActive = 120f;
-		obj.OverheatTemperature = 1273.15f;
-		obj.Entombable = false;
-		obj.IsFoundation = true;
-		obj.AudioCategory = "Metal";
-		obj.PermittedRotations = PermittedRotations.R90;
-		obj.SceneLayer = Grid.SceneLayer.TileMain;
-		obj.ForegroundLayer = Grid.SceneLayer.InteriorWall;
-		obj.TileLayer = ObjectLayer.FoundationTile;
-		obj.LogicInputPorts = DoorConfig.CreateSingleInputPortList(new CellOffset(-1, 0));
+		string id = "BunkerDoor";
+		int width = 4;
+		int height = 1;
+		string anim = "door_bunker_kanim";
+		int hitpoints = 1000;
+		float construction_time = 120f;
+		float[] construction_mass = new float[]
+		{
+			500f
+		};
+		string[] construction_materials = new string[]
+		{
+			SimHashes.Steel.ToString()
+		};
+		float melting_point = 1600f;
+		BuildLocationRule build_location_rule = BuildLocationRule.Tile;
+		EffectorValues none = NOISE_POLLUTION.NONE;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, construction_mass, construction_materials, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, none, 1f);
+		buildingDef.RequiresPowerInput = true;
+		buildingDef.EnergyConsumptionWhenActive = 120f;
+		buildingDef.OverheatTemperature = 1273.15f;
+		buildingDef.Entombable = false;
+		buildingDef.IsFoundation = true;
+		buildingDef.AudioCategory = "Metal";
+		buildingDef.PermittedRotations = PermittedRotations.R90;
+		buildingDef.SceneLayer = Grid.SceneLayer.TileMain;
+		buildingDef.ForegroundLayer = Grid.SceneLayer.InteriorWall;
+		buildingDef.TileLayer = ObjectLayer.FoundationTile;
+		buildingDef.LogicInputPorts = DoorConfig.CreateSingleInputPortList(new CellOffset(-1, 0));
 		SoundEventVolumeCache.instance.AddVolume("door_internal_kanim", "Open_DoorInternal", NOISE_POLLUTION.NOISY.TIER2);
 		SoundEventVolumeCache.instance.AddVolume("door_internal_kanim", "Close_DoorInternal", NOISE_POLLUTION.NOISY.TIER2);
-		return obj;
+		return buildingDef;
 	}
 
+	// Token: 0x060000F7 RID: 247 RVA: 0x00142144 File Offset: 0x00140344
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		Door door = go.AddOrGet<Door>();
@@ -41,7 +60,10 @@ public class BunkerDoorConfig : IBuildingConfig
 		go.AddOrGet<ZoneTile>();
 		go.AddOrGet<KBoxCollider2D>();
 		Prioritizable.AddRef(go);
-		Object.DestroyImmediate(go.GetComponent<BuildingEnabledButton>());
-		go.GetComponent<KPrefabID>().AddTag(GameTags.Bunker);
+		UnityEngine.Object.DestroyImmediate(go.GetComponent<BuildingEnabledButton>());
+		go.GetComponent<KPrefabID>().AddTag(GameTags.Bunker, false);
 	}
+
+	// Token: 0x04000096 RID: 150
+	public const string ID = "BunkerDoor";
 }

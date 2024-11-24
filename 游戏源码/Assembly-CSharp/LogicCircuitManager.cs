@@ -1,176 +1,212 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using UnityEngine;
 
+// Token: 0x020014AD RID: 5293
 public class LogicCircuitManager
 {
-	private struct Signal
-	{
-		public int cell;
-
-		public int value;
-
-		public Signal(int cell, int value)
-		{
-			this.cell = cell;
-			this.value = value;
-		}
-	}
-
-	public static float ClockTickInterval = 0.1f;
-
-	private float elapsedTime;
-
-	private UtilityNetworkManager<LogicCircuitNetwork, LogicWire> conduitSystem;
-
-	private List<ILogicUIElement> uiVisElements = new List<ILogicUIElement>();
-
-	public static float BridgeRefreshInterval = 1f;
-
-	private List<LogicUtilityNetworkLink>[] bridgeGroups = new List<LogicUtilityNetworkLink>[2];
-
-	private bool updateEvenBridgeGroups;
-
-	private float timeSinceBridgeRefresh;
-
-	public System.Action onLogicTick;
-
-	public Action<ILogicUIElement> onElemAdded;
-
-	public Action<ILogicUIElement> onElemRemoved;
-
+	// Token: 0x06006E26 RID: 28198 RVA: 0x002EE0C4 File Offset: 0x002EC2C4
 	public LogicCircuitManager(UtilityNetworkManager<LogicCircuitNetwork, LogicWire> conduit_system)
 	{
-		conduitSystem = conduit_system;
-		timeSinceBridgeRefresh = 0f;
-		elapsedTime = 0f;
+		this.conduitSystem = conduit_system;
+		this.timeSinceBridgeRefresh = 0f;
+		this.elapsedTime = 0f;
 		for (int i = 0; i < 2; i++)
 		{
-			bridgeGroups[i] = new List<LogicUtilityNetworkLink>();
+			this.bridgeGroups[i] = new List<LogicUtilityNetworkLink>();
 		}
 	}
 
+	// Token: 0x06006E27 RID: 28199 RVA: 0x000E82A1 File Offset: 0x000E64A1
 	public void RenderEveryTick(float dt)
 	{
-		Refresh(dt);
+		this.Refresh(dt);
 	}
 
+	// Token: 0x06006E28 RID: 28200 RVA: 0x002EE124 File Offset: 0x002EC324
 	private void Refresh(float dt)
 	{
-		if (conduitSystem.IsDirty)
+		if (this.conduitSystem.IsDirty)
 		{
-			conduitSystem.Update();
+			this.conduitSystem.Update();
 			LogicCircuitNetwork.logicSoundRegister.Clear();
-			PropagateSignals(force_send_events: true);
-			elapsedTime = 0f;
+			this.PropagateSignals(true);
+			this.elapsedTime = 0f;
 		}
 		else if (SpeedControlScreen.Instance != null && !SpeedControlScreen.Instance.IsPaused)
 		{
-			elapsedTime += dt;
-			timeSinceBridgeRefresh += dt;
-			while (elapsedTime > ClockTickInterval)
+			this.elapsedTime += dt;
+			this.timeSinceBridgeRefresh += dt;
+			while (this.elapsedTime > LogicCircuitManager.ClockTickInterval)
 			{
-				elapsedTime -= ClockTickInterval;
-				PropagateSignals(force_send_events: false);
-				if (onLogicTick != null)
+				this.elapsedTime -= LogicCircuitManager.ClockTickInterval;
+				this.PropagateSignals(false);
+				if (this.onLogicTick != null)
 				{
-					onLogicTick();
+					this.onLogicTick();
 				}
 			}
-			if (timeSinceBridgeRefresh > BridgeRefreshInterval)
+			if (this.timeSinceBridgeRefresh > LogicCircuitManager.BridgeRefreshInterval)
 			{
-				UpdateCircuitBridgeLists();
-				timeSinceBridgeRefresh = 0f;
+				this.UpdateCircuitBridgeLists();
+				this.timeSinceBridgeRefresh = 0f;
 			}
 		}
-		foreach (LogicCircuitNetwork network in Game.Instance.logicCircuitSystem.GetNetworks())
+		foreach (UtilityNetwork utilityNetwork in Game.Instance.logicCircuitSystem.GetNetworks())
 		{
-			CheckCircuitOverloaded(dt, network.id, network.GetBitsUsed());
+			LogicCircuitNetwork logicCircuitNetwork = (LogicCircuitNetwork)utilityNetwork;
+			this.CheckCircuitOverloaded(dt, logicCircuitNetwork.id, logicCircuitNetwork.GetBitsUsed());
 		}
 	}
 
+	// Token: 0x06006E29 RID: 28201 RVA: 0x002EE258 File Offset: 0x002EC458
 	private void PropagateSignals(bool force_send_events)
 	{
 		IList<UtilityNetwork> networks = Game.Instance.logicCircuitSystem.GetNetworks();
-		foreach (LogicCircuitNetwork item in networks)
+		foreach (UtilityNetwork utilityNetwork in networks)
 		{
-			item.UpdateLogicValue();
+			((LogicCircuitNetwork)utilityNetwork).UpdateLogicValue();
 		}
-		foreach (LogicCircuitNetwork item2 in networks)
+		foreach (UtilityNetwork utilityNetwork2 in networks)
 		{
-			item2.SendLogicEvents(force_send_events, item2.id);
+			LogicCircuitNetwork logicCircuitNetwork = (LogicCircuitNetwork)utilityNetwork2;
+			logicCircuitNetwork.SendLogicEvents(force_send_events, logicCircuitNetwork.id);
 		}
 	}
 
+	// Token: 0x06006E2A RID: 28202 RVA: 0x000E82AA File Offset: 0x000E64AA
 	public LogicCircuitNetwork GetNetworkForCell(int cell)
 	{
-		return conduitSystem.GetNetworkForCell(cell) as LogicCircuitNetwork;
+		return this.conduitSystem.GetNetworkForCell(cell) as LogicCircuitNetwork;
 	}
 
+	// Token: 0x06006E2B RID: 28203 RVA: 0x000E82BD File Offset: 0x000E64BD
 	public void AddVisElem(ILogicUIElement elem)
 	{
-		uiVisElements.Add(elem);
-		if (onElemAdded != null)
+		this.uiVisElements.Add(elem);
+		if (this.onElemAdded != null)
 		{
-			onElemAdded(elem);
+			this.onElemAdded(elem);
 		}
 	}
 
+	// Token: 0x06006E2C RID: 28204 RVA: 0x000E82DF File Offset: 0x000E64DF
 	public void RemoveVisElem(ILogicUIElement elem)
 	{
-		if (onElemRemoved != null)
+		if (this.onElemRemoved != null)
 		{
-			onElemRemoved(elem);
+			this.onElemRemoved(elem);
 		}
-		uiVisElements.Remove(elem);
+		this.uiVisElements.Remove(elem);
 	}
 
+	// Token: 0x06006E2D RID: 28205 RVA: 0x000E8302 File Offset: 0x000E6502
 	public ReadOnlyCollection<ILogicUIElement> GetVisElements()
 	{
-		return uiVisElements.AsReadOnly();
+		return this.uiVisElements.AsReadOnly();
 	}
 
+	// Token: 0x06006E2E RID: 28206 RVA: 0x000E830F File Offset: 0x000E650F
 	public static void ToggleNoWireConnected(bool show_missing_wire, GameObject go)
 	{
-		go.GetComponent<KSelectable>().ToggleStatusItem(Db.Get().BuildingStatusItems.NoLogicWireConnected, show_missing_wire);
+		go.GetComponent<KSelectable>().ToggleStatusItem(Db.Get().BuildingStatusItems.NoLogicWireConnected, show_missing_wire, null);
 	}
 
+	// Token: 0x06006E2F RID: 28207 RVA: 0x002EE2F4 File Offset: 0x002EC4F4
 	private void CheckCircuitOverloaded(float dt, int id, int bits_used)
 	{
 		UtilityNetwork networkByID = Game.Instance.logicCircuitSystem.GetNetworkByID(id);
 		if (networkByID != null)
 		{
-			((LogicCircuitNetwork)networkByID)?.UpdateOverloadTime(dt, bits_used);
+			LogicCircuitNetwork logicCircuitNetwork = (LogicCircuitNetwork)networkByID;
+			if (logicCircuitNetwork != null)
+			{
+				logicCircuitNetwork.UpdateOverloadTime(dt, bits_used);
+			}
 		}
 	}
 
+	// Token: 0x06006E30 RID: 28208 RVA: 0x000E832E File Offset: 0x000E652E
 	public void Connect(LogicUtilityNetworkLink bridge)
 	{
-		bridgeGroups[(int)bridge.bitDepth].Add(bridge);
+		this.bridgeGroups[(int)bridge.bitDepth].Add(bridge);
 	}
 
+	// Token: 0x06006E31 RID: 28209 RVA: 0x000E8343 File Offset: 0x000E6543
 	public void Disconnect(LogicUtilityNetworkLink bridge)
 	{
-		bridgeGroups[(int)bridge.bitDepth].Remove(bridge);
+		this.bridgeGroups[(int)bridge.bitDepth].Remove(bridge);
 	}
 
+	// Token: 0x06006E32 RID: 28210 RVA: 0x002EE328 File Offset: 0x002EC528
 	private void UpdateCircuitBridgeLists()
 	{
-		foreach (LogicCircuitNetwork network in Game.Instance.logicCircuitSystem.GetNetworks())
+		foreach (UtilityNetwork utilityNetwork in Game.Instance.logicCircuitSystem.GetNetworks())
 		{
-			if (updateEvenBridgeGroups)
+			LogicCircuitNetwork logicCircuitNetwork = (LogicCircuitNetwork)utilityNetwork;
+			if (this.updateEvenBridgeGroups)
 			{
-				if (network.id % 2 == 0)
+				if (logicCircuitNetwork.id % 2 == 0)
 				{
-					network.UpdateRelevantBridges(bridgeGroups);
+					logicCircuitNetwork.UpdateRelevantBridges(this.bridgeGroups);
 				}
 			}
-			else if (network.id % 2 == 1)
+			else if (logicCircuitNetwork.id % 2 == 1)
 			{
-				network.UpdateRelevantBridges(bridgeGroups);
+				logicCircuitNetwork.UpdateRelevantBridges(this.bridgeGroups);
 			}
 		}
-		updateEvenBridgeGroups = !updateEvenBridgeGroups;
+		this.updateEvenBridgeGroups = !this.updateEvenBridgeGroups;
+	}
+
+	// Token: 0x04005267 RID: 21095
+	public static float ClockTickInterval = 0.1f;
+
+	// Token: 0x04005268 RID: 21096
+	private float elapsedTime;
+
+	// Token: 0x04005269 RID: 21097
+	private UtilityNetworkManager<LogicCircuitNetwork, LogicWire> conduitSystem;
+
+	// Token: 0x0400526A RID: 21098
+	private List<ILogicUIElement> uiVisElements = new List<ILogicUIElement>();
+
+	// Token: 0x0400526B RID: 21099
+	public static float BridgeRefreshInterval = 1f;
+
+	// Token: 0x0400526C RID: 21100
+	private List<LogicUtilityNetworkLink>[] bridgeGroups = new List<LogicUtilityNetworkLink>[2];
+
+	// Token: 0x0400526D RID: 21101
+	private bool updateEvenBridgeGroups;
+
+	// Token: 0x0400526E RID: 21102
+	private float timeSinceBridgeRefresh;
+
+	// Token: 0x0400526F RID: 21103
+	public System.Action onLogicTick;
+
+	// Token: 0x04005270 RID: 21104
+	public Action<ILogicUIElement> onElemAdded;
+
+	// Token: 0x04005271 RID: 21105
+	public Action<ILogicUIElement> onElemRemoved;
+
+	// Token: 0x020014AE RID: 5294
+	private struct Signal
+	{
+		// Token: 0x06006E34 RID: 28212 RVA: 0x000E836F File Offset: 0x000E656F
+		public Signal(int cell, int value)
+		{
+			this.cell = cell;
+			this.value = value;
+		}
+
+		// Token: 0x04005272 RID: 21106
+		public int cell;
+
+		// Token: 0x04005273 RID: 21107
+		public int value;
 	}
 }

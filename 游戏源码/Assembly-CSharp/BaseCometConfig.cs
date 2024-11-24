@@ -1,10 +1,13 @@
+﻿using System;
 using UnityEngine;
 
+// Token: 0x02000447 RID: 1095
 public static class BaseCometConfig
 {
+	// Token: 0x060012FF RID: 4863 RVA: 0x0018C408 File Offset: 0x0018A608
 	public static GameObject BaseComet(string id, string name, string animName, SimHashes primaryElement, Vector2 massRange, Vector2 temperatureRange, string impactSound = "Meteor_Large_Impact", int flyingSoundID = 1, SimHashes exhaustElement = SimHashes.CarbonDioxide, SpawnFXHashes explosionEffect = SpawnFXHashes.None, float size = 1f)
 	{
-		GameObject gameObject = EntityTemplates.CreateEntity(id, name);
+		GameObject gameObject = EntityTemplates.CreateEntity(id, name, true);
 		gameObject.AddOrGet<SaveLoadRoot>();
 		gameObject.AddOrGet<LoopingSounds>();
 		Comet comet = gameObject.AddOrGet<Comet>();
@@ -16,14 +19,17 @@ public static class BaseCometConfig
 		comet.EXHAUST_ELEMENT = exhaustElement;
 		comet.explosionEffectHash = explosionEffect;
 		PrimaryElement primaryElement2 = gameObject.AddOrGet<PrimaryElement>();
-		primaryElement2.SetElement(primaryElement);
+		primaryElement2.SetElement(primaryElement, true);
 		primaryElement2.Temperature = (comet.temperatureRange.x + comet.temperatureRange.y) / 2f;
-		KBatchedAnimController kBatchedAnimController = gameObject.AddOrGet<KBatchedAnimController>();
-		kBatchedAnimController.AnimFiles = new KAnimFile[1] { Assets.GetAnim(animName) };
-		kBatchedAnimController.isMovable = true;
-		kBatchedAnimController.initialAnim = "fall_loop";
-		kBatchedAnimController.initialMode = KAnim.PlayMode.Loop;
-		kBatchedAnimController.visibilityType = KAnimControllerBase.VisibilityType.OffscreenUpdate;
+		KBatchedAnimController kbatchedAnimController = gameObject.AddOrGet<KBatchedAnimController>();
+		kbatchedAnimController.AnimFiles = new KAnimFile[]
+		{
+			Assets.GetAnim(animName)
+		};
+		kbatchedAnimController.isMovable = true;
+		kbatchedAnimController.initialAnim = "fall_loop";
+		kbatchedAnimController.initialMode = KAnim.PlayMode.Loop;
+		kbatchedAnimController.visibilityType = KAnimControllerBase.VisibilityType.OffscreenUpdate;
 		gameObject.AddOrGet<KCircleCollider2D>().radius = 0.5f;
 		gameObject.transform.localScale = new Vector3(size, size, 1f);
 		gameObject.AddTag(GameTags.Comet);

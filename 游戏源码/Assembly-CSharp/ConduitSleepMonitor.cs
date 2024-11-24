@@ -1,92 +1,106 @@
+﻿using System;
 using UnityEngine;
 
+// Token: 0x0200014B RID: 331
 public class ConduitSleepMonitor : GameStateMachine<ConduitSleepMonitor, ConduitSleepMonitor.Instance, IStateMachineTarget, ConduitSleepMonitor.Def>
 {
-	public class Def : BaseDef
+	// Token: 0x060004D6 RID: 1238 RVA: 0x001579E8 File Offset: 0x00155BE8
+	public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
-		public ObjectLayer conduitLayer;
-	}
-
-	private class SleepSearchStates : State
-	{
-		public State looking;
-
-		public State found;
-	}
-
-	public new class Instance : GameInstance
-	{
-		public Instance(IStateMachineTarget master, Def def)
-			: base(master, def)
+		default_state = this.idle;
+		base.serializable = StateMachine.SerializeType.ParamsOnly;
+		this.idle.Enter(delegate(ConduitSleepMonitor.Instance smi)
 		{
-		}
-	}
-
-	private State idle;
-
-	private SleepSearchStates searching;
-
-	public IntParameter targetSleepCell = new IntParameter(Grid.InvalidCell);
-
-	public override void InitializeStates(out BaseState default_state)
-	{
-		default_state = idle;
-		base.serializable = SerializeType.ParamsOnly;
-		idle.Enter(delegate(Instance smi)
-		{
-			targetSleepCell.Set(Grid.InvalidCell, smi);
+			this.targetSleepCell.Set(Grid.InvalidCell, smi, false);
 			smi.GetComponent<Staterpillar>().DestroyOrphanedConnectorBuilding();
-		}).EventTransition(GameHashes.NewBlock, (Instance smi) => GameClock.Instance, searching.looking, IsSleepyTime);
-		searching.Enter(TryRecoverSave).EventTransition(GameHashes.NewBlock, (Instance smi) => GameClock.Instance, idle, GameStateMachine<ConduitSleepMonitor, Instance, IStateMachineTarget, Def>.Not(IsSleepyTime)).Exit(delegate(Instance smi)
+		}).EventTransition(GameHashes.NewBlock, (ConduitSleepMonitor.Instance smi) => GameClock.Instance, this.searching.looking, new StateMachine<ConduitSleepMonitor, ConduitSleepMonitor.Instance, IStateMachineTarget, ConduitSleepMonitor.Def>.Transition.ConditionCallback(ConduitSleepMonitor.IsSleepyTime));
+		this.searching.Enter(new StateMachine<ConduitSleepMonitor, ConduitSleepMonitor.Instance, IStateMachineTarget, ConduitSleepMonitor.Def>.State.Callback(this.TryRecoverSave)).EventTransition(GameHashes.NewBlock, (ConduitSleepMonitor.Instance smi) => GameClock.Instance, this.idle, GameStateMachine<ConduitSleepMonitor, ConduitSleepMonitor.Instance, IStateMachineTarget, ConduitSleepMonitor.Def>.Not(new StateMachine<ConduitSleepMonitor, ConduitSleepMonitor.Instance, IStateMachineTarget, ConduitSleepMonitor.Def>.Transition.ConditionCallback(ConduitSleepMonitor.IsSleepyTime))).Exit(delegate(ConduitSleepMonitor.Instance smi)
 		{
-			targetSleepCell.Set(Grid.InvalidCell, smi);
+			this.targetSleepCell.Set(Grid.InvalidCell, smi, false);
 			smi.GetComponent<Staterpillar>().DestroyOrphanedConnectorBuilding();
 		});
-		searching.looking.Update(delegate(Instance smi, float dt)
+		this.searching.looking.Update(delegate(ConduitSleepMonitor.Instance smi, float dt)
 		{
-			FindSleepLocation(smi);
-		}, UpdateRate.SIM_1000ms).ToggleStatusItem(Db.Get().CreatureStatusItems.NoSleepSpot).ParamTransition(targetSleepCell, searching.found, (Instance smi, int sleepCell) => sleepCell != Grid.InvalidCell);
-		searching.found.Enter(delegate(Instance smi)
+			this.FindSleepLocation(smi);
+		}, UpdateRate.SIM_1000ms, false).ToggleStatusItem(Db.Get().CreatureStatusItems.NoSleepSpot, null).ParamTransition<int>(this.targetSleepCell, this.searching.found, (ConduitSleepMonitor.Instance smi, int sleepCell) => sleepCell != Grid.InvalidCell);
+		this.searching.found.Enter(delegate(ConduitSleepMonitor.Instance smi)
 		{
-			smi.GetComponent<Staterpillar>().SpawnConnectorBuilding(targetSleepCell.Get(smi));
-		}).ParamTransition(targetSleepCell, searching.looking, (Instance smi, int sleepCell) => sleepCell == Grid.InvalidCell).ToggleBehaviour(GameTags.Creatures.WantsConduitConnection, (Instance smi) => targetSleepCell.Get(smi) != Grid.InvalidCell && IsSleepyTime(smi));
+			smi.GetComponent<Staterpillar>().SpawnConnectorBuilding(this.targetSleepCell.Get(smi));
+		}).ParamTransition<int>(this.targetSleepCell, this.searching.looking, (ConduitSleepMonitor.Instance smi, int sleepCell) => sleepCell == Grid.InvalidCell).ToggleBehaviour(GameTags.Creatures.WantsConduitConnection, (ConduitSleepMonitor.Instance smi) => this.targetSleepCell.Get(smi) != Grid.InvalidCell && ConduitSleepMonitor.IsSleepyTime(smi), null);
 	}
 
-	public static bool IsSleepyTime(Instance smi)
+	// Token: 0x060004D7 RID: 1239 RVA: 0x000A7CDF File Offset: 0x000A5EDF
+	public static bool IsSleepyTime(ConduitSleepMonitor.Instance smi)
 	{
 		return GameClock.Instance.GetTimeSinceStartOfCycle() >= 500f;
 	}
 
-	private void TryRecoverSave(Instance smi)
+	// Token: 0x060004D8 RID: 1240 RVA: 0x00157B98 File Offset: 0x00155D98
+	private void TryRecoverSave(ConduitSleepMonitor.Instance smi)
 	{
 		Staterpillar component = smi.GetComponent<Staterpillar>();
-		if (targetSleepCell.Get(smi) == Grid.InvalidCell && component.IsConnectorBuildingSpawned())
+		if (this.targetSleepCell.Get(smi) == Grid.InvalidCell && component.IsConnectorBuildingSpawned())
 		{
 			int value = Grid.PosToCell(component.GetConnectorBuilding());
-			targetSleepCell.Set(value, smi);
+			this.targetSleepCell.Set(value, smi, false);
 		}
 	}
 
-	private void FindSleepLocation(Instance smi)
+	// Token: 0x060004D9 RID: 1241 RVA: 0x00157BE4 File Offset: 0x00155DE4
+	private void FindSleepLocation(ConduitSleepMonitor.Instance smi)
 	{
 		StaterpillarCellQuery staterpillarCellQuery = PathFinderQueries.staterpillarCellQuery.Reset(10, smi.gameObject, smi.def.conduitLayer);
 		smi.GetComponent<Navigator>().RunQuery(staterpillarCellQuery);
-		if (staterpillarCellQuery.result_cells.Count <= 0)
+		if (staterpillarCellQuery.result_cells.Count > 0)
 		{
-			return;
-		}
-		foreach (int result_cell in staterpillarCellQuery.result_cells)
-		{
-			int cellInDirection = Grid.GetCellInDirection(result_cell, Direction.Down);
-			if (Grid.Objects[cellInDirection, (int)smi.def.conduitLayer] != null)
+			foreach (int num in staterpillarCellQuery.result_cells)
 			{
-				targetSleepCell.Set(result_cell, smi);
-				break;
+				int cellInDirection = Grid.GetCellInDirection(num, Direction.Down);
+				if (Grid.Objects[cellInDirection, (int)smi.def.conduitLayer] != null)
+				{
+					this.targetSleepCell.Set(num, smi, false);
+					break;
+				}
+			}
+			if (this.targetSleepCell.Get(smi) == Grid.InvalidCell)
+			{
+				this.targetSleepCell.Set(staterpillarCellQuery.result_cells[UnityEngine.Random.Range(0, staterpillarCellQuery.result_cells.Count)], smi, false);
 			}
 		}
-		if (targetSleepCell.Get(smi) == Grid.InvalidCell)
+	}
+
+	// Token: 0x04000388 RID: 904
+	private GameStateMachine<ConduitSleepMonitor, ConduitSleepMonitor.Instance, IStateMachineTarget, ConduitSleepMonitor.Def>.State idle;
+
+	// Token: 0x04000389 RID: 905
+	private ConduitSleepMonitor.SleepSearchStates searching;
+
+	// Token: 0x0400038A RID: 906
+	public StateMachine<ConduitSleepMonitor, ConduitSleepMonitor.Instance, IStateMachineTarget, ConduitSleepMonitor.Def>.IntParameter targetSleepCell = new StateMachine<ConduitSleepMonitor, ConduitSleepMonitor.Instance, IStateMachineTarget, ConduitSleepMonitor.Def>.IntParameter(Grid.InvalidCell);
+
+	// Token: 0x0200014C RID: 332
+	public class Def : StateMachine.BaseDef
+	{
+		// Token: 0x0400038B RID: 907
+		public ObjectLayer conduitLayer;
+	}
+
+	// Token: 0x0200014D RID: 333
+	private class SleepSearchStates : GameStateMachine<ConduitSleepMonitor, ConduitSleepMonitor.Instance, IStateMachineTarget, ConduitSleepMonitor.Def>.State
+	{
+		// Token: 0x0400038C RID: 908
+		public GameStateMachine<ConduitSleepMonitor, ConduitSleepMonitor.Instance, IStateMachineTarget, ConduitSleepMonitor.Def>.State looking;
+
+		// Token: 0x0400038D RID: 909
+		public GameStateMachine<ConduitSleepMonitor, ConduitSleepMonitor.Instance, IStateMachineTarget, ConduitSleepMonitor.Def>.State found;
+	}
+
+	// Token: 0x0200014E RID: 334
+	public new class Instance : GameStateMachine<ConduitSleepMonitor, ConduitSleepMonitor.Instance, IStateMachineTarget, ConduitSleepMonitor.Def>.GameInstance
+	{
+		// Token: 0x060004E2 RID: 1250 RVA: 0x000A7D74 File Offset: 0x000A5F74
+		public Instance(IStateMachineTarget master, ConduitSleepMonitor.Def def) : base(master, def)
 		{
-			targetSleepCell.Set(staterpillarCellQuery.result_cells[Random.Range(0, staterpillarCellQuery.result_cells.Count)], smi);
 		}
 	}
 }

@@ -1,17 +1,34 @@
+﻿using System;
+
+// Token: 0x02000D83 RID: 3459
 public class FoodDehydratorWorkableEmpty : Workable
 {
-	private static readonly HashedString[] WORK_ANIMS = new HashedString[2] { "empty_pre", "empty_loop" };
-
-	private static readonly HashedString[] WORK_ANIMS_PST = new HashedString[1] { "empty_pst" };
-
-	private static readonly HashedString[] WORK_ANIMS_FAIL_PST = new HashedString[1] { "" };
-
+	// Token: 0x060043D4 RID: 17364 RVA: 0x000CBDC3 File Offset: 0x000C9FC3
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		workerStatusItem = Db.Get().DuplicantStatusItems.Emptying;
-		workAnims = WORK_ANIMS;
-		workingPstComplete = WORK_ANIMS_PST;
-		workingPstFailed = WORK_ANIMS_FAIL_PST;
+		this.workerStatusItem = Db.Get().DuplicantStatusItems.Emptying;
+		this.workAnims = FoodDehydratorWorkableEmpty.WORK_ANIMS;
+		this.workingPstComplete = FoodDehydratorWorkableEmpty.WORK_ANIMS_PST;
+		this.workingPstFailed = FoodDehydratorWorkableEmpty.WORK_ANIMS_FAIL_PST;
 	}
+
+	// Token: 0x04002E87 RID: 11911
+	private static readonly HashedString[] WORK_ANIMS = new HashedString[]
+	{
+		"empty_pre",
+		"empty_loop"
+	};
+
+	// Token: 0x04002E88 RID: 11912
+	private static readonly HashedString[] WORK_ANIMS_PST = new HashedString[]
+	{
+		"empty_pst"
+	};
+
+	// Token: 0x04002E89 RID: 11913
+	private static readonly HashedString[] WORK_ANIMS_FAIL_PST = new HashedString[]
+	{
+		""
+	};
 }

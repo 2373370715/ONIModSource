@@ -1,2035 +1,791 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
-using ImGuiNET;
 using KSerialization;
 using UnityEngine;
 
+// Token: 0x020008C0 RID: 2240
 public abstract class StateMachine
 {
+	// Token: 0x060027B0 RID: 10160 RVA: 0x000B9CA1 File Offset: 0x000B7EA1
+	public StateMachine()
+	{
+		this.name = base.GetType().FullName;
+	}
+
+	// Token: 0x060027B1 RID: 10161 RVA: 0x000B9CC6 File Offset: 0x000B7EC6
+	public virtual void FreeResources()
+	{
+		this.name = null;
+		if (this.defaultState != null)
+		{
+			this.defaultState.FreeResources();
+		}
+		this.defaultState = null;
+		this.parameters = null;
+	}
+
+	// Token: 0x060027B2 RID: 10162
+	public abstract string[] GetStateNames();
+
+	// Token: 0x060027B3 RID: 10163
+	public abstract StateMachine.BaseState GetState(string name);
+
+	// Token: 0x060027B4 RID: 10164
+	public abstract void BindStates();
+
+	// Token: 0x060027B5 RID: 10165
+	public abstract Type GetStateMachineInstanceType();
+
+	// Token: 0x1700011D RID: 285
+	// (get) Token: 0x060027B6 RID: 10166 RVA: 0x000B9CF0 File Offset: 0x000B7EF0
+	// (set) Token: 0x060027B7 RID: 10167 RVA: 0x000B9CF8 File Offset: 0x000B7EF8
+	public int version { get; protected set; }
+
+	// Token: 0x1700011E RID: 286
+	// (get) Token: 0x060027B8 RID: 10168 RVA: 0x000B9D01 File Offset: 0x000B7F01
+	// (set) Token: 0x060027B9 RID: 10169 RVA: 0x000B9D09 File Offset: 0x000B7F09
+	public StateMachine.SerializeType serializable { get; protected set; }
+
+	// Token: 0x060027BA RID: 10170 RVA: 0x000B9D12 File Offset: 0x000B7F12
+	public virtual void InitializeStates(out StateMachine.BaseState default_state)
+	{
+		default_state = null;
+	}
+
+	// Token: 0x060027BB RID: 10171 RVA: 0x001D1C68 File Offset: 0x001CFE68
+	public void InitializeStateMachine()
+	{
+		this.debugSettings = StateMachineDebuggerSettings.Get().CreateEntry(base.GetType());
+		StateMachine.BaseState baseState = null;
+		this.InitializeStates(out baseState);
+		DebugUtil.Assert(baseState != null);
+		this.defaultState = baseState;
+	}
+
+	// Token: 0x060027BC RID: 10172 RVA: 0x001D1CA8 File Offset: 0x001CFEA8
+	public void CreateStates(object state_machine)
+	{
+		foreach (FieldInfo fieldInfo in state_machine.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy))
+		{
+			bool flag = false;
+			object[] customAttributes = fieldInfo.GetCustomAttributes(false);
+			for (int j = 0; j < customAttributes.Length; j++)
+			{
+				if (customAttributes[j].GetType() == typeof(StateMachine.DoNotAutoCreate))
+				{
+					flag = true;
+					break;
+				}
+			}
+			if (!flag)
+			{
+				if (fieldInfo.FieldType.IsSubclassOf(typeof(StateMachine.BaseState)))
+				{
+					StateMachine.BaseState baseState = (StateMachine.BaseState)Activator.CreateInstance(fieldInfo.FieldType);
+					this.CreateStates(baseState);
+					fieldInfo.SetValue(state_machine, baseState);
+				}
+				else if (fieldInfo.FieldType.IsSubclassOf(typeof(StateMachine.Parameter)))
+				{
+					StateMachine.Parameter parameter = (StateMachine.Parameter)fieldInfo.GetValue(state_machine);
+					if (parameter == null)
+					{
+						parameter = (StateMachine.Parameter)Activator.CreateInstance(fieldInfo.FieldType);
+						fieldInfo.SetValue(state_machine, parameter);
+					}
+					parameter.name = fieldInfo.Name;
+					parameter.idx = this.parameters.Length;
+					this.parameters = this.parameters.Append(parameter);
+				}
+				else if (fieldInfo.FieldType.IsSubclassOf(typeof(StateMachine)))
+				{
+					fieldInfo.SetValue(state_machine, this);
+				}
+			}
+		}
+	}
+
+	// Token: 0x060027BD RID: 10173 RVA: 0x000B9D17 File Offset: 0x000B7F17
+	public StateMachine.BaseState GetDefaultState()
+	{
+		return this.defaultState;
+	}
+
+	// Token: 0x060027BE RID: 10174 RVA: 0x000B9D1F File Offset: 0x000B7F1F
+	public int GetMaxDepth()
+	{
+		return this.maxDepth;
+	}
+
+	// Token: 0x060027BF RID: 10175 RVA: 0x000B9D27 File Offset: 0x000B7F27
+	public override string ToString()
+	{
+		return this.name;
+	}
+
+	// Token: 0x04001ACE RID: 6862
+	protected string name;
+
+	// Token: 0x04001ACF RID: 6863
+	protected int maxDepth;
+
+	// Token: 0x04001AD0 RID: 6864
+	protected StateMachine.BaseState defaultState;
+
+	// Token: 0x04001AD1 RID: 6865
+	protected StateMachine.Parameter[] parameters = new StateMachine.Parameter[0];
+
+	// Token: 0x04001AD2 RID: 6866
+	public int dataTableSize;
+
+	// Token: 0x04001AD3 RID: 6867
+	public int updateTableSize;
+
+	// Token: 0x04001AD6 RID: 6870
+	public StateMachineDebuggerSettings.Entry debugSettings;
+
+	// Token: 0x04001AD7 RID: 6871
+	public bool saveHistory;
+
+	// Token: 0x020008C1 RID: 2241
 	public sealed class DoNotAutoCreate : Attribute
 	{
 	}
 
+	// Token: 0x020008C2 RID: 2242
 	public enum Status
 	{
+		// Token: 0x04001AD9 RID: 6873
 		Initialized,
+		// Token: 0x04001ADA RID: 6874
 		Running,
+		// Token: 0x04001ADB RID: 6875
 		Failed,
+		// Token: 0x04001ADC RID: 6876
 		Success
 	}
 
+	// Token: 0x020008C3 RID: 2243
 	public class BaseDef
 	{
-		public bool preventStartSMIOnSpawn;
-
-		public Instance CreateSMI(IStateMachineTarget master)
+		// Token: 0x060027C1 RID: 10177 RVA: 0x000B9D2F File Offset: 0x000B7F2F
+		public StateMachine.Instance CreateSMI(IStateMachineTarget master)
 		{
 			return Singleton<StateMachineManager>.Instance.CreateSMIFromDef(master, this);
 		}
 
+		// Token: 0x060027C2 RID: 10178 RVA: 0x000B9D3D File Offset: 0x000B7F3D
 		public Type GetStateMachineType()
 		{
-			return GetType().DeclaringType;
+			return base.GetType().DeclaringType;
 		}
 
+		// Token: 0x060027C3 RID: 10179 RVA: 0x000A5E40 File Offset: 0x000A4040
 		public virtual void Configure(GameObject prefab)
 		{
 		}
+
+		// Token: 0x04001ADD RID: 6877
+		public bool preventStartSMIOnSpawn;
 	}
 
+	// Token: 0x020008C4 RID: 2244
 	public class Category : Resource
 	{
-		public Category(string id)
-			: base(id)
+		// Token: 0x060027C5 RID: 10181 RVA: 0x000B68D8 File Offset: 0x000B4AD8
+		public Category(string id) : base(id, null, null)
 		{
 		}
 	}
 
+	// Token: 0x020008C5 RID: 2245
 	[SerializationConfig(MemberSerialization.OptIn)]
 	public abstract class Instance
 	{
-		public struct UpdateTableEntry
-		{
-			public HandleVector<int>.Handle handle;
+		// Token: 0x060027C6 RID: 10182
+		public abstract StateMachine.BaseState GetCurrentState();
 
-			public StateMachineUpdater.BaseUpdateBucket bucket;
-		}
+		// Token: 0x060027C7 RID: 10183
+		public abstract void GoTo(StateMachine.BaseState state);
 
-		public string serializationSuffix;
-
-		protected LoggerFSSSS log;
-
-		protected Status status;
-
-		protected StateMachine stateMachine;
-
-		protected Stack<StateEvent.Context> subscribedEvents = new Stack<StateEvent.Context>();
-
-		protected int stackSize;
-
-		protected Parameter.Context[] parameterContexts;
-
-		public object[] dataTable;
-
-		public UpdateTableEntry[] updateTable;
-
-		private Action<object> scheduleGoToCallback;
-
-		public Action<string, Status> OnStop;
-
-		public bool breakOnGoTo;
-
-		public bool enableConsoleLogging;
-
-		public bool isCrashed;
-
-		public static bool error;
-
+		// Token: 0x1700011F RID: 287
+		// (get) Token: 0x060027C8 RID: 10184
 		public abstract float timeinstate { get; }
 
-		public GameObject gameObject => GetMaster().gameObject;
-
-		public Transform transform => gameObject.transform;
-
-		public abstract BaseState GetCurrentState();
-
-		public abstract void GoTo(BaseState state);
-
+		// Token: 0x060027C9 RID: 10185
 		public abstract IStateMachineTarget GetMaster();
 
+		// Token: 0x060027CA RID: 10186
 		public abstract void StopSM(string reason);
 
+		// Token: 0x060027CB RID: 10187
 		public abstract SchedulerHandle Schedule(float time, Action<object> callback, object callback_data = null);
 
+		// Token: 0x060027CC RID: 10188
 		public abstract SchedulerHandle ScheduleNextFrame(Action<object> callback, object callback_data = null);
 
+		// Token: 0x060027CD RID: 10189 RVA: 0x000B9D4A File Offset: 0x000B7F4A
 		public virtual void FreeResources()
 		{
-			stateMachine = null;
-			if (subscribedEvents != null)
+			this.stateMachine = null;
+			if (this.subscribedEvents != null)
 			{
-				subscribedEvents.Clear();
+				this.subscribedEvents.Clear();
 			}
-			subscribedEvents = null;
-			parameterContexts = null;
-			dataTable = null;
-			updateTable = null;
+			this.subscribedEvents = null;
+			this.parameterContexts = null;
+			this.dataTable = null;
+			this.updateTable = null;
 		}
 
+		// Token: 0x060027CE RID: 10190 RVA: 0x000B9D82 File Offset: 0x000B7F82
 		public Instance(StateMachine state_machine, IStateMachineTarget master)
 		{
-			stateMachine = state_machine;
-			CreateParameterContexts();
-			log = new LoggerFSSSS(stateMachine.name);
+			this.stateMachine = state_machine;
+			this.CreateParameterContexts();
+			this.log = new LoggerFSSSS(this.stateMachine.name, 35);
 		}
 
+		// Token: 0x060027CF RID: 10191 RVA: 0x000B9DBA File Offset: 0x000B7FBA
 		public bool IsRunning()
 		{
-			return GetCurrentState() != null;
+			return this.GetCurrentState() != null;
 		}
 
+		// Token: 0x060027D0 RID: 10192 RVA: 0x001D1DF4 File Offset: 0x001CFFF4
 		public void GoTo(string state_name)
 		{
-			DebugUtil.DevAssert(!KMonoBehaviour.isLoadingScene, "Using Goto while scene was loaded");
-			BaseState state = stateMachine.GetState(state_name);
-			GoTo(state);
+			DebugUtil.DevAssert(!KMonoBehaviour.isLoadingScene, "Using Goto while scene was loaded", null);
+			StateMachine.BaseState state = this.stateMachine.GetState(state_name);
+			this.GoTo(state);
 		}
 
+		// Token: 0x060027D1 RID: 10193 RVA: 0x000B9DC5 File Offset: 0x000B7FC5
 		public int GetStackSize()
 		{
-			return stackSize;
+			return this.stackSize;
 		}
 
+		// Token: 0x060027D2 RID: 10194 RVA: 0x000B9DCD File Offset: 0x000B7FCD
 		public StateMachine GetStateMachine()
 		{
-			return stateMachine;
+			return this.stateMachine;
 		}
 
+		// Token: 0x060027D3 RID: 10195 RVA: 0x000A5E40 File Offset: 0x000A4040
 		[Conditional("UNITY_EDITOR")]
 		public void Log(string a, string b = "", string c = "", string d = "")
 		{
 		}
 
+		// Token: 0x060027D4 RID: 10196 RVA: 0x000B9DD5 File Offset: 0x000B7FD5
 		public bool IsConsoleLoggingEnabled()
 		{
-			if (!enableConsoleLogging)
-			{
-				return stateMachine.debugSettings.enableConsoleLogging;
-			}
-			return true;
+			return this.enableConsoleLogging || this.stateMachine.debugSettings.enableConsoleLogging;
 		}
 
+		// Token: 0x060027D5 RID: 10197 RVA: 0x000B9DF1 File Offset: 0x000B7FF1
 		public bool IsBreakOnGoToEnabled()
 		{
-			if (!breakOnGoTo)
-			{
-				return stateMachine.debugSettings.breakOnGoTo;
-			}
-			return true;
+			return this.breakOnGoTo || this.stateMachine.debugSettings.breakOnGoTo;
 		}
 
+		// Token: 0x060027D6 RID: 10198 RVA: 0x000B9E0D File Offset: 0x000B800D
 		public LoggerFSSSS GetLog()
 		{
-			return log;
+			return this.log;
 		}
 
-		public Parameter.Context[] GetParameterContexts()
+		// Token: 0x060027D7 RID: 10199 RVA: 0x000B9E15 File Offset: 0x000B8015
+		public StateMachine.Parameter.Context[] GetParameterContexts()
 		{
-			return parameterContexts;
+			return this.parameterContexts;
 		}
 
-		public Parameter.Context GetParameterContext(Parameter parameter)
+		// Token: 0x060027D8 RID: 10200 RVA: 0x000B9E1D File Offset: 0x000B801D
+		public StateMachine.Parameter.Context GetParameterContext(StateMachine.Parameter parameter)
 		{
-			return parameterContexts[parameter.idx];
+			return this.parameterContexts[parameter.idx];
 		}
 
-		public Status GetStatus()
+		// Token: 0x060027D9 RID: 10201 RVA: 0x000B9E2C File Offset: 0x000B802C
+		public StateMachine.Status GetStatus()
 		{
-			return status;
+			return this.status;
 		}
 
-		public void SetStatus(Status status)
+		// Token: 0x060027DA RID: 10202 RVA: 0x000B9E34 File Offset: 0x000B8034
+		public void SetStatus(StateMachine.Status status)
 		{
 			this.status = status;
 		}
 
+		// Token: 0x060027DB RID: 10203 RVA: 0x000B9E3D File Offset: 0x000B803D
 		public void Error()
 		{
-			if (!error)
+			if (!StateMachine.Instance.error)
 			{
-				isCrashed = true;
-				error = true;
+				this.isCrashed = true;
+				StateMachine.Instance.error = true;
 				RestartWarning.ShouldWarn = true;
 			}
 		}
 
+		// Token: 0x060027DC RID: 10204 RVA: 0x001D1E28 File Offset: 0x001D0028
 		public override string ToString()
 		{
-			string text = "";
-			if (GetCurrentState() != null)
+			string str = "";
+			if (this.GetCurrentState() != null)
 			{
-				text = GetCurrentState().name;
+				str = this.GetCurrentState().name;
 			}
-			else if (GetStatus() != 0)
+			else if (this.GetStatus() != StateMachine.Status.Initialized)
 			{
-				text = GetStatus().ToString();
+				str = this.GetStatus().ToString();
 			}
-			return stateMachine.ToString() + "(" + text + ")";
+			return this.stateMachine.ToString() + "(" + str + ")";
 		}
 
+		// Token: 0x060027DD RID: 10205 RVA: 0x001D1E8C File Offset: 0x001D008C
 		public virtual void StartSM()
 		{
-			if (!IsRunning())
+			if (!this.IsRunning())
 			{
-				StateMachineController component = GetComponent<StateMachineController>();
+				StateMachineController component = this.GetComponent<StateMachineController>();
 				MyAttributes.OnStart(this, component);
-				BaseState defaultState = stateMachine.GetDefaultState();
+				StateMachine.BaseState defaultState = this.stateMachine.GetDefaultState();
 				DebugUtil.Assert(defaultState != null);
 				if (!component.Restore(this))
 				{
-					GoTo(defaultState);
+					this.GoTo(defaultState);
 				}
 			}
 		}
 
+		// Token: 0x060027DE RID: 10206 RVA: 0x000B9E59 File Offset: 0x000B8059
 		public bool HasTag(Tag tag)
 		{
-			return GetComponent<KPrefabID>().HasTag(tag);
+			return this.GetComponent<KPrefabID>().HasTag(tag);
 		}
 
-		public bool IsInsideState(BaseState state)
+		// Token: 0x060027DF RID: 10207 RVA: 0x001D1ED4 File Offset: 0x001D00D4
+		public bool IsInsideState(StateMachine.BaseState state)
 		{
-			BaseState currentState = GetCurrentState();
+			StateMachine.BaseState currentState = this.GetCurrentState();
 			if (currentState == null)
 			{
 				return false;
 			}
 			bool flag = state == currentState;
 			int num = 0;
-			while (!flag && num < currentState.branch.Length && !(flag = state == currentState.branch[num]))
+			while (!flag && num < currentState.branch.Length && !(flag = (state == currentState.branch[num])))
 			{
 				num++;
 			}
 			return flag;
 		}
 
-		public void ScheduleGoTo(float time, BaseState state)
+		// Token: 0x060027E0 RID: 10208 RVA: 0x000B9E67 File Offset: 0x000B8067
+		public void ScheduleGoTo(float time, StateMachine.BaseState state)
 		{
-			if (scheduleGoToCallback == null)
+			if (this.scheduleGoToCallback == null)
 			{
-				scheduleGoToCallback = delegate(object d)
+				this.scheduleGoToCallback = delegate(object d)
 				{
-					GoTo((BaseState)d);
+					this.GoTo((StateMachine.BaseState)d);
 				};
 			}
-			Schedule(time, scheduleGoToCallback, state);
+			this.Schedule(time, this.scheduleGoToCallback, state);
 		}
 
+		// Token: 0x060027E1 RID: 10209 RVA: 0x000B9E92 File Offset: 0x000B8092
 		public void Subscribe(int hash, Action<object> handler)
 		{
-			GetMaster().Subscribe(hash, handler);
+			this.GetMaster().Subscribe(hash, handler);
 		}
 
+		// Token: 0x060027E2 RID: 10210 RVA: 0x000B9EA2 File Offset: 0x000B80A2
 		public void Unsubscribe(int hash, Action<object> handler)
 		{
-			GetMaster().Unsubscribe(hash, handler);
+			this.GetMaster().Unsubscribe(hash, handler);
 		}
 
+		// Token: 0x060027E3 RID: 10211 RVA: 0x000B9EB1 File Offset: 0x000B80B1
 		public void Trigger(int hash, object data = null)
 		{
-			GetMaster().GetComponent<KPrefabID>().Trigger(hash, data);
+			this.GetMaster().GetComponent<KPrefabID>().Trigger(hash, data);
 		}
 
+		// Token: 0x060027E4 RID: 10212 RVA: 0x000B9EC5 File Offset: 0x000B80C5
 		public ComponentType Get<ComponentType>()
 		{
-			return GetComponent<ComponentType>();
+			return this.GetComponent<ComponentType>();
 		}
 
+		// Token: 0x060027E5 RID: 10213 RVA: 0x000B9ECD File Offset: 0x000B80CD
 		public ComponentType GetComponent<ComponentType>()
 		{
-			return GetMaster().GetComponent<ComponentType>();
+			return this.GetMaster().GetComponent<ComponentType>();
 		}
 
+		// Token: 0x060027E6 RID: 10214 RVA: 0x001D1F18 File Offset: 0x001D0118
 		private void CreateParameterContexts()
 		{
-			parameterContexts = new Parameter.Context[stateMachine.parameters.Length];
-			for (int i = 0; i < stateMachine.parameters.Length; i++)
+			this.parameterContexts = new StateMachine.Parameter.Context[this.stateMachine.parameters.Length];
+			for (int i = 0; i < this.stateMachine.parameters.Length; i++)
 			{
-				parameterContexts[i] = stateMachine.parameters[i].CreateContext();
+				this.parameterContexts[i] = this.stateMachine.parameters[i].CreateContext();
 			}
+		}
+
+		// Token: 0x17000120 RID: 288
+		// (get) Token: 0x060027E7 RID: 10215 RVA: 0x000B9EDA File Offset: 0x000B80DA
+		public GameObject gameObject
+		{
+			get
+			{
+				return this.GetMaster().gameObject;
+			}
+		}
+
+		// Token: 0x17000121 RID: 289
+		// (get) Token: 0x060027E8 RID: 10216 RVA: 0x000B9EE7 File Offset: 0x000B80E7
+		public Transform transform
+		{
+			get
+			{
+				return this.gameObject.transform;
+			}
+		}
+
+		// Token: 0x04001ADE RID: 6878
+		public string serializationSuffix;
+
+		// Token: 0x04001ADF RID: 6879
+		protected LoggerFSSSS log;
+
+		// Token: 0x04001AE0 RID: 6880
+		protected StateMachine.Status status;
+
+		// Token: 0x04001AE1 RID: 6881
+		protected StateMachine stateMachine;
+
+		// Token: 0x04001AE2 RID: 6882
+		protected Stack<StateEvent.Context> subscribedEvents = new Stack<StateEvent.Context>();
+
+		// Token: 0x04001AE3 RID: 6883
+		protected int stackSize;
+
+		// Token: 0x04001AE4 RID: 6884
+		protected StateMachine.Parameter.Context[] parameterContexts;
+
+		// Token: 0x04001AE5 RID: 6885
+		public object[] dataTable;
+
+		// Token: 0x04001AE6 RID: 6886
+		public StateMachine.Instance.UpdateTableEntry[] updateTable;
+
+		// Token: 0x04001AE7 RID: 6887
+		private Action<object> scheduleGoToCallback;
+
+		// Token: 0x04001AE8 RID: 6888
+		public Action<string, StateMachine.Status> OnStop;
+
+		// Token: 0x04001AE9 RID: 6889
+		public bool breakOnGoTo;
+
+		// Token: 0x04001AEA RID: 6890
+		public bool enableConsoleLogging;
+
+		// Token: 0x04001AEB RID: 6891
+		public bool isCrashed;
+
+		// Token: 0x04001AEC RID: 6892
+		public static bool error;
+
+		// Token: 0x020008C6 RID: 2246
+		public struct UpdateTableEntry
+		{
+			// Token: 0x04001AED RID: 6893
+			public HandleVector<int>.Handle handle;
+
+			// Token: 0x04001AEE RID: 6894
+			public StateMachineUpdater.BaseUpdateBucket bucket;
 		}
 	}
 
+	// Token: 0x020008C7 RID: 2247
 	[DebuggerDisplay("{longName}")]
 	public class BaseState
 	{
-		public string name;
-
-		public string longName;
-
-		public string debugPushName;
-
-		public string debugPopName;
-
-		public string debugExecuteName;
-
-		public BaseState defaultState;
-
-		public List<StateEvent> events;
-
-		public List<BaseTransition> transitions;
-
-		public List<UpdateAction> updateActions;
-
-		public List<Action> enterActions;
-
-		public List<Action> exitActions;
-
-		public BaseState[] branch;
-
-		public BaseState parent;
-
+		// Token: 0x060027EA RID: 10218 RVA: 0x000B9F02 File Offset: 0x000B8102
 		public BaseState()
 		{
-			branch = new BaseState[1];
-			branch[0] = this;
+			this.branch = new StateMachine.BaseState[1];
+			this.branch[0] = this;
 		}
 
+		// Token: 0x060027EB RID: 10219 RVA: 0x001D1F70 File Offset: 0x001D0170
 		public void FreeResources()
 		{
-			if (name == null)
+			if (this.name == null)
 			{
 				return;
 			}
-			name = null;
-			if (defaultState != null)
+			this.name = null;
+			if (this.defaultState != null)
 			{
-				defaultState.FreeResources();
+				this.defaultState.FreeResources();
 			}
-			defaultState = null;
-			events = null;
+			this.defaultState = null;
+			this.events = null;
 			int num = 0;
-			while (transitions != null && num < transitions.Count)
+			while (this.transitions != null && num < this.transitions.Count)
 			{
-				transitions[num].Clear();
+				this.transitions[num].Clear();
 				num++;
 			}
-			transitions = null;
-			enterActions = null;
-			exitActions = null;
-			if (branch != null)
+			this.transitions = null;
+			this.enterActions = null;
+			this.exitActions = null;
+			if (this.branch != null)
 			{
-				for (int i = 0; i < branch.Length; i++)
+				for (int i = 0; i < this.branch.Length; i++)
 				{
-					branch[i].FreeResources();
+					this.branch[i].FreeResources();
 				}
 			}
-			branch = null;
-			parent = null;
+			this.branch = null;
+			this.parent = null;
 		}
 
+		// Token: 0x060027EC RID: 10220 RVA: 0x000B9F1F File Offset: 0x000B811F
 		public int GetStateCount()
 		{
-			return branch.Length;
+			return this.branch.Length;
 		}
 
-		public BaseState GetState(int idx)
+		// Token: 0x060027ED RID: 10221 RVA: 0x000B9F29 File Offset: 0x000B8129
+		public StateMachine.BaseState GetState(int idx)
 		{
-			return branch[idx];
-		}
-	}
-
-	public class BaseTransition
-	{
-		public struct Context
-		{
-			public int idx;
-
-			public int handlerId;
-
-			public Context(BaseTransition transition)
-			{
-				idx = transition.idx;
-				handlerId = 0;
-			}
+			return this.branch[idx];
 		}
 
-		public int idx;
-
+		// Token: 0x04001AEF RID: 6895
 		public string name;
 
-		public BaseState sourceState;
+		// Token: 0x04001AF0 RID: 6896
+		public string longName;
 
-		public BaseState targetState;
+		// Token: 0x04001AF1 RID: 6897
+		public string debugPushName;
 
-		public BaseTransition(int idx, string name, BaseState source_state, BaseState target_state)
+		// Token: 0x04001AF2 RID: 6898
+		public string debugPopName;
+
+		// Token: 0x04001AF3 RID: 6899
+		public string debugExecuteName;
+
+		// Token: 0x04001AF4 RID: 6900
+		public StateMachine.BaseState defaultState;
+
+		// Token: 0x04001AF5 RID: 6901
+		public List<StateEvent> events;
+
+		// Token: 0x04001AF6 RID: 6902
+		public List<StateMachine.BaseTransition> transitions;
+
+		// Token: 0x04001AF7 RID: 6903
+		public List<StateMachine.UpdateAction> updateActions;
+
+		// Token: 0x04001AF8 RID: 6904
+		public List<StateMachine.Action> enterActions;
+
+		// Token: 0x04001AF9 RID: 6905
+		public List<StateMachine.Action> exitActions;
+
+		// Token: 0x04001AFA RID: 6906
+		public StateMachine.BaseState[] branch;
+
+		// Token: 0x04001AFB RID: 6907
+		public StateMachine.BaseState parent;
+	}
+
+	// Token: 0x020008C8 RID: 2248
+	public class BaseTransition
+	{
+		// Token: 0x060027EE RID: 10222 RVA: 0x000B9F33 File Offset: 0x000B8133
+		public BaseTransition(int idx, string name, StateMachine.BaseState source_state, StateMachine.BaseState target_state)
 		{
 			this.idx = idx;
 			this.name = name;
-			sourceState = source_state;
-			targetState = target_state;
+			this.sourceState = source_state;
+			this.targetState = target_state;
 		}
 
-		public virtual void Evaluate(Instance smi)
+		// Token: 0x060027EF RID: 10223 RVA: 0x000A5E40 File Offset: 0x000A4040
+		public virtual void Evaluate(StateMachine.Instance smi)
 		{
 		}
 
-		public virtual Context Register(Instance smi)
+		// Token: 0x060027F0 RID: 10224 RVA: 0x000B9F58 File Offset: 0x000B8158
+		public virtual StateMachine.BaseTransition.Context Register(StateMachine.Instance smi)
 		{
-			return new Context(this);
+			return new StateMachine.BaseTransition.Context(this);
 		}
 
-		public virtual void Unregister(Instance smi, Context context)
+		// Token: 0x060027F1 RID: 10225 RVA: 0x000A5E40 File Offset: 0x000A4040
+		public virtual void Unregister(StateMachine.Instance smi, StateMachine.BaseTransition.Context context)
 		{
 		}
 
+		// Token: 0x060027F2 RID: 10226 RVA: 0x000B9F60 File Offset: 0x000B8160
 		public void Clear()
 		{
-			name = null;
-			if (sourceState != null)
+			this.name = null;
+			if (this.sourceState != null)
 			{
-				sourceState.FreeResources();
+				this.sourceState.FreeResources();
 			}
-			sourceState = null;
-			if (targetState != null)
+			this.sourceState = null;
+			if (this.targetState != null)
 			{
-				targetState.FreeResources();
+				this.targetState.FreeResources();
 			}
-			targetState = null;
+			this.targetState = null;
+		}
+
+		// Token: 0x04001AFC RID: 6908
+		public int idx;
+
+		// Token: 0x04001AFD RID: 6909
+		public string name;
+
+		// Token: 0x04001AFE RID: 6910
+		public StateMachine.BaseState sourceState;
+
+		// Token: 0x04001AFF RID: 6911
+		public StateMachine.BaseState targetState;
+
+		// Token: 0x020008C9 RID: 2249
+		public struct Context
+		{
+			// Token: 0x060027F3 RID: 10227 RVA: 0x000B9F9D File Offset: 0x000B819D
+			public Context(StateMachine.BaseTransition transition)
+			{
+				this.idx = transition.idx;
+				this.handlerId = 0;
+			}
+
+			// Token: 0x04001B00 RID: 6912
+			public int idx;
+
+			// Token: 0x04001B01 RID: 6913
+			public int handlerId;
 		}
 	}
 
+	// Token: 0x020008CA RID: 2250
 	public struct UpdateAction
 	{
+		// Token: 0x04001B02 RID: 6914
 		public int updateTableIdx;
 
+		// Token: 0x04001B03 RID: 6915
 		public UpdateRate updateRate;
 
+		// Token: 0x04001B04 RID: 6916
 		public int nextBucketIdx;
 
+		// Token: 0x04001B05 RID: 6917
 		public StateMachineUpdater.BaseUpdateBucket[] buckets;
 
+		// Token: 0x04001B06 RID: 6918
 		public object updater;
 	}
 
+	// Token: 0x020008CB RID: 2251
 	public struct Action
 	{
-		public string name;
-
-		public object callback;
-
+		// Token: 0x060027F4 RID: 10228 RVA: 0x000B9FB2 File Offset: 0x000B81B2
 		public Action(string name, object callback)
 		{
 			this.name = name;
 			this.callback = callback;
 		}
+
+		// Token: 0x04001B07 RID: 6919
+		public string name;
+
+		// Token: 0x04001B08 RID: 6920
+		public object callback;
 	}
 
-	public class ParameterTransition : BaseTransition
+	// Token: 0x020008CC RID: 2252
+	public class ParameterTransition : StateMachine.BaseTransition
 	{
-		public ParameterTransition(int idx, string name, BaseState source_state, BaseState target_state)
-			: base(idx, name, source_state, target_state)
+		// Token: 0x060027F5 RID: 10229 RVA: 0x000B9FC2 File Offset: 0x000B81C2
+		public ParameterTransition(int idx, string name, StateMachine.BaseState source_state, StateMachine.BaseState target_state) : base(idx, name, source_state, target_state)
 		{
 		}
 	}
 
+	// Token: 0x020008CD RID: 2253
 	public abstract class Parameter
 	{
+		// Token: 0x060027F6 RID: 10230
+		public abstract StateMachine.Parameter.Context CreateContext();
+
+		// Token: 0x04001B09 RID: 6921
+		public string name;
+
+		// Token: 0x04001B0A RID: 6922
+		public int idx;
+
+		// Token: 0x020008CE RID: 2254
 		public abstract class Context
 		{
-			public Parameter parameter;
-
-			public Context(Parameter parameter)
+			// Token: 0x060027F8 RID: 10232 RVA: 0x000B9FCF File Offset: 0x000B81CF
+			public Context(StateMachine.Parameter parameter)
 			{
 				this.parameter = parameter;
 			}
 
+			// Token: 0x060027F9 RID: 10233
 			public abstract void Serialize(BinaryWriter writer);
 
-			public abstract void Deserialize(IReader reader, Instance smi);
+			// Token: 0x060027FA RID: 10234
+			public abstract void Deserialize(IReader reader, StateMachine.Instance smi);
 
+			// Token: 0x060027FB RID: 10235 RVA: 0x000A5E40 File Offset: 0x000A4040
 			public virtual void Cleanup()
 			{
 			}
 
-			public abstract void ShowEditor(Instance base_smi);
+			// Token: 0x060027FC RID: 10236
+			public abstract void ShowEditor(StateMachine.Instance base_smi);
 
-			public abstract void ShowDevTool(Instance base_smi);
+			// Token: 0x060027FD RID: 10237
+			public abstract void ShowDevTool(StateMachine.Instance base_smi);
+
+			// Token: 0x04001B0B RID: 6923
+			public StateMachine.Parameter parameter;
 		}
-
-		public string name;
-
-		public int idx;
-
-		public abstract Context CreateContext();
 	}
 
+	// Token: 0x020008CF RID: 2255
 	public enum SerializeType
 	{
+		// Token: 0x04001B0D RID: 6925
 		Never,
+		// Token: 0x04001B0E RID: 6926
 		ParamsOnly,
+		// Token: 0x04001B0F RID: 6927
 		CurrentStateOnly_DEPRECATED,
+		// Token: 0x04001B10 RID: 6928
 		Both_DEPRECATED
-	}
-
-	protected string name;
-
-	protected int maxDepth;
-
-	protected BaseState defaultState;
-
-	protected Parameter[] parameters = new Parameter[0];
-
-	public int dataTableSize;
-
-	public int updateTableSize;
-
-	public StateMachineDebuggerSettings.Entry debugSettings;
-
-	public bool saveHistory;
-
-	public int version { get; protected set; }
-
-	public SerializeType serializable { get; protected set; }
-
-	public StateMachine()
-	{
-		name = GetType().FullName;
-	}
-
-	public virtual void FreeResources()
-	{
-		name = null;
-		if (defaultState != null)
-		{
-			defaultState.FreeResources();
-		}
-		defaultState = null;
-		parameters = null;
-	}
-
-	public abstract string[] GetStateNames();
-
-	public abstract BaseState GetState(string name);
-
-	public abstract void BindStates();
-
-	public abstract Type GetStateMachineInstanceType();
-
-	public virtual void InitializeStates(out BaseState default_state)
-	{
-		default_state = null;
-	}
-
-	public void InitializeStateMachine()
-	{
-		debugSettings = StateMachineDebuggerSettings.Get().CreateEntry(GetType());
-		BaseState default_state = null;
-		InitializeStates(out default_state);
-		DebugUtil.Assert(default_state != null);
-		defaultState = default_state;
-	}
-
-	public void CreateStates(object state_machine)
-	{
-		FieldInfo[] fields = state_machine.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy);
-		foreach (FieldInfo fieldInfo in fields)
-		{
-			bool flag = false;
-			object[] customAttributes = fieldInfo.GetCustomAttributes(inherit: false);
-			for (int j = 0; j < customAttributes.Length; j++)
-			{
-				if (customAttributes[j].GetType() == typeof(DoNotAutoCreate))
-				{
-					flag = true;
-					break;
-				}
-			}
-			if (flag)
-			{
-				continue;
-			}
-			if (fieldInfo.FieldType.IsSubclassOf(typeof(BaseState)))
-			{
-				BaseState baseState = (BaseState)Activator.CreateInstance(fieldInfo.FieldType);
-				CreateStates(baseState);
-				fieldInfo.SetValue(state_machine, baseState);
-			}
-			else if (fieldInfo.FieldType.IsSubclassOf(typeof(Parameter)))
-			{
-				Parameter parameter = (Parameter)fieldInfo.GetValue(state_machine);
-				if (parameter == null)
-				{
-					parameter = (Parameter)Activator.CreateInstance(fieldInfo.FieldType);
-					fieldInfo.SetValue(state_machine, parameter);
-				}
-				parameter.name = fieldInfo.Name;
-				parameter.idx = parameters.Length;
-				parameters = parameters.Append(parameter);
-			}
-			else if (fieldInfo.FieldType.IsSubclassOf(typeof(StateMachine)))
-			{
-				fieldInfo.SetValue(state_machine, this);
-			}
-		}
-	}
-
-	public BaseState GetDefaultState()
-	{
-		return defaultState;
-	}
-
-	public int GetMaxDepth()
-	{
-		return maxDepth;
-	}
-
-	public override string ToString()
-	{
-		return name;
-	}
-}
-public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType> : StateMachine where StateMachineInstanceType : StateMachine.Instance where MasterType : IStateMachineTarget
-{
-	public class GenericInstance : Instance
-	{
-		public struct StackEntry
-		{
-			public BaseState state;
-
-			public SchedulerGroup schedulerGroup;
-		}
-
-		private float stateEnterTime;
-
-		private int gotoId;
-
-		private int currentActionIdx = -1;
-
-		private SchedulerHandle updateHandle;
-
-		private Stack<BaseState> gotoStack = new Stack<BaseState>();
-
-		protected Stack<BaseTransition.Context> transitionStack = new Stack<BaseTransition.Context>();
-
-		protected StateMachineController controller;
-
-		private SchedulerGroup currentSchedulerGroup;
-
-		private StackEntry[] stateStack;
-
-		public StateMachineType sm { get; private set; }
-
-		protected StateMachineInstanceType smi => (StateMachineInstanceType)(Instance)this;
-
-		public MasterType master { get; private set; }
-
-		public DefType def { get; set; }
-
-		public bool isMasterNull => internalSm.masterTarget.IsNull((StateMachineInstanceType)(Instance)this);
-
-		private StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType> internalSm => (StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>)(object)sm;
-
-		public override float timeinstate => Time.time - stateEnterTime;
-
-		protected virtual void OnCleanUp()
-		{
-		}
-
-		public override void FreeResources()
-		{
-			updateHandle.FreeResources();
-			updateHandle = default(SchedulerHandle);
-			controller = null;
-			if (gotoStack != null)
-			{
-				gotoStack.Clear();
-			}
-			gotoStack = null;
-			if (transitionStack != null)
-			{
-				transitionStack.Clear();
-			}
-			transitionStack = null;
-			if (currentSchedulerGroup != null)
-			{
-				currentSchedulerGroup.FreeResources();
-			}
-			currentSchedulerGroup = null;
-			if (stateStack != null)
-			{
-				for (int i = 0; i < stateStack.Length; i++)
-				{
-					if (stateStack[i].schedulerGroup != null)
-					{
-						stateStack[i].schedulerGroup.FreeResources();
-					}
-				}
-			}
-			stateStack = null;
-			base.FreeResources();
-		}
-
-		public GenericInstance(MasterType master)
-			: base((StateMachine)(object)Singleton<StateMachineManager>.Instance.CreateStateMachine<StateMachineType>(), master)
-		{
-			this.master = master;
-			stateStack = new StackEntry[stateMachine.GetMaxDepth()];
-			for (int i = 0; i < stateStack.Length; i++)
-			{
-				stateStack[i].schedulerGroup = Singleton<StateMachineManager>.Instance.CreateSchedulerGroup();
-			}
-			sm = (StateMachineType)(object)stateMachine;
-			dataTable = new object[GetStateMachine().dataTableSize];
-			updateTable = new UpdateTableEntry[GetStateMachine().updateTableSize];
-			controller = master.GetComponent<StateMachineController>();
-			if (controller == null)
-			{
-				controller = master.gameObject.AddComponent<StateMachineController>();
-			}
-			internalSm.masterTarget.Set(master.gameObject, smi);
-			controller.AddStateMachineInstance(this);
-		}
-
-		public override IStateMachineTarget GetMaster()
-		{
-			return master;
-		}
-
-		private void PushEvent(StateEvent evt)
-		{
-			StateEvent.Context item = evt.Subscribe(this);
-			subscribedEvents.Push(item);
-		}
-
-		private void PopEvent()
-		{
-			StateEvent.Context context = subscribedEvents.Pop();
-			context.stateEvent.Unsubscribe(this, context);
-		}
-
-		private bool TryEvaluateTransitions(BaseState state, int goto_id)
-		{
-			if (state.transitions == null)
-			{
-				return true;
-			}
-			bool result = true;
-			for (int i = 0; i < state.transitions.Count; i++)
-			{
-				BaseTransition baseTransition = state.transitions[i];
-				if (goto_id != gotoId)
-				{
-					result = false;
-					break;
-				}
-				baseTransition.Evaluate(smi);
-			}
-			return result;
-		}
-
-		private void PushTransitions(BaseState state)
-		{
-			if (state.transitions != null)
-			{
-				for (int i = 0; i < state.transitions.Count; i++)
-				{
-					BaseTransition transition = state.transitions[i];
-					PushTransition(transition);
-				}
-			}
-		}
-
-		private void PushTransition(BaseTransition transition)
-		{
-			BaseTransition.Context item = transition.Register(smi);
-			transitionStack.Push(item);
-		}
-
-		private void PopTransition(State state)
-		{
-			BaseTransition.Context context = transitionStack.Pop();
-			state.transitions[context.idx].Unregister(smi, context);
-		}
-
-		private void PushState(BaseState state)
-		{
-			int num = gotoId;
-			currentActionIdx = -1;
-			if (state.events != null)
-			{
-				foreach (StateEvent @event in state.events)
-				{
-					PushEvent(@event);
-				}
-			}
-			PushTransitions(state);
-			if (state.updateActions != null)
-			{
-				for (int i = 0; i < state.updateActions.Count; i++)
-				{
-					UpdateAction value = state.updateActions[i];
-					int updateTableIdx = value.updateTableIdx;
-					int nextBucketIdx = value.nextBucketIdx;
-					value.nextBucketIdx = (value.nextBucketIdx + 1) % value.buckets.Length;
-					UpdateBucketWithUpdater<StateMachineInstanceType> updateBucketWithUpdater = (UpdateBucketWithUpdater<StateMachineInstanceType>)value.buckets[nextBucketIdx];
-					smi.updateTable[updateTableIdx].bucket = updateBucketWithUpdater;
-					smi.updateTable[updateTableIdx].handle = updateBucketWithUpdater.Add(smi, Singleton<StateMachineUpdater>.Instance.GetFrameTime(value.updateRate, updateBucketWithUpdater.frame), (UpdateBucketWithUpdater<StateMachineInstanceType>.IUpdater)value.updater);
-					state.updateActions[i] = value;
-				}
-			}
-			stateEnterTime = Time.time;
-			stateStack[stackSize++].state = state;
-			currentSchedulerGroup = stateStack[stackSize - 1].schedulerGroup;
-			if (TryEvaluateTransitions(state, num) && num == gotoId)
-			{
-				ExecuteActions((State)state, state.enterActions);
-				_ = gotoId;
-			}
-		}
-
-		private void ExecuteActions(State state, List<Action> actions)
-		{
-			if (actions == null)
-			{
-				return;
-			}
-			int num = gotoId;
-			currentActionIdx++;
-			while (currentActionIdx < actions.Count && num == gotoId)
-			{
-				State.Callback callback = (State.Callback)actions[currentActionIdx].callback;
-				try
-				{
-					callback(smi);
-				}
-				catch (Exception e)
-				{
-					if (!Instance.error)
-					{
-						Error();
-						string text = "(NULL).";
-						IStateMachineTarget stateMachineTarget = GetMaster();
-						if (!stateMachineTarget.isNull)
-						{
-							KPrefabID component = stateMachineTarget.GetComponent<KPrefabID>();
-							text = ((!(component != null)) ? ("(" + base.gameObject.name + ").") : ("(" + component.PrefabTag.ToString() + ")."));
-						}
-						string text2 = "Exception in: " + text + stateMachine.ToString() + "." + state.name + ".";
-						if (currentActionIdx > 0 && currentActionIdx < actions.Count)
-						{
-							text2 += actions[currentActionIdx].name;
-						}
-						DebugUtil.LogException(controller, text2, e);
-					}
-				}
-				currentActionIdx++;
-			}
-			currentActionIdx = 2147483646;
-		}
-
-		private void PopState()
-		{
-			currentActionIdx = -1;
-			StackEntry stackEntry = stateStack[--stackSize];
-			BaseState state = stackEntry.state;
-			int num = 0;
-			while (state.transitions != null && num < state.transitions.Count)
-			{
-				PopTransition((State)state);
-				num++;
-			}
-			if (state.events != null)
-			{
-				for (int i = 0; i < state.events.Count; i++)
-				{
-					PopEvent();
-				}
-			}
-			if (state.updateActions != null)
-			{
-				foreach (UpdateAction updateAction in state.updateActions)
-				{
-					int updateTableIdx = updateAction.updateTableIdx;
-					UpdateBucketWithUpdater<StateMachineInstanceType> obj = (UpdateBucketWithUpdater<StateMachineInstanceType>)smi.updateTable[updateTableIdx].bucket;
-					smi.updateTable[updateTableIdx].bucket = null;
-					obj.Remove(smi.updateTable[updateTableIdx].handle);
-				}
-			}
-			stackEntry.schedulerGroup.Reset();
-			currentSchedulerGroup = stackEntry.schedulerGroup;
-			ExecuteActions((State)state, state.exitActions);
-		}
-
-		public override SchedulerHandle Schedule(float time, Action<object> callback, object callback_data = null)
-		{
-			string name = null;
-			return Singleton<StateMachineManager>.Instance.Schedule(name, time, callback, callback_data, currentSchedulerGroup);
-		}
-
-		public override SchedulerHandle ScheduleNextFrame(Action<object> callback, object callback_data = null)
-		{
-			string name = null;
-			return Singleton<StateMachineManager>.Instance.ScheduleNextFrame(name, callback, callback_data, currentSchedulerGroup);
-		}
-
-		public override void StartSM()
-		{
-			if (controller != null && !controller.HasStateMachineInstance(this))
-			{
-				controller.AddStateMachineInstance(this);
-			}
-			base.StartSM();
-		}
-
-		public override void StopSM(string reason)
-		{
-			if (Instance.error)
-			{
-				return;
-			}
-			if (controller != null)
-			{
-				controller.RemoveStateMachineInstance(this);
-			}
-			if (IsRunning())
-			{
-				gotoId++;
-				while (stackSize > 0)
-				{
-					PopState();
-				}
-				if (master != null && controller != null)
-				{
-					controller.RemoveStateMachineInstance(this);
-				}
-				if (status == Status.Running)
-				{
-					SetStatus(Status.Failed);
-				}
-				if (OnStop != null)
-				{
-					OnStop(reason, status);
-				}
-				for (int i = 0; i < parameterContexts.Length; i++)
-				{
-					parameterContexts[i].Cleanup();
-				}
-				OnCleanUp();
-			}
-		}
-
-		private void FinishStateInProgress(BaseState state)
-		{
-			if (state.enterActions != null)
-			{
-				ExecuteActions((State)state, state.enterActions);
-			}
-		}
-
-		public override void GoTo(BaseState base_state)
-		{
-			if (App.IsExiting || Instance.error || isMasterNull || smi.IsNullOrDestroyed())
-			{
-				return;
-			}
-			try
-			{
-				if (IsBreakOnGoToEnabled())
-				{
-					Debugger.Break();
-				}
-				if (base_state != null)
-				{
-					while (base_state.defaultState != null)
-					{
-						base_state = base_state.defaultState;
-					}
-				}
-				if (GetCurrentState() == null)
-				{
-					SetStatus(Status.Running);
-				}
-				if (gotoStack.Count > 100)
-				{
-					string text = "Potential infinite transition loop detected in state machine: " + ToString() + "\nGoto stack:\n";
-					foreach (BaseState item in gotoStack)
-					{
-						text = text + "\n" + item.name;
-					}
-					Debug.LogError(text);
-					Error();
-					return;
-				}
-				gotoStack.Push(base_state);
-				if (base_state == null)
-				{
-					StopSM("StateMachine.GoTo(null)");
-					gotoStack.Pop();
-					return;
-				}
-				int num = ++gotoId;
-				BaseState[] branch = (base_state as State).branch;
-				int i;
-				for (i = 0; i < stackSize && i < branch.Length && stateStack[i].state == branch[i]; i++)
-				{
-				}
-				int num2 = stackSize - 1;
-				if (num2 >= 0 && num2 == i - 1)
-				{
-					FinishStateInProgress(stateStack[num2].state);
-				}
-				while (stackSize > i && num == gotoId)
-				{
-					PopState();
-				}
-				for (int j = i; j < branch.Length; j++)
-				{
-					if (num != gotoId)
-					{
-						break;
-					}
-					PushState(branch[j]);
-				}
-				gotoStack.Pop();
-			}
-			catch (Exception ex)
-			{
-				if (!Instance.error)
-				{
-					Error();
-					string text2 = "(Stop)";
-					if (base_state != null)
-					{
-						text2 = base_state.name;
-					}
-					string text3 = "(NULL).";
-					if (!GetMaster().isNull)
-					{
-						text3 = "(" + base.gameObject.name + ").";
-					}
-					string text4 = "Exception in: " + text3 + stateMachine.ToString() + ".GoTo(" + text2 + ")";
-					DebugUtil.LogErrorArgs(controller, text4 + "\n" + ex.ToString());
-				}
-			}
-		}
-
-		public override BaseState GetCurrentState()
-		{
-			if (stackSize > 0)
-			{
-				return stateStack[stackSize - 1].state;
-			}
-			return null;
-		}
-	}
-
-	public class State : BaseState
-	{
-		public delegate void Callback(StateMachineInstanceType smi);
-
-		protected StateMachineType sm;
-	}
-
-	public new abstract class ParameterTransition : StateMachine.ParameterTransition
-	{
-		public ParameterTransition(int idx, string name, BaseState source_state, BaseState target_state)
-			: base(idx, name, source_state, target_state)
-		{
-		}
-	}
-
-	public class Transition : BaseTransition
-	{
-		public delegate bool ConditionCallback(StateMachineInstanceType smi);
-
-		public ConditionCallback condition;
-
-		public Transition(string name, State source_state, State target_state, int idx, ConditionCallback condition)
-			: base(idx, name, source_state, target_state)
-		{
-			this.condition = condition;
-		}
-
-		public override string ToString()
-		{
-			if (targetState != null)
-			{
-				return name + "->" + targetState.name;
-			}
-			return name + "->(Stop)";
-		}
-	}
-
-	public new abstract class Parameter<ParameterType> : Parameter
-	{
-		public delegate bool Callback(StateMachineInstanceType smi, ParameterType p);
-
-		public class Transition : ParameterTransition
-		{
-			private Parameter<ParameterType> parameter;
-
-			private Callback callback;
-
-			public Transition(int idx, Parameter<ParameterType> parameter, State state, Callback callback)
-				: base(idx, parameter.name, (BaseState)null, (BaseState)state)
-			{
-				this.parameter = parameter;
-				this.callback = callback;
-			}
-
-			public override void Evaluate(Instance smi)
-			{
-				StateMachineInstanceType val = smi as StateMachineInstanceType;
-				Debug.Assert(val != null);
-				if (!parameter.isSignal || callback != null)
-				{
-					Parameter<ParameterType>.Context context = (Parameter<ParameterType>.Context)val.GetParameterContext(parameter);
-					if (callback(val, context.value))
-					{
-						val.GoTo(targetState);
-					}
-				}
-			}
-
-			private void Trigger(StateMachineInstanceType smi)
-			{
-				smi.GoTo(targetState);
-			}
-
-			public override Context Register(Instance smi)
-			{
-				Parameter<ParameterType>.Context context = (Parameter<ParameterType>.Context)smi.GetParameterContext(parameter);
-				if (parameter.isSignal && callback == null)
-				{
-					context.onDirty = (Action<StateMachineInstanceType>)Delegate.Combine(context.onDirty, new Action<StateMachineInstanceType>(Trigger));
-				}
-				else
-				{
-					context.onDirty = (Action<StateMachineInstanceType>)Delegate.Combine(context.onDirty, new Action<StateMachineInstanceType>(Evaluate));
-				}
-				return new Context(this);
-			}
-
-			public override void Unregister(Instance smi, Context transitionContext)
-			{
-				Parameter<ParameterType>.Context context = (Parameter<ParameterType>.Context)smi.GetParameterContext(parameter);
-				if (parameter.isSignal && callback == null)
-				{
-					context.onDirty = (Action<StateMachineInstanceType>)Delegate.Remove(context.onDirty, new Action<StateMachineInstanceType>(Trigger));
-				}
-				else
-				{
-					context.onDirty = (Action<StateMachineInstanceType>)Delegate.Remove(context.onDirty, new Action<StateMachineInstanceType>(Evaluate));
-				}
-			}
-
-			public override string ToString()
-			{
-				if (targetState != null)
-				{
-					return parameter.name + "->" + targetState.name;
-				}
-				return parameter.name + "->(Stop)";
-			}
-		}
-
-		public new abstract class Context : Parameter.Context
-		{
-			public ParameterType value;
-
-			public Action<StateMachineInstanceType> onDirty;
-
-			public Context(Parameter parameter, ParameterType default_value)
-				: base(parameter)
-			{
-				value = default_value;
-			}
-
-			public virtual void Set(ParameterType value, StateMachineInstanceType smi, bool silenceEvents = false)
-			{
-				if (!EqualityComparer<ParameterType>.Default.Equals(value, this.value))
-				{
-					this.value = value;
-					if (!silenceEvents && onDirty != null)
-					{
-						onDirty(smi);
-					}
-				}
-			}
-		}
-
-		public ParameterType defaultValue;
-
-		public bool isSignal;
-
-		public Parameter()
-		{
-		}
-
-		public Parameter(ParameterType default_value)
-		{
-			defaultValue = default_value;
-		}
-
-		public ParameterType Set(ParameterType value, StateMachineInstanceType smi, bool silenceEvents = false)
-		{
-			((Context)smi.GetParameterContext(this)).Set(value, smi, silenceEvents);
-			return value;
-		}
-
-		public ParameterType Get(StateMachineInstanceType smi)
-		{
-			return ((Context)smi.GetParameterContext(this)).value;
-		}
-
-		public Context GetContext(StateMachineInstanceType smi)
-		{
-			return (Context)smi.GetParameterContext(this);
-		}
-	}
-
-	public class BoolParameter : Parameter<bool>
-	{
-		public new class Context : Parameter<bool>.Context
-		{
-			public Context(Parameter parameter, bool default_value)
-				: base(parameter, default_value)
-			{
-			}
-
-			public override void Serialize(BinaryWriter writer)
-			{
-				writer.Write((byte)(value ? 1u : 0u));
-			}
-
-			public override void Deserialize(IReader reader, Instance smi)
-			{
-				value = reader.ReadByte() != 0;
-			}
-
-			public override void ShowEditor(Instance base_smi)
-			{
-			}
-
-			public override void ShowDevTool(Instance base_smi)
-			{
-				bool v = value;
-				if (ImGui.Checkbox(parameter.name, ref v))
-				{
-					StateMachineInstanceType smi = (StateMachineInstanceType)base_smi;
-					Set(v, smi);
-				}
-			}
-		}
-
-		public BoolParameter()
-		{
-		}
-
-		public BoolParameter(bool default_value)
-			: base(default_value)
-		{
-		}
-
-		public override Parameter.Context CreateContext()
-		{
-			return new Context(this, defaultValue);
-		}
-	}
-
-	public class Vector3Parameter : Parameter<Vector3>
-	{
-		public new class Context : Parameter<Vector3>.Context
-		{
-			public Context(Parameter parameter, Vector3 default_value)
-				: base(parameter, default_value)
-			{
-			}
-
-			public override void Serialize(BinaryWriter writer)
-			{
-				writer.Write(value.x);
-				writer.Write(value.y);
-				writer.Write(value.z);
-			}
-
-			public override void Deserialize(IReader reader, Instance smi)
-			{
-				value.x = reader.ReadSingle();
-				value.y = reader.ReadSingle();
-				value.z = reader.ReadSingle();
-			}
-
-			public override void ShowEditor(Instance base_smi)
-			{
-			}
-
-			public override void ShowDevTool(Instance base_smi)
-			{
-				Vector3 v = value;
-				if (ImGui.InputFloat3(parameter.name, ref v))
-				{
-					StateMachineInstanceType smi = (StateMachineInstanceType)base_smi;
-					Set(v, smi);
-				}
-			}
-		}
-
-		public Vector3Parameter()
-		{
-		}
-
-		public Vector3Parameter(Vector3 default_value)
-			: base(default_value)
-		{
-		}
-
-		public override Parameter.Context CreateContext()
-		{
-			return new Context(this, defaultValue);
-		}
-	}
-
-	public class EnumParameter<EnumType> : Parameter<EnumType>
-	{
-		public new class Context : Parameter<EnumType>.Context
-		{
-			public Context(Parameter parameter, EnumType default_value)
-				: base(parameter, default_value)
-			{
-			}
-
-			public override void Serialize(BinaryWriter writer)
-			{
-				writer.Write((int)(object)value);
-			}
-
-			public override void Deserialize(IReader reader, Instance smi)
-			{
-				value = (EnumType)(object)reader.ReadInt32();
-			}
-
-			public override void ShowEditor(Instance base_smi)
-			{
-			}
-
-			public override void ShowDevTool(Instance base_smi)
-			{
-				string[] names = Enum.GetNames(typeof(EnumType));
-				Array values = Enum.GetValues(typeof(EnumType));
-				int current_item = Array.IndexOf(values, value);
-				if (ImGui.Combo(parameter.name, ref current_item, names, names.Length))
-				{
-					StateMachineInstanceType smi = (StateMachineInstanceType)base_smi;
-					Set((EnumType)values.GetValue(current_item), smi);
-				}
-			}
-		}
-
-		public EnumParameter(EnumType default_value)
-			: base(default_value)
-		{
-		}
-
-		public override Parameter.Context CreateContext()
-		{
-			return new Context(this, defaultValue);
-		}
-	}
-
-	public class FloatParameter : Parameter<float>
-	{
-		public new class Context : Parameter<float>.Context
-		{
-			public Context(Parameter parameter, float default_value)
-				: base(parameter, default_value)
-			{
-			}
-
-			public override void Serialize(BinaryWriter writer)
-			{
-				writer.Write(value);
-			}
-
-			public override void Deserialize(IReader reader, Instance smi)
-			{
-				value = reader.ReadSingle();
-			}
-
-			public override void ShowEditor(Instance base_smi)
-			{
-			}
-
-			public override void ShowDevTool(Instance base_smi)
-			{
-				float v = value;
-				if (ImGui.InputFloat(parameter.name, ref v))
-				{
-					StateMachineInstanceType smi = (StateMachineInstanceType)base_smi;
-					Set(v, smi);
-				}
-			}
-		}
-
-		public FloatParameter()
-		{
-		}
-
-		public FloatParameter(float default_value)
-			: base(default_value)
-		{
-		}
-
-		public float Delta(float delta_value, StateMachineInstanceType smi)
-		{
-			float num = Get(smi);
-			num += delta_value;
-			Set(num, smi);
-			return num;
-		}
-
-		public float DeltaClamp(float delta_value, float min_value, float max_value, StateMachineInstanceType smi)
-		{
-			float num = Get(smi);
-			num += delta_value;
-			num = Mathf.Clamp(num, min_value, max_value);
-			Set(num, smi);
-			return num;
-		}
-
-		public override Parameter.Context CreateContext()
-		{
-			return new Context(this, defaultValue);
-		}
-	}
-
-	public class IntParameter : Parameter<int>
-	{
-		public new class Context : Parameter<int>.Context
-		{
-			public Context(Parameter parameter, int default_value)
-				: base(parameter, default_value)
-			{
-			}
-
-			public override void Serialize(BinaryWriter writer)
-			{
-				writer.Write(value);
-			}
-
-			public override void Deserialize(IReader reader, Instance smi)
-			{
-				value = reader.ReadInt32();
-			}
-
-			public override void ShowEditor(Instance base_smi)
-			{
-			}
-
-			public override void ShowDevTool(Instance base_smi)
-			{
-				int v = value;
-				if (ImGui.InputInt(parameter.name, ref v))
-				{
-					StateMachineInstanceType smi = (StateMachineInstanceType)base_smi;
-					Set(v, smi);
-				}
-			}
-		}
-
-		public IntParameter()
-		{
-		}
-
-		public IntParameter(int default_value)
-			: base(default_value)
-		{
-		}
-
-		public int Delta(int delta_value, StateMachineInstanceType smi)
-		{
-			int num = Get(smi);
-			num += delta_value;
-			Set(num, smi);
-			return num;
-		}
-
-		public override Parameter.Context CreateContext()
-		{
-			return new Context(this, defaultValue);
-		}
-	}
-
-	public class LongParameter : Parameter<long>
-	{
-		public new class Context : Parameter<long>.Context
-		{
-			public Context(Parameter parameter, long default_value)
-				: base(parameter, default_value)
-			{
-			}
-
-			public override void Serialize(BinaryWriter writer)
-			{
-				writer.Write(value);
-			}
-
-			public override void Deserialize(IReader reader, Instance smi)
-			{
-				value = reader.ReadInt64();
-			}
-
-			public override void ShowEditor(Instance base_smi)
-			{
-			}
-
-			public override void ShowDevTool(Instance base_smi)
-			{
-				_ = value;
-			}
-		}
-
-		public LongParameter()
-		{
-		}
-
-		public LongParameter(long default_value)
-			: base(default_value)
-		{
-		}
-
-		public long Delta(long delta_value, StateMachineInstanceType smi)
-		{
-			long num = Get(smi);
-			num += delta_value;
-			Set(num, smi);
-			return num;
-		}
-
-		public override Parameter.Context CreateContext()
-		{
-			return new Context(this, defaultValue);
-		}
-	}
-
-	public class ResourceParameter<ResourceType> : Parameter<ResourceType> where ResourceType : Resource
-	{
-		public new class Context : Parameter<ResourceType>.Context
-		{
-			public Context(Parameter parameter, ResourceType default_value)
-				: base(parameter, default_value)
-			{
-			}
-
-			public override void Serialize(BinaryWriter writer)
-			{
-				string str = "";
-				if (value != null)
-				{
-					if (value.Guid == null)
-					{
-						Debug.LogError("Cannot serialize resource with invalid guid: " + value.Id);
-					}
-					else
-					{
-						str = value.Guid.Guid;
-					}
-				}
-				writer.WriteKleiString(str);
-			}
-
-			public override void Deserialize(IReader reader, Instance smi)
-			{
-				string text = reader.ReadKleiString();
-				if (text != "")
-				{
-					ResourceGuid guid = new ResourceGuid(text);
-					value = Db.Get().GetResource<ResourceType>(guid);
-				}
-			}
-
-			public override void ShowEditor(Instance base_smi)
-			{
-			}
-
-			public override void ShowDevTool(Instance base_smi)
-			{
-				string fmt = "None";
-				if (value != null)
-				{
-					fmt = value.ToString();
-				}
-				ImGui.LabelText(parameter.name, fmt);
-			}
-		}
-
-		public ResourceParameter()
-			: base((ResourceType)null)
-		{
-		}
-
-		public override Parameter.Context CreateContext()
-		{
-			return new Context(this, defaultValue);
-		}
-	}
-
-	public class TagParameter : Parameter<Tag>
-	{
-		public new class Context : Parameter<Tag>.Context
-		{
-			public Context(Parameter parameter, Tag default_value)
-				: base(parameter, default_value)
-			{
-			}
-
-			public override void Serialize(BinaryWriter writer)
-			{
-				writer.Write(value.GetHash());
-			}
-
-			public override void Deserialize(IReader reader, Instance smi)
-			{
-				value = new Tag(reader.ReadInt32());
-			}
-
-			public override void ShowEditor(Instance base_smi)
-			{
-			}
-
-			public override void ShowDevTool(Instance base_smi)
-			{
-				ImGui.LabelText(parameter.name, value.ToString());
-			}
-		}
-
-		public TagParameter()
-		{
-		}
-
-		public TagParameter(Tag default_value)
-			: base(default_value)
-		{
-		}
-
-		public override Parameter.Context CreateContext()
-		{
-			return new Context(this, defaultValue);
-		}
-	}
-
-	public class ObjectParameter<ObjectType> : Parameter<ObjectType> where ObjectType : class
-	{
-		public new class Context : Parameter<ObjectType>.Context
-		{
-			public Context(Parameter parameter, ObjectType default_value)
-				: base(parameter, default_value)
-			{
-			}
-
-			public override void Serialize(BinaryWriter writer)
-			{
-				DebugUtil.DevLogError("ObjectParameter cannot be serialized");
-			}
-
-			public override void Deserialize(IReader reader, Instance smi)
-			{
-				DebugUtil.DevLogError("ObjectParameter cannot be serialized");
-			}
-
-			public override void ShowEditor(Instance base_smi)
-			{
-			}
-
-			public override void ShowDevTool(Instance base_smi)
-			{
-				string fmt = "None";
-				if (value != null)
-				{
-					fmt = value.ToString();
-				}
-				ImGui.LabelText(parameter.name, fmt);
-			}
-		}
-
-		public ObjectParameter()
-			: base((ObjectType)null)
-		{
-		}
-
-		public override Parameter.Context CreateContext()
-		{
-			return new Context(this, defaultValue);
-		}
-	}
-
-	public class TargetParameter : Parameter<GameObject>
-	{
-		public new class Context : Parameter<GameObject>.Context
-		{
-			private StateMachineInstanceType m_smi;
-
-			private int objectDestroyedHandler;
-
-			public Context(Parameter parameter, GameObject default_value)
-				: base(parameter, default_value)
-			{
-			}
-
-			public override void Serialize(BinaryWriter writer)
-			{
-				if (value != null)
-				{
-					int instanceID = value.GetComponent<KPrefabID>().InstanceID;
-					writer.Write(instanceID);
-				}
-				else
-				{
-					writer.Write(0);
-				}
-			}
-
-			public override void Deserialize(IReader reader, Instance smi)
-			{
-				try
-				{
-					int num = reader.ReadInt32();
-					if (num != 0)
-					{
-						KPrefabID instance = KPrefabIDTracker.Get().GetInstance(num);
-						if (instance != null)
-						{
-							value = instance.gameObject;
-							objectDestroyedHandler = instance.Subscribe(1969584890, OnObjectDestroyed);
-						}
-						m_smi = (StateMachineInstanceType)smi;
-					}
-				}
-				catch (Exception ex)
-				{
-					if (!SaveLoader.Instance.GameInfo.IsVersionOlderThan(7, 20))
-					{
-						Debug.LogWarning("Missing statemachine target params. " + ex.Message);
-					}
-				}
-			}
-
-			public override void Cleanup()
-			{
-				base.Cleanup();
-				if (value != null)
-				{
-					value.GetComponent<KMonoBehaviour>().Unsubscribe(objectDestroyedHandler);
-					objectDestroyedHandler = 0;
-				}
-			}
-
-			public override void Set(GameObject value, StateMachineInstanceType smi, bool silenceEvents = false)
-			{
-				m_smi = smi;
-				if (base.value != null)
-				{
-					base.value.GetComponent<KMonoBehaviour>().Unsubscribe(objectDestroyedHandler);
-					objectDestroyedHandler = 0;
-				}
-				if (value != null)
-				{
-					objectDestroyedHandler = value.GetComponent<KMonoBehaviour>().Subscribe(1969584890, OnObjectDestroyed);
-				}
-				base.Set(value, smi, silenceEvents);
-			}
-
-			private void OnObjectDestroyed(object data)
-			{
-				Set(null, m_smi);
-			}
-
-			public override void ShowEditor(Instance base_smi)
-			{
-			}
-
-			public override void ShowDevTool(Instance base_smi)
-			{
-				if (value != null)
-				{
-					ImGui.LabelText(parameter.name, value.name);
-				}
-				else
-				{
-					ImGui.LabelText(parameter.name, "null");
-				}
-			}
-		}
-
-		public TargetParameter()
-			: base((GameObject)null)
-		{
-		}
-
-		public SMT GetSMI<SMT>(StateMachineInstanceType smi) where SMT : Instance
-		{
-			GameObject gameObject = Get(smi);
-			if (gameObject != null)
-			{
-				SMT sMI = gameObject.GetSMI<SMT>();
-				if (sMI != null)
-				{
-					return sMI;
-				}
-				Debug.LogError(gameObject.name + " does not have state machine " + typeof(StateMachineType).Name);
-			}
-			return null;
-		}
-
-		public bool IsNull(StateMachineInstanceType smi)
-		{
-			return Get(smi) == null;
-		}
-
-		public ComponentType Get<ComponentType>(StateMachineInstanceType smi)
-		{
-			GameObject gameObject = Get(smi);
-			if (gameObject != null)
-			{
-				ComponentType component = gameObject.GetComponent<ComponentType>();
-				if (component != null)
-				{
-					return component;
-				}
-				Debug.LogError(gameObject.name + " does not have component " + typeof(ComponentType).Name);
-			}
-			return default(ComponentType);
-		}
-
-		public ComponentType AddOrGet<ComponentType>(StateMachineInstanceType smi) where ComponentType : Component
-		{
-			GameObject gameObject = Get(smi);
-			if (gameObject != null)
-			{
-				ComponentType val = gameObject.GetComponent<ComponentType>();
-				if (val == null)
-				{
-					val = gameObject.AddComponent<ComponentType>();
-				}
-				return val;
-			}
-			return null;
-		}
-
-		public void Set(KMonoBehaviour value, StateMachineInstanceType smi)
-		{
-			GameObject value2 = null;
-			if (value != null)
-			{
-				value2 = value.gameObject;
-			}
-			Set(value2, smi);
-		}
-
-		public override Parameter.Context CreateContext()
-		{
-			return new Context(this, defaultValue);
-		}
-	}
-
-	public class SignalParameter
-	{
-	}
-
-	public class Signal : Parameter<SignalParameter>
-	{
-		public new class Context : Parameter<SignalParameter>.Context
-		{
-			public Context(Parameter parameter, SignalParameter default_value)
-				: base(parameter, default_value)
-			{
-			}
-
-			public override void Serialize(BinaryWriter writer)
-			{
-			}
-
-			public override void Deserialize(IReader reader, Instance smi)
-			{
-			}
-
-			public override void Set(SignalParameter value, StateMachineInstanceType smi, bool silenceEvents = false)
-			{
-				if (!silenceEvents && onDirty != null)
-				{
-					onDirty(smi);
-				}
-			}
-
-			public override void ShowEditor(Instance base_smi)
-			{
-			}
-
-			public override void ShowDevTool(Instance base_smi)
-			{
-				if (ImGui.Button(parameter.name))
-				{
-					StateMachineInstanceType smi = (StateMachineInstanceType)base_smi;
-					Set(null, smi);
-				}
-			}
-		}
-
-		public Signal()
-			: base((SignalParameter)null)
-		{
-			isSignal = true;
-		}
-
-		public void Trigger(StateMachineInstanceType smi)
-		{
-			((Context)smi.GetParameterContext(this)).Set(null, smi);
-		}
-
-		public override Parameter.Context CreateContext()
-		{
-			return new Context(this, defaultValue);
-		}
-	}
-
-	private List<State> states = new List<State>();
-
-	public TargetParameter masterTarget;
-
-	[DoNotAutoCreate]
-	protected TargetParameter stateTarget;
-
-	public override string[] GetStateNames()
-	{
-		List<string> list = new List<string>();
-		foreach (State state in states)
-		{
-			list.Add(state.name);
-		}
-		return list.ToArray();
-	}
-
-	public void Target(TargetParameter target)
-	{
-		stateTarget = target;
-	}
-
-	public void BindState(State parent_state, State state, string state_name)
-	{
-		if (parent_state != null)
-		{
-			state_name = parent_state.name + "." + state_name;
-		}
-		state.name = state_name;
-		state.longName = name + "." + state_name;
-		state.debugPushName = "PuS: " + state.longName;
-		state.debugPopName = "PoS: " + state.longName;
-		state.debugExecuteName = "EA: " + state.longName;
-		List<BaseState> list = null;
-		list = ((parent_state == null) ? new List<BaseState>() : new List<BaseState>(parent_state.branch));
-		list.Add(state);
-		state.parent = parent_state;
-		state.branch = list.ToArray();
-		maxDepth = Math.Max(state.branch.Length, maxDepth);
-		states.Add(state);
-	}
-
-	public void BindStates(State parent_state, object state_machine)
-	{
-		FieldInfo[] fields = state_machine.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy);
-		foreach (FieldInfo fieldInfo in fields)
-		{
-			if (fieldInfo.FieldType.IsSubclassOf(typeof(BaseState)))
-			{
-				State state = (State)fieldInfo.GetValue(state_machine);
-				if (state != parent_state)
-				{
-					string state_name = fieldInfo.Name;
-					BindState(parent_state, state, state_name);
-					BindStates(state, state);
-				}
-			}
-		}
-	}
-
-	public override void InitializeStates(out BaseState default_state)
-	{
-		base.InitializeStates(out default_state);
-	}
-
-	public override void BindStates()
-	{
-		BindStates(null, this);
-	}
-
-	public override Type GetStateMachineInstanceType()
-	{
-		return typeof(StateMachineInstanceType);
-	}
-
-	public override BaseState GetState(string state_name)
-	{
-		foreach (State state in states)
-		{
-			if (state.name == state_name)
-			{
-				return state;
-			}
-		}
-		return null;
-	}
-
-	public override void FreeResources()
-	{
-		for (int i = 0; i < states.Count; i++)
-		{
-			states[i].FreeResources();
-		}
-		states.Clear();
-		base.FreeResources();
 	}
 }

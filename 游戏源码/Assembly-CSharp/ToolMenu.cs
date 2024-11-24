@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using STRINGS;
 using UnityEngine;
@@ -7,285 +7,146 @@ using UnityEngine.Experimental.Rendering;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
 
+// Token: 0x02001B4F RID: 6991
 public class ToolMenu : KScreen
 {
-	public class ToolInfo
-	{
-		public string text;
-
-		public string icon;
-
-		public Action hotkey;
-
-		public string toolName;
-
-		public ToolCollection collection;
-
-		public string tooltip;
-
-		public KToggle toggle;
-
-		public Action<object> onSelectCallback;
-
-		public object toolData;
-
-		public ToolInfo(string text, string icon_name, Action hotkey, string ToolName, ToolCollection toolCollection, string tooltip = "", Action<object> onSelectCallback = null, object toolData = null)
-		{
-			this.text = text;
-			icon = icon_name;
-			this.hotkey = hotkey;
-			toolName = ToolName;
-			collection = toolCollection;
-			toolCollection.tools.Add(this);
-			this.tooltip = tooltip;
-			this.onSelectCallback = onSelectCallback;
-			this.toolData = toolData;
-		}
-	}
-
-	public class ToolCollection
-	{
-		public string text;
-
-		public string icon;
-
-		public string tooltip;
-
-		public bool useInfoMenu;
-
-		public bool largeIcon;
-
-		public GameObject toggle;
-
-		public List<ToolInfo> tools = new List<ToolInfo>();
-
-		public GameObject UIMenuDisplay;
-
-		public GameObject MaskContainer;
-
-		public Action hotkey;
-
-		public ToolCollection(string text, string icon_name, string tooltip = "", bool useInfoMenu = false, Action hotkey = Action.NumActions, bool largeIcon = false)
-		{
-			this.text = text;
-			icon = icon_name;
-			this.tooltip = tooltip;
-			this.useInfoMenu = useInfoMenu;
-			this.hotkey = hotkey;
-			this.largeIcon = largeIcon;
-		}
-	}
-
-	public struct CellColorData
-	{
-		public int cell;
-
-		public Color color;
-
-		public CellColorData(int cell, Color color)
-		{
-			this.cell = cell;
-			this.color = color;
-		}
-	}
-
-	public static ToolMenu Instance;
-
-	public GameObject Prefab_collectionContainer;
-
-	public GameObject Prefab_collectionContainerWindow;
-
-	public PriorityScreen Prefab_priorityScreen;
-
-	public GameObject toolIconPrefab;
-
-	public GameObject toolIconLargePrefab;
-
-	public GameObject sandboxToolIconPrefab;
-
-	public GameObject collectionIconPrefab;
-
-	public GameObject prefabToolRow;
-
-	public GameObject largeToolSet;
-
-	public GameObject smallToolSet;
-
-	public GameObject smallToolBottomRow;
-
-	public GameObject smallToolTopRow;
-
-	public GameObject sandboxToolSet;
-
-	private PriorityScreen priorityScreen;
-
-	public ToolParameterMenu toolParameterMenu;
-
-	public GameObject sandboxToolParameterMenu;
-
-	private GameObject toolEffectDisplayPlane;
-
-	private Texture2D toolEffectDisplayPlaneTexture;
-
-	public Material toolEffectDisplayMaterial;
-
-	private byte[] toolEffectDisplayBytes;
-
-	private List<List<ToolCollection>> rows = new List<List<ToolCollection>>();
-
-	public List<ToolCollection> basicTools = new List<ToolCollection>();
-
-	public List<ToolCollection> sandboxTools = new List<ToolCollection>();
-
-	public ToolCollection currentlySelectedCollection;
-
-	public ToolInfo currentlySelectedTool;
-
-	public InterfaceTool activeTool;
-
-	private Coroutine activeOpenAnimationRoutine;
-
-	private Coroutine activeCloseAnimationRoutine;
-
-	private HashSet<Action> boundRootActions = new HashSet<Action>();
-
-	private HashSet<Action> boundSubgroupActions = new HashSet<Action>();
-
-	private UnityAction inputChangeReceiver;
-
-	private int refreshScaleHandle = -1;
-
-	[SerializeField]
-	public TextStyleSetting ToggleToolTipTextStyleSetting;
-
-	[SerializeField]
-	public TextStyleSetting CategoryLabelTextStyle_LeftAlign;
-
-	[SerializeField]
-	private TextStyleSetting TooltipHeader;
-
-	private int smallCollectionMax = 5;
-
-	private HashSet<CellColorData> colors = new HashSet<CellColorData>();
-
-	public PriorityScreen PriorityScreen => priorityScreen;
-
+	// Token: 0x060092DF RID: 37599 RVA: 0x000FFE99 File Offset: 0x000FE099
 	public static void DestroyInstance()
 	{
-		Instance = null;
+		ToolMenu.Instance = null;
 	}
 
+	// Token: 0x1700099C RID: 2460
+	// (get) Token: 0x060092E0 RID: 37600 RVA: 0x000FFEA1 File Offset: 0x000FE0A1
+	public PriorityScreen PriorityScreen
+	{
+		get
+		{
+			return this.priorityScreen;
+		}
+	}
+
+	// Token: 0x060092E1 RID: 37601 RVA: 0x000FFEA9 File Offset: 0x000FE0A9
 	public override float GetSortKey()
 	{
 		return 5f;
 	}
 
+	// Token: 0x060092E2 RID: 37602 RVA: 0x0038A8B8 File Offset: 0x00388AB8
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		Instance = this;
-		Game.Instance.Subscribe(1798162660, OnOverlayChanged);
-		priorityScreen = Util.KInstantiateUI<PriorityScreen>(Prefab_priorityScreen.gameObject, base.gameObject);
-		priorityScreen.InstantiateButtons(OnPriorityClicked, playSelectionSound: false);
+		ToolMenu.Instance = this;
+		Game.Instance.Subscribe(1798162660, new Action<object>(this.OnOverlayChanged));
+		this.priorityScreen = Util.KInstantiateUI<PriorityScreen>(this.Prefab_priorityScreen.gameObject, base.gameObject, false);
+		this.priorityScreen.InstantiateButtons(new Action<PrioritySetting>(this.OnPriorityClicked), false);
 	}
 
+	// Token: 0x060092E3 RID: 37603 RVA: 0x000FFEB0 File Offset: 0x000FE0B0
 	protected override void OnForcedCleanUp()
 	{
-		KInputManager.InputChange.RemoveListener(OnInputChange);
+		KInputManager.InputChange.RemoveListener(new UnityAction(this.OnInputChange));
 		base.OnForcedCleanUp();
 	}
 
+	// Token: 0x060092E4 RID: 37604 RVA: 0x000FFECE File Offset: 0x000FE0CE
 	protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
-		Game.Instance.Unsubscribe(1798162660, OnOverlayChanged);
-		Game.Instance.Unsubscribe(refreshScaleHandle);
+		Game.Instance.Unsubscribe(1798162660, new Action<object>(this.OnOverlayChanged));
+		Game.Instance.Unsubscribe(this.refreshScaleHandle);
 	}
 
+	// Token: 0x060092E5 RID: 37605 RVA: 0x0038A924 File Offset: 0x00388B24
 	private void OnOverlayChanged(object overlay_data)
 	{
-		HashedString hashedString = (HashedString)overlay_data;
-		if (PlayerController.Instance.ActiveTool != null && PlayerController.Instance.ActiveTool.ViewMode != OverlayModes.None.ID && PlayerController.Instance.ActiveTool.ViewMode != hashedString)
+		HashedString y = (HashedString)overlay_data;
+		if (PlayerController.Instance.ActiveTool != null && PlayerController.Instance.ActiveTool.ViewMode != OverlayModes.None.ID && PlayerController.Instance.ActiveTool.ViewMode != y)
 		{
-			ChooseCollection(null);
-			ChooseTool(null);
+			this.ChooseCollection(null, true);
+			this.ChooseTool(null);
 		}
 	}
 
+	// Token: 0x060092E6 RID: 37606 RVA: 0x0038A98C File Offset: 0x00388B8C
 	protected override void OnSpawn()
 	{
-		activateOnSpawn = true;
+		this.activateOnSpawn = true;
 		base.OnSpawn();
-		CreateSandBoxTools();
-		CreateBasicTools();
-		rows.Add(sandboxTools);
-		rows.Add(basicTools);
-		rows.ForEach(delegate(List<ToolCollection> row)
+		this.CreateSandBoxTools();
+		this.CreateBasicTools();
+		this.rows.Add(this.sandboxTools);
+		this.rows.Add(this.basicTools);
+		this.rows.ForEach(delegate(List<ToolMenu.ToolCollection> row)
 		{
-			InstantiateCollectionsUI(row);
+			this.InstantiateCollectionsUI(row);
 		});
-		rows.ForEach(delegate(List<ToolCollection> row)
+		this.rows.ForEach(delegate(List<ToolMenu.ToolCollection> row)
 		{
-			BuildRowToggles(row);
+			this.BuildRowToggles(row);
 		});
-		rows.ForEach(delegate(List<ToolCollection> row)
+		this.rows.ForEach(delegate(List<ToolMenu.ToolCollection> row)
 		{
-			BuildToolToggles(row);
+			this.BuildToolToggles(row);
 		});
-		ChooseCollection(null);
-		priorityScreen.gameObject.SetActive(value: false);
-		ToggleSandboxUI();
-		KInputManager.InputChange.AddListener(OnInputChange);
-		Game.Instance.Subscribe(-1948169901, ToggleSandboxUI);
-		ResetToolDisplayPlane();
-		refreshScaleHandle = Game.Instance.Subscribe(-442024484, RefreshScale);
-		RefreshScale();
+		this.ChooseCollection(null, true);
+		this.priorityScreen.gameObject.SetActive(false);
+		this.ToggleSandboxUI(null);
+		KInputManager.InputChange.AddListener(new UnityAction(this.OnInputChange));
+		Game.Instance.Subscribe(-1948169901, new Action<object>(this.ToggleSandboxUI));
+		this.ResetToolDisplayPlane();
+		this.refreshScaleHandle = Game.Instance.Subscribe(-442024484, new Action<object>(this.RefreshScale));
+		this.RefreshScale(null);
 	}
 
+	// Token: 0x060092E7 RID: 37607 RVA: 0x0038AA9C File Offset: 0x00388C9C
 	private void RefreshScale(object data = null)
 	{
 		int num = 14;
 		int num2 = 16;
-		foreach (ToolCollection sandboxTool in sandboxTools)
+		foreach (ToolMenu.ToolCollection toolCollection in this.sandboxTools)
 		{
-			LocText componentInChildren = sandboxTool.toggle.GetComponentInChildren<LocText>();
+			LocText componentInChildren = toolCollection.toggle.GetComponentInChildren<LocText>();
 			if (componentInChildren != null)
 			{
-				componentInChildren.fontSize = (ScreenResolutionMonitor.UsingGamepadUIMode() ? num2 : num);
+				componentInChildren.fontSize = (float)(ScreenResolutionMonitor.UsingGamepadUIMode() ? num2 : num);
 			}
 		}
-		foreach (ToolCollection basicTool in basicTools)
+		foreach (ToolMenu.ToolCollection toolCollection2 in this.basicTools)
 		{
-			LocText componentInChildren2 = basicTool.toggle.GetComponentInChildren<LocText>();
+			LocText componentInChildren2 = toolCollection2.toggle.GetComponentInChildren<LocText>();
 			if (componentInChildren2 != null)
 			{
-				componentInChildren2.fontSize = (ScreenResolutionMonitor.UsingGamepadUIMode() ? num2 : num);
+				componentInChildren2.fontSize = (float)(ScreenResolutionMonitor.UsingGamepadUIMode() ? num2 : num);
 			}
 		}
 	}
 
+	// Token: 0x060092E8 RID: 37608 RVA: 0x000FFF01 File Offset: 0x000FE101
 	public void OnInputChange()
 	{
-		rows.ForEach(delegate(List<ToolCollection> row)
+		this.rows.ForEach(delegate(List<ToolMenu.ToolCollection> row)
 		{
-			BuildRowToggles(row);
+			this.BuildRowToggles(row);
 		});
-		rows.ForEach(delegate(List<ToolCollection> row)
+		this.rows.ForEach(delegate(List<ToolMenu.ToolCollection> row)
 		{
-			BuildToolToggles(row);
+			this.BuildToolToggles(row);
 		});
 	}
 
+	// Token: 0x060092E9 RID: 37609 RVA: 0x0038AB78 File Offset: 0x00388D78
 	private void ResetToolDisplayPlane()
 	{
-		toolEffectDisplayPlane = CreateToolDisplayPlane("Overlay", World.Instance.transform);
-		toolEffectDisplayPlaneTexture = CreatePlaneTexture(out toolEffectDisplayBytes, Grid.WidthInCells, Grid.HeightInCells);
-		toolEffectDisplayPlane.GetComponent<Renderer>().sharedMaterial = toolEffectDisplayMaterial;
-		toolEffectDisplayPlane.GetComponent<Renderer>().sharedMaterial.mainTexture = toolEffectDisplayPlaneTexture;
-		toolEffectDisplayPlane.transform.SetLocalPosition(new Vector3(Grid.WidthInMeters / 2f, Grid.HeightInMeters / 2f, -6f));
-		RefreshToolDisplayPlaneColor();
+		this.toolEffectDisplayPlane = this.CreateToolDisplayPlane("Overlay", World.Instance.transform);
+		this.toolEffectDisplayPlaneTexture = this.CreatePlaneTexture(out this.toolEffectDisplayBytes, Grid.WidthInCells, Grid.HeightInCells);
+		this.toolEffectDisplayPlane.GetComponent<Renderer>().sharedMaterial = this.toolEffectDisplayMaterial;
+		this.toolEffectDisplayPlane.GetComponent<Renderer>().sharedMaterial.mainTexture = this.toolEffectDisplayPlaneTexture;
+		this.toolEffectDisplayPlane.transform.SetLocalPosition(new Vector3(Grid.WidthInMeters / 2f, Grid.HeightInMeters / 2f, -6f));
+		this.RefreshToolDisplayPlaneColor();
 	}
 
+	// Token: 0x060092EA RID: 37610 RVA: 0x0038AC24 File Offset: 0x00388E24
 	private GameObject CreateToolDisplayPlane(string layer, Transform parent)
 	{
 		GameObject gameObject = GameObject.CreatePrimitive(PrimitiveType.Plane);
@@ -303,6 +164,7 @@ public class ToolMenu : KScreen
 		return gameObject;
 	}
 
+	// Token: 0x060092EB RID: 37611 RVA: 0x000FFF31 File Offset: 0x000FE131
 	private Texture2D CreatePlaneTexture(out byte[] textureBytes, int width, int height)
 	{
 		textureBytes = new byte[width * height * 4];
@@ -314,223 +176,235 @@ public class ToolMenu : KScreen
 		};
 	}
 
+	// Token: 0x060092EC RID: 37612 RVA: 0x000FFF66 File Offset: 0x000FE166
 	private void Update()
 	{
-		RefreshToolDisplayPlaneColor();
+		this.RefreshToolDisplayPlaneColor();
 	}
 
+	// Token: 0x060092ED RID: 37613 RVA: 0x0038ACD8 File Offset: 0x00388ED8
 	private void RefreshToolDisplayPlaneColor()
 	{
 		if (PlayerController.Instance.ActiveTool == null || PlayerController.Instance.ActiveTool == SelectTool.Instance)
 		{
-			toolEffectDisplayPlane.SetActive(value: false);
+			this.toolEffectDisplayPlane.SetActive(false);
 			return;
 		}
-		PlayerController.Instance.ActiveTool.GetOverlayColorData(out colors);
-		Array.Clear(toolEffectDisplayBytes, 0, toolEffectDisplayBytes.Length);
-		if (colors != null)
+		PlayerController.Instance.ActiveTool.GetOverlayColorData(out this.colors);
+		Array.Clear(this.toolEffectDisplayBytes, 0, this.toolEffectDisplayBytes.Length);
+		if (this.colors != null)
 		{
-			foreach (CellColorData color in colors)
+			foreach (ToolMenu.CellColorData cellColorData in this.colors)
 			{
-				if (Grid.IsValidCell(color.cell))
+				if (Grid.IsValidCell(cellColorData.cell))
 				{
-					int num = color.cell * 4;
+					int num = cellColorData.cell * 4;
 					if (num >= 0)
 					{
-						toolEffectDisplayBytes[num] = (byte)(Mathf.Min(color.color.r, 1f) * 255f);
-						toolEffectDisplayBytes[num + 1] = (byte)(Mathf.Min(color.color.g, 1f) * 255f);
-						toolEffectDisplayBytes[num + 2] = (byte)(Mathf.Min(color.color.b, 1f) * 255f);
-						toolEffectDisplayBytes[num + 3] = (byte)(Mathf.Min(color.color.a, 1f) * 255f);
+						this.toolEffectDisplayBytes[num] = (byte)(Mathf.Min(cellColorData.color.r, 1f) * 255f);
+						this.toolEffectDisplayBytes[num + 1] = (byte)(Mathf.Min(cellColorData.color.g, 1f) * 255f);
+						this.toolEffectDisplayBytes[num + 2] = (byte)(Mathf.Min(cellColorData.color.b, 1f) * 255f);
+						this.toolEffectDisplayBytes[num + 3] = (byte)(Mathf.Min(cellColorData.color.a, 1f) * 255f);
 					}
 				}
 			}
 		}
-		if (!toolEffectDisplayPlane.activeSelf)
+		if (!this.toolEffectDisplayPlane.activeSelf)
 		{
-			toolEffectDisplayPlane.SetActive(value: true);
+			this.toolEffectDisplayPlane.SetActive(true);
 		}
-		toolEffectDisplayPlaneTexture.LoadRawTextureData(toolEffectDisplayBytes);
-		toolEffectDisplayPlaneTexture.Apply();
+		this.toolEffectDisplayPlaneTexture.LoadRawTextureData(this.toolEffectDisplayBytes);
+		this.toolEffectDisplayPlaneTexture.Apply();
 	}
 
+	// Token: 0x060092EE RID: 37614 RVA: 0x0038AE80 File Offset: 0x00389080
 	public void ToggleSandboxUI(object data = null)
 	{
-		ClearSelection();
+		this.ClearSelection();
 		PlayerController.Instance.ActivateTool(SelectTool.Instance);
-		sandboxTools[0].toggle.transform.parent.transform.parent.gameObject.SetActive(Game.Instance.SandboxModeActive);
+		this.sandboxTools[0].toggle.transform.parent.transform.parent.gameObject.SetActive(Game.Instance.SandboxModeActive);
 	}
 
-	public static ToolCollection CreateToolCollection(LocString collection_name, string icon_name, Action hotkey, string tool_name, LocString tooltip, bool largeIcon)
+	// Token: 0x060092EF RID: 37615 RVA: 0x0038AEDC File Offset: 0x003890DC
+	public static ToolMenu.ToolCollection CreateToolCollection(LocString collection_name, string icon_name, global::Action hotkey, string tool_name, LocString tooltip, bool largeIcon)
 	{
-		ToolCollection toolCollection = new ToolCollection(collection_name, icon_name, "", useInfoMenu: false, Action.NumActions, largeIcon);
-		new ToolInfo(collection_name, icon_name, hotkey, tool_name, toolCollection, tooltip);
+		ToolMenu.ToolCollection toolCollection = new ToolMenu.ToolCollection(collection_name, icon_name, "", false, global::Action.NumActions, largeIcon);
+		new ToolMenu.ToolInfo(collection_name, icon_name, hotkey, tool_name, toolCollection, tooltip, null, null);
 		return toolCollection;
 	}
 
+	// Token: 0x060092F0 RID: 37616 RVA: 0x0038AF20 File Offset: 0x00389120
 	private void CreateSandBoxTools()
 	{
-		sandboxTools.Add(CreateToolCollection(UI.TOOLS.SANDBOX.BRUSH.NAME, "brush", Action.SandboxBrush, "SandboxBrushTool", UI.SANDBOXTOOLS.SETTINGS.BRUSH.TOOLTIP, largeIcon: false));
-		sandboxTools.Add(CreateToolCollection(UI.TOOLS.SANDBOX.SPRINKLE.NAME, "sprinkle", Action.SandboxSprinkle, "SandboxSprinkleTool", UI.SANDBOXTOOLS.SETTINGS.SPRINKLE.TOOLTIP, largeIcon: false));
-		sandboxTools.Add(CreateToolCollection(UI.TOOLS.SANDBOX.FLOOD.NAME, "flood", Action.SandboxFlood, "SandboxFloodTool", UI.SANDBOXTOOLS.SETTINGS.FLOOD.TOOLTIP, largeIcon: false));
-		sandboxTools.Add(CreateToolCollection(UI.TOOLS.SANDBOX.SAMPLE.NAME, "sample", Action.SandboxSample, "SandboxSampleTool", UI.SANDBOXTOOLS.SETTINGS.SAMPLE.TOOLTIP, largeIcon: false));
-		sandboxTools.Add(CreateToolCollection(UI.TOOLS.SANDBOX.HEATGUN.NAME, "temperature", Action.SandboxHeatGun, "SandboxHeatTool", UI.SANDBOXTOOLS.SETTINGS.HEATGUN.TOOLTIP, largeIcon: false));
-		sandboxTools.Add(CreateToolCollection(UI.TOOLS.SANDBOX.STRESSTOOL.NAME, "crew_state_happy", Action.SandboxStressTool, "SandboxStressTool", UI.SANDBOXTOOLS.SETTINGS.STRESS.TOOLTIP, largeIcon: false));
-		sandboxTools.Add(CreateToolCollection(UI.TOOLS.SANDBOX.SPAWNER.NAME, "spawn", Action.SandboxSpawnEntity, "SandboxSpawnerTool", UI.SANDBOXTOOLS.SETTINGS.SPAWNER.TOOLTIP, largeIcon: false));
-		sandboxTools.Add(CreateToolCollection(UI.TOOLS.SANDBOX.CLEAR_FLOOR.NAME, "clear_floor", Action.SandboxClearFloor, "SandboxClearFloorTool", UI.SANDBOXTOOLS.SETTINGS.CLEAR_FLOOR.TOOLTIP, largeIcon: false));
-		sandboxTools.Add(CreateToolCollection(UI.TOOLS.SANDBOX.DESTROY.NAME, "destroy", Action.SandboxDestroy, "SandboxDestroyerTool", UI.SANDBOXTOOLS.SETTINGS.DESTROY.TOOLTIP, largeIcon: false));
-		sandboxTools.Add(CreateToolCollection(UI.TOOLS.SANDBOX.FOW.NAME, "reveal", Action.SandboxReveal, "SandboxFOWTool", UI.SANDBOXTOOLS.SETTINGS.FOW.TOOLTIP, largeIcon: false));
-		sandboxTools.Add(CreateToolCollection(UI.TOOLS.SANDBOX.CRITTER.NAME, "critter", Action.SandboxCritterTool, "SandboxCritterTool", UI.SANDBOXTOOLS.SETTINGS.CRITTER.TOOLTIP, largeIcon: false));
-		sandboxTools.Add(CreateToolCollection(UI.TOOLS.SANDBOX.SPAWN_STORY_TRAIT.NAME, "sandbox_storytrait", Action.SandboxStoryTraitTool, "SandboxStoryTraitTool", UI.SANDBOXTOOLS.SETTINGS.SPAWN_STORY_TRAIT.TOOLTIP, largeIcon: false));
+		this.sandboxTools.Add(ToolMenu.CreateToolCollection(UI.TOOLS.SANDBOX.BRUSH.NAME, "brush", global::Action.SandboxBrush, "SandboxBrushTool", UI.SANDBOXTOOLS.SETTINGS.BRUSH.TOOLTIP, false));
+		this.sandboxTools.Add(ToolMenu.CreateToolCollection(UI.TOOLS.SANDBOX.SPRINKLE.NAME, "sprinkle", global::Action.SandboxSprinkle, "SandboxSprinkleTool", UI.SANDBOXTOOLS.SETTINGS.SPRINKLE.TOOLTIP, false));
+		this.sandboxTools.Add(ToolMenu.CreateToolCollection(UI.TOOLS.SANDBOX.FLOOD.NAME, "flood", global::Action.SandboxFlood, "SandboxFloodTool", UI.SANDBOXTOOLS.SETTINGS.FLOOD.TOOLTIP, false));
+		this.sandboxTools.Add(ToolMenu.CreateToolCollection(UI.TOOLS.SANDBOX.SAMPLE.NAME, "sample", global::Action.SandboxSample, "SandboxSampleTool", UI.SANDBOXTOOLS.SETTINGS.SAMPLE.TOOLTIP, false));
+		this.sandboxTools.Add(ToolMenu.CreateToolCollection(UI.TOOLS.SANDBOX.HEATGUN.NAME, "temperature", global::Action.SandboxHeatGun, "SandboxHeatTool", UI.SANDBOXTOOLS.SETTINGS.HEATGUN.TOOLTIP, false));
+		this.sandboxTools.Add(ToolMenu.CreateToolCollection(UI.TOOLS.SANDBOX.STRESSTOOL.NAME, "crew_state_happy", global::Action.SandboxStressTool, "SandboxStressTool", UI.SANDBOXTOOLS.SETTINGS.STRESS.TOOLTIP, false));
+		this.sandboxTools.Add(ToolMenu.CreateToolCollection(UI.TOOLS.SANDBOX.SPAWNER.NAME, "spawn", global::Action.SandboxSpawnEntity, "SandboxSpawnerTool", UI.SANDBOXTOOLS.SETTINGS.SPAWNER.TOOLTIP, false));
+		this.sandboxTools.Add(ToolMenu.CreateToolCollection(UI.TOOLS.SANDBOX.CLEAR_FLOOR.NAME, "clear_floor", global::Action.SandboxClearFloor, "SandboxClearFloorTool", UI.SANDBOXTOOLS.SETTINGS.CLEAR_FLOOR.TOOLTIP, false));
+		this.sandboxTools.Add(ToolMenu.CreateToolCollection(UI.TOOLS.SANDBOX.DESTROY.NAME, "destroy", global::Action.SandboxDestroy, "SandboxDestroyerTool", UI.SANDBOXTOOLS.SETTINGS.DESTROY.TOOLTIP, false));
+		this.sandboxTools.Add(ToolMenu.CreateToolCollection(UI.TOOLS.SANDBOX.FOW.NAME, "reveal", global::Action.SandboxReveal, "SandboxFOWTool", UI.SANDBOXTOOLS.SETTINGS.FOW.TOOLTIP, false));
+		this.sandboxTools.Add(ToolMenu.CreateToolCollection(UI.TOOLS.SANDBOX.CRITTER.NAME, "critter", global::Action.SandboxCritterTool, "SandboxCritterTool", UI.SANDBOXTOOLS.SETTINGS.CRITTER.TOOLTIP, false));
+		this.sandboxTools.Add(ToolMenu.CreateToolCollection(UI.TOOLS.SANDBOX.SPAWN_STORY_TRAIT.NAME, "sandbox_storytrait", global::Action.SandboxStoryTraitTool, "SandboxStoryTraitTool", UI.SANDBOXTOOLS.SETTINGS.SPAWN_STORY_TRAIT.TOOLTIP, false));
 	}
 
+	// Token: 0x060092F1 RID: 37617 RVA: 0x0038B128 File Offset: 0x00389328
 	private void CreateBasicTools()
 	{
-		basicTools.Add(CreateToolCollection(UI.TOOLS.DIG.NAME, "icon_action_dig", Action.Dig, "DigTool", UI.TOOLTIPS.DIGBUTTON, largeIcon: true));
-		basicTools.Add(CreateToolCollection(UI.TOOLS.CANCEL.NAME, "icon_action_cancel", Action.BuildingCancel, "CancelTool", UI.TOOLTIPS.CANCELBUTTON, largeIcon: true));
-		basicTools.Add(CreateToolCollection(UI.TOOLS.DECONSTRUCT.NAME, "icon_action_deconstruct", Action.BuildingDeconstruct, "DeconstructTool", UI.TOOLTIPS.DECONSTRUCTBUTTON, largeIcon: true));
-		basicTools.Add(CreateToolCollection(UI.TOOLS.PRIORITIZE.NAME, "icon_action_prioritize", Action.Prioritize, "PrioritizeTool", UI.TOOLTIPS.PRIORITIZEBUTTON, largeIcon: true));
-		basicTools.Add(CreateToolCollection(UI.TOOLS.DISINFECT.NAME, "icon_action_disinfect", Action.Disinfect, "DisinfectTool", UI.TOOLTIPS.DISINFECTBUTTON, largeIcon: false));
-		basicTools.Add(CreateToolCollection(UI.TOOLS.MARKFORSTORAGE.NAME, "icon_action_store", Action.Clear, "ClearTool", UI.TOOLTIPS.CLEARBUTTON, largeIcon: false));
-		basicTools.Add(CreateToolCollection(UI.TOOLS.ATTACK.NAME, "icon_action_attack", Action.Attack, "AttackTool", UI.TOOLTIPS.ATTACKBUTTON, largeIcon: false));
-		basicTools.Add(CreateToolCollection(UI.TOOLS.MOP.NAME, "icon_action_mop", Action.Mop, "MopTool", UI.TOOLTIPS.MOPBUTTON, largeIcon: false));
-		basicTools.Add(CreateToolCollection(UI.TOOLS.CAPTURE.NAME, "icon_action_capture", Action.Capture, "CaptureTool", UI.TOOLTIPS.CAPTUREBUTTON, largeIcon: false));
-		basicTools.Add(CreateToolCollection(UI.TOOLS.HARVEST.NAME, "icon_action_harvest", Action.Harvest, "HarvestTool", UI.TOOLTIPS.HARVESTBUTTON, largeIcon: false));
-		basicTools.Add(CreateToolCollection(UI.TOOLS.EMPTY_PIPE.NAME, "icon_action_empty_pipes", Action.EmptyPipe, "EmptyPipeTool", UI.TOOLS.EMPTY_PIPE.TOOLTIP, largeIcon: false));
-		basicTools.Add(CreateToolCollection(UI.TOOLS.DISCONNECT.NAME, "icon_action_disconnect", Action.Disconnect, "DisconnectTool", UI.TOOLS.DISCONNECT.TOOLTIP, largeIcon: false));
+		this.basicTools.Add(ToolMenu.CreateToolCollection(UI.TOOLS.DIG.NAME, "icon_action_dig", global::Action.Dig, "DigTool", UI.TOOLTIPS.DIGBUTTON, true));
+		this.basicTools.Add(ToolMenu.CreateToolCollection(UI.TOOLS.CANCEL.NAME, "icon_action_cancel", global::Action.BuildingCancel, "CancelTool", UI.TOOLTIPS.CANCELBUTTON, true));
+		this.basicTools.Add(ToolMenu.CreateToolCollection(UI.TOOLS.DECONSTRUCT.NAME, "icon_action_deconstruct", global::Action.BuildingDeconstruct, "DeconstructTool", UI.TOOLTIPS.DECONSTRUCTBUTTON, true));
+		this.basicTools.Add(ToolMenu.CreateToolCollection(UI.TOOLS.PRIORITIZE.NAME, "icon_action_prioritize", global::Action.Prioritize, "PrioritizeTool", UI.TOOLTIPS.PRIORITIZEBUTTON, true));
+		this.basicTools.Add(ToolMenu.CreateToolCollection(UI.TOOLS.DISINFECT.NAME, "icon_action_disinfect", global::Action.Disinfect, "DisinfectTool", UI.TOOLTIPS.DISINFECTBUTTON, false));
+		this.basicTools.Add(ToolMenu.CreateToolCollection(UI.TOOLS.MARKFORSTORAGE.NAME, "icon_action_store", global::Action.Clear, "ClearTool", UI.TOOLTIPS.CLEARBUTTON, false));
+		this.basicTools.Add(ToolMenu.CreateToolCollection(UI.TOOLS.ATTACK.NAME, "icon_action_attack", global::Action.Attack, "AttackTool", UI.TOOLTIPS.ATTACKBUTTON, false));
+		this.basicTools.Add(ToolMenu.CreateToolCollection(UI.TOOLS.MOP.NAME, "icon_action_mop", global::Action.Mop, "MopTool", UI.TOOLTIPS.MOPBUTTON, false));
+		this.basicTools.Add(ToolMenu.CreateToolCollection(UI.TOOLS.CAPTURE.NAME, "icon_action_capture", global::Action.Capture, "CaptureTool", UI.TOOLTIPS.CAPTUREBUTTON, false));
+		this.basicTools.Add(ToolMenu.CreateToolCollection(UI.TOOLS.HARVEST.NAME, "icon_action_harvest", global::Action.Harvest, "HarvestTool", UI.TOOLTIPS.HARVESTBUTTON, false));
+		this.basicTools.Add(ToolMenu.CreateToolCollection(UI.TOOLS.EMPTY_PIPE.NAME, "icon_action_empty_pipes", global::Action.EmptyPipe, "EmptyPipeTool", UI.TOOLS.EMPTY_PIPE.TOOLTIP, false));
+		this.basicTools.Add(ToolMenu.CreateToolCollection(UI.TOOLS.DISCONNECT.NAME, "icon_action_disconnect", global::Action.Disconnect, "DisconnectTool", UI.TOOLS.DISCONNECT.TOOLTIP, false));
 	}
 
-	private void InstantiateCollectionsUI(IList<ToolCollection> collections)
+	// Token: 0x060092F2 RID: 37618 RVA: 0x0038B330 File Offset: 0x00389530
+	private void InstantiateCollectionsUI(IList<ToolMenu.ToolCollection> collections)
 	{
-		GameObject parent = Util.KInstantiateUI(prefabToolRow, base.gameObject, force_active: true);
-		GameObject gameObject = Util.KInstantiateUI(largeToolSet, parent, force_active: true);
-		GameObject parent2 = Util.KInstantiateUI(smallToolSet, parent, force_active: true);
-		GameObject gameObject2 = Util.KInstantiateUI(smallToolBottomRow, parent2, force_active: true);
-		GameObject gameObject3 = Util.KInstantiateUI(smallToolTopRow, parent2, force_active: true);
-		GameObject gameObject4 = Util.KInstantiateUI(sandboxToolSet, parent, force_active: true);
+		GameObject parent = Util.KInstantiateUI(this.prefabToolRow, base.gameObject, true);
+		GameObject gameObject = Util.KInstantiateUI(this.largeToolSet, parent, true);
+		GameObject gameObject2 = Util.KInstantiateUI(this.smallToolSet, parent, true);
+		GameObject gameObject3 = Util.KInstantiateUI(this.smallToolBottomRow, gameObject2, true);
+		GameObject gameObject4 = Util.KInstantiateUI(this.smallToolTopRow, gameObject2, true);
+		GameObject gameObject5 = Util.KInstantiateUI(this.sandboxToolSet, parent, true);
 		bool flag = true;
 		int num = 0;
 		for (int i = 0; i < collections.Count; i++)
 		{
-			GameObject parent3;
-			if (collections == sandboxTools)
+			GameObject parent2;
+			if (collections == this.sandboxTools)
 			{
-				parent3 = gameObject4;
+				parent2 = gameObject5;
 			}
 			else if (collections[i].largeIcon)
 			{
-				parent3 = gameObject;
+				parent2 = gameObject;
 			}
 			else
 			{
-				parent3 = (flag ? gameObject3 : gameObject2);
+				parent2 = (flag ? gameObject4 : gameObject3);
 				flag = !flag;
 				num++;
 			}
-			ToolCollection tc = collections[i];
-			tc.toggle = Util.KInstantiateUI((collections[i].tools.Count > 1) ? collectionIconPrefab : ((collections == sandboxTools) ? sandboxToolIconPrefab : (collections[i].largeIcon ? toolIconLargePrefab : toolIconPrefab)), parent3, force_active: true);
+			ToolMenu.ToolCollection tc = collections[i];
+			tc.toggle = Util.KInstantiateUI((collections[i].tools.Count > 1) ? this.collectionIconPrefab : ((collections == this.sandboxTools) ? this.sandboxToolIconPrefab : (collections[i].largeIcon ? this.toolIconLargePrefab : this.toolIconPrefab)), parent2, true);
 			KToggle component = tc.toggle.GetComponent<KToggle>();
 			component.soundPlayer.Enabled = false;
-			component.onClick += delegate
+			component.onClick += delegate()
 			{
-				if (currentlySelectedCollection == tc && tc.tools.Count >= 1)
+				if (this.currentlySelectedCollection == tc && tc.tools.Count >= 1)
 				{
-					KMonoBehaviour.PlaySound(GlobalAssets.GetSound(PlayerController.Instance.ActiveTool.GetDeactivateSound()));
+					KMonoBehaviour.PlaySound(GlobalAssets.GetSound(PlayerController.Instance.ActiveTool.GetDeactivateSound(), false));
 				}
-				ChooseCollection(tc);
+				this.ChooseCollection(tc, true);
 			};
-			if (tc.tools == null)
+			if (tc.tools != null)
 			{
-				continue;
-			}
-			GameObject gameObject5 = null;
-			if (tc.tools.Count < smallCollectionMax)
-			{
-				gameObject5 = Util.KInstantiateUI(Prefab_collectionContainer, parent3, force_active: true);
-				gameObject5.transform.SetSiblingIndex(gameObject5.transform.GetSiblingIndex() - 1);
-				gameObject5.transform.localScale = Vector3.one;
-				gameObject5.rectTransform().sizeDelta = new Vector2(tc.tools.Count * 75, 50f);
-				tc.MaskContainer = gameObject5.GetComponentInChildren<Mask>().gameObject;
-				gameObject5.SetActive(value: false);
-			}
-			else
-			{
-				gameObject5 = Util.KInstantiateUI(Prefab_collectionContainerWindow, parent3, force_active: true);
-				gameObject5.transform.localScale = Vector3.one;
-				gameObject5.GetComponentInChildren<LocText>().SetText(tc.text.ToUpper());
-				tc.MaskContainer = gameObject5.GetComponentInChildren<GridLayoutGroup>().gameObject;
-				gameObject5.SetActive(value: false);
-			}
-			tc.UIMenuDisplay = gameObject5;
-			for (int j = 0; j < tc.tools.Count; j++)
-			{
-				ToolInfo ti = tc.tools[j];
-				GameObject gameObject6 = Util.KInstantiateUI((collections == sandboxTools) ? sandboxToolIconPrefab : (collections[i].largeIcon ? toolIconLargePrefab : toolIconPrefab), tc.MaskContainer, force_active: true);
-				gameObject6.name = ti.text;
-				ti.toggle = gameObject6.GetComponent<KToggle>();
-				if (ti.collection.tools.Count > 1)
+				GameObject gameObject6;
+				if (tc.tools.Count < this.smallCollectionMax)
 				{
-					RectTransform rectTransform = null;
-					rectTransform = ti.toggle.gameObject.GetComponentInChildren<SetTextStyleSetting>().rectTransform();
-					if (gameObject6.name.Length > 12)
-					{
-						rectTransform.GetComponent<SetTextStyleSetting>().SetStyle(CategoryLabelTextStyle_LeftAlign);
-						rectTransform.anchoredPosition = new Vector2(16f, rectTransform.anchoredPosition.y);
-					}
+					gameObject6 = Util.KInstantiateUI(this.Prefab_collectionContainer, parent2, true);
+					gameObject6.transform.SetSiblingIndex(gameObject6.transform.GetSiblingIndex() - 1);
+					gameObject6.transform.localScale = Vector3.one;
+					gameObject6.rectTransform().sizeDelta = new Vector2((float)(tc.tools.Count * 75), 50f);
+					tc.MaskContainer = gameObject6.GetComponentInChildren<Mask>().gameObject;
+					gameObject6.SetActive(false);
 				}
-				ti.toggle.onClick += delegate
+				else
 				{
-					ChooseTool(ti);
-				};
-				tc.UIMenuDisplay.GetComponent<ExpandRevealUIContent>().Collapse(delegate
+					gameObject6 = Util.KInstantiateUI(this.Prefab_collectionContainerWindow, parent2, true);
+					gameObject6.transform.localScale = Vector3.one;
+					gameObject6.GetComponentInChildren<LocText>().SetText(tc.text.ToUpper());
+					tc.MaskContainer = gameObject6.GetComponentInChildren<GridLayoutGroup>().gameObject;
+					gameObject6.SetActive(false);
+				}
+				tc.UIMenuDisplay = gameObject6;
+				Action<object> <>9__2;
+				for (int j = 0; j < tc.tools.Count; j++)
 				{
-					SetToggleState(tc.toggle.GetComponent<KToggle>(), state: false);
-					tc.UIMenuDisplay.SetActive(value: false);
-				});
+					ToolMenu.ToolInfo ti = tc.tools[j];
+					GameObject gameObject7 = Util.KInstantiateUI((collections == this.sandboxTools) ? this.sandboxToolIconPrefab : (collections[i].largeIcon ? this.toolIconLargePrefab : this.toolIconPrefab), tc.MaskContainer, true);
+					gameObject7.name = ti.text;
+					ti.toggle = gameObject7.GetComponent<KToggle>();
+					if (ti.collection.tools.Count > 1)
+					{
+						RectTransform rectTransform = ti.toggle.gameObject.GetComponentInChildren<SetTextStyleSetting>().rectTransform();
+						if (gameObject7.name.Length > 12)
+						{
+							rectTransform.GetComponent<SetTextStyleSetting>().SetStyle(this.CategoryLabelTextStyle_LeftAlign);
+							rectTransform.anchoredPosition = new Vector2(16f, rectTransform.anchoredPosition.y);
+						}
+					}
+					ti.toggle.onClick += delegate()
+					{
+						this.ChooseTool(ti);
+					};
+					ExpandRevealUIContent component2 = tc.UIMenuDisplay.GetComponent<ExpandRevealUIContent>();
+					Action<object> completeCallback;
+					if ((completeCallback = <>9__2) == null)
+					{
+						completeCallback = (<>9__2 = delegate(object s)
+						{
+							this.SetToggleState(tc.toggle.GetComponent<KToggle>(), false);
+							tc.UIMenuDisplay.SetActive(false);
+						});
+					}
+					component2.Collapse(completeCallback);
+				}
 			}
 		}
 		if (num > 0 && num % 2 == 0)
 		{
-			gameObject2.GetComponent<HorizontalLayoutGroup>().padding.left = 26;
-			gameObject3.GetComponent<HorizontalLayoutGroup>().padding.right = 26;
+			gameObject3.GetComponent<HorizontalLayoutGroup>().padding.left = 26;
+			gameObject4.GetComponent<HorizontalLayoutGroup>().padding.right = 26;
 		}
 		if (gameObject.transform.childCount == 0)
 		{
 			UnityEngine.Object.Destroy(gameObject);
 		}
-		if (gameObject2.transform.childCount == 0 && gameObject3.transform.childCount == 0)
+		if (gameObject3.transform.childCount == 0 && gameObject4.transform.childCount == 0)
 		{
-			UnityEngine.Object.Destroy(parent2);
+			UnityEngine.Object.Destroy(gameObject2);
 		}
-		if (gameObject4.transform.childCount == 0)
+		if (gameObject5.transform.childCount == 0)
 		{
-			UnityEngine.Object.Destroy(gameObject4);
+			UnityEngine.Object.Destroy(gameObject5);
 		}
 	}
 
-	private void ChooseTool(ToolInfo tool)
+	// Token: 0x060092F3 RID: 37619 RVA: 0x0038B7EC File Offset: 0x003899EC
+	private void ChooseTool(ToolMenu.ToolInfo tool)
 	{
-		if (currentlySelectedTool == tool)
+		if (this.currentlySelectedTool == tool)
 		{
 			return;
 		}
-		if (currentlySelectedTool != tool)
+		if (this.currentlySelectedTool != tool)
 		{
-			currentlySelectedTool = tool;
-			if (currentlySelectedTool != null && currentlySelectedTool.onSelectCallback != null)
+			this.currentlySelectedTool = tool;
+			if (this.currentlySelectedTool != null && this.currentlySelectedTool.onSelectCallback != null)
 			{
-				currentlySelectedTool.onSelectCallback(currentlySelectedTool);
+				this.currentlySelectedTool.onSelectCallback(this.currentlySelectedTool);
 			}
 		}
-		if (currentlySelectedTool != null)
+		if (this.currentlySelectedTool != null)
 		{
-			currentlySelectedCollection = currentlySelectedTool.collection;
-			InterfaceTool[] tools = PlayerController.Instance.tools;
-			foreach (InterfaceTool interfaceTool in tools)
+			this.currentlySelectedCollection = this.currentlySelectedTool.collection;
+			foreach (InterfaceTool interfaceTool in PlayerController.Instance.tools)
 			{
-				if (currentlySelectedTool.toolName == interfaceTool.name)
+				if (this.currentlySelectedTool.toolName == interfaceTool.name)
 				{
 					UISounds.PlaySound(UISounds.Sound.ClickObject);
-					activeTool = interfaceTool;
+					this.activeTool = interfaceTool;
 					PlayerController.Instance.ActivateTool(interfaceTool);
 					break;
 				}
@@ -540,240 +414,254 @@ public class ToolMenu : KScreen
 		{
 			PlayerController.Instance.ActivateTool(SelectTool.Instance);
 		}
-		rows.ForEach(delegate(List<ToolCollection> row)
+		this.rows.ForEach(delegate(List<ToolMenu.ToolCollection> row)
 		{
-			RefreshRowDisplay(row);
+			this.RefreshRowDisplay(row);
 		});
 	}
 
-	private void RefreshRowDisplay(IList<ToolCollection> row)
+	// Token: 0x060092F4 RID: 37620 RVA: 0x0038B8D0 File Offset: 0x00389AD0
+	private void RefreshRowDisplay(IList<ToolMenu.ToolCollection> row)
 	{
 		for (int i = 0; i < row.Count; i++)
 		{
-			ToolCollection tc = row[i];
-			if (currentlySelectedTool != null && currentlySelectedTool.collection == tc)
+			ToolMenu.ToolCollection tc = row[i];
+			if (this.currentlySelectedTool != null && this.currentlySelectedTool.collection == tc)
 			{
 				if (!tc.UIMenuDisplay.activeSelf || tc.UIMenuDisplay.GetComponent<ExpandRevealUIContent>().Collapsing)
 				{
 					if (tc.tools.Count > 1)
 					{
-						tc.UIMenuDisplay.SetActive(value: true);
-						if (tc.tools.Count < smallCollectionMax)
+						tc.UIMenuDisplay.SetActive(true);
+						if (tc.tools.Count < this.smallCollectionMax)
 						{
 							float speedScale = Mathf.Clamp(1f - (float)tc.tools.Count * 0.15f, 0.5f, 1f);
 							tc.UIMenuDisplay.GetComponent<ExpandRevealUIContent>().speedScale = speedScale;
 						}
-						tc.UIMenuDisplay.GetComponent<ExpandRevealUIContent>().Expand(delegate
+						tc.UIMenuDisplay.GetComponent<ExpandRevealUIContent>().Expand(delegate(object s)
 						{
-							SetToggleState(tc.toggle.GetComponent<KToggle>(), state: true);
+							this.SetToggleState(tc.toggle.GetComponent<KToggle>(), true);
 						});
 					}
 					else
 					{
-						currentlySelectedTool = tc.tools[0];
+						this.currentlySelectedTool = tc.tools[0];
 					}
 				}
 			}
 			else if (tc.UIMenuDisplay.activeSelf && !tc.UIMenuDisplay.GetComponent<ExpandRevealUIContent>().Collapsing && tc.tools.Count > 0)
 			{
-				tc.UIMenuDisplay.GetComponent<ExpandRevealUIContent>().Collapse(delegate
+				tc.UIMenuDisplay.GetComponent<ExpandRevealUIContent>().Collapse(delegate(object s)
 				{
-					SetToggleState(tc.toggle.GetComponent<KToggle>(), state: false);
-					tc.UIMenuDisplay.SetActive(value: false);
+					this.SetToggleState(tc.toggle.GetComponent<KToggle>(), false);
+					tc.UIMenuDisplay.SetActive(false);
 				});
 			}
 			for (int j = 0; j < tc.tools.Count; j++)
 			{
-				if (tc.tools[j] == currentlySelectedTool)
+				if (tc.tools[j] == this.currentlySelectedTool)
 				{
-					SetToggleState(tc.tools[j].toggle, state: true);
+					this.SetToggleState(tc.tools[j].toggle, true);
 				}
 				else
 				{
-					SetToggleState(tc.tools[j].toggle, state: false);
+					this.SetToggleState(tc.tools[j].toggle, false);
 				}
 			}
 		}
 	}
 
+	// Token: 0x060092F5 RID: 37621 RVA: 0x000FFF6E File Offset: 0x000FE16E
 	public void TurnLargeCollectionOff()
 	{
-		if (currentlySelectedCollection != null && currentlySelectedCollection.tools.Count > smallCollectionMax)
+		if (this.currentlySelectedCollection != null && this.currentlySelectedCollection.tools.Count > this.smallCollectionMax)
 		{
-			ChooseCollection(null);
+			this.ChooseCollection(null, true);
 		}
 	}
 
-	private void ChooseCollection(ToolCollection collection, bool autoSelectTool = true)
+	// Token: 0x060092F6 RID: 37622 RVA: 0x0038BAE8 File Offset: 0x00389CE8
+	private void ChooseCollection(ToolMenu.ToolCollection collection, bool autoSelectTool = true)
 	{
-		if (collection == currentlySelectedCollection)
+		if (collection == this.currentlySelectedCollection)
 		{
 			if (collection != null && collection.tools.Count > 1)
 			{
-				currentlySelectedCollection = null;
-				if (currentlySelectedTool != null)
+				this.currentlySelectedCollection = null;
+				if (this.currentlySelectedTool != null)
 				{
-					ChooseTool(null);
+					this.ChooseTool(null);
 				}
 			}
-			else if (currentlySelectedTool != null && currentlySelectedCollection.tools.Contains(currentlySelectedTool) && currentlySelectedCollection.tools.Count == 1)
+			else if (this.currentlySelectedTool != null && this.currentlySelectedCollection.tools.Contains(this.currentlySelectedTool) && this.currentlySelectedCollection.tools.Count == 1)
 			{
-				currentlySelectedCollection = null;
-				ChooseTool(null);
+				this.currentlySelectedCollection = null;
+				this.ChooseTool(null);
 			}
 		}
 		else
 		{
-			currentlySelectedCollection = collection;
+			this.currentlySelectedCollection = collection;
 		}
-		rows.ForEach(delegate(List<ToolCollection> row)
+		this.rows.ForEach(delegate(List<ToolMenu.ToolCollection> row)
 		{
-			OpenOrCloseCollectionsInRow(row);
+			this.OpenOrCloseCollectionsInRow(row, true);
 		});
 	}
 
-	private void OpenOrCloseCollectionsInRow(IList<ToolCollection> row, bool autoSelectTool = true)
+	// Token: 0x060092F7 RID: 37623 RVA: 0x0038BB88 File Offset: 0x00389D88
+	private void OpenOrCloseCollectionsInRow(IList<ToolMenu.ToolCollection> row, bool autoSelectTool = true)
 	{
 		for (int i = 0; i < row.Count; i++)
 		{
-			ToolCollection tc = row[i];
-			if (currentlySelectedCollection == tc)
+			ToolMenu.ToolCollection tc = row[i];
+			if (this.currentlySelectedCollection == tc)
 			{
-				if ((currentlySelectedCollection.tools != null && currentlySelectedCollection.tools.Count == 1) || autoSelectTool)
+				if ((this.currentlySelectedCollection.tools != null && this.currentlySelectedCollection.tools.Count == 1) || autoSelectTool)
 				{
-					ChooseTool(currentlySelectedCollection.tools[0]);
+					this.ChooseTool(this.currentlySelectedCollection.tools[0]);
 				}
 			}
 			else if (tc.UIMenuDisplay.activeSelf && !tc.UIMenuDisplay.GetComponent<ExpandRevealUIContent>().Collapsing)
 			{
-				tc.UIMenuDisplay.GetComponent<ExpandRevealUIContent>().Collapse(delegate
+				tc.UIMenuDisplay.GetComponent<ExpandRevealUIContent>().Collapse(delegate(object s)
 				{
-					SetToggleState(tc.toggle.GetComponent<KToggle>(), state: false);
-					tc.UIMenuDisplay.SetActive(value: false);
+					this.SetToggleState(tc.toggle.GetComponent<KToggle>(), false);
+					tc.UIMenuDisplay.SetActive(false);
 				});
 			}
-			SetToggleState(tc.toggle.GetComponent<KToggle>(), currentlySelectedCollection == tc);
+			this.SetToggleState(tc.toggle.GetComponent<KToggle>(), this.currentlySelectedCollection == tc);
 		}
 	}
 
+	// Token: 0x060092F8 RID: 37624 RVA: 0x000FFF98 File Offset: 0x000FE198
 	private void SetToggleState(KToggle toggle, bool state)
 	{
 		if (state)
 		{
 			toggle.Select();
 			toggle.isOn = true;
+			return;
 		}
-		else
-		{
-			toggle.Deselect();
-			toggle.isOn = false;
-		}
+		toggle.Deselect();
+		toggle.isOn = false;
 	}
 
+	// Token: 0x060092F9 RID: 37625 RVA: 0x000FFFB8 File Offset: 0x000FE1B8
 	public void ClearSelection()
 	{
-		if (currentlySelectedCollection != null)
+		if (this.currentlySelectedCollection != null)
 		{
-			ChooseCollection(null);
+			this.ChooseCollection(null, true);
 		}
-		if (currentlySelectedTool != null)
+		if (this.currentlySelectedTool != null)
 		{
-			ChooseTool(null);
+			this.ChooseTool(null);
 		}
 	}
 
+	// Token: 0x060092FA RID: 37626 RVA: 0x0038BC84 File Offset: 0x00389E84
 	public override void OnKeyDown(KButtonEvent e)
 	{
 		if (!e.Consumed)
 		{
-			if (e.IsAction(Action.ToggleSandboxTools))
+			if (e.IsAction(global::Action.ToggleSandboxTools))
 			{
 				if (Application.isEditor)
 				{
-					DebugUtil.LogArgs("Force-enabling sandbox mode because we're in editor.");
+					DebugUtil.LogArgs(new object[]
+					{
+						"Force-enabling sandbox mode because we're in editor."
+					});
 					SaveGame.Instance.sandboxEnabled = true;
 				}
 				if (SaveGame.Instance.sandboxEnabled)
 				{
 					Game.Instance.SandboxModeActive = !Game.Instance.SandboxModeActive;
-					KMonoBehaviour.PlaySound(Game.Instance.SandboxModeActive ? GlobalAssets.GetSound("SandboxTool_Toggle_On") : GlobalAssets.GetSound("SandboxTool_Toggle_Off"));
+					KMonoBehaviour.PlaySound(Game.Instance.SandboxModeActive ? GlobalAssets.GetSound("SandboxTool_Toggle_On", false) : GlobalAssets.GetSound("SandboxTool_Toggle_Off", false));
 				}
 			}
-			foreach (List<ToolCollection> row in rows)
+			foreach (List<ToolMenu.ToolCollection> list in this.rows)
 			{
-				if (row == sandboxTools && !Game.Instance.SandboxModeActive)
+				if (list != this.sandboxTools || Game.Instance.SandboxModeActive)
 				{
-					continue;
-				}
-				for (int i = 0; i < row.Count; i++)
-				{
-					Action toolHotkey = row[i].hotkey;
-					if (toolHotkey != Action.NumActions && e.IsAction(toolHotkey) && (currentlySelectedCollection == null || (currentlySelectedCollection != null && currentlySelectedCollection.tools.Find((ToolInfo t) => GameInputMapping.CompareActionKeyCodes(t.hotkey, toolHotkey)) == null)))
+					int i = 0;
+					while (i < list.Count)
 					{
-						if (currentlySelectedCollection != row[i])
+						global::Action toolHotkey = list[i].hotkey;
+						if (toolHotkey != global::Action.NumActions && e.IsAction(toolHotkey) && (this.currentlySelectedCollection == null || (this.currentlySelectedCollection != null && this.currentlySelectedCollection.tools.Find((ToolMenu.ToolInfo t) => GameInputMapping.CompareActionKeyCodes(t.hotkey, toolHotkey)) == null)))
 						{
-							ChooseCollection(row[i], autoSelectTool: false);
-							ChooseTool(row[i].tools[0]);
-						}
-						else if (currentlySelectedCollection.tools.Count > 1)
-						{
+							if (this.currentlySelectedCollection != list[i])
+							{
+								this.ChooseCollection(list[i], false);
+								this.ChooseTool(list[i].tools[0]);
+								break;
+							}
+							if (this.currentlySelectedCollection.tools.Count <= 1)
+							{
+								break;
+							}
 							e.Consumed = true;
-							ChooseCollection(null);
-							ChooseTool(null);
-							string sound = GlobalAssets.GetSound(PlayerController.Instance.ActiveTool.GetDeactivateSound());
+							this.ChooseCollection(null, true);
+							this.ChooseTool(null);
+							string sound = GlobalAssets.GetSound(PlayerController.Instance.ActiveTool.GetDeactivateSound(), false);
 							if (sound != null)
 							{
 								KMonoBehaviour.PlaySound(sound);
+								break;
 							}
+							break;
 						}
-						break;
-					}
-					for (int j = 0; j < row[i].tools.Count; j++)
-					{
-						if ((currentlySelectedCollection != null || row[i].tools.Count != 1) && currentlySelectedCollection != row[i] && (currentlySelectedCollection == null || currentlySelectedCollection.tools.Count != 1 || row[i].tools.Count != 1))
+						else
 						{
-							continue;
-						}
-						Action hotkey = row[i].tools[j].hotkey;
-						if (e.IsAction(hotkey) && e.TryConsume(hotkey))
-						{
-							if (row[i].tools.Count == 1 && currentlySelectedCollection != row[i])
+							for (int j = 0; j < list[i].tools.Count; j++)
 							{
-								ChooseCollection(row[i], autoSelectTool: false);
+								if ((this.currentlySelectedCollection == null && list[i].tools.Count == 1) || this.currentlySelectedCollection == list[i] || (this.currentlySelectedCollection != null && this.currentlySelectedCollection.tools.Count == 1 && list[i].tools.Count == 1))
+								{
+									global::Action hotkey = list[i].tools[j].hotkey;
+									if (e.IsAction(hotkey) && e.TryConsume(hotkey))
+									{
+										if (list[i].tools.Count == 1 && this.currentlySelectedCollection != list[i])
+										{
+											this.ChooseCollection(list[i], false);
+										}
+										else if (this.currentlySelectedTool != list[i].tools[j])
+										{
+											this.ChooseTool(list[i].tools[j]);
+										}
+									}
+									else if (GameInputMapping.CompareActionKeyCodes(e.GetAction(), hotkey))
+									{
+										e.Consumed = true;
+									}
+								}
 							}
-							else if (currentlySelectedTool != row[i].tools[j])
-							{
-								ChooseTool(row[i].tools[j]);
-							}
-						}
-						else if (GameInputMapping.CompareActionKeyCodes(e.GetAction(), hotkey))
-						{
-							e.Consumed = true;
+							i++;
 						}
 					}
 				}
 			}
-			if ((currentlySelectedTool != null || currentlySelectedCollection != null) && !e.Consumed)
+			if ((this.currentlySelectedTool != null || this.currentlySelectedCollection != null) && !e.Consumed)
 			{
-				if (e.TryConsume(Action.Escape))
+				if (e.TryConsume(global::Action.Escape))
 				{
-					string sound2 = GlobalAssets.GetSound(PlayerController.Instance.ActiveTool.GetDeactivateSound());
+					string sound2 = GlobalAssets.GetSound(PlayerController.Instance.ActiveTool.GetDeactivateSound(), false);
 					if (sound2 != null)
 					{
 						KMonoBehaviour.PlaySound(sound2);
 					}
-					if (currentlySelectedCollection != null)
+					if (this.currentlySelectedCollection != null)
 					{
-						ChooseCollection(null);
+						this.ChooseCollection(null, true);
 					}
-					if (currentlySelectedTool != null)
+					if (this.currentlySelectedTool != null)
 					{
-						ChooseTool(null);
+						this.ChooseTool(null);
 					}
 					SelectTool.Instance.Activate();
 				}
 			}
-			else if (!PlayerController.Instance.IsUsingDefaultTool() && !e.Consumed && e.TryConsume(Action.Escape))
+			else if (!PlayerController.Instance.IsUsingDefaultTool() && !e.Consumed && e.TryConsume(global::Action.Escape))
 			{
 				SelectTool.Instance.Activate();
 			}
@@ -781,34 +669,35 @@ public class ToolMenu : KScreen
 		base.OnKeyDown(e);
 	}
 
+	// Token: 0x060092FB RID: 37627 RVA: 0x0038C06C File Offset: 0x0038A26C
 	public override void OnKeyUp(KButtonEvent e)
 	{
 		if (!e.Consumed)
 		{
-			if ((currentlySelectedTool != null || currentlySelectedCollection != null) && !e.Consumed)
+			if ((this.currentlySelectedTool != null || this.currentlySelectedCollection != null) && !e.Consumed)
 			{
-				if (PlayerController.Instance.ConsumeIfNotDragging(e, Action.MouseRight))
+				if (PlayerController.Instance.ConsumeIfNotDragging(e, global::Action.MouseRight))
 				{
-					string sound = GlobalAssets.GetSound(PlayerController.Instance.ActiveTool.GetDeactivateSound());
+					string sound = GlobalAssets.GetSound(PlayerController.Instance.ActiveTool.GetDeactivateSound(), false);
 					if (sound != null)
 					{
 						KMonoBehaviour.PlaySound(sound);
 					}
-					if (currentlySelectedCollection != null)
+					if (this.currentlySelectedCollection != null)
 					{
-						ChooseCollection(null);
+						this.ChooseCollection(null, true);
 					}
-					if (currentlySelectedTool != null)
+					if (this.currentlySelectedTool != null)
 					{
-						ChooseTool(null);
+						this.ChooseTool(null);
 					}
 					SelectTool.Instance.Activate();
 				}
 			}
-			else if (!PlayerController.Instance.IsUsingDefaultTool() && !e.Consumed && PlayerController.Instance.ConsumeIfNotDragging(e, Action.MouseRight))
+			else if (!PlayerController.Instance.IsUsingDefaultTool() && !e.Consumed && PlayerController.Instance.ConsumeIfNotDragging(e, global::Action.MouseRight))
 			{
 				SelectTool.Instance.Activate();
-				string sound2 = GlobalAssets.GetSound(PlayerController.Instance.ActiveTool.GetDeactivateSound());
+				string sound2 = GlobalAssets.GetSound(PlayerController.Instance.ActiveTool.GetDeactivateSound(), false);
 				if (sound2 != null)
 				{
 					KMonoBehaviour.PlaySound(sound2);
@@ -818,121 +707,348 @@ public class ToolMenu : KScreen
 		base.OnKeyUp(e);
 	}
 
-	protected void BuildRowToggles(IList<ToolCollection> row)
+	// Token: 0x060092FC RID: 37628 RVA: 0x0038C14C File Offset: 0x0038A34C
+	protected void BuildRowToggles(IList<ToolMenu.ToolCollection> row)
 	{
 		for (int i = 0; i < row.Count; i++)
 		{
-			ToolCollection toolCollection = row[i];
-			if (toolCollection.toggle == null)
+			ToolMenu.ToolCollection toolCollection = row[i];
+			if (!(toolCollection.toggle == null))
 			{
-				continue;
-			}
-			GameObject toggle = toolCollection.toggle;
-			Sprite sprite = Assets.GetSprite(toolCollection.icon);
-			if (sprite != null)
-			{
-				toggle.transform.Find("FG").GetComponent<Image>().sprite = sprite;
-			}
-			Transform transform = toggle.transform.Find("Text");
-			if (transform != null)
-			{
-				LocText component = transform.GetComponent<LocText>();
-				if (component != null)
-				{
-					component.text = toolCollection.text;
-				}
-			}
-			ToolTip component2 = toggle.GetComponent<ToolTip>();
-			if (!component2)
-			{
-				continue;
-			}
-			if (row[i].tools.Count == 1)
-			{
-				string newString = GameUtil.ReplaceHotkeyString(row[i].tools[0].tooltip, row[i].tools[0].hotkey);
-				component2.ClearMultiStringTooltip();
-				component2.AddMultiStringTooltip(row[i].tools[0].text, TooltipHeader);
-				component2.AddMultiStringTooltip(newString, ToggleToolTipTextStyleSetting);
-				continue;
-			}
-			string text = row[i].tooltip;
-			if (row[i].hotkey != Action.NumActions)
-			{
-				text = GameUtil.ReplaceHotkeyString(text, row[i].hotkey);
-			}
-			component2.ClearMultiStringTooltip();
-			component2.AddMultiStringTooltip(text, ToggleToolTipTextStyleSetting);
-		}
-	}
-
-	protected void BuildToolToggles(IList<ToolCollection> row)
-	{
-		for (int i = 0; i < row.Count; i++)
-		{
-			ToolCollection toolCollection = row[i];
-			if (toolCollection.toggle == null)
-			{
-				continue;
-			}
-			for (int j = 0; j < toolCollection.tools.Count; j++)
-			{
-				GameObject gameObject = toolCollection.tools[j].toggle.gameObject;
+				GameObject toggle = toolCollection.toggle;
 				Sprite sprite = Assets.GetSprite(toolCollection.icon);
 				if (sprite != null)
 				{
-					gameObject.transform.Find("FG").GetComponent<Image>().sprite = sprite;
+					toggle.transform.Find("FG").GetComponent<Image>().sprite = sprite;
 				}
-				Transform transform = gameObject.transform.Find("Text");
+				Transform transform = toggle.transform.Find("Text");
 				if (transform != null)
 				{
 					LocText component = transform.GetComponent<LocText>();
 					if (component != null)
 					{
-						component.text = toolCollection.tools[j].text;
+						component.text = toolCollection.text;
 					}
 				}
-				ToolTip component2 = gameObject.GetComponent<ToolTip>();
-				if ((bool)component2)
+				ToolTip component2 = toggle.GetComponent<ToolTip>();
+				if (component2)
 				{
-					string newString = ((toolCollection.tools.Count > 1) ? GameUtil.ReplaceHotkeyString(toolCollection.tools[j].tooltip, toolCollection.hotkey, toolCollection.tools[j].hotkey) : GameUtil.ReplaceHotkeyString(toolCollection.tools[j].tooltip, toolCollection.tools[j].hotkey));
-					component2.ClearMultiStringTooltip();
-					component2.AddMultiStringTooltip(newString, ToggleToolTipTextStyleSetting);
+					if (row[i].tools.Count == 1)
+					{
+						string newString = GameUtil.ReplaceHotkeyString(row[i].tools[0].tooltip, row[i].tools[0].hotkey);
+						component2.ClearMultiStringTooltip();
+						component2.AddMultiStringTooltip(row[i].tools[0].text, this.TooltipHeader);
+						component2.AddMultiStringTooltip(newString, this.ToggleToolTipTextStyleSetting);
+					}
+					else
+					{
+						string text = row[i].tooltip;
+						if (row[i].hotkey != global::Action.NumActions)
+						{
+							text = GameUtil.ReplaceHotkeyString(text, row[i].hotkey);
+						}
+						component2.ClearMultiStringTooltip();
+						component2.AddMultiStringTooltip(text, this.ToggleToolTipTextStyleSetting);
+					}
 				}
 			}
 		}
 	}
 
+	// Token: 0x060092FD RID: 37629 RVA: 0x0038C2E8 File Offset: 0x0038A4E8
+	protected void BuildToolToggles(IList<ToolMenu.ToolCollection> row)
+	{
+		for (int i = 0; i < row.Count; i++)
+		{
+			ToolMenu.ToolCollection toolCollection = row[i];
+			if (!(toolCollection.toggle == null))
+			{
+				for (int j = 0; j < toolCollection.tools.Count; j++)
+				{
+					GameObject gameObject = toolCollection.tools[j].toggle.gameObject;
+					Sprite sprite = Assets.GetSprite(toolCollection.icon);
+					if (sprite != null)
+					{
+						gameObject.transform.Find("FG").GetComponent<Image>().sprite = sprite;
+					}
+					Transform transform = gameObject.transform.Find("Text");
+					if (transform != null)
+					{
+						LocText component = transform.GetComponent<LocText>();
+						if (component != null)
+						{
+							component.text = toolCollection.tools[j].text;
+						}
+					}
+					ToolTip component2 = gameObject.GetComponent<ToolTip>();
+					if (component2)
+					{
+						string newString = (toolCollection.tools.Count > 1) ? GameUtil.ReplaceHotkeyString(toolCollection.tools[j].tooltip, toolCollection.hotkey, toolCollection.tools[j].hotkey) : GameUtil.ReplaceHotkeyString(toolCollection.tools[j].tooltip, toolCollection.tools[j].hotkey);
+						component2.ClearMultiStringTooltip();
+						component2.AddMultiStringTooltip(newString, this.ToggleToolTipTextStyleSetting);
+					}
+				}
+			}
+		}
+	}
+
+	// Token: 0x060092FE RID: 37630 RVA: 0x0038C464 File Offset: 0x0038A664
 	public bool HasUniqueKeyBindings()
 	{
 		bool result = true;
-		boundRootActions.Clear();
-		foreach (List<ToolCollection> row in rows)
+		this.boundRootActions.Clear();
+		foreach (List<ToolMenu.ToolCollection> list in this.rows)
 		{
-			foreach (ToolCollection item in row)
+			foreach (ToolMenu.ToolCollection toolCollection in list)
 			{
-				if (boundRootActions.Contains(item.hotkey))
+				if (this.boundRootActions.Contains(toolCollection.hotkey))
 				{
 					result = false;
 					break;
 				}
-				boundRootActions.Add(item.hotkey);
-				boundSubgroupActions.Clear();
-				foreach (ToolInfo tool in item.tools)
+				this.boundRootActions.Add(toolCollection.hotkey);
+				this.boundSubgroupActions.Clear();
+				foreach (ToolMenu.ToolInfo toolInfo in toolCollection.tools)
 				{
-					if (boundSubgroupActions.Contains(tool.hotkey))
+					if (this.boundSubgroupActions.Contains(toolInfo.hotkey))
 					{
 						result = false;
 						break;
 					}
-					boundSubgroupActions.Add(tool.hotkey);
+					this.boundSubgroupActions.Add(toolInfo.hotkey);
 				}
 			}
 		}
 		return result;
 	}
 
+	// Token: 0x060092FF RID: 37631 RVA: 0x000FFFD9 File Offset: 0x000FE1D9
 	private void OnPriorityClicked(PrioritySetting priority)
 	{
-		priorityScreen.SetScreenPriority(priority);
+		this.priorityScreen.SetScreenPriority(priority, false);
+	}
+
+	// Token: 0x04006F21 RID: 28449
+	public static ToolMenu Instance;
+
+	// Token: 0x04006F22 RID: 28450
+	public GameObject Prefab_collectionContainer;
+
+	// Token: 0x04006F23 RID: 28451
+	public GameObject Prefab_collectionContainerWindow;
+
+	// Token: 0x04006F24 RID: 28452
+	public PriorityScreen Prefab_priorityScreen;
+
+	// Token: 0x04006F25 RID: 28453
+	public GameObject toolIconPrefab;
+
+	// Token: 0x04006F26 RID: 28454
+	public GameObject toolIconLargePrefab;
+
+	// Token: 0x04006F27 RID: 28455
+	public GameObject sandboxToolIconPrefab;
+
+	// Token: 0x04006F28 RID: 28456
+	public GameObject collectionIconPrefab;
+
+	// Token: 0x04006F29 RID: 28457
+	public GameObject prefabToolRow;
+
+	// Token: 0x04006F2A RID: 28458
+	public GameObject largeToolSet;
+
+	// Token: 0x04006F2B RID: 28459
+	public GameObject smallToolSet;
+
+	// Token: 0x04006F2C RID: 28460
+	public GameObject smallToolBottomRow;
+
+	// Token: 0x04006F2D RID: 28461
+	public GameObject smallToolTopRow;
+
+	// Token: 0x04006F2E RID: 28462
+	public GameObject sandboxToolSet;
+
+	// Token: 0x04006F2F RID: 28463
+	private PriorityScreen priorityScreen;
+
+	// Token: 0x04006F30 RID: 28464
+	public ToolParameterMenu toolParameterMenu;
+
+	// Token: 0x04006F31 RID: 28465
+	public GameObject sandboxToolParameterMenu;
+
+	// Token: 0x04006F32 RID: 28466
+	private GameObject toolEffectDisplayPlane;
+
+	// Token: 0x04006F33 RID: 28467
+	private Texture2D toolEffectDisplayPlaneTexture;
+
+	// Token: 0x04006F34 RID: 28468
+	public Material toolEffectDisplayMaterial;
+
+	// Token: 0x04006F35 RID: 28469
+	private byte[] toolEffectDisplayBytes;
+
+	// Token: 0x04006F36 RID: 28470
+	private List<List<ToolMenu.ToolCollection>> rows = new List<List<ToolMenu.ToolCollection>>();
+
+	// Token: 0x04006F37 RID: 28471
+	public List<ToolMenu.ToolCollection> basicTools = new List<ToolMenu.ToolCollection>();
+
+	// Token: 0x04006F38 RID: 28472
+	public List<ToolMenu.ToolCollection> sandboxTools = new List<ToolMenu.ToolCollection>();
+
+	// Token: 0x04006F39 RID: 28473
+	public ToolMenu.ToolCollection currentlySelectedCollection;
+
+	// Token: 0x04006F3A RID: 28474
+	public ToolMenu.ToolInfo currentlySelectedTool;
+
+	// Token: 0x04006F3B RID: 28475
+	public InterfaceTool activeTool;
+
+	// Token: 0x04006F3C RID: 28476
+	private Coroutine activeOpenAnimationRoutine;
+
+	// Token: 0x04006F3D RID: 28477
+	private Coroutine activeCloseAnimationRoutine;
+
+	// Token: 0x04006F3E RID: 28478
+	private HashSet<global::Action> boundRootActions = new HashSet<global::Action>();
+
+	// Token: 0x04006F3F RID: 28479
+	private HashSet<global::Action> boundSubgroupActions = new HashSet<global::Action>();
+
+	// Token: 0x04006F40 RID: 28480
+	private UnityAction inputChangeReceiver;
+
+	// Token: 0x04006F41 RID: 28481
+	private int refreshScaleHandle = -1;
+
+	// Token: 0x04006F42 RID: 28482
+	[SerializeField]
+	public TextStyleSetting ToggleToolTipTextStyleSetting;
+
+	// Token: 0x04006F43 RID: 28483
+	[SerializeField]
+	public TextStyleSetting CategoryLabelTextStyle_LeftAlign;
+
+	// Token: 0x04006F44 RID: 28484
+	[SerializeField]
+	private TextStyleSetting TooltipHeader;
+
+	// Token: 0x04006F45 RID: 28485
+	private int smallCollectionMax = 5;
+
+	// Token: 0x04006F46 RID: 28486
+	private HashSet<ToolMenu.CellColorData> colors = new HashSet<ToolMenu.CellColorData>();
+
+	// Token: 0x02001B50 RID: 6992
+	public class ToolInfo
+	{
+		// Token: 0x06009308 RID: 37640 RVA: 0x0038C604 File Offset: 0x0038A804
+		public ToolInfo(string text, string icon_name, global::Action hotkey, string ToolName, ToolMenu.ToolCollection toolCollection, string tooltip = "", Action<object> onSelectCallback = null, object toolData = null)
+		{
+			this.text = text;
+			this.icon = icon_name;
+			this.hotkey = hotkey;
+			this.toolName = ToolName;
+			this.collection = toolCollection;
+			toolCollection.tools.Add(this);
+			this.tooltip = tooltip;
+			this.onSelectCallback = onSelectCallback;
+			this.toolData = toolData;
+		}
+
+		// Token: 0x04006F47 RID: 28487
+		public string text;
+
+		// Token: 0x04006F48 RID: 28488
+		public string icon;
+
+		// Token: 0x04006F49 RID: 28489
+		public global::Action hotkey;
+
+		// Token: 0x04006F4A RID: 28490
+		public string toolName;
+
+		// Token: 0x04006F4B RID: 28491
+		public ToolMenu.ToolCollection collection;
+
+		// Token: 0x04006F4C RID: 28492
+		public string tooltip;
+
+		// Token: 0x04006F4D RID: 28493
+		public KToggle toggle;
+
+		// Token: 0x04006F4E RID: 28494
+		public Action<object> onSelectCallback;
+
+		// Token: 0x04006F4F RID: 28495
+		public object toolData;
+	}
+
+	// Token: 0x02001B51 RID: 6993
+	public class ToolCollection
+	{
+		// Token: 0x06009309 RID: 37641 RVA: 0x00100016 File Offset: 0x000FE216
+		public ToolCollection(string text, string icon_name, string tooltip = "", bool useInfoMenu = false, global::Action hotkey = global::Action.NumActions, bool largeIcon = false)
+		{
+			this.text = text;
+			this.icon = icon_name;
+			this.tooltip = tooltip;
+			this.useInfoMenu = useInfoMenu;
+			this.hotkey = hotkey;
+			this.largeIcon = largeIcon;
+		}
+
+		// Token: 0x04006F50 RID: 28496
+		public string text;
+
+		// Token: 0x04006F51 RID: 28497
+		public string icon;
+
+		// Token: 0x04006F52 RID: 28498
+		public string tooltip;
+
+		// Token: 0x04006F53 RID: 28499
+		public bool useInfoMenu;
+
+		// Token: 0x04006F54 RID: 28500
+		public bool largeIcon;
+
+		// Token: 0x04006F55 RID: 28501
+		public GameObject toggle;
+
+		// Token: 0x04006F56 RID: 28502
+		public List<ToolMenu.ToolInfo> tools = new List<ToolMenu.ToolInfo>();
+
+		// Token: 0x04006F57 RID: 28503
+		public GameObject UIMenuDisplay;
+
+		// Token: 0x04006F58 RID: 28504
+		public GameObject MaskContainer;
+
+		// Token: 0x04006F59 RID: 28505
+		public global::Action hotkey;
+	}
+
+	// Token: 0x02001B52 RID: 6994
+	public struct CellColorData
+	{
+		// Token: 0x0600930A RID: 37642 RVA: 0x00100056 File Offset: 0x000FE256
+		public CellColorData(int cell, Color color)
+		{
+			this.cell = cell;
+			this.color = color;
+		}
+
+		// Token: 0x04006F5A RID: 28506
+		public int cell;
+
+		// Token: 0x04006F5B RID: 28507
+		public Color color;
 	}
 }

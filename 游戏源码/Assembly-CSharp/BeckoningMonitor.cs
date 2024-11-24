@@ -1,97 +1,106 @@
-using System;
+﻿using System;
 using Klei.AI;
 using UnityEngine;
 
+// Token: 0x0200112A RID: 4394
 public class BeckoningMonitor : GameStateMachine<BeckoningMonitor, BeckoningMonitor.Instance, IStateMachineTarget, BeckoningMonitor.Def>
 {
-	public class Def : BaseDef
+	// Token: 0x060059F8 RID: 23032 RVA: 0x00293804 File Offset: 0x00291A04
+	public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
-		public float caloriesPerCycle;
+		default_state = this.root;
+		this.root.EventHandler(GameHashes.CaloriesConsumed, delegate(BeckoningMonitor.Instance smi, object data)
+		{
+			smi.OnCaloriesConsumed(data);
+		}).ToggleBehaviour(GameTags.Creatures.WantsToBeckon, (BeckoningMonitor.Instance smi) => smi.IsReadyToBeckon(), null).Update(delegate(BeckoningMonitor.Instance smi, float dt)
+		{
+			smi.UpdateBlockedStatusItem();
+		}, UpdateRate.SIM_1000ms, false);
+	}
 
-		public string effectId = "MooWellFed";
-
+	// Token: 0x0200112B RID: 4395
+	public class Def : StateMachine.BaseDef
+	{
+		// Token: 0x060059FA RID: 23034 RVA: 0x000DA974 File Offset: 0x000D8B74
 		public override void Configure(GameObject prefab)
 		{
 			prefab.AddOrGet<Modifiers>().initialAmounts.Add(Db.Get().Amounts.Beckoning.Id);
 		}
+
+		// Token: 0x04003F7C RID: 16252
+		public float caloriesPerCycle;
+
+		// Token: 0x04003F7D RID: 16253
+		public string effectId = "MooWellFed";
 	}
 
-	public new class Instance : GameInstance
+	// Token: 0x0200112C RID: 4396
+	public new class Instance : GameStateMachine<BeckoningMonitor, BeckoningMonitor.Instance, IStateMachineTarget, BeckoningMonitor.Def>.GameInstance
 	{
-		private AmountInstance beckoning;
-
-		[MyCmpGet]
-		private Effects effects;
-
-		[MyCmpGet]
-		public KSelectable kselectable;
-
-		private Guid beckoningBlockedHandle;
-
-		public Instance(IStateMachineTarget master, Def def)
-			: base(master, def)
+		// Token: 0x060059FC RID: 23036 RVA: 0x000DA9AD File Offset: 0x000D8BAD
+		public Instance(IStateMachineTarget master, BeckoningMonitor.Def def) : base(master, def)
 		{
-			beckoning = Db.Get().Amounts.Beckoning.Lookup(base.gameObject);
+			this.beckoning = Db.Get().Amounts.Beckoning.Lookup(base.gameObject);
 		}
 
+		// Token: 0x060059FD RID: 23037 RVA: 0x0029389C File Offset: 0x00291A9C
 		private bool IsSpaceVisible()
 		{
 			int num = Grid.PosToCell(this);
-			if (Grid.IsValidCell(num))
-			{
-				return Grid.ExposedToSunlight[num] > 0;
-			}
-			return false;
+			return Grid.IsValidCell(num) && Grid.ExposedToSunlight[num] > 0;
 		}
 
+		// Token: 0x060059FE RID: 23038 RVA: 0x000DA9D7 File Offset: 0x000D8BD7
 		private bool IsBeckoningAvailable()
 		{
 			return base.smi.beckoning.value >= base.smi.beckoning.GetMax();
 		}
 
+		// Token: 0x060059FF RID: 23039 RVA: 0x000DA9FE File Offset: 0x000D8BFE
 		public bool IsReadyToBeckon()
 		{
-			if (IsBeckoningAvailable())
-			{
-				return IsSpaceVisible();
-			}
-			return false;
+			return this.IsBeckoningAvailable() && this.IsSpaceVisible();
 		}
 
+		// Token: 0x06005A00 RID: 23040 RVA: 0x002938C8 File Offset: 0x00291AC8
 		public void UpdateBlockedStatusItem()
 		{
-			bool flag = IsSpaceVisible();
-			if (!flag && IsBeckoningAvailable() && beckoningBlockedHandle == Guid.Empty)
+			bool flag = this.IsSpaceVisible();
+			if (!flag && this.IsBeckoningAvailable() && this.beckoningBlockedHandle == Guid.Empty)
 			{
-				beckoningBlockedHandle = kselectable.AddStatusItem(Db.Get().CreatureStatusItems.BeckoningBlocked);
+				this.beckoningBlockedHandle = this.kselectable.AddStatusItem(Db.Get().CreatureStatusItems.BeckoningBlocked, null);
+				return;
 			}
-			else if (flag)
+			if (flag)
 			{
-				beckoningBlockedHandle = kselectable.RemoveStatusItem(beckoningBlockedHandle);
+				this.beckoningBlockedHandle = this.kselectable.RemoveStatusItem(this.beckoningBlockedHandle, false);
 			}
 		}
 
+		// Token: 0x06005A01 RID: 23041 RVA: 0x00293938 File Offset: 0x00291B38
 		public void OnCaloriesConsumed(object data)
 		{
 			CreatureCalorieMonitor.CaloriesConsumedEvent caloriesConsumedEvent = (CreatureCalorieMonitor.CaloriesConsumedEvent)data;
-			EffectInstance effectInstance = effects.Get(base.smi.def.effectId);
+			EffectInstance effectInstance = this.effects.Get(base.smi.def.effectId);
 			if (effectInstance == null)
 			{
-				effectInstance = effects.Add(base.smi.def.effectId, should_save: true);
+				effectInstance = this.effects.Add(base.smi.def.effectId, true);
 			}
 			effectInstance.timeRemaining += caloriesConsumedEvent.calories / base.smi.def.caloriesPerCycle * 600f;
 		}
-	}
 
-	public override void InitializeStates(out BaseState default_state)
-	{
-		default_state = root;
-		root.EventHandler(GameHashes.CaloriesConsumed, delegate(Instance smi, object data)
-		{
-			smi.OnCaloriesConsumed(data);
-		}).ToggleBehaviour(GameTags.Creatures.WantsToBeckon, (Instance smi) => smi.IsReadyToBeckon()).Update(delegate(Instance smi, float dt)
-		{
-			smi.UpdateBlockedStatusItem();
-		}, UpdateRate.SIM_1000ms);
+		// Token: 0x04003F7E RID: 16254
+		private AmountInstance beckoning;
+
+		// Token: 0x04003F7F RID: 16255
+		[MyCmpGet]
+		private Effects effects;
+
+		// Token: 0x04003F80 RID: 16256
+		[MyCmpGet]
+		public KSelectable kselectable;
+
+		// Token: 0x04003F81 RID: 16257
+		private Guid beckoningBlockedHandle;
 	}
 }

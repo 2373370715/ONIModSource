@@ -1,62 +1,64 @@
+﻿using System;
 using UnityEngine;
 
+// Token: 0x02001498 RID: 5272
 [AddComponentMenu("KMonoBehaviour/scripts/BuildingLoader")]
 public class BuildingLoader : KMonoBehaviour
 {
-	private GameObject previewTemplate;
-
-	private GameObject constructionTemplate;
-
-	public static BuildingLoader Instance;
-
+	// Token: 0x06006D41 RID: 27969 RVA: 0x000E7A83 File Offset: 0x000E5C83
 	public static void DestroyInstance()
 	{
-		Instance = null;
+		BuildingLoader.Instance = null;
 	}
 
+	// Token: 0x06006D42 RID: 27970 RVA: 0x000E7A8B File Offset: 0x000E5C8B
 	protected override void OnPrefabInit()
 	{
-		Instance = this;
-		previewTemplate = CreatePreviewTemplate();
-		constructionTemplate = CreateConstructionTemplate();
-		Object.DontDestroyOnLoad(previewTemplate);
+		BuildingLoader.Instance = this;
+		this.previewTemplate = this.CreatePreviewTemplate();
+		this.constructionTemplate = this.CreateConstructionTemplate();
+		UnityEngine.Object.DontDestroyOnLoad(this.previewTemplate);
 	}
 
+	// Token: 0x06006D43 RID: 27971 RVA: 0x000E7AB6 File Offset: 0x000E5CB6
 	private GameObject CreateTemplate()
 	{
-		GameObject obj = new GameObject();
-		obj.SetActive(value: false);
-		obj.AddOrGet<KPrefabID>();
-		obj.AddOrGet<KSelectable>();
-		obj.AddOrGet<StateMachineController>();
-		PrimaryElement primaryElement = obj.AddOrGet<PrimaryElement>();
+		GameObject gameObject = new GameObject();
+		gameObject.SetActive(false);
+		gameObject.AddOrGet<KPrefabID>();
+		gameObject.AddOrGet<KSelectable>();
+		gameObject.AddOrGet<StateMachineController>();
+		PrimaryElement primaryElement = gameObject.AddOrGet<PrimaryElement>();
 		primaryElement.Mass = 1f;
 		primaryElement.Temperature = 293f;
-		return obj;
+		return gameObject;
 	}
 
+	// Token: 0x06006D44 RID: 27972 RVA: 0x000E7AF4 File Offset: 0x000E5CF4
 	private GameObject CreatePreviewTemplate()
 	{
-		GameObject obj = CreateTemplate();
-		obj.AddComponent<BuildingPreview>();
-		return obj;
+		GameObject gameObject = this.CreateTemplate();
+		gameObject.AddComponent<BuildingPreview>();
+		return gameObject;
 	}
 
+	// Token: 0x06006D45 RID: 27973 RVA: 0x000E7B03 File Offset: 0x000E5D03
 	private GameObject CreateConstructionTemplate()
 	{
-		GameObject obj = CreateTemplate();
-		obj.AddOrGet<BuildingUnderConstruction>();
-		obj.AddOrGet<Constructable>();
-		obj.AddComponent<Storage>().doDiseaseTransfer = false;
-		obj.AddOrGet<Prioritizable>();
-		obj.AddOrGet<Notifier>();
-		obj.AddOrGet<SaveLoadRoot>();
-		return obj;
+		GameObject gameObject = this.CreateTemplate();
+		gameObject.AddOrGet<BuildingUnderConstruction>();
+		gameObject.AddOrGet<Constructable>();
+		gameObject.AddComponent<Storage>().doDiseaseTransfer = false;
+		gameObject.AddOrGet<Prioritizable>();
+		gameObject.AddOrGet<Notifier>();
+		gameObject.AddOrGet<SaveLoadRoot>();
+		return gameObject;
 	}
 
+	// Token: 0x06006D46 RID: 27974 RVA: 0x000E7B3A File Offset: 0x000E5D3A
 	public GameObject CreateBuilding(BuildingDef def, GameObject go, GameObject parent = null)
 	{
-		go = Object.Instantiate(go);
+		go = UnityEngine.Object.Instantiate<GameObject>(go);
 		go.name = def.PrefabID;
 		if (parent != null)
 		{
@@ -66,6 +68,7 @@ public class BuildingLoader : KMonoBehaviour
 		return go;
 	}
 
+	// Token: 0x06006D47 RID: 27975 RVA: 0x002EB1C0 File Offset: 0x002E93C0
 	private static bool Add2DComponents(BuildingDef def, GameObject go, string initialAnimState = null, bool no_collider = false, int layer = -1)
 	{
 		bool flag = def.AnimFiles != null && def.AnimFiles.Length != 0;
@@ -79,18 +82,18 @@ public class BuildingLoader : KMonoBehaviour
 		{
 			for (int i = 2; i < components.Length; i++)
 			{
-				Object.DestroyImmediate(components[i]);
+				UnityEngine.Object.DestroyImmediate(components[i]);
 			}
 		}
 		if (def.BlockTileAtlas == null)
 		{
-			KBatchedAnimController kBatchedAnimController = UpdateComponentRequirement<KBatchedAnimController>(go, flag);
-			if (kBatchedAnimController != null)
+			KBatchedAnimController kbatchedAnimController = BuildingLoader.UpdateComponentRequirement<KBatchedAnimController>(go, flag);
+			if (kbatchedAnimController != null)
 			{
-				kBatchedAnimController.AnimFiles = def.AnimFiles;
+				kbatchedAnimController.AnimFiles = def.AnimFiles;
 				if (def.isKAnimTile)
 				{
-					kBatchedAnimController.initialAnim = null;
+					kbatchedAnimController.initialAnim = null;
 				}
 				else
 				{
@@ -102,92 +105,98 @@ public class BuildingLoader : KMonoBehaviour
 					{
 						initialAnimState = "closed";
 					}
-					kBatchedAnimController.initialAnim = ((initialAnimState != null) ? initialAnimState : def.DefaultAnimState);
-					kBatchedAnimController.defaultAnim = kBatchedAnimController.initialAnim;
+					kbatchedAnimController.initialAnim = ((initialAnimState != null) ? initialAnimState : def.DefaultAnimState);
+					kbatchedAnimController.defaultAnim = kbatchedAnimController.initialAnim;
 				}
-				kBatchedAnimController.SetFGLayer(def.ForegroundLayer);
-				kBatchedAnimController.materialType = KAnimBatchGroup.MaterialType.Default;
+				kbatchedAnimController.SetFGLayer(def.ForegroundLayer);
+				kbatchedAnimController.materialType = KAnimBatchGroup.MaterialType.Default;
 			}
 		}
-		KBoxCollider2D kBoxCollider2D = UpdateComponentRequirement<KBoxCollider2D>(go, flag && !no_collider);
-		if (kBoxCollider2D != null)
+		KBoxCollider2D kboxCollider2D = BuildingLoader.UpdateComponentRequirement<KBoxCollider2D>(go, flag && !no_collider);
+		if (kboxCollider2D != null)
 		{
-			kBoxCollider2D.offset = new Vector3(0f, 0.5f * (float)def.HeightInCells, 0f);
-			kBoxCollider2D.size = new Vector3(def.WidthInCells, def.HeightInCells, 0f);
+			kboxCollider2D.offset = new Vector3(0f, 0.5f * (float)def.HeightInCells, 0f);
+			kboxCollider2D.size = new Vector3((float)def.WidthInCells, (float)def.HeightInCells, 0f);
 		}
 		if (def.AnimFiles == null)
 		{
-			Debug.LogError(def.Name + " Def missing anim files");
+			global::Debug.LogError(def.Name + " Def missing anim files");
 		}
 		return flag;
 	}
 
+	// Token: 0x06006D48 RID: 27976 RVA: 0x002EB344 File Offset: 0x002E9544
 	private static T UpdateComponentRequirement<T>(GameObject go, bool required) where T : Component
 	{
-		T val = go.GetComponent(typeof(T)) as T;
-		if (!required && val != null)
+		T t = go.GetComponent(typeof(T)) as T;
+		if (!required && t != null)
 		{
-			Object.DestroyImmediate(val, allowDestroyingAssets: true);
-			val = null;
+			UnityEngine.Object.DestroyImmediate(t, true);
+			t = default(T);
 		}
-		else if (required && val == null)
+		else if (required && t == null)
 		{
-			val = go.AddComponent(typeof(T)) as T;
+			t = (go.AddComponent(typeof(T)) as T);
 		}
-		return val;
+		return t;
 	}
 
+	// Token: 0x06006D49 RID: 27977 RVA: 0x002EB3C0 File Offset: 0x002E95C0
 	public static KPrefabID AddID(GameObject go, string str)
 	{
-		KPrefabID kPrefabID = go.GetComponent<KPrefabID>();
-		if (kPrefabID == null)
+		KPrefabID kprefabID = go.GetComponent<KPrefabID>();
+		if (kprefabID == null)
 		{
-			kPrefabID = go.AddComponent<KPrefabID>();
+			kprefabID = go.AddComponent<KPrefabID>();
 		}
-		kPrefabID.PrefabTag = new Tag(str);
-		kPrefabID.SaveLoadTag = kPrefabID.PrefabTag;
-		kPrefabID.InitializeTags(force_initialize: true);
-		return kPrefabID;
+		kprefabID.PrefabTag = new Tag(str);
+		kprefabID.SaveLoadTag = kprefabID.PrefabTag;
+		kprefabID.InitializeTags(true);
+		return kprefabID;
 	}
 
+	// Token: 0x06006D4A RID: 27978 RVA: 0x002EB404 File Offset: 0x002E9604
 	public GameObject CreateBuildingUnderConstruction(BuildingDef def)
 	{
-		GameObject gameObject = CreateBuilding(def, constructionTemplate);
-		Object.DontDestroyOnLoad(gameObject);
+		GameObject gameObject = this.CreateBuilding(def, this.constructionTemplate, null);
+		UnityEngine.Object.DontDestroyOnLoad(gameObject);
 		gameObject.GetComponent<KSelectable>().SetName(def.Name);
 		for (int i = 0; i < def.Mass.Length; i++)
 		{
 			gameObject.GetComponent<PrimaryElement>().MassPerUnit += def.Mass[i];
 		}
-		KPrefabID kPrefabID = AddID(gameObject, def.PrefabID + "UnderConstruction");
-		kPrefabID.AddTag(GameTags.UnderConstruction);
-		UpdateComponentRequirement<BuildingCellVisualizer>(gameObject, def.CheckRequiresBuildingCellVisualizer());
+		KPrefabID kprefabID = BuildingLoader.AddID(gameObject, def.PrefabID + "UnderConstruction");
+		kprefabID.AddTag(GameTags.UnderConstruction, false);
+		BuildingLoader.UpdateComponentRequirement<BuildingCellVisualizer>(gameObject, def.CheckRequiresBuildingCellVisualizer());
 		gameObject.GetComponent<Constructable>().SetWorkTime(def.ConstructionTime);
 		if (def.Cancellable)
 		{
 			gameObject.AddOrGet<Cancellable>();
 		}
 		gameObject.AddComponent<BuildingFacade>();
-		Rotatable rotatable = UpdateComponentRequirement<Rotatable>(gameObject, def.PermittedRotations != PermittedRotations.Unrotatable);
-		if ((bool)rotatable)
+		Rotatable rotatable = BuildingLoader.UpdateComponentRequirement<Rotatable>(gameObject, def.PermittedRotations > PermittedRotations.Unrotatable);
+		if (rotatable)
 		{
 			rotatable.permittedRotations = def.PermittedRotations;
 		}
-		Add2DComponents(def, gameObject, "place", no_collider: false, kPrefabID.defaultLayer = LayerMask.NameToLayer("Construction"));
-		UpdateComponentRequirement<Vent>(gameObject, required: false);
+		int num = LayerMask.NameToLayer("Construction");
+		kprefabID.defaultLayer = num;
+		BuildingLoader.Add2DComponents(def, gameObject, "place", false, num);
+		BuildingLoader.UpdateComponentRequirement<Vent>(gameObject, false);
 		bool required = def.BuildingComplete.GetComponent<AnimTileable>() != null;
-		UpdateComponentRequirement<AnimTileable>(gameObject, required);
+		BuildingLoader.UpdateComponentRequirement<AnimTileable>(gameObject, required);
 		if (def.RequiresPowerInput && def.AddLogicPowerPort)
 		{
 			GeneratedBuildings.RegisterSingleLogicInputPort(gameObject);
 		}
-		Assets.AddPrefab(kPrefabID);
+		Assets.AddPrefab(kprefabID);
 		gameObject.PreInit();
 		GeneratedBuildings.InitializeHighEnergyParticlePorts(gameObject, def);
 		GeneratedBuildings.InitializeLogicPorts(gameObject, def);
 		return gameObject;
 	}
 
+	// Token: 0x06006D4B RID: 27979 RVA: 0x002EB558 File Offset: 0x002E9758
 	public GameObject CreateBuildingComplete(GameObject go, BuildingDef def)
 	{
 		go.name = def.PrefabID + "Complete";
@@ -208,22 +217,23 @@ public class BuildingLoader : KMonoBehaviour
 		buildingHP.SetHitPoints(def.HitPoints);
 		if (def.Repairable)
 		{
-			UpdateComponentRequirement<Repairable>(go, required: true);
+			BuildingLoader.UpdateComponentRequirement<Repairable>(go, true);
 		}
-		int defaultLayer = (go.layer = LayerMask.NameToLayer("Default"));
+		int num = LayerMask.NameToLayer("Default");
+		go.layer = num;
 		go.GetComponent<BuildingComplete>().Def = def;
-		if (def.InputConduitType != 0 || def.OutputConduitType != 0)
+		if (def.InputConduitType != ConduitType.None || def.OutputConduitType != ConduitType.None)
 		{
 			go.AddComponent<BuildingConduitEndpoints>();
 		}
-		if (!Add2DComponents(def, go))
+		if (!BuildingLoader.Add2DComponents(def, go, null, false, -1))
 		{
-			Debug.Log(def.Name + " is not yet a 2d building!");
+			global::Debug.Log(def.Name + " is not yet a 2d building!");
 		}
 		go.AddOrGet<BuildingFacade>();
-		UpdateComponentRequirement<EnergyConsumer>(go, def.RequiresPowerInput);
-		Rotatable rotatable = UpdateComponentRequirement<Rotatable>(go, def.PermittedRotations != PermittedRotations.Unrotatable);
-		if ((bool)rotatable)
+		BuildingLoader.UpdateComponentRequirement<EnergyConsumer>(go, def.RequiresPowerInput);
+		Rotatable rotatable = BuildingLoader.UpdateComponentRequirement<Rotatable>(go, def.PermittedRotations > PermittedRotations.Unrotatable);
+		if (rotatable)
 		{
 			rotatable.permittedRotations = def.PermittedRotations;
 		}
@@ -231,19 +241,19 @@ public class BuildingLoader : KMonoBehaviour
 		{
 			go.AddComponent<Breakable>();
 		}
-		ConduitConsumer conduitConsumer = UpdateComponentRequirement<ConduitConsumer>(go, def.InputConduitType == ConduitType.Gas || def.InputConduitType == ConduitType.Liquid);
+		ConduitConsumer conduitConsumer = BuildingLoader.UpdateComponentRequirement<ConduitConsumer>(go, def.InputConduitType == ConduitType.Gas || def.InputConduitType == ConduitType.Liquid);
 		if (conduitConsumer != null)
 		{
 			conduitConsumer.SetConduitData(def.InputConduitType);
 		}
 		bool required = def.RequiresPowerInput || def.InputConduitType == ConduitType.Gas || def.InputConduitType == ConduitType.Liquid;
-		RequireInputs requireInputs = UpdateComponentRequirement<RequireInputs>(go, required);
+		RequireInputs requireInputs = BuildingLoader.UpdateComponentRequirement<RequireInputs>(go, required);
 		if (requireInputs != null)
 		{
 			requireInputs.SetRequirements(def.RequiresPowerInput, def.InputConduitType == ConduitType.Gas || def.InputConduitType == ConduitType.Liquid);
 		}
-		UpdateComponentRequirement<RequireOutputs>(go, def.OutputConduitType != ConduitType.None);
-		UpdateComponentRequirement<Operational>(go, !def.isUtility);
+		BuildingLoader.UpdateComponentRequirement<RequireOutputs>(go, def.OutputConduitType > ConduitType.None);
+		BuildingLoader.UpdateComponentRequirement<Operational>(go, !def.isUtility);
 		if (def.Floodable)
 		{
 			go.AddComponent<Floodable>();
@@ -268,51 +278,52 @@ public class BuildingLoader : KMonoBehaviour
 			GeneratedBuildings.RegisterSingleLogicInputPort(go);
 			go.AddOrGet<LogicOperationalController>();
 		}
-		UpdateComponentRequirement<BuildingCellVisualizer>(go, def.CheckRequiresBuildingCellVisualizer());
+		BuildingLoader.UpdateComponentRequirement<BuildingCellVisualizer>(go, def.CheckRequiresBuildingCellVisualizer());
 		if (def.BaseDecor != 0f)
 		{
-			DecorProvider decorProvider = UpdateComponentRequirement<DecorProvider>(go, required: true);
+			DecorProvider decorProvider = BuildingLoader.UpdateComponentRequirement<DecorProvider>(go, true);
 			decorProvider.baseDecor = def.BaseDecor;
 			decorProvider.baseRadius = def.BaseDecorRadius;
 		}
 		if (def.AttachmentSlotTag != Tag.Invalid)
 		{
-			UpdateComponentRequirement<AttachableBuilding>(go, required: true).attachableToTag = def.AttachmentSlotTag;
+			BuildingLoader.UpdateComponentRequirement<AttachableBuilding>(go, true).attachableToTag = def.AttachmentSlotTag;
 		}
-		KPrefabID kPrefabID = AddID(go, def.PrefabID);
-		kPrefabID.defaultLayer = defaultLayer;
-		Assets.AddPrefab(kPrefabID);
+		KPrefabID kprefabID = BuildingLoader.AddID(go, def.PrefabID);
+		kprefabID.defaultLayer = num;
+		Assets.AddPrefab(kprefabID);
 		go.PreInit();
 		GeneratedBuildings.InitializeHighEnergyParticlePorts(go, def);
 		GeneratedBuildings.InitializeLogicPorts(go, def);
 		return go;
 	}
 
+	// Token: 0x06006D4C RID: 27980 RVA: 0x002EB874 File Offset: 0x002E9A74
 	public GameObject CreateBuildingPreview(BuildingDef def)
 	{
-		GameObject gameObject = CreateBuilding(def, previewTemplate);
-		Object.DontDestroyOnLoad(gameObject);
+		GameObject gameObject = this.CreateBuilding(def, this.previewTemplate, null);
+		UnityEngine.Object.DontDestroyOnLoad(gameObject);
 		int num = LayerMask.NameToLayer("Place");
 		gameObject.transform.SetPosition(new Vector3(0f, 0f, Grid.GetLayerZ(def.SceneLayer)));
-		Add2DComponents(def, gameObject, "place", no_collider: true, num);
+		BuildingLoader.Add2DComponents(def, gameObject, "place", true, num);
 		KAnimControllerBase component = gameObject.GetComponent<KAnimControllerBase>();
 		if (component != null)
 		{
 			component.fgLayer = Grid.SceneLayer.NoLayer;
 		}
 		gameObject.AddComponent<BuildingFacade>();
-		Rotatable rotatable = UpdateComponentRequirement<Rotatable>(gameObject, def.PermittedRotations != PermittedRotations.Unrotatable);
-		if ((bool)rotatable)
+		Rotatable rotatable = BuildingLoader.UpdateComponentRequirement<Rotatable>(gameObject, def.PermittedRotations > PermittedRotations.Unrotatable);
+		if (rotatable)
 		{
 			rotatable.permittedRotations = def.PermittedRotations;
 		}
-		AddID(gameObject, def.PrefabID + "Preview").defaultLayer = num;
+		BuildingLoader.AddID(gameObject, def.PrefabID + "Preview").defaultLayer = num;
 		gameObject.GetComponent<KSelectable>().SetName(def.Name);
-		UpdateComponentRequirement<BuildingCellVisualizer>(gameObject, def.CheckRequiresBuildingCellVisualizer());
+		BuildingLoader.UpdateComponentRequirement<BuildingCellVisualizer>(gameObject, def.CheckRequiresBuildingCellVisualizer());
 		KAnimGraphTileVisualizer component2 = gameObject.GetComponent<KAnimGraphTileVisualizer>();
 		if (component2 != null)
 		{
-			Object.DestroyImmediate(component2);
+			UnityEngine.Object.DestroyImmediate(component2);
 		}
 		if (def.RequiresPowerInput && def.AddLogicPowerPort)
 		{
@@ -324,4 +335,13 @@ public class BuildingLoader : KMonoBehaviour
 		GeneratedBuildings.InitializeLogicPorts(gameObject, def);
 		return gameObject;
 	}
+
+	// Token: 0x040051F9 RID: 20985
+	private GameObject previewTemplate;
+
+	// Token: 0x040051FA RID: 20986
+	private GameObject constructionTemplate;
+
+	// Token: 0x040051FB RID: 20987
+	public static BuildingLoader Instance;
 }

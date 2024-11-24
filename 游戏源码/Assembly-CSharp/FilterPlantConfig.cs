@@ -1,43 +1,52 @@
+﻿using System;
 using System.Collections.Generic;
 using STRINGS;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x02000297 RID: 663
 public class FilterPlantConfig : IEntityConfig
 {
-	public const string ID = "FilterPlant";
-
-	public const string SEED_ID = "FilterPlantSeed";
-
-	public const float SAND_CONSUMPTION_RATE = 1f / 120f;
-
-	public const float WATER_CONSUMPTION_RATE = 13f / 120f;
-
-	public const float OXYGEN_CONSUMPTION_RATE = 1f / 120f;
-
+	// Token: 0x060009EB RID: 2539 RVA: 0x000A6566 File Offset: 0x000A4766
 	public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
 	}
 
+	// Token: 0x060009EC RID: 2540 RVA: 0x001681B8 File Offset: 0x001663B8
 	public GameObject CreatePrefab()
 	{
-		GameObject gameObject = EntityTemplates.CreatePlacedEntity("FilterPlant", STRINGS.CREATURES.SPECIES.FILTERPLANT.NAME, STRINGS.CREATURES.SPECIES.FILTERPLANT.DESC, 2f, decor: DECOR.PENALTY.TIER1, anim: Assets.GetAnim("cactus_kanim"), initialAnim: "idle_empty", sceneLayer: Grid.SceneLayer.BuildingFront, width: 1, height: 2, noise: default(EffectorValues), element: SimHashes.Creature, additionalTags: null, defaultTemperature: 348.15f);
-		EntityTemplates.ExtendEntityToBasicPlant(gameObject, 253.15f, 293.15f, 383.15f, 443.15f, crop_id: SimHashes.Water.ToString(), baseTraitName: STRINGS.CREATURES.SPECIES.FILTERPLANT.NAME, safe_elements: new SimHashes[1] { SimHashes.Oxygen }, pressure_sensitive: true, pressure_lethal_low: 0f, pressure_warning_low: 0.025f, can_drown: true, can_tinker: true, require_solid_tile: true, should_grow_old: true, max_age: 2400f, min_radiation: 0f, max_radiation: 2200f, baseTraitId: "FilterPlantOriginal");
-		EntityTemplates.ExtendPlantToFertilizable(gameObject, new PlantElementAbsorber.ConsumeInfo[1]
+		string id = "FilterPlant";
+		string name = STRINGS.CREATURES.SPECIES.FILTERPLANT.NAME;
+		string desc = STRINGS.CREATURES.SPECIES.FILTERPLANT.DESC;
+		float mass = 2f;
+		EffectorValues tier = DECOR.PENALTY.TIER1;
+		GameObject gameObject = EntityTemplates.CreatePlacedEntity(id, name, desc, mass, Assets.GetAnim("cactus_kanim"), "idle_empty", Grid.SceneLayer.BuildingFront, 1, 2, tier, default(EffectorValues), SimHashes.Creature, null, 348.15f);
+		GameObject template = gameObject;
+		float temperature_lethal_low = 253.15f;
+		float temperature_warning_low = 293.15f;
+		float temperature_warning_high = 383.15f;
+		float temperature_lethal_high = 443.15f;
+		string crop_id = SimHashes.Water.ToString();
+		string text = STRINGS.CREATURES.SPECIES.FILTERPLANT.NAME;
+		EntityTemplates.ExtendEntityToBasicPlant(template, temperature_lethal_low, temperature_warning_low, temperature_warning_high, temperature_lethal_high, new SimHashes[]
+		{
+			SimHashes.Oxygen
+		}, true, 0f, 0.025f, crop_id, true, true, true, true, 2400f, 0f, 2200f, "FilterPlantOriginal", text);
+		EntityTemplates.ExtendPlantToFertilizable(gameObject, new PlantElementAbsorber.ConsumeInfo[]
 		{
 			new PlantElementAbsorber.ConsumeInfo
 			{
 				tag = SimHashes.Sand.CreateTag(),
-				massConsumptionRate = 1f / 120f
+				massConsumptionRate = 0.008333334f
 			}
 		});
-		EntityTemplates.ExtendPlantToIrrigated(gameObject, new PlantElementAbsorber.ConsumeInfo[1]
+		EntityTemplates.ExtendPlantToIrrigated(gameObject, new PlantElementAbsorber.ConsumeInfo[]
 		{
 			new PlantElementAbsorber.ConsumeInfo
 			{
 				tag = GameTags.DirtyWater,
-				massConsumptionRate = 13f / 120f
+				massConsumptionRate = 0.108333334f
 			}
 		});
 		gameObject.AddOrGet<StandardCropPlant>();
@@ -50,17 +59,47 @@ public class FilterPlantConfig : IEntityConfig
 		elementConsumer.configuration = ElementConsumer.Configuration.Element;
 		elementConsumer.consumptionRadius = 4;
 		elementConsumer.sampleCellOffset = new Vector3(0f, 0f);
-		elementConsumer.consumptionRate = 1f / 120f;
-		EntityTemplates.CreateAndRegisterPreviewForPlant(EntityTemplates.CreateAndRegisterSeedForPlant(gameObject, SeedProducer.ProductionType.Harvest, "FilterPlantSeed", STRINGS.CREATURES.SPECIES.SEEDS.FILTERPLANT.NAME, STRINGS.CREATURES.SPECIES.SEEDS.FILTERPLANT.DESC, Assets.GetAnim("seed_cactus_kanim"), "object", 1, new List<Tag> { GameTags.CropSeed }, SingleEntityReceptacle.ReceptacleDirection.Top, default(Tag), 21, STRINGS.CREATURES.SPECIES.FILTERPLANT.DOMESTICATEDDESC, EntityTemplates.CollisionShape.CIRCLE, 0.35f, 0.35f, null, "", ignoreDefaultSeedTag: false, GetDlcIds()), "FilterPlant_preview", Assets.GetAnim("cactus_kanim"), "place", 1, 2);
+		elementConsumer.consumptionRate = 0.008333334f;
+		GameObject plant = gameObject;
+		SeedProducer.ProductionType productionType = SeedProducer.ProductionType.Harvest;
+		string id2 = "FilterPlantSeed";
+		string name2 = STRINGS.CREATURES.SPECIES.SEEDS.FILTERPLANT.NAME;
+		string desc2 = STRINGS.CREATURES.SPECIES.SEEDS.FILTERPLANT.DESC;
+		KAnimFile anim = Assets.GetAnim("seed_cactus_kanim");
+		string initialAnim = "object";
+		int numberOfSeeds = 1;
+		List<Tag> list = new List<Tag>();
+		list.Add(GameTags.CropSeed);
+		SingleEntityReceptacle.ReceptacleDirection planterDirection = SingleEntityReceptacle.ReceptacleDirection.Top;
+		text = STRINGS.CREATURES.SPECIES.FILTERPLANT.DOMESTICATEDDESC;
+		string[] dlcIds = this.GetDlcIds();
+		EntityTemplates.CreateAndRegisterPreviewForPlant(EntityTemplates.CreateAndRegisterSeedForPlant(plant, productionType, id2, name2, desc2, anim, initialAnim, numberOfSeeds, list, planterDirection, default(Tag), 21, text, EntityTemplates.CollisionShape.CIRCLE, 0.35f, 0.35f, null, "", false, dlcIds), "FilterPlant_preview", Assets.GetAnim("cactus_kanim"), "place", 1, 2);
 		gameObject.AddTag(GameTags.DeprecatedContent);
 		return gameObject;
 	}
 
+	// Token: 0x060009ED RID: 2541 RVA: 0x000A5E40 File Offset: 0x000A4040
 	public void OnPrefabInit(GameObject prefab)
 	{
 	}
 
+	// Token: 0x060009EE RID: 2542 RVA: 0x000A5E40 File Offset: 0x000A4040
 	public void OnSpawn(GameObject inst)
 	{
 	}
+
+	// Token: 0x0400076F RID: 1903
+	public const string ID = "FilterPlant";
+
+	// Token: 0x04000770 RID: 1904
+	public const string SEED_ID = "FilterPlantSeed";
+
+	// Token: 0x04000771 RID: 1905
+	public const float SAND_CONSUMPTION_RATE = 0.008333334f;
+
+	// Token: 0x04000772 RID: 1906
+	public const float WATER_CONSUMPTION_RATE = 0.108333334f;
+
+	// Token: 0x04000773 RID: 1907
+	public const float OXYGEN_CONSUMPTION_RATE = 0.008333334f;
 }

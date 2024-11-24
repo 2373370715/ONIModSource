@@ -1,9 +1,12 @@
+﻿using System;
 using System.Collections.Generic;
 using Klei.AI;
 using UnityEngine;
 
+// Token: 0x020000BA RID: 186
 public class EquipmentTemplates
 {
+	// Token: 0x06000314 RID: 788 RVA: 0x0014C23C File Offset: 0x0014A43C
 	public static EquipmentDef CreateEquipmentDef(string Id, string Slot, SimHashes OutputElement, float Mass, string Anim, string SnapOn, string BuildOverride, int BuildOverridePriority, List<AttributeModifier> AttributeModifiers, string SnapOn1 = null, bool IsBody = false, EntityTemplates.CollisionShape CollisionShape = EntityTemplates.CollisionShape.CIRCLE, float width = 0.325f, float height = 0.325f, Tag[] additional_tags = null, string RecipeTechUnlock = null)
 	{
 		EquipmentDef equipmentDef = ScriptableObject.CreateInstance<EquipmentDef>();

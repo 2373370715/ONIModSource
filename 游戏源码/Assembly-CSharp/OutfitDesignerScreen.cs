@@ -1,537 +1,448 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Database;
 using STRINGS;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
+// Token: 0x02001E7B RID: 7803
 public class OutfitDesignerScreen : KMonoBehaviour
 {
-	private enum MultiToggleState
-	{
-		Default,
-		Selected,
-		NonInteractable
-	}
-
-	[Header("CategoryColumn")]
-	[SerializeField]
-	private RectTransform categoryListContent;
-
-	[SerializeField]
-	private GameObject categoryRowPrefab;
-
-	private UIPrefabLocalPool categoryRowPool;
-
-	[Header("ItemGalleryColumn")]
-	[SerializeField]
-	private LocText galleryHeaderLabel;
-
-	[SerializeField]
-	private RectTransform galleryGridContent;
-
-	[SerializeField]
-	private GameObject subcategoryUiPrefab;
-
-	[SerializeField]
-	private GameObject gridItemPrefab;
-
-	private UIPrefabLocalPool subcategoryUiPool;
-
-	private UIPrefabLocalPool galleryGridItemPool;
-
-	private GridLayouter galleryGridLayouter;
-
-	[Header("SelectionDetailsColumn")]
-	[SerializeField]
-	private LocText selectionHeaderLabel;
-
-	[SerializeField]
-	private UIMinionOrMannequin minionOrMannequin;
-
-	[SerializeField]
-	private Image dioramaBG;
-
-	[SerializeField]
-	private KButton primaryButton;
-
-	[SerializeField]
-	private KButton secondaryButton;
-
-	[SerializeField]
-	private OutfitDescriptionPanel outfitDescriptionPanel;
-
-	[SerializeField]
-	private KInputTextField inputFieldPrefab;
-
-	public static Dictionary<ClothingOutfitUtility.OutfitType, PermitCategory[]> outfitTypeToCategoriesDict;
-
-	private bool postponeConfiguration = true;
-
-	private System.Action updateSaveButtonsFn;
-
-	private System.Action RefreshCategoriesFn;
-
-	private System.Action RefreshGalleryFn;
-
-	private Func<bool> preventScreenPopFn;
-
+	// Token: 0x17000A7E RID: 2686
+	// (get) Token: 0x0600A396 RID: 41878 RVA: 0x0010A1F2 File Offset: 0x001083F2
+	// (set) Token: 0x0600A397 RID: 41879 RVA: 0x0010A1FA File Offset: 0x001083FA
 	public OutfitDesignerScreenConfig Config { get; private set; }
 
+	// Token: 0x17000A7F RID: 2687
+	// (get) Token: 0x0600A398 RID: 41880 RVA: 0x0010A203 File Offset: 0x00108403
+	// (set) Token: 0x0600A399 RID: 41881 RVA: 0x0010A20B File Offset: 0x0010840B
 	public PermitResource SelectedPermit { get; private set; }
 
+	// Token: 0x17000A80 RID: 2688
+	// (get) Token: 0x0600A39A RID: 41882 RVA: 0x0010A214 File Offset: 0x00108414
+	// (set) Token: 0x0600A39B RID: 41883 RVA: 0x0010A21C File Offset: 0x0010841C
 	public PermitCategory SelectedCategory { get; private set; }
 
+	// Token: 0x17000A81 RID: 2689
+	// (get) Token: 0x0600A39C RID: 41884 RVA: 0x0010A225 File Offset: 0x00108425
+	// (set) Token: 0x0600A39D RID: 41885 RVA: 0x0010A22D File Offset: 0x0010842D
 	public OutfitDesignerScreen_OutfitState outfitState { get; private set; }
 
+	// Token: 0x0600A39E RID: 41886 RVA: 0x003E22F0 File Offset: 0x003E04F0
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		Debug.Assert(categoryRowPrefab.transform.parent == categoryListContent.transform);
-		Debug.Assert(gridItemPrefab.transform.parent == galleryGridContent.transform);
-		Debug.Assert(subcategoryUiPrefab.transform.parent == galleryGridContent.transform);
-		categoryRowPrefab.SetActive(value: false);
-		gridItemPrefab.SetActive(value: false);
-		galleryGridLayouter = new GridLayouter
+		global::Debug.Assert(this.categoryRowPrefab.transform.parent == this.categoryListContent.transform);
+		global::Debug.Assert(this.gridItemPrefab.transform.parent == this.galleryGridContent.transform);
+		global::Debug.Assert(this.subcategoryUiPrefab.transform.parent == this.galleryGridContent.transform);
+		this.categoryRowPrefab.SetActive(false);
+		this.gridItemPrefab.SetActive(false);
+		this.galleryGridLayouter = new GridLayouter
 		{
 			minCellSize = 64f,
 			maxCellSize = 96f,
-			targetGridLayouts = galleryGridContent.GetComponents<GridLayoutGroup>().ToList()
+			targetGridLayouts = this.galleryGridContent.GetComponents<GridLayoutGroup>().ToList<GridLayoutGroup>()
 		};
-		galleryGridLayouter.overrideParentForSizeReference = galleryGridContent;
-		categoryRowPool = new UIPrefabLocalPool(categoryRowPrefab, categoryListContent.gameObject);
-		galleryGridItemPool = new UIPrefabLocalPool(gridItemPrefab, galleryGridContent.gameObject);
-		subcategoryUiPool = new UIPrefabLocalPool(subcategoryUiPrefab, galleryGridContent.gameObject);
-		if (outfitTypeToCategoriesDict == null)
+		this.galleryGridLayouter.overrideParentForSizeReference = this.galleryGridContent;
+		this.categoryRowPool = new UIPrefabLocalPool(this.categoryRowPrefab, this.categoryListContent.gameObject);
+		this.galleryGridItemPool = new UIPrefabLocalPool(this.gridItemPrefab, this.galleryGridContent.gameObject);
+		this.subcategoryUiPool = new UIPrefabLocalPool(this.subcategoryUiPrefab, this.galleryGridContent.gameObject);
+		if (OutfitDesignerScreen.outfitTypeToCategoriesDict == null)
 		{
-			outfitTypeToCategoriesDict = new Dictionary<ClothingOutfitUtility.OutfitType, PermitCategory[]>
-			{
-				[ClothingOutfitUtility.OutfitType.Clothing] = ClothingOutfitUtility.PERMIT_CATEGORIES_FOR_CLOTHING,
-				[ClothingOutfitUtility.OutfitType.AtmoSuit] = ClothingOutfitUtility.PERMIT_CATEGORIES_FOR_ATMO_SUITS
-			};
+			Dictionary<ClothingOutfitUtility.OutfitType, PermitCategory[]> dictionary = new Dictionary<ClothingOutfitUtility.OutfitType, PermitCategory[]>();
+			dictionary[ClothingOutfitUtility.OutfitType.Clothing] = ClothingOutfitUtility.PERMIT_CATEGORIES_FOR_CLOTHING;
+			dictionary[ClothingOutfitUtility.OutfitType.AtmoSuit] = ClothingOutfitUtility.PERMIT_CATEGORIES_FOR_ATMO_SUITS;
+			OutfitDesignerScreen.outfitTypeToCategoriesDict = dictionary;
 		}
 		InventoryOrganization.Initialize();
 	}
 
+	// Token: 0x0600A39F RID: 41887 RVA: 0x0010A236 File Offset: 0x00108436
 	private void Update()
 	{
-		galleryGridLayouter.CheckIfShouldResizeGrid();
+		this.galleryGridLayouter.CheckIfShouldResizeGrid();
 	}
 
+	// Token: 0x0600A3A0 RID: 41888 RVA: 0x0010A243 File Offset: 0x00108443
 	protected override void OnSpawn()
 	{
-		postponeConfiguration = false;
-		minionOrMannequin.TrySpawn();
-		if (!Config.isValid)
+		this.postponeConfiguration = false;
+		this.minionOrMannequin.TrySpawn();
+		if (!this.Config.isValid)
 		{
 			throw new NotSupportedException("Cannot open OutfitDesignerScreen without a config. Make sure to call Configure() before enabling the screen");
 		}
-		Configure(Config);
+		this.Configure(this.Config);
 	}
 
+	// Token: 0x0600A3A1 RID: 41889 RVA: 0x0010A27C File Offset: 0x0010847C
 	protected override void OnCmpEnable()
 	{
 		base.OnCmpEnable();
 		KleiItemsStatusRefresher.AddOrGetListener(this).OnRefreshUI(delegate
 		{
-			RefreshCategories();
-			RefreshGallery();
-			RefreshOutfitState();
+			this.RefreshCategories();
+			this.RefreshGallery();
+			this.RefreshOutfitState();
 		});
 	}
 
+	// Token: 0x0600A3A2 RID: 41890 RVA: 0x0010A29B File Offset: 0x0010849B
 	protected override void OnCmpDisable()
 	{
 		base.OnCmpDisable();
-		UnregisterPreventScreenPop();
+		this.UnregisterPreventScreenPop();
 	}
 
+	// Token: 0x0600A3A3 RID: 41891 RVA: 0x0010A2A9 File Offset: 0x001084A9
 	private void UpdateSaveButtons()
 	{
-		if (updateSaveButtonsFn != null)
+		if (this.updateSaveButtonsFn != null)
 		{
-			updateSaveButtonsFn();
+			this.updateSaveButtonsFn();
 		}
 	}
 
+	// Token: 0x0600A3A4 RID: 41892 RVA: 0x003E2454 File Offset: 0x003E0654
 	public void Configure(OutfitDesignerScreenConfig config)
 	{
-		Config = config;
+		this.Config = config;
 		if (config.targetMinionInstance.HasValue)
 		{
-			outfitState = OutfitDesignerScreen_OutfitState.ForMinionInstance(Config.sourceTarget, config.targetMinionInstance.Value);
+			this.outfitState = OutfitDesignerScreen_OutfitState.ForMinionInstance(this.Config.sourceTarget, config.targetMinionInstance.Value);
 		}
 		else
 		{
-			outfitState = OutfitDesignerScreen_OutfitState.ForTemplateOutfit(Config.sourceTarget);
+			this.outfitState = OutfitDesignerScreen_OutfitState.ForTemplateOutfit(this.Config.sourceTarget);
 		}
-		if (postponeConfiguration)
+		if (this.postponeConfiguration)
 		{
 			return;
 		}
-		RegisterPreventScreenPop();
-		minionOrMannequin.SetFrom(config.minionPersonality).SpawnedAvatar.GetComponent<WearableAccessorizer>();
-		using (ListPool<ClothingItemResource, OutfitDesignerScreen>.PooledList clothingItems = PoolsFor<OutfitDesignerScreen>.AllocateList<ClothingItemResource>())
+		this.RegisterPreventScreenPop();
+		this.minionOrMannequin.SetFrom(config.minionPersonality).SpawnedAvatar.GetComponent<WearableAccessorizer>();
+		using (ListPool<ClothingItemResource, OutfitDesignerScreen>.PooledList pooledList = PoolsFor<OutfitDesignerScreen>.AllocateList<ClothingItemResource>())
 		{
-			outfitState.AddItemValuesTo(clothingItems);
-			minionOrMannequin.SetFrom(config.minionPersonality).SetOutfit(config.sourceTarget.OutfitType, clothingItems);
+			this.outfitState.AddItemValuesTo(pooledList);
+			this.minionOrMannequin.SetFrom(config.minionPersonality).SetOutfit(config.sourceTarget.OutfitType, pooledList);
 		}
-		PopulateCategories();
-		SelectCategory(outfitTypeToCategoriesDict[outfitState.outfitType][0]);
-		galleryGridLayouter.RequestGridResize();
-		RefreshOutfitState();
-		if (Config.targetMinionInstance.HasValue)
+		this.PopulateCategories();
+		this.SelectCategory(OutfitDesignerScreen.outfitTypeToCategoriesDict[this.outfitState.outfitType][0]);
+		this.galleryGridLayouter.RequestGridResize();
+		this.RefreshOutfitState();
+		OutfitDesignerScreenConfig config2 = this.Config;
+		if (config2.targetMinionInstance.HasValue)
 		{
-			updateSaveButtonsFn = null;
-			primaryButton.ClearOnClick();
-			primaryButton.GetComponentInChildren<LocText>().SetText(UI.OUTFIT_DESIGNER_SCREEN.MINION_INSTANCE.BUTTON_APPLY_TO_MINION.Replace("{MinionName}", Config.targetMinionInstance.Value.GetProperName()));
-			primaryButton.onClick += delegate
+			this.updateSaveButtonsFn = null;
+			this.primaryButton.ClearOnClick();
+			TMP_Text componentInChildren = this.primaryButton.GetComponentInChildren<LocText>();
+			LocString button_APPLY_TO_MINION = UI.OUTFIT_DESIGNER_SCREEN.MINION_INSTANCE.BUTTON_APPLY_TO_MINION;
+			string search = "{MinionName}";
+			config2 = this.Config;
+			componentInChildren.SetText(button_APPLY_TO_MINION.Replace(search, config2.targetMinionInstance.Value.GetProperName()));
+			this.primaryButton.onClick += delegate()
 			{
-				ClothingOutfitTarget clothingOutfitTarget = ClothingOutfitTarget.FromMinion(Config.sourceTarget.OutfitType, Config.targetMinionInstance.Value);
-				clothingOutfitTarget.WriteItems(Config.sourceTarget.OutfitType, outfitState.GetItems());
-				if (Config.onWriteToOutfitTargetFn != null)
+				OutfitDesignerScreenConfig config3 = this.Config;
+				ClothingOutfitUtility.OutfitType outfitType = config3.sourceTarget.OutfitType;
+				config3 = this.Config;
+				ClothingOutfitTarget obj = ClothingOutfitTarget.FromMinion(outfitType, config3.targetMinionInstance.Value);
+				config3 = this.Config;
+				obj.WriteItems(config3.sourceTarget.OutfitType, this.outfitState.GetItems());
+				if (this.Config.onWriteToOutfitTargetFn != null)
 				{
-					Config.onWriteToOutfitTargetFn(clothingOutfitTarget);
+					this.Config.onWriteToOutfitTargetFn(obj);
 				}
 				LockerNavigator.Instance.PopScreen();
 			};
-			secondaryButton.ClearOnClick();
-			secondaryButton.GetComponentInChildren<LocText>().SetText(UI.OUTFIT_DESIGNER_SCREEN.MINION_INSTANCE.BUTTON_APPLY_TO_TEMPLATE);
-			secondaryButton.onClick += delegate
+			this.secondaryButton.ClearOnClick();
+			this.secondaryButton.GetComponentInChildren<LocText>().SetText(UI.OUTFIT_DESIGNER_SCREEN.MINION_INSTANCE.BUTTON_APPLY_TO_TEMPLATE);
+			this.secondaryButton.onClick += delegate()
 			{
-				MakeApplyToTemplatePopup(inputFieldPrefab, outfitState, Config.targetMinionInstance.Value, Config.outfitTemplate, Config.onWriteToOutfitTargetFn);
+				OutfitDesignerScreen.MakeApplyToTemplatePopup(this.inputFieldPrefab, this.outfitState, this.Config.targetMinionInstance.Value, this.Config.outfitTemplate, this.Config.onWriteToOutfitTargetFn);
 			};
-			updateSaveButtonsFn = (System.Action)Delegate.Combine(updateSaveButtonsFn, (System.Action)delegate
+			this.updateSaveButtonsFn = (System.Action)Delegate.Combine(this.updateSaveButtonsFn, new System.Action(delegate()
 			{
-				if (outfitState.DoesContainLockedItems())
+				if (this.outfitState.DoesContainLockedItems())
 				{
-					primaryButton.isInteractable = false;
-					primaryButton.gameObject.AddOrGet<ToolTip>().SetSimpleTooltip(UI.OUTFIT_DESIGNER_SCREEN.OUTFIT_TEMPLATE.TOOLTIP_SAVE_ERROR_LOCKED);
-					secondaryButton.isInteractable = false;
-					secondaryButton.gameObject.AddOrGet<ToolTip>().SetSimpleTooltip(UI.OUTFIT_DESIGNER_SCREEN.OUTFIT_TEMPLATE.TOOLTIP_SAVE_ERROR_LOCKED);
+					this.primaryButton.isInteractable = false;
+					this.primaryButton.gameObject.AddOrGet<ToolTip>().SetSimpleTooltip(UI.OUTFIT_DESIGNER_SCREEN.OUTFIT_TEMPLATE.TOOLTIP_SAVE_ERROR_LOCKED);
+					this.secondaryButton.isInteractable = false;
+					this.secondaryButton.gameObject.AddOrGet<ToolTip>().SetSimpleTooltip(UI.OUTFIT_DESIGNER_SCREEN.OUTFIT_TEMPLATE.TOOLTIP_SAVE_ERROR_LOCKED);
+					return;
 				}
-				else
-				{
-					primaryButton.isInteractable = true;
-					primaryButton.gameObject.AddOrGet<ToolTip>().ClearMultiStringTooltip();
-					secondaryButton.isInteractable = true;
-					secondaryButton.gameObject.AddOrGet<ToolTip>().ClearMultiStringTooltip();
-				}
-			});
+				this.primaryButton.isInteractable = true;
+				this.primaryButton.gameObject.AddOrGet<ToolTip>().ClearMultiStringTooltip();
+				this.secondaryButton.isInteractable = true;
+				this.secondaryButton.gameObject.AddOrGet<ToolTip>().ClearMultiStringTooltip();
+			}));
 		}
 		else
 		{
-			if (!Config.outfitTemplate.HasValue)
+			config2 = this.Config;
+			if (!config2.outfitTemplate.HasValue)
 			{
 				throw new NotSupportedException();
 			}
-			updateSaveButtonsFn = null;
-			primaryButton.ClearOnClick();
-			primaryButton.GetComponentInChildren<LocText>().SetText(UI.OUTFIT_DESIGNER_SCREEN.OUTFIT_TEMPLATE.BUTTON_SAVE);
-			primaryButton.onClick += delegate
+			this.updateSaveButtonsFn = null;
+			this.primaryButton.ClearOnClick();
+			this.primaryButton.GetComponentInChildren<LocText>().SetText(UI.OUTFIT_DESIGNER_SCREEN.OUTFIT_TEMPLATE.BUTTON_SAVE);
+			this.primaryButton.onClick += delegate()
 			{
-				outfitState.destinationTarget.WriteName(outfitState.name);
-				outfitState.destinationTarget.WriteItems(outfitState.outfitType, outfitState.GetItems());
-				if (Config.minionPersonality.HasValue)
+				this.outfitState.destinationTarget.WriteName(this.outfitState.name);
+				this.outfitState.destinationTarget.WriteItems(this.outfitState.outfitType, this.outfitState.GetItems());
+				OutfitDesignerScreenConfig config3 = this.Config;
+				if (config3.minionPersonality.HasValue)
 				{
-					Config.minionPersonality.Value.SetSelectedTemplateOutfitId(outfitState.destinationTarget.OutfitType, outfitState.destinationTarget.OutfitId);
+					config3 = this.Config;
+					config3.minionPersonality.Value.SetSelectedTemplateOutfitId(this.outfitState.destinationTarget.OutfitType, this.outfitState.destinationTarget.OutfitId);
 				}
-				if (Config.onWriteToOutfitTargetFn != null)
+				if (this.Config.onWriteToOutfitTargetFn != null)
 				{
-					Config.onWriteToOutfitTargetFn(outfitState.destinationTarget);
+					this.Config.onWriteToOutfitTargetFn(this.outfitState.destinationTarget);
 				}
 				LockerNavigator.Instance.PopScreen();
 			};
-			secondaryButton.ClearOnClick();
-			secondaryButton.GetComponentInChildren<LocText>().SetText(UI.OUTFIT_DESIGNER_SCREEN.OUTFIT_TEMPLATE.BUTTON_COPY);
-			secondaryButton.onClick += delegate
+			this.secondaryButton.ClearOnClick();
+			this.secondaryButton.GetComponentInChildren<LocText>().SetText(UI.OUTFIT_DESIGNER_SCREEN.OUTFIT_TEMPLATE.BUTTON_COPY);
+			this.secondaryButton.onClick += delegate()
 			{
-				MakeCopyPopup(this, inputFieldPrefab, outfitState, Config.outfitTemplate.Value, Config.minionPersonality, Config.onWriteToOutfitTargetFn);
+				OutfitDesignerScreen.MakeCopyPopup(this, this.inputFieldPrefab, this.outfitState, this.Config.outfitTemplate.Value, this.Config.minionPersonality, this.Config.onWriteToOutfitTargetFn);
 			};
-			updateSaveButtonsFn = (System.Action)Delegate.Combine(updateSaveButtonsFn, (System.Action)delegate
+			this.updateSaveButtonsFn = (System.Action)Delegate.Combine(this.updateSaveButtonsFn, new System.Action(delegate()
 			{
-				if (!outfitState.destinationTarget.CanWriteItems)
+				if (!this.outfitState.destinationTarget.CanWriteItems)
 				{
-					primaryButton.isInteractable = false;
-					primaryButton.gameObject.AddOrGet<ToolTip>().SetSimpleTooltip(UI.OUTFIT_DESIGNER_SCREEN.OUTFIT_TEMPLATE.TOOLTIP_SAVE_ERROR_READONLY);
-					if (outfitState.DoesContainLockedItems())
+					this.primaryButton.isInteractable = false;
+					this.primaryButton.gameObject.AddOrGet<ToolTip>().SetSimpleTooltip(UI.OUTFIT_DESIGNER_SCREEN.OUTFIT_TEMPLATE.TOOLTIP_SAVE_ERROR_READONLY);
+					if (this.outfitState.DoesContainLockedItems())
 					{
-						secondaryButton.isInteractable = false;
-						secondaryButton.gameObject.AddOrGet<ToolTip>().SetSimpleTooltip(UI.OUTFIT_DESIGNER_SCREEN.OUTFIT_TEMPLATE.TOOLTIP_SAVE_ERROR_LOCKED);
+						this.secondaryButton.isInteractable = false;
+						this.secondaryButton.gameObject.AddOrGet<ToolTip>().SetSimpleTooltip(UI.OUTFIT_DESIGNER_SCREEN.OUTFIT_TEMPLATE.TOOLTIP_SAVE_ERROR_LOCKED);
+						return;
 					}
-					else
-					{
-						secondaryButton.isInteractable = true;
-						secondaryButton.gameObject.AddOrGet<ToolTip>().ClearMultiStringTooltip();
-					}
-				}
-				else if (outfitState.DoesContainLockedItems())
-				{
-					primaryButton.isInteractable = false;
-					primaryButton.gameObject.AddOrGet<ToolTip>().SetSimpleTooltip(UI.OUTFIT_DESIGNER_SCREEN.OUTFIT_TEMPLATE.TOOLTIP_SAVE_ERROR_LOCKED);
-					secondaryButton.isInteractable = false;
-					secondaryButton.gameObject.AddOrGet<ToolTip>().SetSimpleTooltip(UI.OUTFIT_DESIGNER_SCREEN.OUTFIT_TEMPLATE.TOOLTIP_SAVE_ERROR_LOCKED);
+					this.secondaryButton.isInteractable = true;
+					this.secondaryButton.gameObject.AddOrGet<ToolTip>().ClearMultiStringTooltip();
+					return;
 				}
 				else
 				{
-					primaryButton.isInteractable = true;
-					primaryButton.gameObject.AddOrGet<ToolTip>().ClearMultiStringTooltip();
-					secondaryButton.isInteractable = true;
-					secondaryButton.gameObject.AddOrGet<ToolTip>().ClearMultiStringTooltip();
+					if (this.outfitState.DoesContainLockedItems())
+					{
+						this.primaryButton.isInteractable = false;
+						this.primaryButton.gameObject.AddOrGet<ToolTip>().SetSimpleTooltip(UI.OUTFIT_DESIGNER_SCREEN.OUTFIT_TEMPLATE.TOOLTIP_SAVE_ERROR_LOCKED);
+						this.secondaryButton.isInteractable = false;
+						this.secondaryButton.gameObject.AddOrGet<ToolTip>().SetSimpleTooltip(UI.OUTFIT_DESIGNER_SCREEN.OUTFIT_TEMPLATE.TOOLTIP_SAVE_ERROR_LOCKED);
+						return;
+					}
+					this.primaryButton.isInteractable = true;
+					this.primaryButton.gameObject.AddOrGet<ToolTip>().ClearMultiStringTooltip();
+					this.secondaryButton.isInteractable = true;
+					this.secondaryButton.gameObject.AddOrGet<ToolTip>().ClearMultiStringTooltip();
+					return;
 				}
-			});
+			}));
 		}
-		UpdateSaveButtons();
+		this.UpdateSaveButtons();
 	}
 
+	// Token: 0x0600A3A5 RID: 41893 RVA: 0x0010A2BE File Offset: 0x001084BE
 	private void RefreshOutfitState()
 	{
-		selectionHeaderLabel.text = outfitState.name;
-		outfitDescriptionPanel.Refresh(outfitState, Config.minionPersonality);
-		UpdateSaveButtons();
+		this.selectionHeaderLabel.text = this.outfitState.name;
+		this.outfitDescriptionPanel.Refresh(this.outfitState, this.Config.minionPersonality);
+		this.UpdateSaveButtons();
 	}
 
+	// Token: 0x0600A3A6 RID: 41894 RVA: 0x0010A2F8 File Offset: 0x001084F8
 	private void RefreshCategories()
 	{
-		if (RefreshCategoriesFn != null)
+		if (this.RefreshCategoriesFn != null)
 		{
-			RefreshCategoriesFn();
+			this.RefreshCategoriesFn();
 		}
 	}
 
+	// Token: 0x0600A3A7 RID: 41895 RVA: 0x003E2704 File Offset: 0x003E0904
 	public void PopulateCategories()
 	{
-		RefreshCategoriesFn = null;
-		categoryRowPool.ReturnAll();
-		PermitCategory[] array = outfitTypeToCategoriesDict[outfitState.outfitType];
-		foreach (PermitCategory permitCategory in array)
+		this.RefreshCategoriesFn = null;
+		this.categoryRowPool.ReturnAll();
+		PermitCategory[] array = OutfitDesignerScreen.outfitTypeToCategoriesDict[this.outfitState.outfitType];
+		for (int i = 0; i < array.Length; i++)
 		{
-			GameObject gameObject = categoryRowPool.Borrow();
+			OutfitDesignerScreen.<>c__DisplayClass47_0 CS$<>8__locals1 = new OutfitDesignerScreen.<>c__DisplayClass47_0();
+			CS$<>8__locals1.<>4__this = this;
+			CS$<>8__locals1.permitCategory = array[i];
+			GameObject gameObject = this.categoryRowPool.Borrow();
 			HierarchyReferences component = gameObject.GetComponent<HierarchyReferences>();
-			component.GetReference<LocText>("Label").SetText(PermitCategories.GetUppercaseDisplayName(permitCategory));
-			component.GetReference<Image>("Icon").sprite = Assets.GetSprite(PermitCategories.GetIconName(permitCategory));
+			component.GetReference<LocText>("Label").SetText(PermitCategories.GetUppercaseDisplayName(CS$<>8__locals1.permitCategory));
+			component.GetReference<Image>("Icon").sprite = Assets.GetSprite(PermitCategories.GetIconName(CS$<>8__locals1.permitCategory));
 			MultiToggle toggle = gameObject.GetComponent<MultiToggle>();
-			MultiToggle multiToggle = toggle;
-			multiToggle.onEnter = (System.Action)Delegate.Combine(multiToggle.onEnter, new System.Action(OnMouseOverToggle));
-			toggle.onClick = delegate
+			MultiToggle toggle2 = toggle;
+			toggle2.onEnter = (System.Action)Delegate.Combine(toggle2.onEnter, new System.Action(this.OnMouseOverToggle));
+			toggle.onClick = delegate()
 			{
-				SelectCategory(permitCategory);
+				CS$<>8__locals1.<>4__this.SelectCategory(CS$<>8__locals1.permitCategory);
 			};
-			RefreshCategoriesFn = (System.Action)Delegate.Combine(RefreshCategoriesFn, (System.Action)delegate
+			this.RefreshCategoriesFn = (System.Action)Delegate.Combine(this.RefreshCategoriesFn, new System.Action(delegate()
 			{
-				toggle.ChangeState((permitCategory == SelectedCategory) ? 1 : 0);
-			});
-			SetCatogoryClickUISound(permitCategory, toggle);
+				toggle.ChangeState((CS$<>8__locals1.permitCategory == CS$<>8__locals1.<>4__this.SelectedCategory) ? 1 : 0);
+			}));
+			this.SetCatogoryClickUISound(CS$<>8__locals1.permitCategory, toggle);
 		}
 	}
 
+	// Token: 0x0600A3A8 RID: 41896 RVA: 0x003E2858 File Offset: 0x003E0A58
 	public void SelectCategory(PermitCategory permitCategory)
 	{
-		SelectedCategory = permitCategory;
-		galleryHeaderLabel.text = PermitCategories.GetDisplayName(permitCategory);
-		RefreshCategories();
-		PopulateGallery();
-		Option<ClothingItemResource> itemForCategory = outfitState.GetItemForCategory(permitCategory);
+		this.SelectedCategory = permitCategory;
+		this.galleryHeaderLabel.text = PermitCategories.GetDisplayName(permitCategory);
+		this.RefreshCategories();
+		this.PopulateGallery();
+		Option<ClothingItemResource> itemForCategory = this.outfitState.GetItemForCategory(permitCategory);
 		if (itemForCategory.HasValue)
 		{
-			SelectPermit(itemForCategory.Value);
+			this.SelectPermit(itemForCategory.Value);
+			return;
 		}
-		else
-		{
-			SelectPermit(null);
-		}
+		this.SelectPermit(null);
 	}
 
+	// Token: 0x0600A3A9 RID: 41897 RVA: 0x0010A30D File Offset: 0x0010850D
 	private void RefreshGallery()
 	{
-		if (RefreshGalleryFn != null)
+		if (this.RefreshGalleryFn != null)
 		{
-			RefreshGalleryFn();
+			this.RefreshGalleryFn();
 		}
 	}
 
+	// Token: 0x0600A3AA RID: 41898 RVA: 0x003E28B4 File Offset: 0x003E0AB4
 	public void PopulateGallery()
 	{
-		RefreshGalleryFn = null;
-		galleryGridItemPool.ReturnAll();
-		subcategoryUiPool.ReturnAll();
-		galleryGridLayouter.targetGridLayouts.Clear();
-		galleryGridLayouter.OnSizeGridComplete = null;
-		Promise<KleiInventoryUISubcategory> onFirstDisplayCategoryDecided = new Promise<KleiInventoryUISubcategory>();
-		AddGridIconForPermit(null);
-		foreach (ClothingItemResource resource in Db.Get().Permits.ClothingItems.resources)
+		OutfitDesignerScreen.<>c__DisplayClass51_0 CS$<>8__locals1 = new OutfitDesignerScreen.<>c__DisplayClass51_0();
+		CS$<>8__locals1.<>4__this = this;
+		this.RefreshGalleryFn = null;
+		this.galleryGridItemPool.ReturnAll();
+		this.subcategoryUiPool.ReturnAll();
+		this.galleryGridLayouter.targetGridLayouts.Clear();
+		this.galleryGridLayouter.OnSizeGridComplete = null;
+		CS$<>8__locals1.onFirstDisplayCategoryDecided = new Promise<KleiInventoryUISubcategory>();
+		CS$<>8__locals1.<PopulateGallery>g__AddGridIconForPermit|0(null);
+		foreach (ClothingItemResource clothingItemResource in Db.Get().Permits.ClothingItems.resources)
 		{
-			if (resource.Category == SelectedCategory && resource.outfitType == Config.sourceTarget.OutfitType && !resource.Id.StartsWith("visonly_"))
+			if (clothingItemResource.Category == this.SelectedCategory && clothingItemResource.outfitType == this.Config.sourceTarget.OutfitType && !clothingItemResource.Id.StartsWith("visonly_"))
 			{
-				AddGridIconForPermit(resource);
+				CS$<>8__locals1.<PopulateGallery>g__AddGridIconForPermit|0(clothingItemResource);
 			}
 		}
-		foreach (GameObject item in subcategoryUiPool.GetBorrowedObjects().StableSort(Comparer<GameObject>.Create(delegate(GameObject a, GameObject b)
+		foreach (GameObject gameObject3 in this.subcategoryUiPool.GetBorrowedObjects().StableSort(Comparer<GameObject>.Create(delegate(GameObject a, GameObject b)
 		{
-			KleiInventoryUISubcategory component4 = a.GetComponent<KleiInventoryUISubcategory>();
-			KleiInventoryUISubcategory component5 = b.GetComponent<KleiInventoryUISubcategory>();
-			int sortKey = InventoryOrganization.subcategoryIdToPresentationDataMap[component4.subcategoryID].sortKey;
-			int sortKey2 = InventoryOrganization.subcategoryIdToPresentationDataMap[component5.subcategoryID].sortKey;
+			KleiInventoryUISubcategory component = a.GetComponent<KleiInventoryUISubcategory>();
+			KleiInventoryUISubcategory component2 = b.GetComponent<KleiInventoryUISubcategory>();
+			int sortKey = InventoryOrganization.subcategoryIdToPresentationDataMap[component.subcategoryID].sortKey;
+			int sortKey2 = InventoryOrganization.subcategoryIdToPresentationDataMap[component2.subcategoryID].sortKey;
 			return sortKey.CompareTo(sortKey2);
 		})))
 		{
-			item.transform.SetAsLastSibling();
+			gameObject3.transform.SetAsLastSibling();
 		}
-		GameObject gameObject2 = subcategoryUiPool.GetBorrowedObjects().FirstOrDefault((GameObject gameObject) => gameObject.GetComponent<KleiInventoryUISubcategory>().IsOpen);
+		GameObject gameObject2 = this.subcategoryUiPool.GetBorrowedObjects().FirstOrDefault((GameObject gameObject) => gameObject.GetComponent<KleiInventoryUISubcategory>().IsOpen);
 		if (gameObject2 != null)
 		{
-			onFirstDisplayCategoryDecided.Resolve(gameObject2.GetComponent<KleiInventoryUISubcategory>());
+			CS$<>8__locals1.onFirstDisplayCategoryDecided.Resolve(gameObject2.GetComponent<KleiInventoryUISubcategory>());
 		}
-		galleryGridLayouter.RequestGridResize();
-		RefreshGallery();
-		void AddGridIconForPermit(PermitResource permit)
-		{
-			GameObject gridItemGameObject = galleryGridItemPool.Borrow();
-			HierarchyReferences component3 = gridItemGameObject.GetComponent<HierarchyReferences>();
-			Image reference = component3.GetReference<Image>("Icon");
-			MultiToggle toggle = gridItemGameObject.GetComponent<MultiToggle>();
-			Image isUnownedOverlay = component3.GetReference<Image>("IsUnownedOverlay");
-			Image reference2 = component3.GetReference<Image>("DlcBanner");
-			if (permit == null)
-			{
-				onFirstDisplayCategoryDecided.Then(delegate(KleiInventoryUISubcategory subcategoryUi)
-				{
-					gridItemGameObject.transform.SetParent(subcategoryUi.gridLayout.transform);
-					gridItemGameObject.transform.SetAsFirstSibling();
-				});
-				reference.sprite = KleiItemsUI.GetNoneClothingItemIcon(SelectedCategory, Config.minionPersonality);
-				KleiItemsUI.ConfigureTooltipOn(gridItemGameObject, KleiItemsUI.GetNoneTooltipStringFor(SelectedCategory));
-				isUnownedOverlay.gameObject.SetActive(value: false);
-			}
-			else
-			{
-				gridItemGameObject.transform.SetParent(GetOrSpawnSubcategoryUiForPermit(InventoryOrganization.GetPermitSubcategory(permit)).gridLayout.transform);
-				reference.sprite = permit.GetPermitPresentationInfo().sprite;
-				KleiItemsUI.ConfigureTooltipOn(gridItemGameObject, KleiItemsUI.GetTooltipStringFor(permit));
-				RefreshGalleryFn = (System.Action)Delegate.Combine(RefreshGalleryFn, (System.Action)delegate
-				{
-					isUnownedOverlay.gameObject.SetActive(!permit.IsUnlocked());
-				});
-			}
-			string dlcId = ((permit == null) ? null : permit.GetDlcIdFrom());
-			if (DlcManager.IsDlcId(dlcId))
-			{
-				reference2.gameObject.SetActive(value: true);
-				reference2.color = DlcManager.GetDlcBannerColor(dlcId);
-			}
-			else
-			{
-				reference2.gameObject.SetActive(value: false);
-			}
-			MultiToggle multiToggle = toggle;
-			multiToggle.onEnter = (System.Action)Delegate.Combine(multiToggle.onEnter, new System.Action(OnMouseOverToggle));
-			toggle.onClick = delegate
-			{
-				SelectPermit(permit);
-			};
-			RefreshGalleryFn = (System.Action)Delegate.Combine(RefreshGalleryFn, (System.Action)delegate
-			{
-				toggle.ChangeState((permit == SelectedPermit) ? 1 : 0);
-			});
-			SetItemClickUISound(permit, toggle);
-		}
-		KleiInventoryUISubcategory GetOrSpawn()
-		{
-			foreach (GameObject borrowedObject in subcategoryUiPool.GetBorrowedObjects())
-			{
-				KleiInventoryUISubcategory component = borrowedObject.GetComponent<KleiInventoryUISubcategory>();
-				if (P_0.subcategoryId == component.subcategoryID)
-				{
-					return component;
-				}
-			}
-			KleiInventoryUISubcategory component2 = subcategoryUiPool.Borrow().GetComponent<KleiInventoryUISubcategory>();
-			galleryGridLayouter.targetGridLayouts.Add(component2.gridLayout);
-			GridLayouter gridLayouter = galleryGridLayouter;
-			gridLayouter.OnSizeGridComplete = (System.Action)Delegate.Combine(gridLayouter.OnSizeGridComplete, new System.Action(component2.RefreshDisplay));
-			return component2;
-		}
-		KleiInventoryUISubcategory GetOrSpawnSubcategoryUiForPermit(string subcategoryId)
-		{
-			bool flag = ((subcategoryId == null || !(subcategoryId == "UNCATEGORIZED")) ? true : false);
-			bool open = flag;
-			KleiInventoryUISubcategory orSpawn = GetOrSpawn();
-			orSpawn.subcategoryID = subcategoryId;
-			orSpawn.SetIdentity(InventoryOrganization.GetSubcategoryName(subcategoryId), InventoryOrganization.subcategoryIdToPresentationDataMap[subcategoryId].icon);
-			orSpawn.ToggleOpen(open);
-			return orSpawn;
-		}
+		this.galleryGridLayouter.RequestGridResize();
+		this.RefreshGallery();
 	}
 
+	// Token: 0x0600A3AB RID: 41899 RVA: 0x0010A322 File Offset: 0x00108522
 	public void SelectPermit(PermitResource permit)
 	{
-		SelectedPermit = permit;
-		RefreshGallery();
-		UpdateSelectedItemDetails();
-		UpdateSaveButtons();
+		this.SelectedPermit = permit;
+		this.RefreshGallery();
+		this.UpdateSelectedItemDetails();
+		this.UpdateSaveButtons();
 	}
 
+	// Token: 0x0600A3AC RID: 41900 RVA: 0x003E2A78 File Offset: 0x003E0C78
 	public void UpdateSelectedItemDetails()
 	{
 		Option<ClothingItemResource> item = Option.None;
-		if (SelectedPermit != null && SelectedPermit is ClothingItemResource clothingItemResource)
+		if (this.SelectedPermit != null)
 		{
-			item = clothingItemResource;
+			ClothingItemResource clothingItemResource = this.SelectedPermit as ClothingItemResource;
+			if (clothingItemResource != null)
+			{
+				item = clothingItemResource;
+			}
 		}
-		outfitState.SetItemForCategory(SelectedCategory, item);
-		minionOrMannequin.current.SetOutfit(outfitState);
-		minionOrMannequin.current.ReactToClothingItemChange(SelectedCategory);
-		outfitDescriptionPanel.Refresh(outfitState, Config.minionPersonality);
-		dioramaBG.sprite = KleiPermitDioramaVis.GetDioramaBackground(SelectedCategory);
+		this.outfitState.SetItemForCategory(this.SelectedCategory, item);
+		this.minionOrMannequin.current.SetOutfit(this.outfitState);
+		this.minionOrMannequin.current.ReactToClothingItemChange(this.SelectedCategory);
+		this.outfitDescriptionPanel.Refresh(this.outfitState, this.Config.minionPersonality);
+		this.dioramaBG.sprite = KleiPermitDioramaVis.GetDioramaBackground(this.SelectedCategory);
 	}
 
+	// Token: 0x0600A3AD RID: 41901 RVA: 0x0010A33D File Offset: 0x0010853D
 	private void RegisterPreventScreenPop()
 	{
-		UnregisterPreventScreenPop();
-		preventScreenPopFn = delegate
+		this.UnregisterPreventScreenPop();
+		this.preventScreenPopFn = delegate()
 		{
-			if (outfitState.IsDirty())
+			if (this.outfitState.IsDirty())
 			{
-				RegisterPreventScreenPop();
-				MakeSaveWarningPopup(outfitState, delegate
+				this.RegisterPreventScreenPop();
+				OutfitDesignerScreen.MakeSaveWarningPopup(this.outfitState, delegate
 				{
-					UnregisterPreventScreenPop();
+					this.UnregisterPreventScreenPop();
 					LockerNavigator.Instance.PopScreen();
 				});
 				return true;
 			}
 			return false;
 		};
-		LockerNavigator.Instance.preventScreenPop.Add(preventScreenPopFn);
+		LockerNavigator.Instance.preventScreenPop.Add(this.preventScreenPopFn);
 	}
 
+	// Token: 0x0600A3AE RID: 41902 RVA: 0x0010A36C File Offset: 0x0010856C
 	private void UnregisterPreventScreenPop()
 	{
-		if (preventScreenPopFn != null)
+		if (this.preventScreenPopFn != null)
 		{
-			LockerNavigator.Instance.preventScreenPop.Remove(preventScreenPopFn);
-			preventScreenPopFn = null;
+			LockerNavigator.Instance.preventScreenPop.Remove(this.preventScreenPopFn);
+			this.preventScreenPopFn = null;
 		}
 	}
 
+	// Token: 0x0600A3AF RID: 41903 RVA: 0x003E2B20 File Offset: 0x003E0D20
 	public static void MakeSaveWarningPopup(OutfitDesignerScreen_OutfitState outfitState, System.Action discardChangesFn)
 	{
+		Action<InfoDialogScreen> <>9__1;
 		LockerNavigator.Instance.ShowDialogPopup(delegate(InfoDialogScreen dialog)
 		{
-			dialog.SetHeader(UI.OUTFIT_DESIGNER_SCREEN.CHANGES_NOT_SAVED_WARNING_POPUP.HEADER.Replace("{OutfitName}", outfitState.name)).AddPlainText(UI.OUTFIT_DESIGNER_SCREEN.CHANGES_NOT_SAVED_WARNING_POPUP.BODY).AddOption(UI.OUTFIT_DESIGNER_SCREEN.CHANGES_NOT_SAVED_WARNING_POPUP.BUTTON_DISCARD, delegate(InfoDialogScreen d)
+			InfoDialogScreen infoDialogScreen = dialog.SetHeader(UI.OUTFIT_DESIGNER_SCREEN.CHANGES_NOT_SAVED_WARNING_POPUP.HEADER.Replace("{OutfitName}", outfitState.name)).AddPlainText(UI.OUTFIT_DESIGNER_SCREEN.CHANGES_NOT_SAVED_WARNING_POPUP.BODY);
+			string text = UI.OUTFIT_DESIGNER_SCREEN.CHANGES_NOT_SAVED_WARNING_POPUP.BUTTON_DISCARD;
+			Action<InfoDialogScreen> action;
+			if ((action = <>9__1) == null)
 			{
-				d.Deactivate();
-				discardChangesFn();
-			}, rightSide: true)
-				.AddOption(UI.OUTFIT_DESIGNER_SCREEN.CHANGES_NOT_SAVED_WARNING_POPUP.BUTTON_RETURN, delegate(InfoDialogScreen d)
+				action = (<>9__1 = delegate(InfoDialogScreen d)
 				{
 					d.Deactivate();
+					discardChangesFn();
 				});
+			}
+			infoDialogScreen.AddOption(text, action, true).AddOption(UI.OUTFIT_DESIGNER_SCREEN.CHANGES_NOT_SAVED_WARNING_POPUP.BUTTON_RETURN, delegate(InfoDialogScreen d)
+			{
+				d.Deactivate();
+			}, false);
 		});
 	}
 
+	// Token: 0x0600A3B0 RID: 41904 RVA: 0x003E2B58 File Offset: 0x003E0D58
 	public static void MakeApplyToTemplatePopup(KInputTextField inputFieldPrefab, OutfitDesignerScreen_OutfitState outfitState, GameObject targetMinionInstance, Option<ClothingOutfitTarget> existingOutfitTemplate, Action<ClothingOutfitTarget> onWriteToOutfitTargetFn)
 	{
 		ClothingOutfitNameProposal proposal = default(ClothingOutfitNameProposal);
@@ -544,98 +455,55 @@ public class OutfitDesignerScreen : KMonoBehaviour
 		LocText descLocText;
 		LockerNavigator.Instance.ShowDialogPopup(delegate(InfoDialogScreen dialog)
 		{
-			dialog.SetHeader(UI.OUTFIT_DESIGNER_SCREEN.MINION_INSTANCE.APPLY_TEMPLATE_POPUP.HEADER.Replace("{OutfitName}", outfitState.name)).AddUI(inputFieldPrefab, out inputField).AddSpacer(8f)
-				.AddUI(dialog.GetPlainTextPrefab(), out descLabel)
-				.AddOption(rightSide: true, out saveButton, out saveButtonText)
-				.AddDefaultCancel();
+			dialog.SetHeader(UI.OUTFIT_DESIGNER_SCREEN.MINION_INSTANCE.APPLY_TEMPLATE_POPUP.HEADER.Replace("{OutfitName}", outfitState.name)).AddUI<KInputTextField>(inputFieldPrefab, out inputField).AddSpacer(8f).AddUI<InfoScreenPlainText>(dialog.GetPlainTextPrefab(), out descLabel).AddOption(true, out saveButton, out saveButtonText).AddDefaultCancel();
 			descLocText = descLabel.gameObject.GetComponent<LocText>();
 			descLocText.allowOverride = true;
 			descLocText.alignment = TextAlignmentOptions.BottomLeft;
 			descLocText.color = errorTextColor;
 			descLocText.fontSize = 14f;
 			descLabel.SetText("");
-			inputField.onValueChanged.AddListener(Refresh);
-			saveButton.onClick += delegate
+			inputField.onValueChanged.AddListener(new UnityAction<string>(base.<MakeApplyToTemplatePopup>g__Refresh|1));
+			saveButton.onClick += delegate()
 			{
 				ClothingOutfitTarget clothingOutfitTarget = ClothingOutfitTarget.FromMinion(outfitState.outfitType, targetMinionInstance);
-				ClothingOutfitTarget clothingOutfitTarget2 = proposal.result switch
+				ClothingOutfitNameProposal.Result result = proposal.result;
+				ClothingOutfitTarget obj;
+				if (result != ClothingOutfitNameProposal.Result.NewOutfit)
 				{
-					ClothingOutfitNameProposal.Result.NewOutfit => ClothingOutfitTarget.ForNewTemplateOutfit(outfitState.outfitType, proposal.candidateName), 
-					ClothingOutfitNameProposal.Result.SameOutfit => existingOutfitTemplate.Value, 
-					_ => throw new NotSupportedException($"Can't save outfit with name \"{proposal.candidateName}\", failed with result: {proposal.result}"), 
-				};
-				clothingOutfitTarget2.WriteItems(outfitState.outfitType, outfitState.GetItems());
+					if (result != ClothingOutfitNameProposal.Result.SameOutfit)
+					{
+						throw new NotSupportedException(string.Format("Can't save outfit with name \"{0}\", failed with result: {1}", proposal.candidateName, proposal.result));
+					}
+					obj = existingOutfitTemplate.Value;
+				}
+				else
+				{
+					obj = ClothingOutfitTarget.ForNewTemplateOutfit(outfitState.outfitType, proposal.candidateName);
+				}
+				obj.WriteItems(outfitState.outfitType, outfitState.GetItems());
 				clothingOutfitTarget.WriteItems(outfitState.outfitType, outfitState.GetItems());
 				if (onWriteToOutfitTargetFn != null)
 				{
-					onWriteToOutfitTargetFn(clothingOutfitTarget2);
+					onWriteToOutfitTargetFn(obj);
 				}
 				dialog.Deactivate();
 				LockerNavigator.Instance.PopScreen();
 			};
-			if (existingOutfitTemplate.HasValue)
+			if (!existingOutfitTemplate.HasValue)
 			{
-				if (existingOutfitTemplate.Value.CanWriteName && existingOutfitTemplate.Value.CanWriteItems)
-				{
-					Refresh(existingOutfitTemplate.Value.OutfitId);
-				}
-				else
-				{
-					Refresh(ClothingOutfitTarget.ForTemplateCopyOf(existingOutfitTemplate.Value).OutfitId);
-				}
+				base.<MakeApplyToTemplatePopup>g__Refresh|1(outfitState.name);
+				return;
 			}
-			else
+			if (existingOutfitTemplate.Value.CanWriteName && existingOutfitTemplate.Value.CanWriteItems)
 			{
-				Refresh(outfitState.name);
+				base.<MakeApplyToTemplatePopup>g__Refresh|1(existingOutfitTemplate.Value.OutfitId);
+				return;
 			}
+			base.<MakeApplyToTemplatePopup>g__Refresh|1(ClothingOutfitTarget.ForTemplateCopyOf(existingOutfitTemplate.Value).OutfitId);
 		});
-		void Refresh(string candidateName)
-		{
-			if (existingOutfitTemplate.IsSome())
-			{
-				proposal = ClothingOutfitNameProposal.FromExistingOutfit(candidateName, existingOutfitTemplate.Unwrap(), isSameNameAllowed: true);
-			}
-			else
-			{
-				proposal = ClothingOutfitNameProposal.ForNewOutfit(candidateName);
-			}
-			inputField.text = candidateName;
-			switch (proposal.result)
-			{
-			case ClothingOutfitNameProposal.Result.NewOutfit:
-				descLabel.gameObject.SetActive(value: true);
-				descLabel.SetText(UI.OUTFIT_DESIGNER_SCREEN.MINION_INSTANCE.APPLY_TEMPLATE_POPUP.DESC_SAVE_NEW.Replace("{OutfitName}", candidateName).Replace("{MinionName}", targetMinionInstance.GetProperName()));
-				descLocText.color = defaultTextColor;
-				saveButtonText.text = UI.OUTFIT_DESIGNER_SCREEN.MINION_INSTANCE.APPLY_TEMPLATE_POPUP.BUTTON_SAVE_NEW;
-				saveButton.isInteractable = true;
-				break;
-			case ClothingOutfitNameProposal.Result.SameOutfit:
-				descLabel.gameObject.SetActive(value: true);
-				descLabel.SetText(UI.OUTFIT_DESIGNER_SCREEN.MINION_INSTANCE.APPLY_TEMPLATE_POPUP.DESC_SAVE_EXISTING.Replace("{OutfitName}", candidateName).Replace("{MinionName}", targetMinionInstance.GetProperName()));
-				descLocText.color = defaultTextColor;
-				saveButtonText.text = UI.OUTFIT_DESIGNER_SCREEN.MINION_INSTANCE.APPLY_TEMPLATE_POPUP.BUTTON_SAVE_EXISTING;
-				saveButton.isInteractable = true;
-				break;
-			case ClothingOutfitNameProposal.Result.Error_NoInputName:
-				descLabel.gameObject.SetActive(value: false);
-				saveButtonText.text = UI.OUTFIT_DESIGNER_SCREEN.MINION_INSTANCE.APPLY_TEMPLATE_POPUP.BUTTON_SAVE_NEW;
-				saveButton.isInteractable = false;
-				break;
-			case ClothingOutfitNameProposal.Result.Error_NameAlreadyExists:
-			case ClothingOutfitNameProposal.Result.Error_SameOutfitReadonly:
-				descLabel.gameObject.SetActive(value: true);
-				descLabel.SetText(UI.OUTFIT_NAME.ERROR_NAME_EXISTS.Replace("{OutfitName}", candidateName));
-				descLocText.color = errorTextColor;
-				saveButtonText.text = UI.OUTFIT_DESIGNER_SCREEN.MINION_INSTANCE.APPLY_TEMPLATE_POPUP.BUTTON_SAVE_NEW;
-				saveButton.isInteractable = false;
-				break;
-			default:
-				DebugUtil.DevAssert(test: false, $"Unhandled name proposal case: {proposal.result}");
-				break;
-			}
-		}
 	}
 
+	// Token: 0x0600A3B1 RID: 41905 RVA: 0x003E2BD4 File Offset: 0x003E0DD4
 	public static void MakeCopyPopup(OutfitDesignerScreen screen, KInputTextField inputFieldPrefab, OutfitDesignerScreen_OutfitState outfitState, ClothingOutfitTarget outfitTemplate, Option<Personality> minionPersonality, Action<ClothingOutfitTarget> onWriteToOutfitTargetFn)
 	{
 		ClothingOutfitNameProposal proposal = default(ClothingOutfitNameProposal);
@@ -645,15 +513,12 @@ public class OutfitDesignerScreen : KMonoBehaviour
 		LocText okButtonText;
 		LockerNavigator.Instance.ShowDialogPopup(delegate(InfoDialogScreen dialog)
 		{
-			dialog.SetHeader(UI.OUTFIT_DESIGNER_SCREEN.COPY_POPUP.HEADER).AddUI(inputFieldPrefab, out inputField).AddSpacer(8f)
-				.AddUI(dialog.GetPlainTextPrefab(), out errorText)
-				.AddOption(rightSide: true, out okButton, out okButtonText)
-				.AddOption(UI.CONFIRMDIALOG.CANCEL, delegate(InfoDialogScreen d)
-				{
-					d.Deactivate();
-				});
-			inputField.onValueChanged.AddListener(Refresh);
-			errorText.gameObject.SetActive(value: false);
+			dialog.SetHeader(UI.OUTFIT_DESIGNER_SCREEN.COPY_POPUP.HEADER).AddUI<KInputTextField>(inputFieldPrefab, out inputField).AddSpacer(8f).AddUI<InfoScreenPlainText>(dialog.GetPlainTextPrefab(), out errorText).AddOption(true, out okButton, out okButtonText).AddOption(UI.CONFIRMDIALOG.CANCEL, delegate(InfoDialogScreen d)
+			{
+				d.Deactivate();
+			}, false);
+			inputField.onValueChanged.AddListener(new UnityAction<string>(base.<MakeCopyPopup>g__Refresh|1));
+			errorText.gameObject.SetActive(false);
 			LocText component = errorText.gameObject.GetComponent<LocText>();
 			component.allowOverride = true;
 			component.alignment = TextAlignmentOptions.BottomLeft;
@@ -661,61 +526,38 @@ public class OutfitDesignerScreen : KMonoBehaviour
 			component.fontSize = 14f;
 			errorText.SetText("");
 			okButtonText.text = UI.CONFIRMDIALOG.OK;
-			okButton.onClick += delegate
+			okButton.onClick += delegate()
 			{
-				if (proposal.result != ClothingOutfitNameProposal.Result.NewOutfit)
+				if (proposal.result == ClothingOutfitNameProposal.Result.NewOutfit)
 				{
-					throw new NotSupportedException($"Can't save outfit with name \"{proposal.candidateName}\", failed with result: {proposal.result}");
+					ClothingOutfitTarget clothingOutfitTarget = ClothingOutfitTarget.ForNewTemplateOutfit(outfitTemplate.OutfitType, proposal.candidateName);
+					clothingOutfitTarget.WriteItems(outfitState.outfitType, outfitState.GetItems());
+					if (minionPersonality.HasValue)
+					{
+						minionPersonality.Value.SetSelectedTemplateOutfitId(clothingOutfitTarget.OutfitType, clothingOutfitTarget.OutfitId);
+					}
+					if (onWriteToOutfitTargetFn != null)
+					{
+						onWriteToOutfitTargetFn(clothingOutfitTarget);
+					}
+					dialog.Deactivate();
+					screen.Configure(screen.Config.WithOutfit(clothingOutfitTarget));
+					return;
 				}
-				ClothingOutfitTarget sourceTarget = ClothingOutfitTarget.ForNewTemplateOutfit(outfitTemplate.OutfitType, proposal.candidateName);
-				sourceTarget.WriteItems(outfitState.outfitType, outfitState.GetItems());
-				if (minionPersonality.HasValue)
-				{
-					minionPersonality.Value.SetSelectedTemplateOutfitId(sourceTarget.OutfitType, sourceTarget.OutfitId);
-				}
-				if (onWriteToOutfitTargetFn != null)
-				{
-					onWriteToOutfitTargetFn(sourceTarget);
-				}
-				dialog.Deactivate();
-				screen.Configure(screen.Config.WithOutfit(sourceTarget));
+				throw new NotSupportedException(string.Format("Can't save outfit with name \"{0}\", failed with result: {1}", proposal.candidateName, proposal.result));
 			};
-			Refresh(ClothingOutfitTarget.ForTemplateCopyOf(outfitTemplate).OutfitId);
+			base.<MakeCopyPopup>g__Refresh|1(ClothingOutfitTarget.ForTemplateCopyOf(outfitTemplate).OutfitId);
 		});
-		void Refresh(string candidateName)
-		{
-			proposal = ClothingOutfitNameProposal.FromExistingOutfit(candidateName, outfitTemplate, isSameNameAllowed: false);
-			inputField.text = candidateName;
-			switch (proposal.result)
-			{
-			case ClothingOutfitNameProposal.Result.NewOutfit:
-				errorText.gameObject.SetActive(value: false);
-				okButton.isInteractable = true;
-				break;
-			case ClothingOutfitNameProposal.Result.Error_NoInputName:
-				errorText.gameObject.SetActive(value: false);
-				okButton.isInteractable = false;
-				break;
-			case ClothingOutfitNameProposal.Result.SameOutfit:
-			case ClothingOutfitNameProposal.Result.Error_NameAlreadyExists:
-			case ClothingOutfitNameProposal.Result.Error_SameOutfitReadonly:
-				errorText.gameObject.SetActive(value: true);
-				errorText.SetText(UI.OUTFIT_NAME.ERROR_NAME_EXISTS.Replace("{OutfitName}", candidateName));
-				okButton.isInteractable = false;
-				break;
-			default:
-				DebugUtil.DevAssert(test: false, $"Unhandled name proposal case: {proposal.result}");
-				break;
-			}
-		}
 	}
 
+	// Token: 0x0600A3B2 RID: 41906 RVA: 0x003E2C38 File Offset: 0x003E0E38
 	private void SetCatogoryClickUISound(PermitCategory category, MultiToggle toggle)
 	{
 		toggle.states[1].on_click_override_sound_path = category.ToString() + "_Click";
 		toggle.states[0].on_click_override_sound_path = category.ToString() + "_Click";
 	}
 
+	// Token: 0x0600A3B3 RID: 41907 RVA: 0x003E2C98 File Offset: 0x003E0E98
 	private void SetItemClickUISound(PermitResource permit, MultiToggle toggle)
 	{
 		if (permit == null)
@@ -724,7 +566,7 @@ public class OutfitDesignerScreen : KMonoBehaviour
 			toggle.states[0].on_click_override_sound_path = "HUD_Click";
 			return;
 		}
-		string clothingItemSoundName = GetClothingItemSoundName(permit);
+		string clothingItemSoundName = OutfitDesignerScreen.GetClothingItemSoundName(permit);
 		toggle.states[1].on_click_override_sound_path = clothingItemSoundName + "_Click";
 		toggle.states[1].sound_parameter_name = "Unlocked";
 		toggle.states[1].sound_parameter_value = (permit.IsUnlocked() ? 1f : 0f);
@@ -735,25 +577,129 @@ public class OutfitDesignerScreen : KMonoBehaviour
 		toggle.states[0].has_sound_parameter = true;
 	}
 
+	// Token: 0x0600A3B4 RID: 41908 RVA: 0x003E2DB0 File Offset: 0x003E0FB0
 	public static string GetClothingItemSoundName(PermitResource permit)
 	{
 		if (permit == null)
 		{
 			return "HUD";
 		}
-		return permit.Category switch
+		switch (permit.Category)
 		{
-			PermitCategory.DupeTops => "tops", 
-			PermitCategory.DupeBottoms => "bottoms", 
-			PermitCategory.DupeGloves => "gloves", 
-			PermitCategory.DupeShoes => "shoes", 
-			PermitCategory.DupeHats => "hats", 
-			_ => "HUD", 
-		};
+		case PermitCategory.DupeTops:
+			return "tops";
+		case PermitCategory.DupeBottoms:
+			return "bottoms";
+		case PermitCategory.DupeGloves:
+			return "gloves";
+		case PermitCategory.DupeShoes:
+			return "shoes";
+		case PermitCategory.DupeHats:
+			return "hats";
+		default:
+			return "HUD";
+		}
 	}
 
+	// Token: 0x0600A3B5 RID: 41909 RVA: 0x001051E4 File Offset: 0x001033E4
 	private void OnMouseOverToggle()
 	{
-		KFMOD.PlayUISound(GlobalAssets.GetSound("HUD_Mouseover"));
+		KFMOD.PlayUISound(GlobalAssets.GetSound("HUD_Mouseover", false));
+	}
+
+	// Token: 0x04007FC8 RID: 32712
+	[Header("CategoryColumn")]
+	[SerializeField]
+	private RectTransform categoryListContent;
+
+	// Token: 0x04007FC9 RID: 32713
+	[SerializeField]
+	private GameObject categoryRowPrefab;
+
+	// Token: 0x04007FCA RID: 32714
+	private UIPrefabLocalPool categoryRowPool;
+
+	// Token: 0x04007FCB RID: 32715
+	[Header("ItemGalleryColumn")]
+	[SerializeField]
+	private LocText galleryHeaderLabel;
+
+	// Token: 0x04007FCC RID: 32716
+	[SerializeField]
+	private RectTransform galleryGridContent;
+
+	// Token: 0x04007FCD RID: 32717
+	[SerializeField]
+	private GameObject subcategoryUiPrefab;
+
+	// Token: 0x04007FCE RID: 32718
+	[SerializeField]
+	private GameObject gridItemPrefab;
+
+	// Token: 0x04007FCF RID: 32719
+	private UIPrefabLocalPool subcategoryUiPool;
+
+	// Token: 0x04007FD0 RID: 32720
+	private UIPrefabLocalPool galleryGridItemPool;
+
+	// Token: 0x04007FD1 RID: 32721
+	private GridLayouter galleryGridLayouter;
+
+	// Token: 0x04007FD2 RID: 32722
+	[Header("SelectionDetailsColumn")]
+	[SerializeField]
+	private LocText selectionHeaderLabel;
+
+	// Token: 0x04007FD3 RID: 32723
+	[SerializeField]
+	private UIMinionOrMannequin minionOrMannequin;
+
+	// Token: 0x04007FD4 RID: 32724
+	[SerializeField]
+	private Image dioramaBG;
+
+	// Token: 0x04007FD5 RID: 32725
+	[SerializeField]
+	private KButton primaryButton;
+
+	// Token: 0x04007FD6 RID: 32726
+	[SerializeField]
+	private KButton secondaryButton;
+
+	// Token: 0x04007FD7 RID: 32727
+	[SerializeField]
+	private OutfitDescriptionPanel outfitDescriptionPanel;
+
+	// Token: 0x04007FD8 RID: 32728
+	[SerializeField]
+	private KInputTextField inputFieldPrefab;
+
+	// Token: 0x04007FDD RID: 32733
+	public static Dictionary<ClothingOutfitUtility.OutfitType, PermitCategory[]> outfitTypeToCategoriesDict;
+
+	// Token: 0x04007FDE RID: 32734
+	private bool postponeConfiguration = true;
+
+	// Token: 0x04007FDF RID: 32735
+	private System.Action updateSaveButtonsFn;
+
+	// Token: 0x04007FE0 RID: 32736
+	private System.Action RefreshCategoriesFn;
+
+	// Token: 0x04007FE1 RID: 32737
+	private System.Action RefreshGalleryFn;
+
+	// Token: 0x04007FE2 RID: 32738
+	private Func<bool> preventScreenPopFn;
+
+	// Token: 0x02001E7C RID: 7804
+	private enum MultiToggleState
+	{
+		// Token: 0x04007FE4 RID: 32740
+		Default,
+		// Token: 0x04007FE5 RID: 32741
+		Selected,
+		// Token: 0x04007FE6 RID: 32742
+		NonInteractable
 	}
 }

@@ -1,46 +1,42 @@
+﻿using System;
 using UnityEngine;
 
+// Token: 0x02000ACB RID: 2763
 [AddComponentMenu("KMonoBehaviour/scripts/PumpingStationGuide")]
 public class PumpingStationGuide : KMonoBehaviour, IRenderEveryTick
 {
-	private int previousDepthAvailable = -1;
-
-	public GameObject parent;
-
-	public bool occupyTiles;
-
-	private KBatchedAnimController parentController;
-
-	private KBatchedAnimController guideController;
-
+	// Token: 0x060033C5 RID: 13253 RVA: 0x000C1C3B File Offset: 0x000BFE3B
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		parentController = parent.GetComponent<KBatchedAnimController>();
-		guideController = GetComponent<KBatchedAnimController>();
-		RefreshTint();
-		RefreshDepthAvailable();
+		this.parentController = this.parent.GetComponent<KBatchedAnimController>();
+		this.guideController = base.GetComponent<KBatchedAnimController>();
+		this.RefreshTint();
+		this.RefreshDepthAvailable();
 	}
 
+	// Token: 0x060033C6 RID: 13254 RVA: 0x000C1C6C File Offset: 0x000BFE6C
 	public void RefreshPosition()
 	{
-		if (guideController != null && guideController.IsMoving)
+		if (this.guideController != null && this.guideController.IsMoving)
 		{
-			guideController.SetDirty();
+			this.guideController.SetDirty();
 		}
 	}
 
+	// Token: 0x060033C7 RID: 13255 RVA: 0x000C1C94 File Offset: 0x000BFE94
 	private void RefreshTint()
 	{
-		guideController.TintColour = parentController.TintColour;
+		this.guideController.TintColour = this.parentController.TintColour;
 	}
 
+	// Token: 0x060033C8 RID: 13256 RVA: 0x00207E24 File Offset: 0x00206024
 	private void RefreshDepthAvailable()
 	{
-		int depthAvailable = GetDepthAvailable(Grid.PosToCell(this), parent);
-		if (depthAvailable != previousDepthAvailable)
+		int depthAvailable = PumpingStationGuide.GetDepthAvailable(Grid.PosToCell(this), this.parent);
+		if (depthAvailable != this.previousDepthAvailable)
 		{
-			KBatchedAnimController component = GetComponent<KBatchedAnimController>();
+			KBatchedAnimController component = base.GetComponent<KBatchedAnimController>();
 			if (depthAvailable == 0)
 			{
 				component.enabled = false;
@@ -48,23 +44,25 @@ public class PumpingStationGuide : KMonoBehaviour, IRenderEveryTick
 			else
 			{
 				component.enabled = true;
-				component.Play(new HashedString("place_pipe" + depthAvailable));
+				component.Play(new HashedString("place_pipe" + depthAvailable.ToString()), KAnim.PlayMode.Once, 1f, 0f);
 			}
-			if (occupyTiles)
+			if (this.occupyTiles)
 			{
-				OccupyArea(parent, depthAvailable);
+				PumpingStationGuide.OccupyArea(this.parent, depthAvailable);
 			}
-			previousDepthAvailable = depthAvailable;
+			this.previousDepthAvailable = depthAvailable;
 		}
 	}
 
+	// Token: 0x060033C9 RID: 13257 RVA: 0x000C1CAC File Offset: 0x000BFEAC
 	public void RenderEveryTick(float dt)
 	{
-		RefreshPosition();
-		RefreshTint();
-		RefreshDepthAvailable();
+		this.RefreshPosition();
+		this.RefreshTint();
+		this.RefreshDepthAvailable();
 	}
 
+	// Token: 0x060033CA RID: 13258 RVA: 0x00207EA8 File Offset: 0x002060A8
 	public static void OccupyArea(GameObject go, int depth_available)
 	{
 		int cell = Grid.PosToCell(go.transform.GetPosition());
@@ -76,19 +74,22 @@ public class PumpingStationGuide : KMonoBehaviour, IRenderEveryTick
 			{
 				Grid.ObjectLayers[1][key] = go;
 				Grid.ObjectLayers[1][key2] = go;
-				continue;
 			}
-			if (Grid.ObjectLayers[1].ContainsKey(key) && Grid.ObjectLayers[1][key] == go)
+			else
 			{
-				Grid.ObjectLayers[1][key] = null;
-			}
-			if (Grid.ObjectLayers[1].ContainsKey(key2) && Grid.ObjectLayers[1][key2] == go)
-			{
-				Grid.ObjectLayers[1][key2] = null;
+				if (Grid.ObjectLayers[1].ContainsKey(key) && Grid.ObjectLayers[1][key] == go)
+				{
+					Grid.ObjectLayers[1][key] = null;
+				}
+				if (Grid.ObjectLayers[1].ContainsKey(key2) && Grid.ObjectLayers[1][key2] == go)
+				{
+					Grid.ObjectLayers[1][key2] = null;
+				}
 			}
 		}
 	}
 
+	// Token: 0x060033CB RID: 13259 RVA: 0x00207F78 File Offset: 0x00206178
 	public static int GetDepthAvailable(int root_cell, GameObject pump)
 	{
 		int num = 4;
@@ -105,4 +106,19 @@ public class PumpingStationGuide : KMonoBehaviour, IRenderEveryTick
 		}
 		return result;
 	}
+
+	// Token: 0x040022D9 RID: 8921
+	private int previousDepthAvailable = -1;
+
+	// Token: 0x040022DA RID: 8922
+	public GameObject parent;
+
+	// Token: 0x040022DB RID: 8923
+	public bool occupyTiles;
+
+	// Token: 0x040022DC RID: 8924
+	private KBatchedAnimController parentController;
+
+	// Token: 0x040022DD RID: 8925
+	private KBatchedAnimController guideController;
 }

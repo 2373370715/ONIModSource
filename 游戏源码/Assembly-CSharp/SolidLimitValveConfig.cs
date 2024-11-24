@@ -1,55 +1,69 @@
+﻿using System;
 using System.Collections.Generic;
 using STRINGS;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x02000598 RID: 1432
 public class SolidLimitValveConfig : IBuildingConfig
 {
-	public const string ID = "SolidLimitValve";
-
-	private const ConduitType CONDUIT_TYPE = ConduitType.Solid;
-
-	public override string[] GetDlcIds()
-	{
-		return DlcManager.AVAILABLE_ALL_VERSIONS;
-	}
-
+	// Token: 0x0600196B RID: 6507 RVA: 0x001A2E94 File Offset: 0x001A1094
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef("SolidLimitValve", 1, 2, "limit_valve_solid_kanim", 30, 10f, new float[2]
+		string id = "SolidLimitValve";
+		int width = 1;
+		int height = 2;
+		string anim = "limit_valve_solid_kanim";
+		int hitpoints = 30;
+		float construction_time = 10f;
+		float[] construction_mass = new float[]
 		{
 			TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER0[0],
 			TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER1[0]
-		}, new string[2] { "RefinedMetal", "Plastic" }, 1600f, BuildLocationRule.Anywhere, noise: NOISE_POLLUTION.NOISY.TIER1, decor: TUNING.BUILDINGS.DECOR.PENALTY.TIER0);
-		obj.InputConduitType = ConduitType.Solid;
-		obj.OutputConduitType = ConduitType.Solid;
-		obj.Floodable = false;
-		obj.Entombable = false;
-		obj.Overheatable = false;
-		obj.ViewMode = OverlayModes.SolidConveyor.ID;
-		obj.AudioCategory = "Metal";
-		obj.AudioSize = "small";
-		obj.BaseTimeUntilRepair = -1f;
-		obj.PermittedRotations = PermittedRotations.R360;
-		obj.UtilityInputOffset = new CellOffset(0, 0);
-		obj.UtilityOutputOffset = new CellOffset(0, 1);
-		obj.RequiresPowerInput = true;
-		obj.EnergyConsumptionWhenActive = 10f;
-		obj.PowerInputOffset = new CellOffset(0, 1);
-		obj.LogicInputPorts = new List<LogicPorts.Port>
-		{
-			new LogicPorts.Port(LimitValve.RESET_PORT_ID, new CellOffset(0, 1), STRINGS.BUILDINGS.PREFABS.SOLIDLIMITVALVE.LOGIC_PORT_RESET, STRINGS.BUILDINGS.PREFABS.SOLIDLIMITVALVE.RESET_PORT_ACTIVE, STRINGS.BUILDINGS.PREFABS.SOLIDLIMITVALVE.RESET_PORT_INACTIVE, show_wire_missing_icon: false, LogicPortSpriteType.ResetUpdate, display_custom_name: true)
 		};
-		obj.LogicOutputPorts = new List<LogicPorts.Port> { LogicPorts.Port.OutputPort(LimitValve.OUTPUT_PORT_ID, new CellOffset(0, 0), STRINGS.BUILDINGS.PREFABS.SOLIDLIMITVALVE.LOGIC_PORT_OUTPUT, STRINGS.BUILDINGS.PREFABS.SOLIDLIMITVALVE.OUTPUT_PORT_ACTIVE, STRINGS.BUILDINGS.PREFABS.SOLIDLIMITVALVE.OUTPUT_PORT_INACTIVE) };
+		string[] construction_materials = new string[]
+		{
+			"RefinedMetal",
+			"Plastic"
+		};
+		float melting_point = 1600f;
+		BuildLocationRule build_location_rule = BuildLocationRule.Anywhere;
+		EffectorValues tier = NOISE_POLLUTION.NOISY.TIER1;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, construction_mass, construction_materials, melting_point, build_location_rule, TUNING.BUILDINGS.DECOR.PENALTY.TIER0, tier, 0.2f);
+		buildingDef.InputConduitType = ConduitType.Solid;
+		buildingDef.OutputConduitType = ConduitType.Solid;
+		buildingDef.Floodable = false;
+		buildingDef.Entombable = false;
+		buildingDef.Overheatable = false;
+		buildingDef.ViewMode = OverlayModes.SolidConveyor.ID;
+		buildingDef.AudioCategory = "Metal";
+		buildingDef.AudioSize = "small";
+		buildingDef.BaseTimeUntilRepair = -1f;
+		buildingDef.PermittedRotations = PermittedRotations.R360;
+		buildingDef.UtilityInputOffset = new CellOffset(0, 0);
+		buildingDef.UtilityOutputOffset = new CellOffset(0, 1);
+		buildingDef.RequiresPowerInput = true;
+		buildingDef.EnergyConsumptionWhenActive = 10f;
+		buildingDef.PowerInputOffset = new CellOffset(0, 1);
+		buildingDef.LogicInputPorts = new List<LogicPorts.Port>
+		{
+			new LogicPorts.Port(LimitValve.RESET_PORT_ID, new CellOffset(0, 1), STRINGS.BUILDINGS.PREFABS.SOLIDLIMITVALVE.LOGIC_PORT_RESET, STRINGS.BUILDINGS.PREFABS.SOLIDLIMITVALVE.RESET_PORT_ACTIVE, STRINGS.BUILDINGS.PREFABS.SOLIDLIMITVALVE.RESET_PORT_INACTIVE, false, LogicPortSpriteType.ResetUpdate, true)
+		};
+		buildingDef.LogicOutputPorts = new List<LogicPorts.Port>
+		{
+			LogicPorts.Port.OutputPort(LimitValve.OUTPUT_PORT_ID, new CellOffset(0, 0), STRINGS.BUILDINGS.PREFABS.SOLIDLIMITVALVE.LOGIC_PORT_OUTPUT, STRINGS.BUILDINGS.PREFABS.SOLIDLIMITVALVE.OUTPUT_PORT_ACTIVE, STRINGS.BUILDINGS.PREFABS.SOLIDLIMITVALVE.OUTPUT_PORT_INACTIVE, false, false)
+		};
 		GeneratedBuildings.RegisterWithOverlay(OverlayScreen.SolidConveyorIDs, "SolidLimitValve");
-		return obj;
+		return buildingDef;
 	}
 
+	// Token: 0x0600196C RID: 6508 RVA: 0x000B0B1A File Offset: 0x000AED1A
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
-		Object.DestroyImmediate(go.GetComponent<BuildingEnabledButton>());
+		UnityEngine.Object.DestroyImmediate(go.GetComponent<BuildingEnabledButton>());
 	}
 
+	// Token: 0x0600196D RID: 6509 RVA: 0x001A3024 File Offset: 0x001A1224
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGetDef<PoweredActiveTransitionController.Def>();
@@ -60,11 +74,17 @@ public class SolidLimitValveConfig : IBuildingConfig
 		limitValve.displayUnitsInsteadOfMass = true;
 		limitValve.Limit = 0f;
 		limitValve.maxLimitKg = 500f;
-		limitValve.sliderRanges = new NonLinearSlider.Range[3]
+		limitValve.sliderRanges = new NonLinearSlider.Range[]
 		{
 			new NonLinearSlider.Range(50f, 50f),
 			new NonLinearSlider.Range(30f, 200f),
 			new NonLinearSlider.Range(20f, limitValve.maxLimitKg)
 		};
 	}
+
+	// Token: 0x0400102E RID: 4142
+	public const string ID = "SolidLimitValve";
+
+	// Token: 0x0400102F RID: 4143
+	private const ConduitType CONDUIT_TYPE = ConduitType.Solid;
 }

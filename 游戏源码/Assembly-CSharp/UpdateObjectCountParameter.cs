@@ -1,72 +1,53 @@
+﻿using System;
 using System.Collections.Generic;
 using FMOD;
 using FMOD.Studio;
 using FMODUnity;
 using UnityEngine;
 
+// Token: 0x02000936 RID: 2358
 internal class UpdateObjectCountParameter : LoopingSoundParameterUpdater
 {
-	private struct Entry
+	// Token: 0x06002AAD RID: 10925 RVA: 0x001DB740 File Offset: 0x001D9940
+	public static UpdateObjectCountParameter.Settings GetSettings(HashedString path_hash, SoundDescription description)
 	{
-		public EventInstance ev;
-
-		public Settings settings;
-	}
-
-	public struct Settings
-	{
-		public HashedString path;
-
-		public PARAMETER_ID parameterId;
-
-		public float minObjects;
-
-		public float maxObjects;
-
-		public bool useExponentialCurve;
-	}
-
-	private List<Entry> entries = new List<Entry>();
-
-	private static Dictionary<HashedString, Settings> settings = new Dictionary<HashedString, Settings>();
-
-	private static readonly HashedString parameterHash = "objectCount";
-
-	public static Settings GetSettings(HashedString path_hash, SoundDescription description)
-	{
-		Settings value = default(Settings);
-		if (!settings.TryGetValue(path_hash, out value))
+		UpdateObjectCountParameter.Settings settings = default(UpdateObjectCountParameter.Settings);
+		if (!UpdateObjectCountParameter.settings.TryGetValue(path_hash, out settings))
 		{
-			value = default(Settings);
+			settings = default(UpdateObjectCountParameter.Settings);
 			EventDescription eventDescription = RuntimeManager.GetEventDescription(description.path);
-			if (eventDescription.getUserProperty("minObj", out var property) == RESULT.OK)
+			USER_PROPERTY user_PROPERTY;
+			if (eventDescription.getUserProperty("minObj", out user_PROPERTY) == RESULT.OK)
 			{
-				value.minObjects = (short)property.floatValue();
+				settings.minObjects = (float)((short)user_PROPERTY.floatValue());
 			}
 			else
 			{
-				value.minObjects = 1f;
+				settings.minObjects = 1f;
 			}
-			if (eventDescription.getUserProperty("maxObj", out var property2) == RESULT.OK)
+			USER_PROPERTY user_PROPERTY2;
+			if (eventDescription.getUserProperty("maxObj", out user_PROPERTY2) == RESULT.OK)
 			{
-				value.maxObjects = property2.floatValue();
+				settings.maxObjects = user_PROPERTY2.floatValue();
 			}
 			else
 			{
-				value.maxObjects = 0f;
+				settings.maxObjects = 0f;
 			}
-			if (eventDescription.getUserProperty("curveType", out var property3) == RESULT.OK && property3.stringValue() == "exp")
+			USER_PROPERTY user_PROPERTY3;
+			if (eventDescription.getUserProperty("curveType", out user_PROPERTY3) == RESULT.OK && user_PROPERTY3.stringValue() == "exp")
 			{
-				value.useExponentialCurve = true;
+				settings.useExponentialCurve = true;
 			}
-			value.parameterId = description.GetParameterId(parameterHash);
-			value.path = path_hash;
-			settings[path_hash] = value;
+			settings.parameterId = description.GetParameterId(UpdateObjectCountParameter.parameterHash);
+			settings.path = path_hash;
+			UpdateObjectCountParameter.settings[path_hash] = settings;
 		}
-		return value;
+		return settings;
 	}
 
-	public static void ApplySettings(EventInstance ev, int count, Settings settings)
+	// Token: 0x06002AAE RID: 10926 RVA: 0x001DB828 File Offset: 0x001D9A28
+	public static void ApplySettings(EventInstance ev, int count, UpdateObjectCountParameter.Settings settings)
 	{
 		float num = 0f;
 		if (settings.maxObjects != settings.minObjects)
@@ -78,55 +59,98 @@ internal class UpdateObjectCountParameter : LoopingSoundParameterUpdater
 		{
 			num *= num;
 		}
-		ev.setParameterByID(settings.parameterId, num);
+		ev.setParameterByID(settings.parameterId, num, false);
 	}
 
-	public UpdateObjectCountParameter()
-		: base("objectCount")
+	// Token: 0x06002AAF RID: 10927 RVA: 0x000BBB84 File Offset: 0x000B9D84
+	public UpdateObjectCountParameter() : base("objectCount")
 	{
 	}
 
-	public override void Add(Sound sound)
+	// Token: 0x06002AB0 RID: 10928 RVA: 0x001DB884 File Offset: 0x001D9A84
+	public override void Add(LoopingSoundParameterUpdater.Sound sound)
 	{
-		Settings settings = GetSettings(sound.path, sound.description);
-		Entry entry = default(Entry);
-		entry.ev = sound.ev;
-		entry.settings = settings;
-		Entry item = entry;
-		entries.Add(item);
+		UpdateObjectCountParameter.Settings settings = UpdateObjectCountParameter.GetSettings(sound.path, sound.description);
+		UpdateObjectCountParameter.Entry item = new UpdateObjectCountParameter.Entry
+		{
+			ev = sound.ev,
+			settings = settings
+		};
+		this.entries.Add(item);
 	}
 
+	// Token: 0x06002AB1 RID: 10929 RVA: 0x001DB8D0 File Offset: 0x001D9AD0
 	public override void Update(float dt)
 	{
 		DictionaryPool<HashedString, int, LoopingSoundManager>.PooledDictionary pooledDictionary = DictionaryPool<HashedString, int, LoopingSoundManager>.Allocate();
-		foreach (Entry entry in entries)
+		foreach (UpdateObjectCountParameter.Entry entry in this.entries)
 		{
-			int value = 0;
-			pooledDictionary.TryGetValue(entry.settings.path, out value);
-			value = (pooledDictionary[entry.settings.path] = value + 1);
+			int num = 0;
+			pooledDictionary.TryGetValue(entry.settings.path, out num);
+			num = (pooledDictionary[entry.settings.path] = num + 1);
 		}
-		foreach (Entry entry2 in entries)
+		foreach (UpdateObjectCountParameter.Entry entry2 in this.entries)
 		{
 			int count = pooledDictionary[entry2.settings.path];
-			ApplySettings(entry2.ev, count, entry2.settings);
+			UpdateObjectCountParameter.ApplySettings(entry2.ev, count, entry2.settings);
 		}
 		pooledDictionary.Recycle();
 	}
 
-	public override void Remove(Sound sound)
+	// Token: 0x06002AB2 RID: 10930 RVA: 0x001DB9BC File Offset: 0x001D9BBC
+	public override void Remove(LoopingSoundParameterUpdater.Sound sound)
 	{
-		for (int i = 0; i < entries.Count; i++)
+		for (int i = 0; i < this.entries.Count; i++)
 		{
-			if (entries[i].ev.handle == sound.ev.handle)
+			if (this.entries[i].ev.handle == sound.ev.handle)
 			{
-				entries.RemoveAt(i);
-				break;
+				this.entries.RemoveAt(i);
+				return;
 			}
 		}
 	}
 
+	// Token: 0x06002AB3 RID: 10931 RVA: 0x000BBBA1 File Offset: 0x000B9DA1
 	public static void Clear()
 	{
-		settings.Clear();
+		UpdateObjectCountParameter.settings.Clear();
+	}
+
+	// Token: 0x04001C5D RID: 7261
+	private List<UpdateObjectCountParameter.Entry> entries = new List<UpdateObjectCountParameter.Entry>();
+
+	// Token: 0x04001C5E RID: 7262
+	private static Dictionary<HashedString, UpdateObjectCountParameter.Settings> settings = new Dictionary<HashedString, UpdateObjectCountParameter.Settings>();
+
+	// Token: 0x04001C5F RID: 7263
+	private static readonly HashedString parameterHash = "objectCount";
+
+	// Token: 0x02000937 RID: 2359
+	private struct Entry
+	{
+		// Token: 0x04001C60 RID: 7264
+		public EventInstance ev;
+
+		// Token: 0x04001C61 RID: 7265
+		public UpdateObjectCountParameter.Settings settings;
+	}
+
+	// Token: 0x02000938 RID: 2360
+	public struct Settings
+	{
+		// Token: 0x04001C62 RID: 7266
+		public HashedString path;
+
+		// Token: 0x04001C63 RID: 7267
+		public PARAMETER_ID parameterId;
+
+		// Token: 0x04001C64 RID: 7268
+		public float minObjects;
+
+		// Token: 0x04001C65 RID: 7269
+		public float maxObjects;
+
+		// Token: 0x04001C66 RID: 7270
+		public bool useExponentialCurve;
 	}
 }

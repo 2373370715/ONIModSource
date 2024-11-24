@@ -1,188 +1,209 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using STRINGS;
 using UnityEngine;
 using UnityEngine.UI;
 
+// Token: 0x02001C61 RID: 7265
 public class CodexConversionPanel : CodexWidget<CodexConversionPanel>
 {
-	private LocText label;
-
-	private GameObject materialPrefab;
-
-	private GameObject fabricatorPrefab;
-
-	private GameObject ingredientsContainer;
-
-	private GameObject resultsContainer;
-
-	private GameObject fabricatorContainer;
-
-	private GameObject arrow1;
-
-	private GameObject arrow2;
-
-	private string title;
-
-	private ElementUsage[] ins;
-
-	private ElementUsage[] outs;
-
-	private GameObject Converter;
-
-	public CodexConversionPanel(string title, Tag ctag, float inputAmount, bool inputContinuous, Tag ptag, float outputAmount, bool outputContinuous, GameObject converter)
-		: this(title, ctag, inputAmount, inputContinuous, null, ptag, outputAmount, outputContinuous, null, converter)
+	// Token: 0x06009769 RID: 38761 RVA: 0x003AB828 File Offset: 0x003A9A28
+	public CodexConversionPanel(string title, Tag ctag, float inputAmount, bool inputContinuous, Tag ptag, float outputAmount, bool outputContinuous, GameObject converter) : this(title, ctag, inputAmount, inputContinuous, null, ptag, outputAmount, outputContinuous, null, converter)
 	{
 	}
 
+	// Token: 0x0600976A RID: 38762 RVA: 0x003AB84C File Offset: 0x003A9A4C
 	public CodexConversionPanel(string title, Tag ctag, float inputAmount, bool inputContinuous, Func<Tag, float, bool, string> input_customFormating, Tag ptag, float outputAmount, bool outputContinuous, Func<Tag, float, bool, string> output_customFormating, GameObject converter)
 	{
 		this.title = title;
-		ins = new ElementUsage[1]
+		this.ins = new ElementUsage[]
 		{
 			new ElementUsage(ctag, inputAmount, inputContinuous, input_customFormating)
 		};
-		outs = new ElementUsage[1]
+		this.outs = new ElementUsage[]
 		{
 			new ElementUsage(ptag, outputAmount, outputContinuous, output_customFormating)
 		};
-		Converter = converter;
+		this.Converter = converter;
 	}
 
+	// Token: 0x0600976B RID: 38763 RVA: 0x00102654 File Offset: 0x00100854
 	public CodexConversionPanel(string title, ElementUsage[] ins, ElementUsage[] outs, GameObject converter)
 	{
 		this.title = title;
 		this.ins = ((ins != null) ? ins : new ElementUsage[0]);
 		this.outs = ((outs != null) ? outs : new ElementUsage[0]);
-		Converter = converter;
+		this.Converter = converter;
 	}
 
+	// Token: 0x0600976C RID: 38764 RVA: 0x003AB8A4 File Offset: 0x003A9AA4
 	public override void Configure(GameObject contentGameObject, Transform displayPane, Dictionary<CodexTextStyle, TextStyleSetting> textStyles)
 	{
 		HierarchyReferences component = contentGameObject.GetComponent<HierarchyReferences>();
-		label = component.GetReference<LocText>("Title");
-		materialPrefab = component.GetReference<RectTransform>("MaterialPrefab").gameObject;
-		fabricatorPrefab = component.GetReference<RectTransform>("FabricatorPrefab").gameObject;
-		ingredientsContainer = component.GetReference<RectTransform>("IngredientsContainer").gameObject;
-		resultsContainer = component.GetReference<RectTransform>("ResultsContainer").gameObject;
-		fabricatorContainer = component.GetReference<RectTransform>("FabricatorContainer").gameObject;
-		arrow1 = component.GetReference<RectTransform>("Arrow1").gameObject;
-		arrow2 = component.GetReference<RectTransform>("Arrow2").gameObject;
-		ClearPanel();
-		ConfigureConversion();
+		this.label = component.GetReference<LocText>("Title");
+		this.materialPrefab = component.GetReference<RectTransform>("MaterialPrefab").gameObject;
+		this.fabricatorPrefab = component.GetReference<RectTransform>("FabricatorPrefab").gameObject;
+		this.ingredientsContainer = component.GetReference<RectTransform>("IngredientsContainer").gameObject;
+		this.resultsContainer = component.GetReference<RectTransform>("ResultsContainer").gameObject;
+		this.fabricatorContainer = component.GetReference<RectTransform>("FabricatorContainer").gameObject;
+		this.arrow1 = component.GetReference<RectTransform>("Arrow1").gameObject;
+		this.arrow2 = component.GetReference<RectTransform>("Arrow2").gameObject;
+		this.ClearPanel();
+		this.ConfigureConversion();
 	}
 
-	private Tuple<Sprite, Color> GetUISprite(Tag tag)
+	// Token: 0x0600976D RID: 38765 RVA: 0x003AB970 File Offset: 0x003A9B70
+	private global::Tuple<Sprite, Color> GetUISprite(Tag tag)
 	{
 		if (ElementLoader.GetElement(tag) != null)
 		{
-			return Def.GetUISprite(ElementLoader.GetElement(tag));
+			return Def.GetUISprite(ElementLoader.GetElement(tag), "ui", false);
 		}
 		if (Assets.GetPrefab(tag) != null)
 		{
-			return Def.GetUISprite(Assets.GetPrefab(tag));
+			return Def.GetUISprite(Assets.GetPrefab(tag), "ui", false);
 		}
 		if (Assets.GetSprite(tag.Name) != null)
 		{
-			return new Tuple<Sprite, Color>(Assets.GetSprite(tag.Name), Color.white);
+			return new global::Tuple<Sprite, Color>(Assets.GetSprite(tag.Name), Color.white);
 		}
 		return null;
 	}
 
+	// Token: 0x0600976E RID: 38766 RVA: 0x003AB9F0 File Offset: 0x003A9BF0
 	private void ConfigureConversion()
 	{
-		label.text = title;
+		this.label.text = this.title;
 		bool active = false;
-		ElementUsage[] array = ins;
-		foreach (ElementUsage elementUsage in array)
+		ElementUsage[] array = this.ins;
+		for (int i = 0; i < array.Length; i++)
 		{
-			Tag tag2 = elementUsage.tag;
-			if (!(tag2 == Tag.Invalid))
+			ElementUsage elementUsage = array[i];
+			Tag tag = elementUsage.tag;
+			if (!(tag == Tag.Invalid))
 			{
 				float amount = elementUsage.amount;
 				active = true;
-				HierarchyReferences component = Util.KInstantiateUI(materialPrefab, ingredientsContainer, force_active: true).GetComponent<HierarchyReferences>();
-				Tuple<Sprite, Color> uISprite = GetUISprite(tag2);
-				if (uISprite != null)
+				HierarchyReferences component = Util.KInstantiateUI(this.materialPrefab, this.ingredientsContainer, true).GetComponent<HierarchyReferences>();
+				global::Tuple<Sprite, Color> uisprite = this.GetUISprite(tag);
+				if (uisprite != null)
 				{
-					component.GetReference<Image>("Icon").sprite = uISprite.first;
-					component.GetReference<Image>("Icon").color = uISprite.second;
+					component.GetReference<Image>("Icon").sprite = uisprite.first;
+					component.GetReference<Image>("Icon").color = uisprite.second;
 				}
-				GameUtil.TimeSlice timeSlice = (elementUsage.continuous ? GameUtil.TimeSlice.PerCycle : GameUtil.TimeSlice.None);
-				component.GetReference<LocText>("Amount").text = ((elementUsage.customFormating == null) ? GameUtil.GetFormattedByTag(tag2, amount, timeSlice) : elementUsage.customFormating(tag2, amount, elementUsage.continuous));
+				GameUtil.TimeSlice timeSlice = elementUsage.continuous ? GameUtil.TimeSlice.PerCycle : GameUtil.TimeSlice.None;
+				component.GetReference<LocText>("Amount").text = ((elementUsage.customFormating == null) ? GameUtil.GetFormattedByTag(tag, amount, timeSlice) : elementUsage.customFormating(tag, amount, elementUsage.continuous));
 				component.GetReference<LocText>("Amount").color = Color.black;
-				string text = tag2.ProperName();
-				GameObject prefab = Assets.GetPrefab(tag2);
-				if ((bool)prefab && prefab.GetComponent<Edible>() != null)
+				string text = tag.ProperName();
+				GameObject prefab = Assets.GetPrefab(tag);
+				if (prefab && prefab.GetComponent<Edible>() != null)
 				{
 					text = text + "\n    • " + string.Format(UI.GAMEOBJECTEFFECTS.FOOD_QUALITY, GameUtil.GetFormattedFoodQuality(prefab.GetComponent<Edible>().GetQuality()));
 				}
 				component.GetReference<ToolTip>("Tooltip").toolTip = text;
-				component.GetReference<KButton>("Button").onClick += delegate
+				component.GetReference<KButton>("Button").onClick += delegate()
 				{
-					ManagementMenu.Instance.codexScreen.ChangeArticle(UI.ExtractLinkID(tag2.ProperName()));
+					ManagementMenu.Instance.codexScreen.ChangeArticle(UI.ExtractLinkID(tag.ProperName()), false, default(Vector3), CodexScreen.HistoryDirection.NewArticle);
 				};
 			}
 		}
-		arrow1.SetActive(active);
-		string name = Converter.PrefabID().Name;
-		HierarchyReferences component2 = Util.KInstantiateUI(fabricatorPrefab, fabricatorContainer, force_active: true).GetComponent<HierarchyReferences>();
-		Tuple<Sprite, Color> uISprite2 = Def.GetUISprite(name);
-		component2.GetReference<Image>("Icon").sprite = uISprite2.first;
-		component2.GetReference<Image>("Icon").color = uISprite2.second;
-		component2.GetReference<ToolTip>("Tooltip").toolTip = Converter.GetProperName();
-		component2.GetReference<KButton>("Button").onClick += delegate
+		this.arrow1.SetActive(active);
+		string name = this.Converter.PrefabID().Name;
+		HierarchyReferences component2 = Util.KInstantiateUI(this.fabricatorPrefab, this.fabricatorContainer, true).GetComponent<HierarchyReferences>();
+		global::Tuple<Sprite, Color> uisprite2 = Def.GetUISprite(name, "ui", false);
+		component2.GetReference<Image>("Icon").sprite = uisprite2.first;
+		component2.GetReference<Image>("Icon").color = uisprite2.second;
+		component2.GetReference<ToolTip>("Tooltip").toolTip = this.Converter.GetProperName();
+		component2.GetReference<KButton>("Button").onClick += delegate()
 		{
-			ManagementMenu.Instance.codexScreen.ChangeArticle(UI.ExtractLinkID(Converter.GetProperName()));
+			ManagementMenu.Instance.codexScreen.ChangeArticle(UI.ExtractLinkID(this.Converter.GetProperName()), false, default(Vector3), CodexScreen.HistoryDirection.NewArticle);
 		};
 		bool active2 = false;
-		array = outs;
-		foreach (ElementUsage elementUsage2 in array)
+		array = this.outs;
+		for (int i = 0; i < array.Length; i++)
 		{
+			ElementUsage elementUsage2 = array[i];
 			Tag tag = elementUsage2.tag;
 			if (!(tag == Tag.Invalid))
 			{
 				float amount2 = elementUsage2.amount;
 				active2 = true;
-				HierarchyReferences component3 = Util.KInstantiateUI(materialPrefab, resultsContainer, force_active: true).GetComponent<HierarchyReferences>();
-				Tuple<Sprite, Color> uISprite3 = GetUISprite(tag);
-				if (uISprite3 != null)
+				HierarchyReferences component3 = Util.KInstantiateUI(this.materialPrefab, this.resultsContainer, true).GetComponent<HierarchyReferences>();
+				global::Tuple<Sprite, Color> uisprite3 = this.GetUISprite(tag);
+				if (uisprite3 != null)
 				{
-					component3.GetReference<Image>("Icon").sprite = uISprite3.first;
-					component3.GetReference<Image>("Icon").color = uISprite3.second;
+					component3.GetReference<Image>("Icon").sprite = uisprite3.first;
+					component3.GetReference<Image>("Icon").color = uisprite3.second;
 				}
-				GameUtil.TimeSlice timeSlice2 = (elementUsage2.continuous ? GameUtil.TimeSlice.PerCycle : GameUtil.TimeSlice.None);
+				GameUtil.TimeSlice timeSlice2 = elementUsage2.continuous ? GameUtil.TimeSlice.PerCycle : GameUtil.TimeSlice.None;
 				component3.GetReference<LocText>("Amount").text = ((elementUsage2.customFormating == null) ? GameUtil.GetFormattedByTag(tag, amount2, timeSlice2) : elementUsage2.customFormating(tag, amount2, elementUsage2.continuous));
 				component3.GetReference<LocText>("Amount").color = Color.black;
 				string text2 = tag.ProperName();
 				GameObject prefab2 = Assets.GetPrefab(tag);
-				if ((bool)prefab2 && prefab2.GetComponent<Edible>() != null)
+				if (prefab2 && prefab2.GetComponent<Edible>() != null)
 				{
 					text2 = text2 + "\n    • " + string.Format(UI.GAMEOBJECTEFFECTS.FOOD_QUALITY, GameUtil.GetFormattedFoodQuality(prefab2.GetComponent<Edible>().GetQuality()));
 				}
 				component3.GetReference<ToolTip>("Tooltip").toolTip = text2;
-				component3.GetReference<KButton>("Button").onClick += delegate
+				component3.GetReference<KButton>("Button").onClick += delegate()
 				{
-					ManagementMenu.Instance.codexScreen.ChangeArticle(UI.ExtractLinkID(tag.ProperName()));
+					ManagementMenu.Instance.codexScreen.ChangeArticle(UI.ExtractLinkID(tag.ProperName()), false, default(Vector3), CodexScreen.HistoryDirection.NewArticle);
 				};
 			}
 		}
-		arrow2.SetActive(active2);
+		this.arrow2.SetActive(active2);
 	}
 
+	// Token: 0x0600976F RID: 38767 RVA: 0x003ABE3C File Offset: 0x003AA03C
 	private void ClearPanel()
 	{
-		foreach (Transform item in ingredientsContainer.transform)
+		foreach (object obj in this.ingredientsContainer.transform)
 		{
-			UnityEngine.Object.Destroy(item.gameObject);
+			UnityEngine.Object.Destroy(((Transform)obj).gameObject);
 		}
-		foreach (Transform item2 in resultsContainer.transform)
+		foreach (object obj2 in this.resultsContainer.transform)
 		{
-			UnityEngine.Object.Destroy(item2.gameObject);
+			UnityEngine.Object.Destroy(((Transform)obj2).gameObject);
 		}
-		foreach (Transform item3 in fabricatorContainer.transform)
+		foreach (object obj3 in this.fabricatorContainer.transform)
 		{
-			UnityEngine.Object.Destroy(item3.gameObject);
+			UnityEngine.Object.Destroy(((Transform)obj3).gameObject);
 		}
 	}
+
+	// Token: 0x04007583 RID: 30083
+	private LocText label;
+
+	// Token: 0x04007584 RID: 30084
+	private GameObject materialPrefab;
+
+	// Token: 0x04007585 RID: 30085
+	private GameObject fabricatorPrefab;
+
+	// Token: 0x04007586 RID: 30086
+	private GameObject ingredientsContainer;
+
+	// Token: 0x04007587 RID: 30087
+	private GameObject resultsContainer;
+
+	// Token: 0x04007588 RID: 30088
+	private GameObject fabricatorContainer;
+
+	// Token: 0x04007589 RID: 30089
+	private GameObject arrow1;
+
+	// Token: 0x0400758A RID: 30090
+	private GameObject arrow2;
+
+	// Token: 0x0400758B RID: 30091
+	private string title;
+
+	// Token: 0x0400758C RID: 30092
+	private ElementUsage[] ins;
+
+	// Token: 0x0400758D RID: 30093
+	private ElementUsage[] outs;
+
+	// Token: 0x0400758E RID: 30094
+	private GameObject Converter;
 }

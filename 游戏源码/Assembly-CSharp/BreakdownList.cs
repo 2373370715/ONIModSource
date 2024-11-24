@@ -1,93 +1,109 @@
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+// Token: 0x0200204F RID: 8271
 [AddComponentMenu("KMonoBehaviour/scripts/BreakdownList")]
 public class BreakdownList : KMonoBehaviour
 {
-	public Image headerIcon;
-
-	public Sprite headerIconSprite;
-
-	public Image headerBar;
-
-	public LocText headerTitle;
-
-	public LocText headerValue;
-
-	public LocText infoTextLabel;
-
-	public BreakdownListRow listRowTemplate;
-
-	private List<BreakdownListRow> listRows = new List<BreakdownListRow>();
-
-	private List<BreakdownListRow> unusedListRows = new List<BreakdownListRow>();
-
-	private List<GameObject> customRows = new List<GameObject>();
-
+	// Token: 0x0600B01B RID: 45083 RVA: 0x004232A8 File Offset: 0x004214A8
 	public BreakdownListRow AddRow()
 	{
 		BreakdownListRow breakdownListRow;
-		if (unusedListRows.Count > 0)
+		if (this.unusedListRows.Count > 0)
 		{
-			breakdownListRow = unusedListRows[0];
-			unusedListRows.RemoveAt(0);
+			breakdownListRow = this.unusedListRows[0];
+			this.unusedListRows.RemoveAt(0);
 		}
 		else
 		{
-			breakdownListRow = Object.Instantiate(listRowTemplate);
+			breakdownListRow = UnityEngine.Object.Instantiate<BreakdownListRow>(this.listRowTemplate);
 		}
 		breakdownListRow.gameObject.transform.SetParent(base.transform);
 		breakdownListRow.gameObject.transform.SetAsLastSibling();
-		listRows.Add(breakdownListRow);
-		breakdownListRow.gameObject.SetActive(value: true);
+		this.listRows.Add(breakdownListRow);
+		breakdownListRow.gameObject.SetActive(true);
 		return breakdownListRow;
 	}
 
+	// Token: 0x0600B01C RID: 45084 RVA: 0x0011270B File Offset: 0x0011090B
 	public GameObject AddCustomRow(GameObject newRow)
 	{
 		newRow.transform.SetParent(base.transform);
 		newRow.gameObject.transform.SetAsLastSibling();
-		customRows.Add(newRow);
-		newRow.SetActive(value: true);
+		this.customRows.Add(newRow);
+		newRow.SetActive(true);
 		return newRow;
 	}
 
+	// Token: 0x0600B01D RID: 45085 RVA: 0x0042332C File Offset: 0x0042152C
 	public void ClearRows()
 	{
-		foreach (BreakdownListRow listRow in listRows)
+		foreach (BreakdownListRow breakdownListRow in this.listRows)
 		{
-			unusedListRows.Add(listRow);
-			listRow.gameObject.SetActive(value: false);
-			listRow.ClearTooltip();
+			this.unusedListRows.Add(breakdownListRow);
+			breakdownListRow.gameObject.SetActive(false);
+			breakdownListRow.ClearTooltip();
 		}
-		listRows.Clear();
-		foreach (GameObject customRow in customRows)
+		this.listRows.Clear();
+		foreach (GameObject gameObject in this.customRows)
 		{
-			customRow.SetActive(value: false);
+			gameObject.SetActive(false);
 		}
 	}
 
+	// Token: 0x0600B01E RID: 45086 RVA: 0x00112742 File Offset: 0x00110942
 	public void SetTitle(string title)
 	{
-		headerTitle.text = title;
+		this.headerTitle.text = title;
 	}
 
+	// Token: 0x0600B01F RID: 45087 RVA: 0x00112750 File Offset: 0x00110950
 	public void SetDescription(string description)
 	{
 		if (description != null && description.Length >= 0)
 		{
-			infoTextLabel.gameObject.SetActive(value: true);
-			infoTextLabel.text = description;
+			this.infoTextLabel.gameObject.SetActive(true);
+			this.infoTextLabel.text = description;
+			return;
 		}
-		else
-		{
-			infoTextLabel.gameObject.SetActive(value: false);
-		}
+		this.infoTextLabel.gameObject.SetActive(false);
 	}
 
+	// Token: 0x0600B020 RID: 45088 RVA: 0x0011278D File Offset: 0x0011098D
 	public void SetIcon(Sprite icon)
 	{
-		headerIcon.sprite = icon;
+		this.headerIcon.sprite = icon;
 	}
+
+	// Token: 0x04008ACF RID: 35535
+	public Image headerIcon;
+
+	// Token: 0x04008AD0 RID: 35536
+	public Sprite headerIconSprite;
+
+	// Token: 0x04008AD1 RID: 35537
+	public Image headerBar;
+
+	// Token: 0x04008AD2 RID: 35538
+	public LocText headerTitle;
+
+	// Token: 0x04008AD3 RID: 35539
+	public LocText headerValue;
+
+	// Token: 0x04008AD4 RID: 35540
+	public LocText infoTextLabel;
+
+	// Token: 0x04008AD5 RID: 35541
+	public BreakdownListRow listRowTemplate;
+
+	// Token: 0x04008AD6 RID: 35542
+	private List<BreakdownListRow> listRows = new List<BreakdownListRow>();
+
+	// Token: 0x04008AD7 RID: 35543
+	private List<BreakdownListRow> unusedListRows = new List<BreakdownListRow>();
+
+	// Token: 0x04008AD8 RID: 35544
+	private List<GameObject> customRows = new List<GameObject>();
 }

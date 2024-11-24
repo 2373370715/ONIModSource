@@ -1,182 +1,170 @@
-using System;
+﻿using System;
 using System.Collections;
 using UnityEngine;
 
+// Token: 0x02001BF8 RID: 7160
 public class ExpandRevealUIContent : MonoBehaviour
 {
-	private Coroutine activeRoutine;
-
-	private Action<object> activeRoutineCompleteCallback;
-
-	public AnimationCurve expandAnimation;
-
-	public AnimationCurve collapseAnimation;
-
-	public KRectStretcher MaskRectStretcher;
-
-	public KRectStretcher BGRectStretcher;
-
-	public KChildFitter MaskChildFitter;
-
-	public KChildFitter BGChildFitter;
-
-	public float speedScale = 1f;
-
-	public bool Collapsing;
-
-	public bool Expanding;
-
+	// Token: 0x060094C1 RID: 38081 RVA: 0x00396A48 File Offset: 0x00394C48
 	private void OnDisable()
 	{
-		if ((bool)BGChildFitter)
+		if (this.BGChildFitter)
 		{
-			BGChildFitter.WidthScale = (BGChildFitter.HeightScale = 0f);
+			this.BGChildFitter.WidthScale = (this.BGChildFitter.HeightScale = 0f);
 		}
-		if ((bool)MaskChildFitter)
+		if (this.MaskChildFitter)
 		{
-			if (MaskChildFitter.fitWidth)
+			if (this.MaskChildFitter.fitWidth)
 			{
-				MaskChildFitter.WidthScale = 0f;
+				this.MaskChildFitter.WidthScale = 0f;
 			}
-			if (MaskChildFitter.fitHeight)
+			if (this.MaskChildFitter.fitHeight)
 			{
-				MaskChildFitter.HeightScale = 0f;
+				this.MaskChildFitter.HeightScale = 0f;
 			}
 		}
-		if ((bool)BGRectStretcher)
+		if (this.BGRectStretcher)
 		{
-			BGRectStretcher.XStretchFactor = (BGRectStretcher.YStretchFactor = 0f);
-			BGRectStretcher.UpdateStretching();
+			this.BGRectStretcher.XStretchFactor = (this.BGRectStretcher.YStretchFactor = 0f);
+			this.BGRectStretcher.UpdateStretching();
 		}
-		if ((bool)MaskRectStretcher)
+		if (this.MaskRectStretcher)
 		{
-			MaskRectStretcher.XStretchFactor = (MaskRectStretcher.YStretchFactor = 0f);
-			MaskRectStretcher.UpdateStretching();
+			this.MaskRectStretcher.XStretchFactor = (this.MaskRectStretcher.YStretchFactor = 0f);
+			this.MaskRectStretcher.UpdateStretching();
 		}
 	}
 
+	// Token: 0x060094C2 RID: 38082 RVA: 0x00396B34 File Offset: 0x00394D34
 	public void Expand(Action<object> completeCallback)
 	{
-		if ((bool)MaskChildFitter && (bool)MaskRectStretcher)
+		if (this.MaskChildFitter && this.MaskRectStretcher)
 		{
-			Debug.LogWarning("ExpandRevealUIContent has references to both a MaskChildFitter and a MaskRectStretcher. It should have only one or the other. ChildFitter to match child size, RectStretcher to match parent size.");
+			global::Debug.LogWarning("ExpandRevealUIContent has references to both a MaskChildFitter and a MaskRectStretcher. It should have only one or the other. ChildFitter to match child size, RectStretcher to match parent size.");
 		}
-		if ((bool)BGChildFitter && (bool)BGRectStretcher)
+		if (this.BGChildFitter && this.BGRectStretcher)
 		{
-			Debug.LogWarning("ExpandRevealUIContent has references to both a BGChildFitter and a BGRectStretcher . It should have only one or the other.  ChildFitter to match child size, RectStretcher to match parent size.");
+			global::Debug.LogWarning("ExpandRevealUIContent has references to both a BGChildFitter and a BGRectStretcher . It should have only one or the other.  ChildFitter to match child size, RectStretcher to match parent size.");
 		}
-		if (activeRoutine != null)
+		if (this.activeRoutine != null)
 		{
-			StopCoroutine(activeRoutine);
+			base.StopCoroutine(this.activeRoutine);
 		}
-		CollapsedImmediate();
-		activeRoutineCompleteCallback = completeCallback;
-		activeRoutine = StartCoroutine(ExpandRoutine(null));
+		this.CollapsedImmediate();
+		this.activeRoutineCompleteCallback = completeCallback;
+		this.activeRoutine = base.StartCoroutine(this.ExpandRoutine(null));
 	}
 
+	// Token: 0x060094C3 RID: 38083 RVA: 0x00396BC0 File Offset: 0x00394DC0
 	public void Collapse(Action<object> completeCallback)
 	{
-		if (activeRoutine != null)
+		if (this.activeRoutine != null)
 		{
-			if (activeRoutineCompleteCallback != null)
+			if (this.activeRoutineCompleteCallback != null)
 			{
-				activeRoutineCompleteCallback(null);
+				this.activeRoutineCompleteCallback(null);
 			}
-			StopCoroutine(activeRoutine);
+			base.StopCoroutine(this.activeRoutine);
 		}
-		activeRoutineCompleteCallback = completeCallback;
+		this.activeRoutineCompleteCallback = completeCallback;
 		if (base.gameObject.activeInHierarchy)
 		{
-			activeRoutine = StartCoroutine(CollapseRoutine(completeCallback));
+			this.activeRoutine = base.StartCoroutine(this.CollapseRoutine(completeCallback));
 			return;
 		}
-		activeRoutine = null;
-		completeCallback?.Invoke(null);
+		this.activeRoutine = null;
+		if (completeCallback != null)
+		{
+			completeCallback(null);
+		}
 	}
 
+	// Token: 0x060094C4 RID: 38084 RVA: 0x00100DB8 File Offset: 0x000FEFB8
 	private IEnumerator ExpandRoutine(Action<object> completeCallback)
 	{
-		Collapsing = false;
-		Expanding = true;
+		this.Collapsing = false;
+		this.Expanding = true;
 		float num = 0f;
-		Keyframe[] keys = expandAnimation.keys;
-		for (int i = 0; i < keys.Length; i++)
+		foreach (Keyframe keyframe in this.expandAnimation.keys)
 		{
-			Keyframe keyframe = keys[i];
 			if (keyframe.time > num)
 			{
 				num = keyframe.time;
 			}
 		}
-		float duration = num / speedScale;
-		for (float remaining = duration; remaining >= 0f; remaining -= Time.unscaledDeltaTime * speedScale)
+		float duration = num / this.speedScale;
+		for (float remaining = duration; remaining >= 0f; remaining -= Time.unscaledDeltaTime * this.speedScale)
 		{
-			SetStretch(expandAnimation.Evaluate(duration - remaining));
+			this.SetStretch(this.expandAnimation.Evaluate(duration - remaining));
 			yield return null;
 		}
-		SetStretch(expandAnimation.Evaluate(duration));
-		completeCallback?.Invoke(null);
-		activeRoutine = null;
-		Expanding = false;
+		this.SetStretch(this.expandAnimation.Evaluate(duration));
+		if (completeCallback != null)
+		{
+			completeCallback(null);
+		}
+		this.activeRoutine = null;
+		this.Expanding = false;
+		yield break;
 	}
 
+	// Token: 0x060094C5 RID: 38085 RVA: 0x00396C30 File Offset: 0x00394E30
 	private void SetStretch(float value)
 	{
-		if ((bool)BGRectStretcher)
+		if (this.BGRectStretcher)
 		{
-			if (BGRectStretcher.StretchX)
+			if (this.BGRectStretcher.StretchX)
 			{
-				BGRectStretcher.XStretchFactor = value;
+				this.BGRectStretcher.XStretchFactor = value;
 			}
-			if (BGRectStretcher.StretchY)
+			if (this.BGRectStretcher.StretchY)
 			{
-				BGRectStretcher.YStretchFactor = value;
+				this.BGRectStretcher.YStretchFactor = value;
 			}
 		}
-		if ((bool)MaskRectStretcher)
+		if (this.MaskRectStretcher)
 		{
-			if (MaskRectStretcher.StretchX)
+			if (this.MaskRectStretcher.StretchX)
 			{
-				MaskRectStretcher.XStretchFactor = value;
+				this.MaskRectStretcher.XStretchFactor = value;
 			}
-			if (MaskRectStretcher.StretchY)
+			if (this.MaskRectStretcher.StretchY)
 			{
-				MaskRectStretcher.YStretchFactor = value;
+				this.MaskRectStretcher.YStretchFactor = value;
 			}
 		}
-		if ((bool)BGChildFitter)
+		if (this.BGChildFitter)
 		{
-			if (BGChildFitter.fitWidth)
+			if (this.BGChildFitter.fitWidth)
 			{
-				BGChildFitter.WidthScale = value;
+				this.BGChildFitter.WidthScale = value;
 			}
-			if (BGChildFitter.fitHeight)
+			if (this.BGChildFitter.fitHeight)
 			{
-				BGChildFitter.HeightScale = value;
+				this.BGChildFitter.HeightScale = value;
 			}
 		}
-		if ((bool)MaskChildFitter)
+		if (this.MaskChildFitter)
 		{
-			if (MaskChildFitter.fitWidth)
+			if (this.MaskChildFitter.fitWidth)
 			{
-				MaskChildFitter.WidthScale = value;
+				this.MaskChildFitter.WidthScale = value;
 			}
-			if (MaskChildFitter.fitHeight)
+			if (this.MaskChildFitter.fitHeight)
 			{
-				MaskChildFitter.HeightScale = value;
+				this.MaskChildFitter.HeightScale = value;
 			}
 		}
 	}
 
+	// Token: 0x060094C6 RID: 38086 RVA: 0x00100DCE File Offset: 0x000FEFCE
 	private IEnumerator CollapseRoutine(Action<object> completeCallback)
 	{
-		Expanding = false;
-		Collapsing = true;
+		this.Expanding = false;
+		this.Collapsing = true;
 		float num = 0f;
-		Keyframe[] keys = collapseAnimation.keys;
-		for (int i = 0; i < keys.Length; i++)
+		foreach (Keyframe keyframe in this.collapseAnimation.keys)
 		{
-			Keyframe keyframe = keys[i];
 			if (keyframe.time > num)
 			{
 				num = keyframe.time;
@@ -185,19 +173,57 @@ public class ExpandRevealUIContent : MonoBehaviour
 		float duration = num;
 		for (float remaining = duration; remaining >= 0f; remaining -= Time.unscaledDeltaTime)
 		{
-			SetStretch(collapseAnimation.Evaluate(duration - remaining));
+			this.SetStretch(this.collapseAnimation.Evaluate(duration - remaining));
 			yield return null;
 		}
-		SetStretch(collapseAnimation.Evaluate(duration));
-		completeCallback?.Invoke(null);
-		activeRoutine = null;
-		Collapsing = false;
-		base.gameObject.SetActive(value: false);
+		this.SetStretch(this.collapseAnimation.Evaluate(duration));
+		if (completeCallback != null)
+		{
+			completeCallback(null);
+		}
+		this.activeRoutine = null;
+		this.Collapsing = false;
+		base.gameObject.SetActive(false);
+		yield break;
 	}
 
+	// Token: 0x060094C7 RID: 38087 RVA: 0x00396D3C File Offset: 0x00394F3C
 	public void CollapsedImmediate()
 	{
-		float time = collapseAnimation.length;
-		SetStretch(collapseAnimation.Evaluate(time));
+		float time = (float)this.collapseAnimation.length;
+		this.SetStretch(this.collapseAnimation.Evaluate(time));
 	}
+
+	// Token: 0x04007337 RID: 29495
+	private Coroutine activeRoutine;
+
+	// Token: 0x04007338 RID: 29496
+	private Action<object> activeRoutineCompleteCallback;
+
+	// Token: 0x04007339 RID: 29497
+	public AnimationCurve expandAnimation;
+
+	// Token: 0x0400733A RID: 29498
+	public AnimationCurve collapseAnimation;
+
+	// Token: 0x0400733B RID: 29499
+	public KRectStretcher MaskRectStretcher;
+
+	// Token: 0x0400733C RID: 29500
+	public KRectStretcher BGRectStretcher;
+
+	// Token: 0x0400733D RID: 29501
+	public KChildFitter MaskChildFitter;
+
+	// Token: 0x0400733E RID: 29502
+	public KChildFitter BGChildFitter;
+
+	// Token: 0x0400733F RID: 29503
+	public float speedScale = 1f;
+
+	// Token: 0x04007340 RID: 29504
+	public bool Collapsing;
+
+	// Token: 0x04007341 RID: 29505
+	public bool Expanding;
 }

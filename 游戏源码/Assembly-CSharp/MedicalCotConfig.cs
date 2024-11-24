@@ -1,32 +1,52 @@
+﻿using System;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x0200040C RID: 1036
 public class MedicalCotConfig : IBuildingConfig
 {
-	public const string ID = "MedicalCot";
-
+	// Token: 0x06001185 RID: 4485 RVA: 0x0018435C File Offset: 0x0018255C
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef("MedicalCot", 3, 2, "medical_cot_kanim", 10, 10f, BUILDINGS.CONSTRUCTION_MASS_KG.TIER3, MATERIALS.RAW_MINERALS, 1600f, BuildLocationRule.OnFloor, noise: NOISE_POLLUTION.NONE, decor: BUILDINGS.DECOR.NONE);
-		obj.Overheatable = false;
-		obj.AudioCategory = "Metal";
-		return obj;
+		string id = "MedicalCot";
+		int width = 3;
+		int height = 2;
+		string anim = "medical_cot_kanim";
+		int hitpoints = 10;
+		float construction_time = 10f;
+		float[] tier = BUILDINGS.CONSTRUCTION_MASS_KG.TIER3;
+		string[] raw_MINERALS = MATERIALS.RAW_MINERALS;
+		float melting_point = 1600f;
+		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
+		EffectorValues none = NOISE_POLLUTION.NONE;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, raw_MINERALS, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, none, 0.2f);
+		buildingDef.Overheatable = false;
+		buildingDef.AudioCategory = "Metal";
+		return buildingDef;
 	}
 
+	// Token: 0x06001186 RID: 4486 RVA: 0x000A5F76 File Offset: 0x000A4176
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<LoopingSounds>();
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.Clinic);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.Clinic, false);
 	}
 
+	// Token: 0x06001187 RID: 4487 RVA: 0x001843B4 File Offset: 0x001825B4
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.GetComponent<KAnimControllerBase>().initialAnim = "off";
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.BedType);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.BedType, false);
 		Clinic clinic = go.AddOrGet<Clinic>();
 		clinic.doctorVisitInterval = 300f;
-		clinic.workerInjuredAnims = new KAnimFile[1] { Assets.GetAnim("anim_healing_bed_kanim") };
-		clinic.workerDiseasedAnims = new KAnimFile[1] { Assets.GetAnim("anim_interacts_med_cot_sick_kanim") };
+		clinic.workerInjuredAnims = new KAnimFile[]
+		{
+			Assets.GetAnim("anim_healing_bed_kanim")
+		};
+		clinic.workerDiseasedAnims = new KAnimFile[]
+		{
+			Assets.GetAnim("anim_interacts_med_cot_sick_kanim")
+		};
 		clinic.workLayer = Grid.SceneLayer.BuildingFront;
 		string text = "MedicalCot";
 		string text2 = "MedicalCotDoctored";
@@ -39,10 +59,21 @@ public class MedicalCotConfig : IBuildingConfig
 		roomTracker.requiredRoomType = Db.Get().RoomTypes.Hospital.Id;
 		roomTracker.requirement = RoomTracker.Requirement.CustomRecommended;
 		roomTracker.customStatusItemID = Db.Get().BuildingStatusItems.ClinicOutsideHospital.Id;
-		go.AddOrGet<Sleepable>().overrideAnims = new KAnimFile[1] { Assets.GetAnim("anim_interacts_med_cot_sick_kanim") };
+		Sleepable sleepable = go.AddOrGet<Sleepable>();
+		sleepable.overrideAnims = new KAnimFile[]
+		{
+			Assets.GetAnim("anim_interacts_med_cot_sick_kanim")
+		};
+		sleepable.isNormalBed = false;
 		DoctorChoreWorkable doctorChoreWorkable = go.AddOrGet<DoctorChoreWorkable>();
-		doctorChoreWorkable.overrideAnims = new KAnimFile[1] { Assets.GetAnim("anim_interacts_med_cot_doctor_kanim") };
+		doctorChoreWorkable.overrideAnims = new KAnimFile[]
+		{
+			Assets.GetAnim("anim_interacts_med_cot_doctor_kanim")
+		};
 		doctorChoreWorkable.workTime = 45f;
 		go.AddOrGet<Ownable>().slotID = Db.Get().AssignableSlots.Clinic.Id;
 	}
+
+	// Token: 0x04000BED RID: 3053
+	public const string ID = "MedicalCot";
 }

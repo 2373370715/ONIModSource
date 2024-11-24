@@ -1,32 +1,37 @@
-using System;
+﻿using System;
 using UnityEngine;
 
+// Token: 0x0200072F RID: 1839
 public class SighChore : Chore<SighChore.StatesInstance>
 {
-	public class StatesInstance : GameStateMachine<States, StatesInstance, SighChore, object>.GameInstance
+	// Token: 0x060020CE RID: 8398 RVA: 0x001BD444 File Offset: 0x001BB644
+	public SighChore(IStateMachineTarget target) : base(Db.Get().ChoreTypes.Sigh, target, target.GetComponent<ChoreProvider>(), false, null, null, null, PriorityScreen.PriorityClass.basic, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
 	{
-		public StatesInstance(SighChore master, GameObject sigher)
-			: base(master)
+		base.smi = new SighChore.StatesInstance(this, target.gameObject);
+	}
+
+	// Token: 0x02000730 RID: 1840
+	public class StatesInstance : GameStateMachine<SighChore.States, SighChore.StatesInstance, SighChore, object>.GameInstance
+	{
+		// Token: 0x060020CF RID: 8399 RVA: 0x000B57CA File Offset: 0x000B39CA
+		public StatesInstance(SighChore master, GameObject sigher) : base(master)
 		{
-			base.sm.sigher.Set(sigher, base.smi);
+			base.sm.sigher.Set(sigher, base.smi, false);
 		}
 	}
 
-	public class States : GameStateMachine<States, StatesInstance, SighChore>
+	// Token: 0x02000731 RID: 1841
+	public class States : GameStateMachine<SighChore.States, SighChore.StatesInstance, SighChore>
 	{
-		public TargetParameter sigher;
-
-		public override void InitializeStates(out BaseState default_state)
+		// Token: 0x060020D0 RID: 8400 RVA: 0x000B57EC File Offset: 0x000B39EC
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
-			default_state = root;
-			Target(sigher);
-			root.PlayAnim("emote_depressed").OnAnimQueueComplete(null);
+			default_state = this.root;
+			base.Target(this.sigher);
+			this.root.PlayAnim("emote_depressed").OnAnimQueueComplete(null);
 		}
-	}
 
-	public SighChore(IStateMachineTarget target)
-		: base(Db.Get().ChoreTypes.Sigh, target, target.GetComponent<ChoreProvider>(), run_until_complete: false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.basic, 5, is_preemptable: false, allow_in_context_menu: true, 0, add_to_daily_report: false, ReportManager.ReportType.WorkTime)
-	{
-		base.smi = new StatesInstance(this, target.gameObject);
+		// Token: 0x04001576 RID: 5494
+		public StateMachine<SighChore.States, SighChore.StatesInstance, SighChore, object>.TargetParameter sigher;
 	}
 }

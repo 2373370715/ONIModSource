@@ -1,148 +1,59 @@
+﻿using System;
 using KSerialization;
 using STRINGS;
 using UnityEngine;
 
+// Token: 0x020017E0 RID: 6112
 public class RocketUsageRestriction : GameStateMachine<RocketUsageRestriction, RocketUsageRestriction.StatesInstance, IStateMachineTarget, RocketUsageRestriction.Def>
 {
-	public class Def : BaseDef
+	// Token: 0x06007DBA RID: 32186 RVA: 0x00327C8C File Offset: 0x00325E8C
+	public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
-		public bool initialControlledStateWhenBuilt = true;
-
-		public bool restrictOperational = true;
-
-		public override void Configure(GameObject prefab)
-		{
-			RocketControlStation.CONTROLLED_BUILDINGS.Add(prefab.PrefabID());
-		}
-	}
-
-	public class ControlledStates : State
-	{
-		public State nostation;
-
-		public State controlled;
-	}
-
-	public class RestrictionStates : State
-	{
-		public State uncontrolled;
-
-		public ControlledStates controlled;
-	}
-
-	public class StatesInstance : GameInstance
-	{
-		[MyCmpGet]
-		public Operational operational;
-
-		public bool[] previousStorageAllowItemRemovalStates;
-
-		[Serialize]
-		public bool isControlled = true;
-
-		public bool isRestrictionApplied;
-
-		public StatesInstance(IStateMachineTarget master, Def def)
-			: base(master, def)
-		{
-			isControlled = def.initialControlledStateWhenBuilt;
-		}
-
-		public void OnRefreshUserMenu(object data)
-		{
-			KIconButtonMenu.ButtonInfo buttonInfo = null;
-			buttonInfo = ((!isControlled) ? new KIconButtonMenu.ButtonInfo("action_rocket_restriction_controlled", UI.USERMENUACTIONS.ROCKETUSAGERESTRICTION.NAME_CONTROLLED, OnChange, global::Action.NumActions, null, null, null, UI.USERMENUACTIONS.ROCKETUSAGERESTRICTION.TOOLTIP_CONTROLLED) : new KIconButtonMenu.ButtonInfo("action_rocket_restriction_uncontrolled", UI.USERMENUACTIONS.ROCKETUSAGERESTRICTION.NAME_UNCONTROLLED, OnChange, global::Action.NumActions, null, null, null, UI.USERMENUACTIONS.ROCKETUSAGERESTRICTION.TOOLTIP_UNCONTROLLED));
-			Game.Instance.userMenu.AddButton(base.gameObject, buttonInfo, 11f);
-		}
-
-		public void ControlStationBuilt(object o)
-		{
-			base.sm.AquireRocketControlStation(base.smi);
-		}
-
-		private void OnChange()
-		{
-			isControlled = !isControlled;
-			GoToRestrictionState();
-		}
-
-		public void GoToRestrictionState()
-		{
-			if (base.smi.isControlled)
-			{
-				base.smi.GoTo(base.sm.restriction.controlled);
-			}
-			else
-			{
-				base.smi.GoTo(base.sm.restriction.uncontrolled);
-			}
-		}
-
-		public bool BuildingRestrictionsActive()
-		{
-			if (isControlled && !base.sm.rocketControlStation.IsNull(base.smi))
-			{
-				return base.sm.rocketControlStation.Get<RocketControlStation>(base.smi).BuildingRestrictionsActive;
-			}
-			return false;
-		}
-	}
-
-	public static readonly Operational.Flag rocketUsageAllowed = new Operational.Flag("rocketUsageAllowed", Operational.Flag.Type.Requirement);
-
-	private TargetParameter rocketControlStation;
-
-	public RestrictionStates restriction;
-
-	public override void InitializeStates(out BaseState default_state)
-	{
-		default_state = root;
-		base.serializable = SerializeType.ParamsOnly;
-		root.Enter(delegate(StatesInstance smi)
+		default_state = this.root;
+		base.serializable = StateMachine.SerializeType.ParamsOnly;
+		this.root.Enter(delegate(RocketUsageRestriction.StatesInstance smi)
 		{
 			if (DlcManager.FeatureClusterSpaceEnabled() && smi.master.gameObject.GetMyWorld().IsModuleInterior)
 			{
-				smi.Subscribe(493375141, smi.OnRefreshUserMenu);
+				smi.Subscribe(493375141, new Action<object>(smi.OnRefreshUserMenu));
 				smi.GoToRestrictionState();
+				return;
 			}
-			else
-			{
-				smi.StopSM("Not inside rocket or no cluster space");
-			}
+			smi.StopSM("Not inside rocket or no cluster space");
 		});
-		restriction.Enter(AquireRocketControlStation).Enter(delegate(StatesInstance smi)
+		this.restriction.Enter(new StateMachine<RocketUsageRestriction, RocketUsageRestriction.StatesInstance, IStateMachineTarget, RocketUsageRestriction.Def>.State.Callback(this.AquireRocketControlStation)).Enter(delegate(RocketUsageRestriction.StatesInstance smi)
 		{
-			Components.RocketControlStations.OnAdd += smi.ControlStationBuilt;
-		}).Exit(delegate(StatesInstance smi)
+			Components.RocketControlStations.OnAdd += new Action<RocketControlStation>(smi.ControlStationBuilt);
+		}).Exit(delegate(RocketUsageRestriction.StatesInstance smi)
 		{
-			Components.RocketControlStations.OnAdd -= smi.ControlStationBuilt;
+			Components.RocketControlStations.OnAdd -= new Action<RocketControlStation>(smi.ControlStationBuilt);
 		});
-		restriction.uncontrolled.ToggleStatusItem(Db.Get().BuildingStatusItems.NoRocketRestriction).Enter(delegate(StatesInstance smi)
+		this.restriction.uncontrolled.ToggleStatusItem(Db.Get().BuildingStatusItems.NoRocketRestriction, null).Enter(delegate(RocketUsageRestriction.StatesInstance smi)
 		{
-			RestrictUsage(smi, restrict: false);
+			this.RestrictUsage(smi, false);
 		});
-		restriction.controlled.DefaultState(restriction.controlled.nostation);
-		restriction.controlled.nostation.Enter(OnRocketRestrictionChanged).ParamTransition(rocketControlStation, restriction.controlled.controlled, GameStateMachine<RocketUsageRestriction, StatesInstance, IStateMachineTarget, Def>.IsNotNull);
-		restriction.controlled.controlled.OnTargetLost(rocketControlStation, restriction.controlled.nostation).Enter(OnRocketRestrictionChanged).Target(rocketControlStation)
-			.EventHandler(GameHashes.RocketRestrictionChanged, OnRocketRestrictionChanged)
-			.Target(masterTarget);
+		this.restriction.controlled.DefaultState(this.restriction.controlled.nostation);
+		this.restriction.controlled.nostation.Enter(new StateMachine<RocketUsageRestriction, RocketUsageRestriction.StatesInstance, IStateMachineTarget, RocketUsageRestriction.Def>.State.Callback(this.OnRocketRestrictionChanged)).ParamTransition<GameObject>(this.rocketControlStation, this.restriction.controlled.controlled, GameStateMachine<RocketUsageRestriction, RocketUsageRestriction.StatesInstance, IStateMachineTarget, RocketUsageRestriction.Def>.IsNotNull);
+		this.restriction.controlled.controlled.OnTargetLost(this.rocketControlStation, this.restriction.controlled.nostation).Enter(new StateMachine<RocketUsageRestriction, RocketUsageRestriction.StatesInstance, IStateMachineTarget, RocketUsageRestriction.Def>.State.Callback(this.OnRocketRestrictionChanged)).Target(this.rocketControlStation).EventHandler(GameHashes.RocketRestrictionChanged, new StateMachine<RocketUsageRestriction, RocketUsageRestriction.StatesInstance, IStateMachineTarget, RocketUsageRestriction.Def>.State.Callback(this.OnRocketRestrictionChanged)).Target(this.masterTarget);
 	}
 
-	private void OnRocketRestrictionChanged(StatesInstance smi)
+	// Token: 0x06007DBB RID: 32187 RVA: 0x000F2D4A File Offset: 0x000F0F4A
+	private void OnRocketRestrictionChanged(RocketUsageRestriction.StatesInstance smi)
 	{
-		RestrictUsage(smi, smi.BuildingRestrictionsActive());
+		this.RestrictUsage(smi, smi.BuildingRestrictionsActive());
 	}
 
-	private void RestrictUsage(StatesInstance smi, bool restrict)
+	// Token: 0x06007DBC RID: 32188 RVA: 0x00327E34 File Offset: 0x00326034
+	private void RestrictUsage(RocketUsageRestriction.StatesInstance smi, bool restrict)
 	{
-		smi.master.GetComponent<KSelectable>().ToggleStatusItem(Db.Get().BuildingStatusItems.RocketRestrictionInactive, !restrict && smi.isControlled);
+		smi.master.GetComponent<KSelectable>().ToggleStatusItem(Db.Get().BuildingStatusItems.RocketRestrictionInactive, !restrict && smi.isControlled, null);
 		if (smi.isRestrictionApplied == restrict)
 		{
 			return;
 		}
 		smi.isRestrictionApplied = restrict;
-		smi.operational.SetFlag(rocketUsageAllowed, !smi.def.restrictOperational || !restrict);
-		smi.master.GetComponent<KSelectable>().ToggleStatusItem(Db.Get().BuildingStatusItems.RocketRestrictionActive, restrict);
+		smi.operational.SetFlag(RocketUsageRestriction.rocketUsageAllowed, !smi.def.restrictOperational || !restrict);
+		smi.master.GetComponent<KSelectable>().ToggleStatusItem(Db.Get().BuildingStatusItems.RocketRestrictionActive, restrict, null);
 		Storage[] components = smi.master.gameObject.GetComponents<Storage>();
 		if (components != null && components.Length != 0)
 		{
@@ -158,9 +69,9 @@ public class RocketUsageRestriction : GameStateMachine<RocketUsageRestriction, R
 				{
 					components[i].allowItemRemoval = smi.previousStorageAllowItemRemovalStates[i];
 				}
-				foreach (GameObject item in components[i].items)
+				foreach (GameObject go in components[i].items)
 				{
-					item.Trigger(-778359855, components[i]);
+					go.Trigger(-778359855, components[i]);
 				}
 			}
 		}
@@ -171,18 +82,134 @@ public class RocketUsageRestriction : GameStateMachine<RocketUsageRestriction, R
 		}
 	}
 
-	private void AquireRocketControlStation(StatesInstance smi)
+	// Token: 0x06007DBD RID: 32189 RVA: 0x00327FBC File Offset: 0x003261BC
+	private void AquireRocketControlStation(RocketUsageRestriction.StatesInstance smi)
 	{
 		if (!this.rocketControlStation.IsNull(smi))
 		{
 			return;
 		}
-		foreach (RocketControlStation rocketControlStation in Components.RocketControlStations)
+		foreach (object obj in Components.RocketControlStations)
 		{
+			RocketControlStation rocketControlStation = (RocketControlStation)obj;
 			if (rocketControlStation.GetMyWorldId() == smi.GetMyWorldId())
 			{
 				this.rocketControlStation.Set(rocketControlStation, smi);
 			}
 		}
+	}
+
+	// Token: 0x04005F40 RID: 24384
+	public static readonly Operational.Flag rocketUsageAllowed = new Operational.Flag("rocketUsageAllowed", Operational.Flag.Type.Requirement);
+
+	// Token: 0x04005F41 RID: 24385
+	private StateMachine<RocketUsageRestriction, RocketUsageRestriction.StatesInstance, IStateMachineTarget, RocketUsageRestriction.Def>.TargetParameter rocketControlStation;
+
+	// Token: 0x04005F42 RID: 24386
+	public RocketUsageRestriction.RestrictionStates restriction;
+
+	// Token: 0x020017E1 RID: 6113
+	public class Def : StateMachine.BaseDef
+	{
+		// Token: 0x06007DC1 RID: 32193 RVA: 0x000F2D7D File Offset: 0x000F0F7D
+		public override void Configure(GameObject prefab)
+		{
+			RocketControlStation.CONTROLLED_BUILDINGS.Add(prefab.PrefabID());
+		}
+
+		// Token: 0x04005F43 RID: 24387
+		public bool initialControlledStateWhenBuilt = true;
+
+		// Token: 0x04005F44 RID: 24388
+		public bool restrictOperational = true;
+	}
+
+	// Token: 0x020017E2 RID: 6114
+	public class ControlledStates : GameStateMachine<RocketUsageRestriction, RocketUsageRestriction.StatesInstance, IStateMachineTarget, RocketUsageRestriction.Def>.State
+	{
+		// Token: 0x04005F45 RID: 24389
+		public GameStateMachine<RocketUsageRestriction, RocketUsageRestriction.StatesInstance, IStateMachineTarget, RocketUsageRestriction.Def>.State nostation;
+
+		// Token: 0x04005F46 RID: 24390
+		public GameStateMachine<RocketUsageRestriction, RocketUsageRestriction.StatesInstance, IStateMachineTarget, RocketUsageRestriction.Def>.State controlled;
+	}
+
+	// Token: 0x020017E3 RID: 6115
+	public class RestrictionStates : GameStateMachine<RocketUsageRestriction, RocketUsageRestriction.StatesInstance, IStateMachineTarget, RocketUsageRestriction.Def>.State
+	{
+		// Token: 0x04005F47 RID: 24391
+		public GameStateMachine<RocketUsageRestriction, RocketUsageRestriction.StatesInstance, IStateMachineTarget, RocketUsageRestriction.Def>.State uncontrolled;
+
+		// Token: 0x04005F48 RID: 24392
+		public RocketUsageRestriction.ControlledStates controlled;
+	}
+
+	// Token: 0x020017E4 RID: 6116
+	public class StatesInstance : GameStateMachine<RocketUsageRestriction, RocketUsageRestriction.StatesInstance, IStateMachineTarget, RocketUsageRestriction.Def>.GameInstance
+	{
+		// Token: 0x06007DC5 RID: 32197 RVA: 0x000F2DAD File Offset: 0x000F0FAD
+		public StatesInstance(IStateMachineTarget master, RocketUsageRestriction.Def def) : base(master, def)
+		{
+			this.isControlled = def.initialControlledStateWhenBuilt;
+		}
+
+		// Token: 0x06007DC6 RID: 32198 RVA: 0x00328038 File Offset: 0x00326238
+		public void OnRefreshUserMenu(object data)
+		{
+			KIconButtonMenu.ButtonInfo button;
+			if (this.isControlled)
+			{
+				button = new KIconButtonMenu.ButtonInfo("action_rocket_restriction_uncontrolled", UI.USERMENUACTIONS.ROCKETUSAGERESTRICTION.NAME_UNCONTROLLED, new System.Action(this.OnChange), global::Action.NumActions, null, null, null, UI.USERMENUACTIONS.ROCKETUSAGERESTRICTION.TOOLTIP_UNCONTROLLED, true);
+			}
+			else
+			{
+				button = new KIconButtonMenu.ButtonInfo("action_rocket_restriction_controlled", UI.USERMENUACTIONS.ROCKETUSAGERESTRICTION.NAME_CONTROLLED, new System.Action(this.OnChange), global::Action.NumActions, null, null, null, UI.USERMENUACTIONS.ROCKETUSAGERESTRICTION.TOOLTIP_CONTROLLED, true);
+			}
+			Game.Instance.userMenu.AddButton(base.gameObject, button, 11f);
+		}
+
+		// Token: 0x06007DC7 RID: 32199 RVA: 0x000F2DCA File Offset: 0x000F0FCA
+		public void ControlStationBuilt(object o)
+		{
+			base.sm.AquireRocketControlStation(base.smi);
+		}
+
+		// Token: 0x06007DC8 RID: 32200 RVA: 0x000F2DDD File Offset: 0x000F0FDD
+		private void OnChange()
+		{
+			this.isControlled = !this.isControlled;
+			this.GoToRestrictionState();
+		}
+
+		// Token: 0x06007DC9 RID: 32201 RVA: 0x003280D4 File Offset: 0x003262D4
+		public void GoToRestrictionState()
+		{
+			if (base.smi.isControlled)
+			{
+				base.smi.GoTo(base.sm.restriction.controlled);
+				return;
+			}
+			base.smi.GoTo(base.sm.restriction.uncontrolled);
+		}
+
+		// Token: 0x06007DCA RID: 32202 RVA: 0x000F2DF4 File Offset: 0x000F0FF4
+		public bool BuildingRestrictionsActive()
+		{
+			return this.isControlled && !base.sm.rocketControlStation.IsNull(base.smi) && base.sm.rocketControlStation.Get<RocketControlStation>(base.smi).BuildingRestrictionsActive;
+		}
+
+		// Token: 0x04005F49 RID: 24393
+		[MyCmpGet]
+		public Operational operational;
+
+		// Token: 0x04005F4A RID: 24394
+		public bool[] previousStorageAllowItemRemovalStates;
+
+		// Token: 0x04005F4B RID: 24395
+		[Serialize]
+		public bool isControlled = true;
+
+		// Token: 0x04005F4C RID: 24396
+		public bool isRestrictionApplied;
 	}
 }

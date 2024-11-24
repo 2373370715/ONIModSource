@@ -1,101 +1,44 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
 using ImGuiNET;
 using UnityEngine;
 
+// Token: 0x02000BCA RID: 3018
 public class DevToolSimDebug : DevTool
 {
-	private Vector3 worldPos = Vector3.zero;
-
-	private string[] elementNames;
-
-	private Dictionary<SimHashes, double> elementCounts = new Dictionary<SimHashes, double>();
-
-	public static DevToolSimDebug Instance;
-
-	private const string INVALID_OVERLAY_MODE_STR = "None";
-
-	private bool shouldDrawBoundingBox = true;
-
-	private Option<DevToolEntityTarget.ForSimCell> boundBoxSimCellTarget;
-
-	private int xBound = 8;
-
-	private int yBound = 8;
-
-	private bool showElementData;
-
-	private bool showMouseData = true;
-
-	private bool showAccessRestrictions;
-
-	private bool showGridContents;
-
-	private bool showScenePartitionerContents;
-
-	private bool showLayerToggles;
-
-	private bool showCavityInfo;
-
-	private bool showPropertyInfo;
-
-	private bool showBuildings;
-
-	private bool showCreatures;
-
-	private bool showPhysicsData;
-
-	private bool showGasConduitData;
-
-	private bool showLiquidConduitData;
-
-	private string[] overlayModes;
-
-	private int selectedOverlayMode;
-
-	private string[] gameGridModes;
-
-	private Dictionary<string, HashedString> modeLookup;
-
-	private Dictionary<HashedString, string> revModeLookup;
-
-	private HashSet<ScenePartitionerLayer> toggledLayers = new HashSet<ScenePartitionerLayer>();
-
+	// Token: 0x060039B4 RID: 14772 RVA: 0x002232B4 File Offset: 0x002214B4
 	public DevToolSimDebug()
 	{
-		elementNames = Enum.GetNames(typeof(SimHashes));
-		Array.Sort(elementNames);
-		Instance = this;
+		this.elementNames = Enum.GetNames(typeof(SimHashes));
+		Array.Sort<string>(this.elementNames);
+		DevToolSimDebug.Instance = this;
 		List<string> list = new List<string>();
-		modeLookup = new Dictionary<string, HashedString>();
-		revModeLookup = new Dictionary<HashedString, string>();
+		this.modeLookup = new Dictionary<string, HashedString>();
+		this.revModeLookup = new Dictionary<HashedString, string>();
 		Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
 		for (int i = 0; i < assemblies.Length; i++)
 		{
-			Type[] types = assemblies[i].GetTypes();
-			foreach (Type type in types)
+			foreach (Type type in assemblies[i].GetTypes())
 			{
-				if (!typeof(OverlayModes.Mode).IsAssignableFrom(type))
+				if (typeof(OverlayModes.Mode).IsAssignableFrom(type))
 				{
-					continue;
-				}
-				FieldInfo field = type.GetField("ID");
-				if (field != null)
-				{
-					object value = field.GetValue(null);
-					if (value != null)
+					FieldInfo field = type.GetField("ID");
+					if (field != null)
 					{
-						HashedString hashedString = (HashedString)value;
-						list.Add(type.Name);
-						modeLookup[type.Name] = hashedString;
-						revModeLookup[hashedString] = type.Name;
+						object value = field.GetValue(null);
+						if (value != null)
+						{
+							HashedString hashedString = (HashedString)value;
+							list.Add(type.Name);
+							this.modeLookup[type.Name] = hashedString;
+							this.revModeLookup[hashedString] = type.Name;
+						}
 					}
 				}
 			}
 		}
-		FieldInfo[] fields = typeof(SimDebugView.OverlayModes).GetFields();
-		foreach (FieldInfo fieldInfo in fields)
+		foreach (FieldInfo fieldInfo in typeof(SimDebugView.OverlayModes).GetFields())
 		{
 			if (fieldInfo.FieldType == typeof(HashedString))
 			{
@@ -104,20 +47,21 @@ public class DevToolSimDebug : DevTool
 				{
 					HashedString hashedString2 = (HashedString)value2;
 					list.Add(fieldInfo.Name);
-					modeLookup[fieldInfo.Name] = hashedString2;
-					revModeLookup[hashedString2] = fieldInfo.Name;
+					this.modeLookup[fieldInfo.Name] = hashedString2;
+					this.revModeLookup[hashedString2] = fieldInfo.Name;
 				}
 			}
 		}
 		list.Sort();
 		list.Insert(0, "None");
-		modeLookup["None"] = "None";
-		revModeLookup["None"] = "None";
+		this.modeLookup["None"] = "None";
+		this.revModeLookup["None"] = "None";
 		list.RemoveAll((string s) => s == null);
-		overlayModes = list.ToArray();
-		gameGridModes = Enum.GetNames(typeof(SimDebugView.GameGridMode));
+		this.overlayModes = list.ToArray();
+		this.gameGridModes = Enum.GetNames(typeof(SimDebugView.GameGridMode));
 	}
 
+	// Token: 0x060039B5 RID: 14773 RVA: 0x0022351C File Offset: 0x0022171C
 	protected override void RenderTo(DevPanel panel)
 	{
 		if (Game.Instance == null)
@@ -125,19 +69,19 @@ public class DevToolSimDebug : DevTool
 			return;
 		}
 		HashedString hashedString = SimDebugView.Instance.GetMode();
-		HashedString hashedString2 = hashedString;
-		if (overlayModes != null)
+		HashedString y = hashedString;
+		if (this.overlayModes != null)
 		{
-			selectedOverlayMode = Array.IndexOf(overlayModes, revModeLookup[hashedString]);
-			selectedOverlayMode = ((selectedOverlayMode != -1) ? selectedOverlayMode : 0);
-			ImGui.Combo("Debug Mode", ref selectedOverlayMode, overlayModes, overlayModes.Length);
-			hashedString = modeLookup[overlayModes[selectedOverlayMode]];
+			this.selectedOverlayMode = Array.IndexOf<string>(this.overlayModes, this.revModeLookup[hashedString]);
+			this.selectedOverlayMode = ((this.selectedOverlayMode == -1) ? 0 : this.selectedOverlayMode);
+			ImGui.Combo("Debug Mode", ref this.selectedOverlayMode, this.overlayModes, this.overlayModes.Length);
+			hashedString = this.modeLookup[this.overlayModes[this.selectedOverlayMode]];
 			if (hashedString == "None")
 			{
 				hashedString = OverlayModes.None.ID;
 			}
 		}
-		if (hashedString != hashedString2)
+		if (hashedString != y)
 		{
 			SimDebugView.Instance.SetMode(hashedString);
 		}
@@ -158,171 +102,183 @@ public class DevToolSimDebug : DevTool
 		}
 		else if (hashedString == SimDebugView.OverlayModes.GameGrid)
 		{
-			int current_item = (int)SimDebugView.Instance.GetGameGridMode();
-			ImGui.Combo("Grid Mode", ref current_item, gameGridModes, gameGridModes.Length);
-			SimDebugView.Instance.SetGameGridMode((SimDebugView.GameGridMode)current_item);
+			int gameGridMode = (int)SimDebugView.Instance.GetGameGridMode();
+			ImGui.Combo("Grid Mode", ref gameGridMode, this.gameGridModes, this.gameGridModes.Length);
+			SimDebugView.Instance.SetGameGridMode((SimDebugView.GameGridMode)gameGridMode);
 		}
-		Grid.PosToXY(worldPos, out var x, out var y);
-		int v = y * Grid.WidthInCells + x;
-		ImGui.Checkbox("Draw Bounding Box", ref shouldDrawBoundingBox);
-		if (ImGui.CollapsingHeader("Overlay Box") && shouldDrawBoundingBox)
+		int num;
+		int num2;
+		Grid.PosToXY(this.worldPos, out num, out num2);
+		int num3 = num2 * Grid.WidthInCells + num;
+		ImGui.Checkbox("Draw Bounding Box", ref this.shouldDrawBoundingBox);
+		if (ImGui.CollapsingHeader("Overlay Box") && this.shouldDrawBoundingBox)
 		{
 			if (ImGui.Button("Pick cell"))
 			{
 				panel.PushDevTool(new DevToolEntity_EyeDrop(delegate(DevToolEntityTarget target)
 				{
-					boundBoxSimCellTarget = (DevToolEntityTarget.ForSimCell)target;
-				}, (DevToolEntityTarget uncastTarget) => (!(uncastTarget is DevToolEntityTarget.ForSimCell)) ? ((Option<string>)"Target is not a sim cell") : ((Option<string>)Option.None)));
+					this.boundBoxSimCellTarget = (DevToolEntityTarget.ForSimCell)target;
+				}, delegate(DevToolEntityTarget uncastTarget)
+				{
+					if (!(uncastTarget is DevToolEntityTarget.ForSimCell))
+					{
+						return "Target is not a sim cell";
+					}
+					return Option.None;
+				}));
 			}
-			DrawBoundingBoxOverlay();
+			this.DrawBoundingBoxOverlay();
 		}
-		showMouseData = ImGui.CollapsingHeader("Mouse Data");
-		if (showMouseData)
+		this.showMouseData = ImGui.CollapsingHeader("Mouse Data");
+		if (this.showMouseData)
 		{
 			ImGui.Indent();
-			Vector3 vector = worldPos;
-			ImGui.Text("WorldPos: " + vector.ToString());
+			string str = "WorldPos: ";
+			Vector3 vector = this.worldPos;
+			ImGui.Text(str + vector.ToString());
 			ImGui.Unindent();
 		}
-		if (v < 0 || Grid.CellCount <= v)
+		if (num3 < 0 || Grid.CellCount <= num3)
 		{
 			return;
 		}
-		if (showMouseData)
+		if (this.showMouseData)
 		{
 			ImGui.Indent();
-			ImGui.Text("CellPos: " + x + ", " + y);
-			int v2 = (y + 1) * (Grid.WidthInCells + 2) + (x + 1);
-			if (ImGui.InputInt("Sim Cell:", ref v2))
+			ImGui.Text("CellPos: " + num.ToString() + ", " + num2.ToString());
+			int num4 = (num2 + 1) * (Grid.WidthInCells + 2) + (num + 1);
+			if (ImGui.InputInt("Sim Cell:", ref num4))
 			{
-				x = Mathf.Max(0, v2 % (Grid.WidthInCells + 2) - 1);
-				y = Mathf.Max(0, v2 / (Grid.WidthInCells + 2) - 1);
-				worldPos = Grid.CellToPosCCC(Grid.XYToCell(x, y), Grid.SceneLayer.Front);
+				num = Mathf.Max(0, num4 % (Grid.WidthInCells + 2) - 1);
+				num2 = Mathf.Max(0, num4 / (Grid.WidthInCells + 2) - 1);
+				this.worldPos = Grid.CellToPosCCC(Grid.XYToCell(num, num2), Grid.SceneLayer.Front);
 			}
-			if (ImGui.InputInt("Game Cell:", ref v))
+			if (ImGui.InputInt("Game Cell:", ref num3))
 			{
-				x = v % Grid.WidthInCells;
-				y = v / Grid.WidthInCells;
-				worldPos = Grid.CellToPosCCC(Grid.XYToCell(x, y), Grid.SceneLayer.Front);
+				num = num3 % Grid.WidthInCells;
+				num2 = num3 / Grid.WidthInCells;
+				this.worldPos = Grid.CellToPosCCC(Grid.XYToCell(num, num2), Grid.SceneLayer.Front);
 			}
-			int num = Grid.WidthInCells / 32;
-			int num2 = x / 32;
-			int num3 = y / 32;
-			int num4 = num3 * num + num2;
-			ImGui.Text($"Chunk Idx ({num2}, {num3}): {num4}");
-			ImGui.Text("RenderedByWorld: " + Grid.RenderedByWorld[v]);
-			ImGui.Text("Solid: " + Grid.Solid[v]);
-			ImGui.Text("Damage: " + Grid.Damage[v]);
-			ImGui.Text("Foundation: " + Grid.Foundation[v]);
-			ImGui.Text("Revealed: " + Grid.Revealed[v]);
-			ImGui.Text("Visible: " + Grid.Visible[v]);
-			ImGui.Text("DupePassable: " + Grid.DupePassable[v]);
-			ImGui.Text("DupeImpassable: " + Grid.DupeImpassable[v]);
-			ImGui.Text("CritterImpassable: " + Grid.CritterImpassable[v]);
-			ImGui.Text("FakeFloor: " + Grid.FakeFloor[v]);
-			ImGui.Text("HasDoor: " + Grid.HasDoor[v]);
-			ImGui.Text("HasLadder: " + Grid.HasLadder[v]);
-			ImGui.Text("HasPole: " + Grid.HasPole[v]);
-			ImGui.Text("GravitasFacility: " + Grid.GravitasFacility[v]);
-			ImGui.Text("HasNavTeleporter: " + Grid.HasNavTeleporter[v]);
-			ImGui.Text("IsTileUnderConstruction: " + Grid.IsTileUnderConstruction[v]);
-			ImGui.Text("LiquidVisPlacers: " + Game.Instance.liquidConduitSystem.GetConnections(v, is_physical_building: false));
-			ImGui.Text("LiquidPhysPlacers: " + Game.Instance.liquidConduitSystem.GetConnections(v, is_physical_building: true));
-			ImGui.Text("GasVisPlacers: " + Game.Instance.gasConduitSystem.GetConnections(v, is_physical_building: false));
-			ImGui.Text("GasPhysPlacers: " + Game.Instance.gasConduitSystem.GetConnections(v, is_physical_building: true));
-			ImGui.Text("ElecVisPlacers: " + Game.Instance.electricalConduitSystem.GetConnections(v, is_physical_building: false));
-			ImGui.Text("ElecPhysPlacers: " + Game.Instance.electricalConduitSystem.GetConnections(v, is_physical_building: true));
-			ImGui.Text("World Idx: " + Grid.WorldIdx[v]);
-			ImGui.Text("ZoneType: " + World.Instance.zoneRenderData.GetSubWorldZoneType(v));
-			ImGui.Text("Light Intensity: " + Grid.LightIntensity[v]);
-			ImGui.Text("Sunlight: " + Grid.ExposedToSunlight[v]);
-			ImGui.Text("Radiation: " + Grid.Radiation[v]);
-			showAccessRestrictions = ImGui.CollapsingHeader("Access Restrictions");
-			if (showAccessRestrictions)
+			int num5 = Grid.WidthInCells / 32;
+			int num6 = num / 32;
+			int num7 = num2 / 32;
+			int num8 = num7 * num5 + num6;
+			ImGui.Text(string.Format("Chunk Idx ({0}, {1}): {2}", num6, num7, num8));
+			ImGui.Text("RenderedByWorld: " + Grid.RenderedByWorld[num3].ToString());
+			ImGui.Text("Solid: " + Grid.Solid[num3].ToString());
+			ImGui.Text("Damage: " + Grid.Damage[num3].ToString());
+			ImGui.Text("Foundation: " + Grid.Foundation[num3].ToString());
+			ImGui.Text("Revealed: " + Grid.Revealed[num3].ToString());
+			ImGui.Text("Visible: " + Grid.Visible[num3].ToString());
+			ImGui.Text("DupePassable: " + Grid.DupePassable[num3].ToString());
+			ImGui.Text("DupeImpassable: " + Grid.DupeImpassable[num3].ToString());
+			ImGui.Text("CritterImpassable: " + Grid.CritterImpassable[num3].ToString());
+			ImGui.Text("FakeFloor: " + Grid.FakeFloor[num3].ToString());
+			ImGui.Text("HasDoor: " + Grid.HasDoor[num3].ToString());
+			ImGui.Text("HasLadder: " + Grid.HasLadder[num3].ToString());
+			ImGui.Text("HasPole: " + Grid.HasPole[num3].ToString());
+			ImGui.Text("GravitasFacility: " + Grid.GravitasFacility[num3].ToString());
+			ImGui.Text("HasNavTeleporter: " + Grid.HasNavTeleporter[num3].ToString());
+			ImGui.Text("IsTileUnderConstruction: " + Grid.IsTileUnderConstruction[num3].ToString());
+			ImGui.Text("LiquidVisPlacers: " + Game.Instance.liquidConduitSystem.GetConnections(num3, false).ToString());
+			ImGui.Text("LiquidPhysPlacers: " + Game.Instance.liquidConduitSystem.GetConnections(num3, true).ToString());
+			ImGui.Text("GasVisPlacers: " + Game.Instance.gasConduitSystem.GetConnections(num3, false).ToString());
+			ImGui.Text("GasPhysPlacers: " + Game.Instance.gasConduitSystem.GetConnections(num3, true).ToString());
+			ImGui.Text("ElecVisPlacers: " + Game.Instance.electricalConduitSystem.GetConnections(num3, false).ToString());
+			ImGui.Text("ElecPhysPlacers: " + Game.Instance.electricalConduitSystem.GetConnections(num3, true).ToString());
+			ImGui.Text("World Idx: " + Grid.WorldIdx[num3].ToString());
+			ImGui.Text("ZoneType: " + World.Instance.zoneRenderData.GetSubWorldZoneType(num3).ToString());
+			ImGui.Text("Light Intensity: " + Grid.LightIntensity[num3].ToString());
+			ImGui.Text("Sunlight: " + Grid.ExposedToSunlight[num3].ToString());
+			ImGui.Text("Radiation: " + Grid.Radiation[num3].ToString());
+			this.showAccessRestrictions = ImGui.CollapsingHeader("Access Restrictions");
+			if (this.showAccessRestrictions)
 			{
 				ImGui.Indent();
-				if (!Grid.DEBUG_GetRestrictions(v, out var restriction))
+				Grid.Restriction restriction;
+				if (!Grid.DEBUG_GetRestrictions(num3, out restriction))
 				{
 					ImGui.Text("No access control.");
 				}
 				else
 				{
-					ImGui.Text("Orientation: " + restriction.orientation);
-					ImGui.Text("Default Restriction: " + restriction.DirectionMasksForMinionInstanceID[-1]);
+					ImGui.Text("Orientation: " + restriction.orientation.ToString());
+					ImGui.Text("Default Restriction: " + restriction.DirectionMasksForMinionInstanceID[-1].ToString());
 					ImGui.Indent();
-					foreach (MinionIdentity item in Components.LiveMinionIdentities.Items)
+					foreach (MinionIdentity minionIdentity in Components.LiveMinionIdentities.Items)
 					{
-						int instanceID = item.GetComponent<MinionIdentity>().assignableProxy.Get().GetComponent<KPrefabID>().InstanceID;
-						if (restriction.DirectionMasksForMinionInstanceID.TryGetValue(instanceID, out var value))
+						int instanceID = minionIdentity.GetComponent<MinionIdentity>().assignableProxy.Get().GetComponent<KPrefabID>().InstanceID;
+						Grid.Restriction.Directions directions;
+						if (restriction.DirectionMasksForMinionInstanceID.TryGetValue(instanceID, out directions))
 						{
-							ImGui.Text(item.name + " Restriction: " + value);
+							ImGui.Text(minionIdentity.name + " Restriction: " + directions.ToString());
 						}
 						else
 						{
-							ImGui.Text(item.name + ": Has No restriction");
+							ImGui.Text(minionIdentity.name + ": Has No restriction");
 						}
 					}
 					ImGui.Unindent();
 				}
 				ImGui.Unindent();
 			}
-			showGridContents = ImGui.CollapsingHeader("Grid Objects");
-			if (showGridContents)
+			this.showGridContents = ImGui.CollapsingHeader("Grid Objects");
+			if (this.showGridContents)
 			{
 				ImGui.Indent();
 				for (int i = 0; i < 45; i++)
 				{
-					GameObject gameObject = Grid.Objects[v, i];
+					GameObject gameObject = Grid.Objects[num3, i];
 					ImGui.Text(Enum.GetName(typeof(ObjectLayer), i) + ": " + ((gameObject != null) ? gameObject.name : "None"));
 				}
 				ImGui.Unindent();
 			}
-			showScenePartitionerContents = ImGui.CollapsingHeader("Scene Partitioner");
-			if (showScenePartitionerContents)
+			this.showScenePartitionerContents = ImGui.CollapsingHeader("Scene Partitioner");
+			if (this.showScenePartitionerContents)
 			{
 				ImGui.Indent();
 				if (GameScenePartitioner.Instance != null)
 				{
-					showLayerToggles = ImGui.CollapsingHeader("Layers");
-					if (showLayerToggles)
+					this.showLayerToggles = ImGui.CollapsingHeader("Layers");
+					if (this.showLayerToggles)
 					{
 						bool flag = false;
-						foreach (ScenePartitionerLayer layer in GameScenePartitioner.Instance.GetLayers())
+						foreach (ScenePartitionerLayer scenePartitionerLayer in GameScenePartitioner.Instance.GetLayers())
 						{
-							bool flag2 = toggledLayers.Contains(layer);
-							bool v3 = flag2;
-							ImGui.Checkbox(HashCache.Get().Get(layer.name), ref v3);
-							if (v3 != flag2)
+							bool flag2 = this.toggledLayers.Contains(scenePartitionerLayer);
+							bool flag3 = flag2;
+							ImGui.Checkbox(HashCache.Get().Get(scenePartitionerLayer.name), ref flag3);
+							if (flag3 != flag2)
 							{
 								flag = true;
-								if (v3)
+								if (flag3)
 								{
-									toggledLayers.Add(layer);
+									this.toggledLayers.Add(scenePartitionerLayer);
 								}
 								else
 								{
-									toggledLayers.Remove(layer);
+									this.toggledLayers.Remove(scenePartitionerLayer);
 								}
 							}
 						}
 						if (flag)
 						{
-							GameScenePartitioner.Instance.SetToggledLayers(toggledLayers);
-							if (toggledLayers.Count > 0)
+							GameScenePartitioner.Instance.SetToggledLayers(this.toggledLayers);
+							if (this.toggledLayers.Count > 0)
 							{
 								SimDebugView.Instance.SetMode(SimDebugView.OverlayModes.ScenePartitioner);
 							}
 						}
 					}
 					ListPool<ScenePartitionerEntry, ScenePartitioner>.PooledList pooledList = ListPool<ScenePartitionerEntry, ScenePartitioner>.Allocate();
-					foreach (ScenePartitionerLayer layer2 in GameScenePartitioner.Instance.GetLayers())
+					foreach (ScenePartitionerLayer layer in GameScenePartitioner.Instance.GetLayers())
 					{
 						pooledList.Clear();
-						GameScenePartitioner.Instance.GatherEntries(x, y, 1, 1, layer2, pooledList);
-						foreach (ScenePartitionerEntry item2 in pooledList)
+						GameScenePartitioner.Instance.GatherEntries(num, num2, 1, 1, layer, pooledList);
+						foreach (ScenePartitionerEntry scenePartitionerEntry in pooledList)
 						{
-							GameObject gameObject2 = item2.obj as GameObject;
-							MonoBehaviour monoBehaviour = item2.obj as MonoBehaviour;
+							GameObject gameObject2 = scenePartitionerEntry.obj as GameObject;
+							MonoBehaviour monoBehaviour = scenePartitionerEntry.obj as MonoBehaviour;
 							if (gameObject2 != null)
 							{
 								ImGui.Text(gameObject2.name);
@@ -337,65 +293,69 @@ public class DevToolSimDebug : DevTool
 				}
 				ImGui.Unindent();
 			}
-			showCavityInfo = ImGui.CollapsingHeader("Cavity Info");
-			if (showCavityInfo)
+			this.showCavityInfo = ImGui.CollapsingHeader("Cavity Info");
+			if (this.showCavityInfo)
 			{
 				ImGui.Indent();
 				CavityInfo cavityInfo = null;
 				if (Game.Instance != null && Game.Instance.roomProber != null)
 				{
-					cavityInfo = Game.Instance.roomProber.GetCavityForCell(v);
+					cavityInfo = Game.Instance.roomProber.GetCavityForCell(num3);
 				}
 				if (cavityInfo != null)
 				{
-					ImGui.Text("Cell Count: " + cavityInfo.numCells);
+					ImGui.Text("Cell Count: " + cavityInfo.numCells.ToString());
 					Room room = cavityInfo.room;
 					if (room != null)
 					{
 						ImGui.Text("Is Room: True");
-						showBuildings = ImGui.CollapsingHeader("Buildings (" + room.buildings.Count + ")");
-						if (showBuildings)
+						this.showBuildings = ImGui.CollapsingHeader("Buildings (" + room.buildings.Count.ToString() + ")");
+						if (this.showBuildings)
 						{
-							foreach (KPrefabID building in room.buildings)
+							foreach (KPrefabID kprefabID in room.buildings)
 							{
-								ImGui.Text(building.ToString());
+								ImGui.Text(kprefabID.ToString());
 							}
 						}
-						showCreatures = ImGui.CollapsingHeader("Creatures (" + room.cavity.creatures.Count + ")");
-						if (showCreatures)
+						this.showCreatures = ImGui.CollapsingHeader("Creatures (" + room.cavity.creatures.Count.ToString() + ")");
+						if (!this.showCreatures)
 						{
-							foreach (KPrefabID creature in room.cavity.creatures)
+							goto IL_CC0;
+						}
+						using (List<KPrefabID>.Enumerator enumerator4 = room.cavity.creatures.GetEnumerator())
+						{
+							while (enumerator4.MoveNext())
 							{
-								ImGui.Text(creature.ToString());
+								KPrefabID kprefabID2 = enumerator4.Current;
+								ImGui.Text(kprefabID2.ToString());
 							}
+							goto IL_CC0;
 						}
 					}
-					else
-					{
-						ImGui.Text("Is Room: False");
-					}
+					ImGui.Text("Is Room: False");
 				}
 				else
 				{
 					ImGui.Text("No Cavity Detected");
 				}
+				IL_CC0:
 				ImGui.Unindent();
 			}
-			showPropertyInfo = ImGui.CollapsingHeader("Property Info");
-			if (showPropertyInfo)
+			this.showPropertyInfo = ImGui.CollapsingHeader("Property Info");
+			if (this.showPropertyInfo)
 			{
 				ImGui.Indent();
-				bool flag3 = true;
-				byte b = Grid.Properties[v];
-				foreach (object value2 in Enum.GetValues(typeof(Sim.Cell.Properties)))
+				bool flag4 = true;
+				byte b = Grid.Properties[num3];
+				foreach (object obj in Enum.GetValues(typeof(Sim.Cell.Properties)))
 				{
-					if ((b & (int)value2) != 0)
+					if (((int)b & (int)obj) != 0)
 					{
-						ImGui.Text(value2.ToString());
-						flag3 = false;
+						ImGui.Text(obj.ToString());
+						flag4 = false;
 					}
 				}
-				if (flag3)
+				if (flag4)
 				{
 					ImGui.Text("No properties");
 				}
@@ -405,113 +365,115 @@ public class DevToolSimDebug : DevTool
 		}
 		if (Grid.ObjectLayers != null)
 		{
-			Element element = Grid.Element[v];
-			showElementData = ImGui.CollapsingHeader("Element");
+			Element element = Grid.Element[num3];
+			this.showElementData = ImGui.CollapsingHeader("Element");
 			ImGui.SameLine();
 			ImGui.Text("[" + element.name + "]");
 			ImGui.Indent();
-			ImGui.Text("Mass:" + Grid.Mass[v]);
-			if (showElementData)
+			ImGui.Text("Mass:" + Grid.Mass[num3].ToString());
+			if (this.showElementData)
 			{
-				DrawElem(element);
+				this.DrawElem(element);
 			}
-			ImGui.Text("Average Flow Rate (kg/s):" + Grid.AccumulatedFlow[v] / 3f);
+			ImGui.Text("Average Flow Rate (kg/s):" + (Grid.AccumulatedFlow[num3] / 3f).ToString());
 			ImGui.Unindent();
 		}
-		showPhysicsData = ImGui.CollapsingHeader("Physics Data");
-		if (showPhysicsData)
+		this.showPhysicsData = ImGui.CollapsingHeader("Physics Data");
+		if (this.showPhysicsData)
 		{
 			ImGui.Indent();
-			ImGui.Text("Solid: " + Grid.Solid[v]);
-			ImGui.Text("Pressure: " + Grid.Pressure[v]);
-			ImGui.Text("Temperature (kelvin -272.15): " + Grid.Temperature[v]);
-			ImGui.Text("Radiation: " + Grid.Radiation[v]);
-			ImGui.Text("Mass: " + Grid.Mass[v]);
-			ImGui.Text("Insulation: " + (float)(int)Grid.Insulation[v] / 255f);
-			ImGui.Text("Strength Multiplier: " + Grid.StrengthInfo[v]);
-			ImGui.Text("Properties: 0x: " + Grid.Properties[v].ToString("X"));
-			ImGui.Text("Disease: " + ((Grid.DiseaseIdx[v] == byte.MaxValue) ? "None" : Db.Get().Diseases[Grid.DiseaseIdx[v]].Name));
-			ImGui.Text("Disease Count: " + Grid.DiseaseCount[v]);
+			ImGui.Text("Solid: " + Grid.Solid[num3].ToString());
+			ImGui.Text("Pressure: " + Grid.Pressure[num3].ToString());
+			ImGui.Text("Temperature (kelvin -272.15): " + Grid.Temperature[num3].ToString());
+			ImGui.Text("Radiation: " + Grid.Radiation[num3].ToString());
+			ImGui.Text("Mass: " + Grid.Mass[num3].ToString());
+			ImGui.Text("Insulation: " + ((float)Grid.Insulation[num3] / 255f).ToString());
+			ImGui.Text("Strength Multiplier: " + Grid.StrengthInfo[num3].ToString());
+			ImGui.Text("Properties: 0x: " + Grid.Properties[num3].ToString("X"));
+			ImGui.Text("Disease: " + ((Grid.DiseaseIdx[num3] == byte.MaxValue) ? "None" : Db.Get().Diseases[(int)Grid.DiseaseIdx[num3]].Name));
+			ImGui.Text("Disease Count: " + Grid.DiseaseCount[num3].ToString());
 			ImGui.Unindent();
 		}
-		showGasConduitData = ImGui.CollapsingHeader("Gas Conduit Data");
-		if (showGasConduitData)
+		this.showGasConduitData = ImGui.CollapsingHeader("Gas Conduit Data");
+		if (this.showGasConduitData)
 		{
-			DrawConduitFlow(Game.Instance.gasConduitFlow, v);
+			this.DrawConduitFlow(Game.Instance.gasConduitFlow, num3);
 		}
-		showLiquidConduitData = ImGui.CollapsingHeader("Liquid Conduit Data");
-		if (showLiquidConduitData)
+		this.showLiquidConduitData = ImGui.CollapsingHeader("Liquid Conduit Data");
+		if (this.showLiquidConduitData)
 		{
-			DrawConduitFlow(Game.Instance.liquidConduitFlow, v);
+			this.DrawConduitFlow(Game.Instance.liquidConduitFlow, num3);
 		}
 	}
 
+	// Token: 0x060039B6 RID: 14774 RVA: 0x002245AC File Offset: 0x002227AC
 	private void DrawElem(Element element)
 	{
 		ImGui.Indent();
-		ImGui.Text("State: " + element.state);
-		ImGui.Text("Thermal Conductivity: " + element.thermalConductivity);
-		ImGui.Text("Specific Heat Capacity: " + element.specificHeatCapacity);
+		ImGui.Text("State: " + element.state.ToString());
+		ImGui.Text("Thermal Conductivity: " + element.thermalConductivity.ToString());
+		ImGui.Text("Specific Heat Capacity: " + element.specificHeatCapacity.ToString());
 		if (element.lowTempTransition != null)
 		{
-			ImGui.Text("Low Temperature: " + element.lowTemp);
-			ImGui.Text("Low Temperature Transition: " + element.lowTempTransitionTarget);
+			ImGui.Text("Low Temperature: " + element.lowTemp.ToString());
+			ImGui.Text("Low Temperature Transition: " + element.lowTempTransitionTarget.ToString());
 		}
 		if (element.highTempTransition != null)
 		{
-			ImGui.Text("High Temperature: " + element.highTemp);
-			ImGui.Text("HighTemp Temperature Transition: " + element.highTempTransitionTarget);
-			if (element.highTempTransitionOreID != 0)
+			ImGui.Text("High Temperature: " + element.highTemp.ToString());
+			ImGui.Text("HighTemp Temperature Transition: " + element.highTempTransitionTarget.ToString());
+			if (element.highTempTransitionOreID != (SimHashes)0)
 			{
-				ImGui.Text("HighTemp Temperature Transition: " + element.highTempTransitionOreID);
+				ImGui.Text("HighTemp Temperature Transition: " + element.highTempTransitionOreID.ToString());
 			}
 		}
-		ImGui.Text("Light Absorption Factor: " + element.lightAbsorptionFactor);
-		ImGui.Text("Radiation Absorption Factor: " + element.radiationAbsorptionFactor);
-		ImGui.Text("Radiation Per 1000 Mass: " + element.radiationPer1000Mass);
-		ImGui.Text("Sublimate ID: " + element.sublimateId);
-		ImGui.Text("Sublimate FX: " + element.sublimateFX);
-		ImGui.Text("Sublimate Rate: " + element.sublimateRate);
-		ImGui.Text("Sublimate Efficiency: " + element.sublimateEfficiency);
-		ImGui.Text("Sublimate Probability: " + element.sublimateProbability);
-		ImGui.Text("Off Gas Percentage: " + element.offGasPercentage);
+		ImGui.Text("Light Absorption Factor: " + element.lightAbsorptionFactor.ToString());
+		ImGui.Text("Radiation Absorption Factor: " + element.radiationAbsorptionFactor.ToString());
+		ImGui.Text("Radiation Per 1000 Mass: " + element.radiationPer1000Mass.ToString());
+		ImGui.Text("Sublimate ID: " + element.sublimateId.ToString());
+		ImGui.Text("Sublimate FX: " + element.sublimateFX.ToString());
+		ImGui.Text("Sublimate Rate: " + element.sublimateRate.ToString());
+		ImGui.Text("Sublimate Efficiency: " + element.sublimateEfficiency.ToString());
+		ImGui.Text("Sublimate Probability: " + element.sublimateProbability.ToString());
+		ImGui.Text("Off Gas Percentage: " + element.offGasPercentage.ToString());
 		if (element.IsGas)
 		{
-			ImGui.Text("Default Pressure: " + element.defaultValues.pressure);
+			ImGui.Text("Default Pressure: " + element.defaultValues.pressure.ToString());
 		}
 		else
 		{
-			ImGui.Text("Default Mass: " + element.defaultValues.mass);
+			ImGui.Text("Default Mass: " + element.defaultValues.mass.ToString());
 		}
-		ImGui.Text("Default Temperature: " + element.defaultValues.temperature);
+		ImGui.Text("Default Temperature: " + element.defaultValues.temperature.ToString());
 		if (element.IsGas)
 		{
-			ImGui.Text("Flow: " + element.flow);
+			ImGui.Text("Flow: " + element.flow.ToString());
 		}
 		if (element.IsLiquid)
 		{
-			ImGui.Text("Max Comp: " + element.maxCompression);
-			ImGui.Text("Max Mass: " + element.maxMass);
+			ImGui.Text("Max Comp: " + element.maxCompression.ToString());
+			ImGui.Text("Max Mass: " + element.maxMass.ToString());
 		}
 		if (element.IsSolid)
 		{
-			ImGui.Text("Hardness: " + element.hardness);
-			ImGui.Text("Unstable: " + element.IsUnstable);
+			ImGui.Text("Hardness: " + element.hardness.ToString());
+			ImGui.Text("Unstable: " + element.IsUnstable.ToString());
 		}
 		ImGui.Unindent();
 	}
 
+	// Token: 0x060039B7 RID: 14775 RVA: 0x002248C0 File Offset: 0x00222AC0
 	private void DrawConduitFlow(ConduitFlow flow_mgr, int cell)
 	{
 		ImGui.Indent();
 		ConduitFlow.ConduitContents contents = flow_mgr.GetContents(cell);
-		ImGui.Text("Element: " + contents.element);
-		ImGui.Text($"Mass: {contents.mass}");
-		ImGui.Text($"Movable Mass: {contents.movable_mass}");
-		ImGui.Text("Temperature: " + contents.temperature);
-		ImGui.Text("Disease: " + ((contents.diseaseIdx == byte.MaxValue) ? "None" : Db.Get().Diseases[contents.diseaseIdx].Name));
-		ImGui.Text("Disease Count: " + contents.diseaseCount);
-		ImGui.Text($"Update Order: {flow_mgr.ComputeUpdateOrder(cell)}");
+		ImGui.Text("Element: " + contents.element.ToString());
+		ImGui.Text(string.Format("Mass: {0}", contents.mass));
+		ImGui.Text(string.Format("Movable Mass: {0}", contents.movable_mass));
+		ImGui.Text("Temperature: " + contents.temperature.ToString());
+		ImGui.Text("Disease: " + ((contents.diseaseIdx == byte.MaxValue) ? "None" : Db.Get().Diseases[(int)contents.diseaseIdx].Name));
+		ImGui.Text("Disease Count: " + contents.diseaseCount.ToString());
+		ImGui.Text(string.Format("Update Order: {0}", flow_mgr.ComputeUpdateOrder(cell)));
 		flow_mgr.SetContents(cell, contents);
 		ConduitFlow.FlowDirections permittedFlow = flow_mgr.GetPermittedFlow(cell);
 		if (permittedFlow == ConduitFlow.FlowDirections.None)
@@ -521,19 +483,19 @@ public class DevToolSimDebug : DevTool
 		else
 		{
 			string text = "";
-			if ((permittedFlow & ConduitFlow.FlowDirections.Up) != 0)
+			if ((permittedFlow & ConduitFlow.FlowDirections.Up) != ConduitFlow.FlowDirections.None)
 			{
 				text += " Up ";
 			}
-			if ((permittedFlow & ConduitFlow.FlowDirections.Down) != 0)
+			if ((permittedFlow & ConduitFlow.FlowDirections.Down) != ConduitFlow.FlowDirections.None)
 			{
 				text += " Down ";
 			}
-			if ((permittedFlow & ConduitFlow.FlowDirections.Left) != 0)
+			if ((permittedFlow & ConduitFlow.FlowDirections.Left) != ConduitFlow.FlowDirections.None)
 			{
 				text += " Left ";
 			}
-			if ((permittedFlow & ConduitFlow.FlowDirections.Right) != 0)
+			if ((permittedFlow & ConduitFlow.FlowDirections.Right) != ConduitFlow.FlowDirections.None)
 			{
 				text += " Right ";
 			}
@@ -542,34 +504,119 @@ public class DevToolSimDebug : DevTool
 		ImGui.Unindent();
 	}
 
+	// Token: 0x060039B8 RID: 14776 RVA: 0x00224A40 File Offset: 0x00222C40
 	private void DrawBoundingBoxOverlay()
 	{
-		ImGui.InputInt("Width:", ref xBound, 2);
-		ImGui.InputInt("Height:", ref yBound, 2);
-		Vector2I vector2I = (boundBoxSimCellTarget.HasValue ? Grid.CellToXY(boundBoxSimCellTarget.Unwrap().cellIndex) : Grid.PosToXY(worldPos));
-		Vector2I vector2I2 = new Vector2I(Math.Max(0, vector2I.x - xBound / 2), Math.Max(0, vector2I.y - yBound / 2));
-		Vector2I vector2I3 = new Vector2I(Math.Min(vector2I.x + xBound / 2, Grid.WidthInCells), Math.Min(vector2I.y + yBound / 2, Grid.HeightInCells));
-		Option<(Vector2, Vector2)> screenRect = new DevToolEntityTarget.ForSimCell(Grid.XYToCell(vector2I2.X, vector2I2.Y)).GetScreenRect();
-		Option<(Vector2, Vector2)> screenRect2 = new DevToolEntityTarget.ForSimCell(Grid.XYToCell(vector2I3.X, vector2I3.Y)).GetScreenRect();
-		if (!screenRect.IsSome() || !screenRect2.IsSome())
+		ImGui.InputInt("Width:", ref this.xBound, 2);
+		ImGui.InputInt("Height:", ref this.yBound, 2);
+		Vector2I vector2I = this.boundBoxSimCellTarget.HasValue ? Grid.CellToXY(this.boundBoxSimCellTarget.Unwrap().cellIndex) : Grid.PosToXY(this.worldPos);
+		Vector2I vector2I2 = new Vector2I(Math.Max(0, vector2I.x - this.xBound / 2), Math.Max(0, vector2I.y - this.yBound / 2));
+		Vector2I vector2I3 = new Vector2I(Math.Min(vector2I.x + this.xBound / 2, Grid.WidthInCells), Math.Min(vector2I.y + this.yBound / 2, Grid.HeightInCells));
+		Option<ValueTuple<Vector2, Vector2>> screenRect = new DevToolEntityTarget.ForSimCell(Grid.XYToCell(vector2I2.X, vector2I2.Y)).GetScreenRect();
+		Option<ValueTuple<Vector2, Vector2>> screenRect2 = new DevToolEntityTarget.ForSimCell(Grid.XYToCell(vector2I3.X, vector2I3.Y)).GetScreenRect();
+		if (screenRect.IsSome() && screenRect2.IsSome())
 		{
-			return;
-		}
-		for (int i = vector2I2.Y; i <= vector2I3.Y; i++)
-		{
-			for (int j = vector2I2.X; j <= vector2I3.X; j++)
+			for (int i = vector2I2.Y; i <= vector2I3.Y; i++)
 			{
-				Option<(Vector2, Vector2)> screenRect3 = new DevToolEntityTarget.ForSimCell(Grid.XYToCell(j, i)).GetScreenRect();
-				Option<(Vector2, Vector2)> screenRect4 = new DevToolEntityTarget.ForSimCell(Grid.XYToCell(j, i)).GetScreenRect();
-				(Vector2, Vector2) screenRect5 = (screenRect3.Unwrap().Item1, screenRect4.Unwrap().Item2);
-				string text = Grid.XYToCell(j, i).ToString();
-				DevToolEntity.DrawScreenRect(screenRect5, text, new Color(1f, 1f, 1f, 0.7f), new Color(1f, 1f, 1f, 0.2f), new Option<DevToolUtil.TextAlignment>(DevToolUtil.TextAlignment.Center));
+				for (int j = vector2I2.X; j <= vector2I3.X; j++)
+				{
+					Option<ValueTuple<Vector2, Vector2>> screenRect3 = new DevToolEntityTarget.ForSimCell(Grid.XYToCell(j, i)).GetScreenRect();
+					Option<ValueTuple<Vector2, Vector2>> screenRect4 = new DevToolEntityTarget.ForSimCell(Grid.XYToCell(j, i)).GetScreenRect();
+					ValueTuple<Vector2, Vector2> screenRect5 = new ValueTuple<Vector2, Vector2>(screenRect3.Unwrap().Item1, screenRect4.Unwrap().Item2);
+					string value = Grid.XYToCell(j, i).ToString();
+					DevToolEntity.DrawScreenRect(screenRect5, value, new Color(1f, 1f, 1f, 0.7f), new Color(1f, 1f, 1f, 0.2f), new Option<DevToolUtil.TextAlignment>(DevToolUtil.TextAlignment.Center));
+				}
 			}
 		}
 	}
 
+	// Token: 0x060039B9 RID: 14777 RVA: 0x000C54A7 File Offset: 0x000C36A7
 	public void SetCell(int cell)
 	{
-		worldPos = Grid.CellToPosCCC(cell, Grid.SceneLayer.Move);
+		this.worldPos = Grid.CellToPosCCC(cell, Grid.SceneLayer.Move);
 	}
+
+	// Token: 0x04002752 RID: 10066
+	private Vector3 worldPos = Vector3.zero;
+
+	// Token: 0x04002753 RID: 10067
+	private string[] elementNames;
+
+	// Token: 0x04002754 RID: 10068
+	private Dictionary<SimHashes, double> elementCounts = new Dictionary<SimHashes, double>();
+
+	// Token: 0x04002755 RID: 10069
+	public static DevToolSimDebug Instance;
+
+	// Token: 0x04002756 RID: 10070
+	private const string INVALID_OVERLAY_MODE_STR = "None";
+
+	// Token: 0x04002757 RID: 10071
+	private bool shouldDrawBoundingBox = true;
+
+	// Token: 0x04002758 RID: 10072
+	private Option<DevToolEntityTarget.ForSimCell> boundBoxSimCellTarget;
+
+	// Token: 0x04002759 RID: 10073
+	private int xBound = 8;
+
+	// Token: 0x0400275A RID: 10074
+	private int yBound = 8;
+
+	// Token: 0x0400275B RID: 10075
+	private bool showElementData;
+
+	// Token: 0x0400275C RID: 10076
+	private bool showMouseData = true;
+
+	// Token: 0x0400275D RID: 10077
+	private bool showAccessRestrictions;
+
+	// Token: 0x0400275E RID: 10078
+	private bool showGridContents;
+
+	// Token: 0x0400275F RID: 10079
+	private bool showScenePartitionerContents;
+
+	// Token: 0x04002760 RID: 10080
+	private bool showLayerToggles;
+
+	// Token: 0x04002761 RID: 10081
+	private bool showCavityInfo;
+
+	// Token: 0x04002762 RID: 10082
+	private bool showPropertyInfo;
+
+	// Token: 0x04002763 RID: 10083
+	private bool showBuildings;
+
+	// Token: 0x04002764 RID: 10084
+	private bool showCreatures;
+
+	// Token: 0x04002765 RID: 10085
+	private bool showPhysicsData;
+
+	// Token: 0x04002766 RID: 10086
+	private bool showGasConduitData;
+
+	// Token: 0x04002767 RID: 10087
+	private bool showLiquidConduitData;
+
+	// Token: 0x04002768 RID: 10088
+	private string[] overlayModes;
+
+	// Token: 0x04002769 RID: 10089
+	private int selectedOverlayMode;
+
+	// Token: 0x0400276A RID: 10090
+	private string[] gameGridModes;
+
+	// Token: 0x0400276B RID: 10091
+	private Dictionary<string, HashedString> modeLookup;
+
+	// Token: 0x0400276C RID: 10092
+	private Dictionary<HashedString, string> revModeLookup;
+
+	// Token: 0x0400276D RID: 10093
+	private HashSet<ScenePartitionerLayer> toggledLayers = new HashSet<ScenePartitionerLayer>();
 }

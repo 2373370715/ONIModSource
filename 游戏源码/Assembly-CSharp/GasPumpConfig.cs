@@ -1,32 +1,45 @@
+﻿using System;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x0200035A RID: 858
 public class GasPumpConfig : IBuildingConfig
 {
-	public const string ID = "GasPump";
-
+	// Token: 0x06000DEC RID: 3564 RVA: 0x001753B8 File Offset: 0x001735B8
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef("GasPump", 2, 2, "pumpgas_kanim", 30, 30f, BUILDINGS.CONSTRUCTION_MASS_KG.TIER1, MATERIALS.ALL_METALS, 1600f, BuildLocationRule.Anywhere, noise: NOISE_POLLUTION.NOISY.TIER2, decor: BUILDINGS.DECOR.PENALTY.TIER1);
-		obj.RequiresPowerInput = true;
-		obj.EnergyConsumptionWhenActive = 240f;
-		obj.ExhaustKilowattsWhenActive = 0f;
-		obj.SelfHeatKilowattsWhenActive = 0f;
-		obj.OutputConduitType = ConduitType.Gas;
-		obj.Floodable = true;
-		obj.ViewMode = OverlayModes.GasConduits.ID;
-		obj.AudioCategory = "Metal";
-		obj.PowerInputOffset = new CellOffset(0, 1);
-		obj.UtilityOutputOffset = new CellOffset(1, 1);
-		obj.LogicInputPorts = LogicOperationalController.CreateSingleInputPortList(new CellOffset(0, 1));
+		string id = "GasPump";
+		int width = 2;
+		int height = 2;
+		string anim = "pumpgas_kanim";
+		int hitpoints = 30;
+		float construction_time = 30f;
+		float[] tier = BUILDINGS.CONSTRUCTION_MASS_KG.TIER1;
+		string[] all_METALS = MATERIALS.ALL_METALS;
+		float melting_point = 1600f;
+		BuildLocationRule build_location_rule = BuildLocationRule.Anywhere;
+		EffectorValues tier2 = NOISE_POLLUTION.NOISY.TIER2;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, all_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.PENALTY.TIER1, tier2, 0.2f);
+		buildingDef.RequiresPowerInput = true;
+		buildingDef.EnergyConsumptionWhenActive = 240f;
+		buildingDef.ExhaustKilowattsWhenActive = 0f;
+		buildingDef.SelfHeatKilowattsWhenActive = 0f;
+		buildingDef.OutputConduitType = ConduitType.Gas;
+		buildingDef.Floodable = true;
+		buildingDef.ViewMode = OverlayModes.GasConduits.ID;
+		buildingDef.AudioCategory = "Metal";
+		buildingDef.PowerInputOffset = new CellOffset(0, 1);
+		buildingDef.UtilityOutputOffset = new CellOffset(1, 1);
+		buildingDef.LogicInputPorts = LogicOperationalController.CreateSingleInputPortList(new CellOffset(0, 1));
 		GeneratedBuildings.RegisterWithOverlay(OverlayScreen.GasVentIDs, "GasPump");
-		return obj;
+		return buildingDef;
 	}
 
+	// Token: 0x06000DED RID: 3565 RVA: 0x00175488 File Offset: 0x00173688
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicOperationalController>();
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		go.AddOrGet<LoopingSounds>();
 		go.AddOrGet<EnergyConsumer>();
 		go.AddOrGet<Pump>();
@@ -42,6 +55,9 @@ public class GasPumpConfig : IBuildingConfig
 		conduitDispenser.alwaysDispense = true;
 		conduitDispenser.elementFilter = null;
 		go.AddOrGetDef<OperationalController.Def>();
-		go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayBehindConduits);
+		go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayBehindConduits, false);
 	}
+
+	// Token: 0x040009ED RID: 2541
+	public const string ID = "GasPump";
 }

@@ -1,243 +1,291 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using ImGuiNET;
 using Klei;
 using STRINGS;
 using UnityEngine;
 
+// Token: 0x02000BB5 RID: 2997
 public class DevToolManager
 {
-	public const string SHOW_DEVTOOLS = "ShowDevtools";
+	// Token: 0x170002A0 RID: 672
+	// (get) Token: 0x06003964 RID: 14692 RVA: 0x000C521B File Offset: 0x000C341B
+	public bool Show
+	{
+		get
+		{
+			return this.showImGui;
+		}
+	}
 
-	public static DevToolManager Instance;
-
-	private bool toggleKeyWasDown;
-
-	private bool showImGui;
-
-	private bool prevShowImGui;
-
-	private bool doesImGuiWantInput;
-
-	private bool prevDoesImGuiWantInput;
-
-	private bool showImguiState;
-
-	private bool showImguiDemo;
-
-	public bool UserAcceptedWarning;
-
-	private DevToolWarning warning = new DevToolWarning();
-
-	private DevToolMenuFontSize menuFontSize = new DevToolMenuFontSize();
-
-	public DevPanelList panels = new DevPanelList();
-
-	public DevToolMenuNodeList menuNodes = new DevToolMenuNodeList();
-
-	public Dictionary<Type, string> devToolNameDict = new Dictionary<Type, string>();
-
-	private HashSet<Type> dontAutomaticallyRegisterTypes = new HashSet<Type>();
-
-	public bool Show => showImGui;
-
+	// Token: 0x170002A1 RID: 673
+	// (get) Token: 0x06003965 RID: 14693 RVA: 0x000C5223 File Offset: 0x000C3423
 	private bool quickDevEnabled
 	{
 		get
 		{
-			if (DebugHandler.enabled)
-			{
-				return GenericGameSettings.instance.quickDevTools;
-			}
-			return false;
+			return DebugHandler.enabled && GenericGameSettings.instance.quickDevTools;
 		}
 	}
 
+	// Token: 0x06003966 RID: 14694 RVA: 0x00220B04 File Offset: 0x0021ED04
 	public DevToolManager()
 	{
-		Instance = this;
-		RegisterDevTool<DevToolSimDebug>("Debuggers/Sim Debug");
-		RegisterDevTool<DevToolStateMachineDebug>("Debuggers/State Machine");
-		RegisterDevTool<DevToolSaveGameInfo>("Debuggers/Save Game Info");
-		RegisterDevTool<DevToolPrintingPodDebug>("Debuggers/Printing Pod Debug");
-		RegisterDevTool<DevToolBigBaseMutations>("Debuggers/Big Base Mutation Utilities");
-		RegisterDevTool<DevToolNavGrid>("Debuggers/Nav Grid");
-		RegisterDevTool<DevToolResearchDebugger>("Debuggers/Research");
-		RegisterDevTool<DevToolStatusItems>("Debuggers/StatusItems");
-		RegisterDevTool<DevToolUI>("Debuggers/UI");
-		RegisterDevTool<DevToolUnlockedIds>("Debuggers/UnlockedIds List");
-		RegisterDevTool<DevToolStringsTable>("Debuggers/StringsTable");
-		RegisterDevTool<DevToolChoreDebugger>("Debuggers/Chore");
-		RegisterDevTool<DevToolBatchedAnimDebug>("Debuggers/Batched Anim");
-		RegisterDevTool<DevTool_StoryTraits_Reveal>("Debuggers/Story Traits Reveal");
-		RegisterDevTool<DevTool_StoryTrait_CritterManipulator>("Debuggers/Story Trait - Critter Manipulator");
-		RegisterDevTool<DevToolAnimEventManager>("Debuggers/Anim Event Manager");
-		RegisterDevTool<DevToolSceneBrowser>("Scene/Browser");
-		RegisterDevTool<DevToolSceneInspector>("Scene/Inspector");
-		menuNodes.AddAction("Help/" + UI.FRONTEND.DEVTOOLS.TITLE.text, delegate
+		DevToolManager.Instance = this;
+		this.RegisterDevTool<DevToolSimDebug>("Debuggers/Sim Debug");
+		this.RegisterDevTool<DevToolStateMachineDebug>("Debuggers/State Machine");
+		this.RegisterDevTool<DevToolSaveGameInfo>("Debuggers/Save Game Info");
+		this.RegisterDevTool<DevToolPerformanceInfo>("Debuggers/Performance Info");
+		this.RegisterDevTool<DevToolPrintingPodDebug>("Debuggers/Printing Pod Debug");
+		this.RegisterDevTool<DevToolBigBaseMutations>("Debuggers/Big Base Mutation Utilities");
+		this.RegisterDevTool<DevToolNavGrid>("Debuggers/Nav Grid");
+		this.RegisterDevTool<DevToolResearchDebugger>("Debuggers/Research");
+		this.RegisterDevTool<DevToolStatusItems>("Debuggers/StatusItems");
+		this.RegisterDevTool<DevToolUI>("Debuggers/UI");
+		this.RegisterDevTool<DevToolUnlockedIds>("Debuggers/UnlockedIds List");
+		this.RegisterDevTool<DevToolStringsTable>("Debuggers/StringsTable");
+		this.RegisterDevTool<DevToolChoreDebugger>("Debuggers/Chore");
+		this.RegisterDevTool<DevToolBatchedAnimDebug>("Debuggers/Batched Anim");
+		this.RegisterDevTool<DevTool_StoryTraits_Reveal>("Debuggers/Story Traits Reveal");
+		this.RegisterDevTool<DevTool_StoryTrait_CritterManipulator>("Debuggers/Story Trait - Critter Manipulator");
+		this.RegisterDevTool<DevToolAnimEventManager>("Debuggers/Anim Event Manager");
+		this.RegisterDevTool<DevToolSceneBrowser>("Scene/Browser");
+		this.RegisterDevTool<DevToolSceneInspector>("Scene/Inspector");
+		this.menuNodes.AddAction("Help/" + UI.FRONTEND.DEVTOOLS.TITLE.text, delegate
 		{
-			warning.ShouldDrawWindow = true;
+			this.warning.ShouldDrawWindow = true;
 		});
-		RegisterDevTool<DevToolCommandPalette>("Help/Command Palette");
-		RegisterAdditionalDevToolsByReflection();
+		this.RegisterDevTool<DevToolCommandPalette>("Help/Command Palette");
+		this.RegisterAdditionalDevToolsByReflection();
 	}
 
+	// Token: 0x06003967 RID: 14695 RVA: 0x000C5238 File Offset: 0x000C3438
 	public void Init()
 	{
-		UserAcceptedWarning = KPlayerPrefs.GetInt("ShowDevtools", 0) == 1;
+		this.UserAcceptedWarning = (KPlayerPrefs.GetInt("ShowDevtools", 0) == 1);
 	}
 
+	// Token: 0x06003968 RID: 14696 RVA: 0x00220C70 File Offset: 0x0021EE70
 	private void RegisterDevTool<T>(string location) where T : DevTool, new()
 	{
-		menuNodes.AddAction(location, delegate
+		this.menuNodes.AddAction(location, delegate
 		{
-			panels.AddPanelFor<T>();
+			this.panels.AddPanelFor<T>();
 		});
-		dontAutomaticallyRegisterTypes.Add(typeof(T));
-		devToolNameDict[typeof(T)] = Path.GetFileName(location);
+		this.dontAutomaticallyRegisterTypes.Add(typeof(T));
+		this.devToolNameDict[typeof(T)] = Path.GetFileName(location);
 	}
 
+	// Token: 0x06003969 RID: 14697 RVA: 0x00220CC8 File Offset: 0x0021EEC8
 	private void RegisterAdditionalDevToolsByReflection()
 	{
-		foreach (Type type in ReflectionUtil.CollectTypesThatInheritOrImplement<DevTool>())
+		using (List<Type>.Enumerator enumerator = ReflectionUtil.CollectTypesThatInheritOrImplement<DevTool>(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy).GetEnumerator())
 		{
-			if (!type.IsAbstract && !dontAutomaticallyRegisterTypes.Contains(type) && ReflectionUtil.HasDefaultConstructor(type))
+			while (enumerator.MoveNext())
 			{
-				menuNodes.AddAction("Debuggers/" + DevToolUtil.GenerateDevToolName(type), delegate
+				Type type = enumerator.Current;
+				if (!type.IsAbstract && !this.dontAutomaticallyRegisterTypes.Contains(type) && ReflectionUtil.HasDefaultConstructor(type))
 				{
-					panels.AddPanelFor((DevTool)Activator.CreateInstance(type));
-				});
+					this.menuNodes.AddAction("Debuggers/" + DevToolUtil.GenerateDevToolName(type), delegate
+					{
+						this.panels.AddPanelFor((DevTool)Activator.CreateInstance(type));
+					});
+				}
 			}
 		}
 	}
 
+	// Token: 0x0600396A RID: 14698 RVA: 0x00220D84 File Offset: 0x0021EF84
 	public void UpdateShouldShowTools()
 	{
 		if (!DebugHandler.enabled)
 		{
-			showImGui = false;
+			this.showImGui = false;
 			return;
 		}
 		bool flag = Input.GetKeyDown(KeyCode.BackQuote) && (Input.GetKey(KeyCode.LeftControl) || Input.GetKeyDown(KeyCode.RightControl));
-		if (!toggleKeyWasDown && flag)
+		if (!this.toggleKeyWasDown && flag)
 		{
-			showImGui = !showImGui;
+			this.showImGui = !this.showImGui;
 		}
-		toggleKeyWasDown = flag;
+		this.toggleKeyWasDown = flag;
 	}
 
+	// Token: 0x0600396B RID: 14699 RVA: 0x00220DEC File Offset: 0x0021EFEC
 	public void UpdateTools()
 	{
 		if (!DebugHandler.enabled)
 		{
 			return;
 		}
-		if (showImGui)
+		if (this.showImGui)
 		{
-			if (warning.ShouldDrawWindow)
+			if (this.warning.ShouldDrawWindow)
 			{
-				warning.DrawWindow(out warning.ShouldDrawWindow);
+				this.warning.DrawWindow(out this.warning.ShouldDrawWindow);
 			}
-			if (!UserAcceptedWarning)
+			if (!this.UserAcceptedWarning)
 			{
-				warning.DrawMenuBar();
+				this.warning.DrawMenuBar();
 			}
 			else
 			{
-				DrawMenu();
-				panels.Render();
-				if (showImguiState)
+				this.DrawMenu();
+				this.panels.Render();
+				if (this.showImguiState)
 				{
-					if (ImGui.Begin("ImGui state", ref showImguiState))
+					if (ImGui.Begin("ImGui state", ref this.showImguiState))
 					{
-						ImGui.Checkbox("ImGui.GetIO().WantCaptureMouse", ref ImGui.GetIO().WantCaptureMouse);
-						ImGui.Checkbox("ImGui.GetIO().WantCaptureKeyboard", ref ImGui.GetIO().WantCaptureKeyboard);
+						ImGui.Checkbox("ImGui.GetIO().WantCaptureMouse", ImGui.GetIO().WantCaptureMouse);
+						ImGui.Checkbox("ImGui.GetIO().WantCaptureKeyboard", ImGui.GetIO().WantCaptureKeyboard);
 					}
 					ImGui.End();
 				}
-				if (showImguiDemo)
+				if (this.showImguiDemo)
 				{
-					ImGui.ShowDemoWindow(ref showImguiDemo);
+					ImGui.ShowDemoWindow(ref this.showImguiDemo);
 				}
 			}
 		}
-		UpdateConsumingGameInputs();
-		UpdateShortcuts();
+		this.UpdateConsumingGameInputs();
+		this.UpdateShortcuts();
 	}
 
+	// Token: 0x0600396C RID: 14700 RVA: 0x000C524E File Offset: 0x000C344E
 	private void UpdateShortcuts()
 	{
-		if ((showImGui || quickDevEnabled) && UserAcceptedWarning)
+		if ((this.showImGui || this.quickDevEnabled) && this.UserAcceptedWarning)
 		{
-			DoUpdate();
-		}
-		void DoUpdate()
-		{
-			if ((Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) && Input.GetKeyDown(KeyCode.Space))
-			{
-				DevToolCommandPalette.Init();
-				showImGui = true;
-			}
-			if (Input.GetKeyDown(KeyCode.Comma))
-			{
-				DevToolUI.PingHoveredObject();
-				showImGui = true;
-			}
+			this.<UpdateShortcuts>g__DoUpdate|26_0();
 		}
 	}
 
+	// Token: 0x0600396D RID: 14701 RVA: 0x00220EC4 File Offset: 0x0021F0C4
 	private void DrawMenu()
 	{
-		menuFontSize.InitializeIfNeeded();
+		this.menuFontSize.InitializeIfNeeded();
 		if (ImGui.BeginMainMenuBar())
 		{
-			menuNodes.Draw();
-			menuFontSize.DrawMenu();
+			this.menuNodes.Draw();
+			this.menuFontSize.DrawMenu();
 			if (ImGui.BeginMenu("IMGUI"))
 			{
-				ImGui.Checkbox("ImGui state", ref showImguiState);
-				ImGui.Checkbox("ImGui Demo", ref showImguiDemo);
+				ImGui.Checkbox("ImGui state", ref this.showImguiState);
+				ImGui.Checkbox("ImGui Demo", ref this.showImguiDemo);
 				ImGui.EndMenu();
 			}
 			ImGui.EndMainMenuBar();
 		}
 	}
 
-	private void UpdateConsumingGameInputs()
+	// Token: 0x0600396E RID: 14702 RVA: 0x00220F34 File Offset: 0x0021F134
+	private unsafe void UpdateConsumingGameInputs()
 	{
-		doesImGuiWantInput = false;
-		if (showImGui)
+		this.doesImGuiWantInput = false;
+		if (this.showImGui)
 		{
-			doesImGuiWantInput = ImGui.GetIO().WantCaptureMouse || ImGui.GetIO().WantCaptureKeyboard;
-			if (!prevDoesImGuiWantInput && doesImGuiWantInput)
+			this.doesImGuiWantInput = (*ImGui.GetIO().WantCaptureMouse || *ImGui.GetIO().WantCaptureKeyboard);
+			if (!this.prevDoesImGuiWantInput && this.doesImGuiWantInput)
 			{
-				OnInputEnterImGui();
+				DevToolManager.<UpdateConsumingGameInputs>g__OnInputEnterImGui|28_0();
 			}
-			if (prevDoesImGuiWantInput && !doesImGuiWantInput)
+			if (this.prevDoesImGuiWantInput && !this.doesImGuiWantInput)
 			{
-				OnInputExitImGui();
-			}
-		}
-		if (prevShowImGui && prevDoesImGuiWantInput && !showImGui)
-		{
-			OnInputExitImGui();
-		}
-		prevShowImGui = showImGui;
-		prevDoesImGuiWantInput = doesImGuiWantInput;
-		KInputManager.devToolFocus = showImGui && doesImGuiWantInput;
-		static void OnInputEnterImGui()
-		{
-			UnityMouseCatcherUI.SetEnabled(is_enabled: true);
-			GameInputManager inputManager = Global.GetInputManager();
-			for (int i = 0; i < inputManager.GetControllerCount(); i++)
-			{
-				inputManager.GetController(i).HandleCancelInput();
+				DevToolManager.<UpdateConsumingGameInputs>g__OnInputExitImGui|28_1();
 			}
 		}
-		static void OnInputExitImGui()
+		if (this.prevShowImGui && this.prevDoesImGuiWantInput && !this.showImGui)
 		{
-			UnityMouseCatcherUI.SetEnabled(is_enabled: false);
+			DevToolManager.<UpdateConsumingGameInputs>g__OnInputExitImGui|28_1();
+		}
+		this.prevShowImGui = this.showImGui;
+		this.prevDoesImGuiWantInput = this.doesImGuiWantInput;
+		KInputManager.devToolFocus = (this.showImGui && this.doesImGuiWantInput);
+	}
+
+	// Token: 0x06003971 RID: 14705 RVA: 0x00220FEC File Offset: 0x0021F1EC
+	[CompilerGenerated]
+	private void <UpdateShortcuts>g__DoUpdate|26_0()
+	{
+		if ((Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) && Input.GetKeyDown(KeyCode.Space))
+		{
+			DevToolCommandPalette.Init();
+			this.showImGui = true;
+		}
+		if (Input.GetKeyDown(KeyCode.Comma))
+		{
+			DevToolUI.PingHoveredObject();
+			this.showImGui = true;
 		}
 	}
+
+	// Token: 0x06003972 RID: 14706 RVA: 0x0022103C File Offset: 0x0021F23C
+	[CompilerGenerated]
+	internal static void <UpdateConsumingGameInputs>g__OnInputEnterImGui|28_0()
+	{
+		UnityMouseCatcherUI.SetEnabled(true);
+		GameInputManager inputManager = Global.GetInputManager();
+		for (int i = 0; i < inputManager.GetControllerCount(); i++)
+		{
+			inputManager.GetController(i).HandleCancelInput();
+		}
+	}
+
+	// Token: 0x06003973 RID: 14707 RVA: 0x000C528A File Offset: 0x000C348A
+	[CompilerGenerated]
+	internal static void <UpdateConsumingGameInputs>g__OnInputExitImGui|28_1()
+	{
+		UnityMouseCatcherUI.SetEnabled(false);
+	}
+
+	// Token: 0x04002716 RID: 10006
+	public const string SHOW_DEVTOOLS = "ShowDevtools";
+
+	// Token: 0x04002717 RID: 10007
+	public static DevToolManager Instance;
+
+	// Token: 0x04002718 RID: 10008
+	private bool toggleKeyWasDown;
+
+	// Token: 0x04002719 RID: 10009
+	private bool showImGui;
+
+	// Token: 0x0400271A RID: 10010
+	private bool prevShowImGui;
+
+	// Token: 0x0400271B RID: 10011
+	private bool doesImGuiWantInput;
+
+	// Token: 0x0400271C RID: 10012
+	private bool prevDoesImGuiWantInput;
+
+	// Token: 0x0400271D RID: 10013
+	private bool showImguiState;
+
+	// Token: 0x0400271E RID: 10014
+	private bool showImguiDemo;
+
+	// Token: 0x0400271F RID: 10015
+	public bool UserAcceptedWarning;
+
+	// Token: 0x04002720 RID: 10016
+	private DevToolWarning warning = new DevToolWarning();
+
+	// Token: 0x04002721 RID: 10017
+	private DevToolMenuFontSize menuFontSize = new DevToolMenuFontSize();
+
+	// Token: 0x04002722 RID: 10018
+	public DevPanelList panels = new DevPanelList();
+
+	// Token: 0x04002723 RID: 10019
+	public DevToolMenuNodeList menuNodes = new DevToolMenuNodeList();
+
+	// Token: 0x04002724 RID: 10020
+	public Dictionary<Type, string> devToolNameDict = new Dictionary<Type, string>();
+
+	// Token: 0x04002725 RID: 10021
+	private HashSet<Type> dontAutomaticallyRegisterTypes = new HashSet<Type>();
 }

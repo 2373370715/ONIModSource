@@ -1,18 +1,20 @@
+﻿using System;
 using STRINGS;
 using UnityEngine;
 
+// Token: 0x02000456 RID: 1110
 public class SpaceTreeSeedCometConfig : IEntityConfig
 {
-	public static string ID = "SpaceTreeSeedComet";
-
+	// Token: 0x06001350 RID: 4944 RVA: 0x000A9B1E File Offset: 0x000A7D1E
 	public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_DLC_2;
 	}
 
+	// Token: 0x06001351 RID: 4945 RVA: 0x0018D644 File Offset: 0x0018B844
 	public GameObject CreatePrefab()
 	{
-		GameObject gameObject = EntityTemplates.CreateEntity(ID, UI.SPACEDESTINATIONS.COMETS.SPACETREESEEDCOMET.NAME);
+		GameObject gameObject = EntityTemplates.CreateEntity(SpaceTreeSeedCometConfig.ID, UI.SPACEDESTINATIONS.COMETS.SPACETREESEEDCOMET.NAME, true);
 		gameObject.AddOrGet<SaveLoadRoot>();
 		gameObject.AddOrGet<LoopingSounds>();
 		SpaceTreeSeededComet spaceTreeSeededComet = gameObject.AddOrGet<SpaceTreeSeededComet>();
@@ -29,27 +31,38 @@ public class SpaceTreeSeedCometConfig : IEntityConfig
 		spaceTreeSeededComet.addTiles = 3;
 		spaceTreeSeededComet.addTilesMinHeight = 1;
 		spaceTreeSeededComet.addTilesMaxHeight = 2;
-		spaceTreeSeededComet.lootOnDestroyedByMissile = new string[1] { "SpaceTreeSeed" };
+		spaceTreeSeededComet.lootOnDestroyedByMissile = new string[]
+		{
+			"SpaceTreeSeed"
+		};
 		PrimaryElement primaryElement = gameObject.AddOrGet<PrimaryElement>();
-		primaryElement.SetElement(SimHashes.Snow);
+		primaryElement.SetElement(SimHashes.Snow, true);
 		primaryElement.Temperature = (spaceTreeSeededComet.temperatureRange.x + spaceTreeSeededComet.temperatureRange.y) / 2f;
-		KBatchedAnimController kBatchedAnimController = gameObject.AddOrGet<KBatchedAnimController>();
-		kBatchedAnimController.AnimFiles = new KAnimFile[1] { Assets.GetAnim("meteor_bonbon_snow_kanim") };
-		kBatchedAnimController.isMovable = true;
-		kBatchedAnimController.initialAnim = "fall_loop";
-		kBatchedAnimController.initialMode = KAnim.PlayMode.Loop;
-		kBatchedAnimController.visibilityType = KAnimControllerBase.VisibilityType.OffscreenUpdate;
+		KBatchedAnimController kbatchedAnimController = gameObject.AddOrGet<KBatchedAnimController>();
+		kbatchedAnimController.AnimFiles = new KAnimFile[]
+		{
+			Assets.GetAnim("meteor_bonbon_snow_kanim")
+		};
+		kbatchedAnimController.isMovable = true;
+		kbatchedAnimController.initialAnim = "fall_loop";
+		kbatchedAnimController.initialMode = KAnim.PlayMode.Loop;
+		kbatchedAnimController.visibilityType = KAnimControllerBase.VisibilityType.OffscreenUpdate;
 		gameObject.AddOrGet<KCircleCollider2D>().radius = 0.5f;
 		gameObject.transform.localScale = new Vector3(0.3f, 0.3f, 1f);
 		gameObject.AddTag(GameTags.Comet);
 		return gameObject;
 	}
 
+	// Token: 0x06001352 RID: 4946 RVA: 0x000A5E40 File Offset: 0x000A4040
 	public void OnPrefabInit(GameObject go)
 	{
 	}
 
+	// Token: 0x06001353 RID: 4947 RVA: 0x000A5E40 File Offset: 0x000A4040
 	public void OnSpawn(GameObject go)
 	{
 	}
+
+	// Token: 0x04000D25 RID: 3365
+	public static string ID = "SpaceTreeSeedComet";
 }

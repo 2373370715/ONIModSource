@@ -1,54 +1,61 @@
+﻿using System;
 using System.Collections.Generic;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x020005B5 RID: 1461
 public class SteamTurbineConfig : IBuildingConfig
 {
-	public const string ID = "SteamTurbine";
-
-	private const int HEIGHT = 4;
-
-	private const int WIDTH = 5;
-
-	private static readonly List<Storage.StoredItemModifier> StoredItemModifiers = new List<Storage.StoredItemModifier>
-	{
-		Storage.StoredItemModifier.Hide,
-		Storage.StoredItemModifier.Insulate,
-		Storage.StoredItemModifier.Seal
-	};
-
+	// Token: 0x06001A2A RID: 6698 RVA: 0x001A5FC0 File Offset: 0x001A41C0
 	public override BuildingDef CreateBuildingDef()
 	{
-		string[] array = new string[2] { "RefinedMetal", "Plastic" };
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef(construction_mass: new float[2]
+		string id = "SteamTurbine";
+		int width = 5;
+		int height = 4;
+		string anim = "steamturbine_kanim";
+		int hitpoints = 30;
+		float construction_time = 60f;
+		string[] array = new string[]
+		{
+			"RefinedMetal",
+			"Plastic"
+		};
+		float[] construction_mass = new float[]
 		{
 			BUILDINGS.CONSTRUCTION_MASS_KG.TIER5[0],
 			BUILDINGS.CONSTRUCTION_MASS_KG.TIER3[0]
-		}, construction_materials: array, melting_point: 1600f, build_location_rule: BuildLocationRule.Anywhere, noise: NOISE_POLLUTION.NONE, id: "SteamTurbine", width: 5, height: 4, anim: "steamturbine_kanim", hitpoints: 30, construction_time: 60f, decor: BUILDINGS.DECOR.NONE, temperature_modification_mass_scale: 1f);
-		obj.GeneratorWattageRating = 2000f;
-		obj.GeneratorBaseCapacity = 2000f;
-		obj.Entombable = true;
-		obj.IsFoundation = false;
-		obj.PermittedRotations = PermittedRotations.FlipH;
-		obj.ViewMode = OverlayModes.Power.ID;
-		obj.AudioCategory = "Metal";
-		obj.RequiresPowerOutput = true;
-		obj.PowerOutputOffset = new CellOffset(1, 0);
-		obj.OverheatTemperature = 1273.15f;
-		obj.LogicInputPorts = LogicOperationalController.CreateSingleInputPortList(new CellOffset(0, 0));
-		obj.Deprecated = true;
-		return obj;
+		};
+		string[] construction_materials = array;
+		float melting_point = 1600f;
+		BuildLocationRule build_location_rule = BuildLocationRule.Anywhere;
+		EffectorValues none = NOISE_POLLUTION.NONE;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, construction_mass, construction_materials, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, none, 1f);
+		buildingDef.GeneratorWattageRating = 2000f;
+		buildingDef.GeneratorBaseCapacity = buildingDef.GeneratorWattageRating;
+		buildingDef.Entombable = true;
+		buildingDef.IsFoundation = false;
+		buildingDef.PermittedRotations = PermittedRotations.FlipH;
+		buildingDef.ViewMode = OverlayModes.Power.ID;
+		buildingDef.AudioCategory = "Metal";
+		buildingDef.RequiresPowerOutput = true;
+		buildingDef.PowerOutputOffset = new CellOffset(1, 0);
+		buildingDef.OverheatTemperature = 1273.15f;
+		buildingDef.LogicInputPorts = LogicOperationalController.CreateSingleInputPortList(new CellOffset(0, 0));
+		buildingDef.Deprecated = true;
+		return buildingDef;
 	}
 
+	// Token: 0x06001A2B RID: 6699 RVA: 0x000B1227 File Offset: 0x000AF427
 	public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 		base.DoPostConfigureUnderConstruction(go);
 		go.GetComponent<Constructable>().requiredSkillPerk = Db.Get().SkillPerks.CanPowerTinker.Id;
 	}
 
+	// Token: 0x06001A2C RID: 6700 RVA: 0x001A60A8 File Offset: 0x001A42A8
 	public override void DoPostConfigureComplete(GameObject go)
 	{
-		go.AddOrGet<Storage>().SetDefaultStoredItemModifiers(StoredItemModifiers);
+		go.AddOrGet<Storage>().SetDefaultStoredItemModifiers(SteamTurbineConfig.StoredItemModifiers);
 		Turbine turbine = go.AddOrGet<Turbine>();
 		turbine.srcElem = SimHashes.Steam;
 		MakeBaseSolid.Def def = go.AddOrGetDef<MakeBaseSolid.Def>();
@@ -72,11 +79,28 @@ public class SteamTurbineConfig : IBuildingConfig
 		go.GetComponent<KPrefabID>().prefabSpawnFn += delegate(GameObject game_object)
 		{
 			HandleVector<int>.Handle handle = GameComps.StructureTemperatures.GetHandle(game_object);
-			StructureTemperaturePayload new_data = GameComps.StructureTemperatures.GetPayload(handle);
+			StructureTemperaturePayload payload = GameComps.StructureTemperatures.GetPayload(handle);
 			Extents extents = game_object.GetComponent<Building>().GetExtents();
 			Extents newExtents = new Extents(extents.x, extents.y - 1, extents.width, extents.height + 1);
-			new_data.OverrideExtents(newExtents);
-			GameComps.StructureTemperatures.SetPayload(handle, ref new_data);
+			payload.OverrideExtents(newExtents);
+			GameComps.StructureTemperatures.SetPayload(handle, ref payload);
 		};
 	}
+
+	// Token: 0x040010A7 RID: 4263
+	public const string ID = "SteamTurbine";
+
+	// Token: 0x040010A8 RID: 4264
+	private const int HEIGHT = 4;
+
+	// Token: 0x040010A9 RID: 4265
+	private const int WIDTH = 5;
+
+	// Token: 0x040010AA RID: 4266
+	private static readonly List<Storage.StoredItemModifier> StoredItemModifiers = new List<Storage.StoredItemModifier>
+	{
+		Storage.StoredItemModifier.Hide,
+		Storage.StoredItemModifier.Insulate,
+		Storage.StoredItemModifier.Seal
+	};
 }

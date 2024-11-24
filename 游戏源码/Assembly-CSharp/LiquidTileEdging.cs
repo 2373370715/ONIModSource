@@ -1,41 +1,47 @@
-using System;
+﻿using System;
 using UnityEngine;
 
+// Token: 0x02001788 RID: 6024
 public class LiquidTileEdging
 {
+	// Token: 0x06007BEB RID: 31723 RVA: 0x0031E7C8 File Offset: 0x0031C9C8
 	private void Update()
 	{
-		Grid.GetVisibleExtents(out var min_x, out var min_y, out var max_x, out var max_y);
-		min_x = Math.Max(0, min_x);
-		min_y = Math.Max(0, min_y);
-		min_x = Mathf.Min(min_x, Grid.WidthInCells - 1);
-		min_y = Mathf.Min(min_y, Grid.HeightInCells - 1);
-		max_x = Mathf.CeilToInt(max_x);
-		max_y = Mathf.CeilToInt(max_y);
-		max_x = Mathf.Max(max_x, 0);
-		max_y = Mathf.Max(max_y, 0);
-		max_x = Mathf.Min(max_x, Grid.WidthInCells - 1);
-		max_y = Mathf.Min(max_y, Grid.HeightInCells - 1);
-		int num = 0;
-		int num2 = 0;
-		int num3 = 0;
-		for (int i = min_y; i < max_y; i++)
+		int num;
+		int num2;
+		int num3;
+		int num4;
+		Grid.GetVisibleExtents(out num, out num2, out num3, out num4);
+		num = Math.Max(0, num);
+		num2 = Math.Max(0, num2);
+		num = Mathf.Min(num, Grid.WidthInCells - 1);
+		num2 = Mathf.Min(num2, Grid.HeightInCells - 1);
+		num3 = Mathf.CeilToInt((float)num3);
+		num4 = Mathf.CeilToInt((float)num4);
+		num3 = Mathf.Max(num3, 0);
+		num4 = Mathf.Max(num4, 0);
+		num3 = Mathf.Min(num3, Grid.WidthInCells - 1);
+		num4 = Mathf.Min(num4, Grid.HeightInCells - 1);
+		int num5 = 0;
+		int num6 = 0;
+		int num7 = 0;
+		for (int i = num2; i < num4; i++)
 		{
-			for (int j = min_x; j < max_x; j++)
+			for (int j = num; j < num3; j++)
 			{
-				int num4 = i * Grid.WidthInCells + j;
-				Element element = Grid.Element[num4];
+				int num8 = i * Grid.WidthInCells + j;
+				Element element = Grid.Element[num8];
 				if (element.IsSolid)
 				{
-					num++;
+					num5++;
 				}
 				else if (element.IsLiquid)
 				{
-					num2++;
+					num6++;
 				}
 				else
 				{
-					num3++;
+					num7++;
 				}
 			}
 		}

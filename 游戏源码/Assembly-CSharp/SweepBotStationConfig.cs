@@ -1,25 +1,39 @@
+﻿using System;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x020005C6 RID: 1478
 public class SweepBotStationConfig : IBuildingConfig
 {
-	public const string ID = "SweepBotStation";
-
-	public const float POWER_USAGE = 240f;
-
+	// Token: 0x06001A7C RID: 6780 RVA: 0x001A82D8 File Offset: 0x001A64D8
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef("SweepBotStation", 2, 2, "sweep_bot_base_station_kanim", 30, 30f, new float[1] { BUILDINGS.CONSTRUCTION_MASS_KG.TIER2[0] - SweepBotConfig.MASS }, MATERIALS.REFINED_METALS, 1600f, BuildLocationRule.OnFloor, noise: NOISE_POLLUTION.NONE, decor: BUILDINGS.DECOR.PENALTY.TIER1);
-		obj.ViewMode = OverlayModes.Power.ID;
-		obj.Floodable = false;
-		obj.AudioCategory = "Metal";
-		obj.RequiresPowerInput = true;
-		obj.EnergyConsumptionWhenActive = 240f;
-		obj.ExhaustKilowattsWhenActive = 0f;
-		obj.SelfHeatKilowattsWhenActive = 1f;
-		return obj;
+		string id = "SweepBotStation";
+		int width = 2;
+		int height = 2;
+		string anim = "sweep_bot_base_station_kanim";
+		int hitpoints = 30;
+		float construction_time = 30f;
+		float[] construction_mass = new float[]
+		{
+			BUILDINGS.CONSTRUCTION_MASS_KG.TIER2[0] - SweepBotConfig.MASS
+		};
+		string[] refined_METALS = MATERIALS.REFINED_METALS;
+		float melting_point = 1600f;
+		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
+		EffectorValues none = NOISE_POLLUTION.NONE;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, construction_mass, refined_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.PENALTY.TIER1, none, 0.2f);
+		buildingDef.ViewMode = OverlayModes.Power.ID;
+		buildingDef.Floodable = false;
+		buildingDef.AudioCategory = "Metal";
+		buildingDef.RequiresPowerInput = true;
+		buildingDef.EnergyConsumptionWhenActive = 240f;
+		buildingDef.ExhaustKilowattsWhenActive = 0f;
+		buildingDef.SelfHeatKilowattsWhenActive = 1f;
+		return buildingDef;
 	}
 
+	// Token: 0x06001A7D RID: 6781 RVA: 0x001A8374 File Offset: 0x001A6574
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		Prioritizable.AddRef(go);
@@ -48,8 +62,15 @@ public class SweepBotStationConfig : IBuildingConfig
 		go.AddOrGet<SweepBotStation>().SetStorages(storage, storage2);
 	}
 
+	// Token: 0x06001A7E RID: 6782 RVA: 0x000A6A93 File Offset: 0x000A4C93
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGetDef<StorageController.Def>();
 	}
+
+	// Token: 0x040010D3 RID: 4307
+	public const string ID = "SweepBotStation";
+
+	// Token: 0x040010D4 RID: 4308
+	public const float POWER_USAGE = 240f;
 }

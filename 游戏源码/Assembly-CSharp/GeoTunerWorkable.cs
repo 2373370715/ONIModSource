@@ -1,17 +1,23 @@
+﻿using System;
 using TUNING;
 
+// Token: 0x02000DA6 RID: 3494
 public class GeoTunerWorkable : Workable
 {
+	// Token: 0x0600448E RID: 17550 RVA: 0x00248964 File Offset: 0x00246B64
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		SetWorkTime(30f);
-		requiredSkillPerk = Db.Get().SkillPerks.AllowGeyserTuning.Id;
-		SetWorkerStatusItem(Db.Get().DuplicantStatusItems.Studying);
-		overrideAnims = new KAnimFile[1] { Assets.GetAnim("anim_interacts_geotuner_kanim") };
-		attributeConverter = Db.Get().AttributeConverters.GeotuningSpeed;
-		attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.PART_DAY_EXPERIENCE;
-		skillExperienceMultiplier = SKILLS.PART_DAY_EXPERIENCE;
-		lightEfficiencyBonus = true;
+		base.SetWorkTime(30f);
+		this.requiredSkillPerk = Db.Get().SkillPerks.AllowGeyserTuning.Id;
+		base.SetWorkerStatusItem(Db.Get().DuplicantStatusItems.Studying);
+		this.overrideAnims = new KAnimFile[]
+		{
+			Assets.GetAnim("anim_interacts_geotuner_kanim")
+		};
+		this.attributeConverter = Db.Get().AttributeConverters.GeotuningSpeed;
+		this.attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.PART_DAY_EXPERIENCE;
+		this.skillExperienceMultiplier = SKILLS.PART_DAY_EXPERIENCE;
+		this.lightEfficiencyBonus = true;
 	}
 }

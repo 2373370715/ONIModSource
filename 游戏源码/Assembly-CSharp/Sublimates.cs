@@ -1,103 +1,48 @@
-using System;
+﻿using System;
 using KSerialization;
 using STRINGS;
 using UnityEngine;
 
+// Token: 0x020019C5 RID: 6597
 [SerializationConfig(MemberSerialization.OptIn)]
 [AddComponentMenu("KMonoBehaviour/scripts/Sublimates")]
 public class Sublimates : KMonoBehaviour, ISim200ms
 {
-	[Serializable]
-	public struct Info
+	// Token: 0x17000908 RID: 2312
+	// (get) Token: 0x06008965 RID: 35173 RVA: 0x000F9EFC File Offset: 0x000F80FC
+	public float Temperature
 	{
-		public float sublimationRate;
-
-		public float minSublimationAmount;
-
-		public float maxDestinationMass;
-
-		public float massPower;
-
-		public byte diseaseIdx;
-
-		public int diseaseCount;
-
-		[HashedEnum]
-		public SimHashes sublimatedElement;
-
-		public Info(float rate, float min_amount, float max_destination_mass, float mass_power, SimHashes element, byte disease_idx = byte.MaxValue, int disease_count = 0)
+		get
 		{
-			sublimationRate = rate;
-			minSublimationAmount = min_amount;
-			maxDestinationMass = max_destination_mass;
-			massPower = mass_power;
-			sublimatedElement = element;
-			diseaseIdx = disease_idx;
-			diseaseCount = disease_count;
+			return this.primaryElement.Temperature;
 		}
 	}
 
-	private enum EmitState
-	{
-		Emitting,
-		BlockedOnPressure,
-		BlockedOnTemperature
-	}
-
-	[MyCmpReq]
-	private PrimaryElement primaryElement;
-
-	[MyCmpReq]
-	private KSelectable selectable;
-
-	[SerializeField]
-	public SpawnFXHashes spawnFXHash;
-
-	public bool decayStorage;
-
-	[SerializeField]
-	public Info info;
-
-	[Serialize]
-	private float sublimatedMass;
-
-	private HandleVector<int>.Handle flowAccumulator = HandleVector<int>.InvalidHandle;
-
-	private EmitState lastEmitState = (EmitState)(-1);
-
-	private static readonly EventSystem.IntraObjectHandler<Sublimates> OnAbsorbDelegate = new EventSystem.IntraObjectHandler<Sublimates>(delegate(Sublimates component, object data)
-	{
-		component.OnAbsorb(data);
-	});
-
-	private static readonly EventSystem.IntraObjectHandler<Sublimates> OnSplitFromChunkDelegate = new EventSystem.IntraObjectHandler<Sublimates>(delegate(Sublimates component, object data)
-	{
-		component.OnSplitFromChunk(data);
-	});
-
-	public float Temperature => primaryElement.Temperature;
-
+	// Token: 0x06008966 RID: 35174 RVA: 0x000F9F09 File Offset: 0x000F8109
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		Subscribe(-2064133523, OnAbsorbDelegate);
-		Subscribe(1335436905, OnSplitFromChunkDelegate);
-		simRenderLoadBalance = true;
+		base.Subscribe<Sublimates>(-2064133523, Sublimates.OnAbsorbDelegate);
+		base.Subscribe<Sublimates>(1335436905, Sublimates.OnSplitFromChunkDelegate);
+		this.simRenderLoadBalance = true;
 	}
 
+	// Token: 0x06008967 RID: 35175 RVA: 0x000F9F3A File Offset: 0x000F813A
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		flowAccumulator = Game.Instance.accumulators.Add("EmittedMass", this);
-		RefreshStatusItem(EmitState.Emitting);
+		this.flowAccumulator = Game.Instance.accumulators.Add("EmittedMass", this);
+		this.RefreshStatusItem(Sublimates.EmitState.Emitting);
 	}
 
+	// Token: 0x06008968 RID: 35176 RVA: 0x000F9F64 File Offset: 0x000F8164
 	protected override void OnCleanUp()
 	{
-		flowAccumulator = Game.Instance.accumulators.Remove(flowAccumulator);
+		this.flowAccumulator = Game.Instance.accumulators.Remove(this.flowAccumulator);
 		base.OnCleanUp();
 	}
 
+	// Token: 0x06008969 RID: 35177 RVA: 0x003575E4 File Offset: 0x003557E4
 	private void OnAbsorb(object data)
 	{
 		Pickupable pickupable = (Pickupable)data;
@@ -106,27 +51,30 @@ public class Sublimates : KMonoBehaviour, ISim200ms
 			Sublimates component = pickupable.GetComponent<Sublimates>();
 			if (component != null)
 			{
-				sublimatedMass += component.sublimatedMass;
+				this.sublimatedMass += component.sublimatedMass;
 			}
 		}
 	}
 
+	// Token: 0x0600896A RID: 35178 RVA: 0x00357624 File Offset: 0x00355824
 	private void OnSplitFromChunk(object data)
 	{
-		Pickupable obj = data as Pickupable;
-		PrimaryElement primaryElement = obj.PrimaryElement;
-		Sublimates component = obj.GetComponent<Sublimates>();
-		if (!(component == null))
+		Pickupable pickupable = data as Pickupable;
+		PrimaryElement primaryElement = pickupable.PrimaryElement;
+		Sublimates component = pickupable.GetComponent<Sublimates>();
+		if (component == null)
 		{
-			float mass = this.primaryElement.Mass;
-			float mass2 = primaryElement.Mass;
-			float num = mass / (mass2 + mass);
-			sublimatedMass = component.sublimatedMass * num;
-			float num2 = 1f - num;
-			component.sublimatedMass *= num2;
+			return;
 		}
+		float mass = this.primaryElement.Mass;
+		float mass2 = primaryElement.Mass;
+		float num = mass / (mass2 + mass);
+		this.sublimatedMass = component.sublimatedMass * num;
+		float num2 = 1f - num;
+		component.sublimatedMass *= num2;
 	}
 
+	// Token: 0x0600896B RID: 35179 RVA: 0x00357690 File Offset: 0x00355890
 	public void Sim200ms(float dt)
 	{
 		int num = Grid.PosToCell(base.transform.GetPosition());
@@ -135,58 +83,63 @@ public class Sublimates : KMonoBehaviour, ISim200ms
 			return;
 		}
 		bool flag = this.HasTag(GameTags.Sealed);
-		Pickupable component = GetComponent<Pickupable>();
-		Storage storage = ((component != null) ? component.storage : null);
-		if ((flag && !decayStorage) || (flag && storage != null && storage.HasTag(GameTags.CorrosionProof)))
+		Pickupable component = base.GetComponent<Pickupable>();
+		Storage storage = (component != null) ? component.storage : null;
+		if (flag && !this.decayStorage)
 		{
 			return;
 		}
-		Element element = ElementLoader.FindElementByHash(info.sublimatedElement);
-		if (primaryElement.Temperature <= element.lowTemp)
+		if (flag && storage != null && storage.HasTag(GameTags.CorrosionProof))
 		{
-			RefreshStatusItem(EmitState.BlockedOnTemperature);
+			return;
+		}
+		Element element = ElementLoader.FindElementByHash(this.info.sublimatedElement);
+		if (this.primaryElement.Temperature <= element.lowTemp)
+		{
+			this.RefreshStatusItem(Sublimates.EmitState.BlockedOnTemperature);
 			return;
 		}
 		float num2 = Grid.Mass[num];
-		if (num2 < info.maxDestinationMass)
+		if (num2 < this.info.maxDestinationMass)
 		{
-			float mass = primaryElement.Mass;
-			if (mass > 0f)
+			float num3 = this.primaryElement.Mass;
+			if (num3 > 0f)
 			{
-				float num3 = Mathf.Pow(mass, info.massPower);
-				float num4 = Mathf.Max(info.sublimationRate, info.sublimationRate * num3);
-				num4 *= dt;
-				num4 = Mathf.Min(num4, mass);
-				sublimatedMass += num4;
-				mass -= num4;
-				if (!(sublimatedMass > info.minSublimationAmount))
+				float num4 = Mathf.Pow(num3, this.info.massPower);
+				float num5 = Mathf.Max(this.info.sublimationRate, this.info.sublimationRate * num4);
+				num5 *= dt;
+				num5 = Mathf.Min(num5, num3);
+				this.sublimatedMass += num5;
+				num3 -= num5;
+				if (this.sublimatedMass > this.info.minSublimationAmount)
 				{
-					return;
-				}
-				float num5 = sublimatedMass / primaryElement.Mass;
-				byte b = byte.MaxValue;
-				int num6 = 0;
-				if (info.diseaseIdx == byte.MaxValue)
-				{
-					b = primaryElement.DiseaseIdx;
-					num6 = (int)((float)primaryElement.DiseaseCount * num5);
-					primaryElement.ModifyDiseaseCount(-num6, "Sublimates.SimUpdate");
-				}
-				else
-				{
-					float num7 = sublimatedMass / info.sublimationRate;
-					b = info.diseaseIdx;
-					num6 = (int)((float)info.diseaseCount * num7);
-				}
-				float num8 = Mathf.Min(sublimatedMass, info.maxDestinationMass - num2);
-				if (num8 > 0f)
-				{
-					Emit(num, num8, primaryElement.Temperature, b, num6);
-					sublimatedMass = Mathf.Max(0f, sublimatedMass - num8);
-					primaryElement.Mass = Mathf.Max(0f, primaryElement.Mass - num8);
-					UpdateStorage();
-					RefreshStatusItem(EmitState.Emitting);
-					if (flag && decayStorage && storage != null)
+					float num6 = this.sublimatedMass / this.primaryElement.Mass;
+					byte diseaseIdx;
+					int num7;
+					if (this.info.diseaseIdx == 255)
+					{
+						diseaseIdx = this.primaryElement.DiseaseIdx;
+						num7 = (int)((float)this.primaryElement.DiseaseCount * num6);
+						this.primaryElement.ModifyDiseaseCount(-num7, "Sublimates.SimUpdate");
+					}
+					else
+					{
+						float num8 = this.sublimatedMass / this.info.sublimationRate;
+						diseaseIdx = this.info.diseaseIdx;
+						num7 = (int)((float)this.info.diseaseCount * num8);
+					}
+					float num9 = Mathf.Min(this.sublimatedMass, this.info.maxDestinationMass - num2);
+					if (num9 <= 0f)
+					{
+						this.RefreshStatusItem(Sublimates.EmitState.BlockedOnPressure);
+						return;
+					}
+					this.Emit(num, num9, this.primaryElement.Temperature, diseaseIdx, num7);
+					this.sublimatedMass = Mathf.Max(0f, this.sublimatedMass - num9);
+					this.primaryElement.Mass = Mathf.Max(0f, this.primaryElement.Mass - num9);
+					this.UpdateStorage();
+					this.RefreshStatusItem(Sublimates.EmitState.Emitting);
+					if (flag && this.decayStorage && storage != null)
 					{
 						storage.Trigger(-794517298, new BuildingHP.DamageSourceInfo
 						{
@@ -195,91 +148,182 @@ public class Sublimates : KMonoBehaviour, ISim200ms
 							popString = UI.GAMEOBJECTEFFECTS.DAMAGE_POPS.CORROSIVE_ELEMENT,
 							fullDamageEffectName = "smoke_damage_kanim"
 						});
+						return;
 					}
 				}
-				else
-				{
-					RefreshStatusItem(EmitState.BlockedOnPressure);
-				}
 			}
-			else if (sublimatedMass > 0f)
+			else if (this.sublimatedMass > 0f)
 			{
-				float num9 = Mathf.Min(sublimatedMass, info.maxDestinationMass - num2);
-				if (num9 > 0f)
+				float num10 = Mathf.Min(this.sublimatedMass, this.info.maxDestinationMass - num2);
+				if (num10 > 0f)
 				{
-					Emit(num, num9, primaryElement.Temperature, primaryElement.DiseaseIdx, primaryElement.DiseaseCount);
-					sublimatedMass = Mathf.Max(0f, sublimatedMass - num9);
-					primaryElement.Mass = Mathf.Max(0f, primaryElement.Mass - num9);
-					UpdateStorage();
-					RefreshStatusItem(EmitState.Emitting);
+					this.Emit(num, num10, this.primaryElement.Temperature, this.primaryElement.DiseaseIdx, this.primaryElement.DiseaseCount);
+					this.sublimatedMass = Mathf.Max(0f, this.sublimatedMass - num10);
+					this.primaryElement.Mass = Mathf.Max(0f, this.primaryElement.Mass - num10);
+					this.UpdateStorage();
+					this.RefreshStatusItem(Sublimates.EmitState.Emitting);
+					return;
 				}
-				else
-				{
-					RefreshStatusItem(EmitState.BlockedOnPressure);
-				}
+				this.RefreshStatusItem(Sublimates.EmitState.BlockedOnPressure);
+				return;
 			}
-			else if (!primaryElement.KeepZeroMassObject)
+			else if (!this.primaryElement.KeepZeroMassObject)
 			{
 				Util.KDestroyGameObject(base.gameObject);
+				return;
 			}
 		}
 		else
 		{
-			RefreshStatusItem(EmitState.BlockedOnPressure);
+			this.RefreshStatusItem(Sublimates.EmitState.BlockedOnPressure);
 		}
 	}
 
+	// Token: 0x0600896C RID: 35180 RVA: 0x00357A40 File Offset: 0x00355C40
 	private void UpdateStorage()
 	{
-		Pickupable component = GetComponent<Pickupable>();
+		Pickupable component = base.GetComponent<Pickupable>();
 		if (component != null && component.storage != null)
 		{
 			component.storage.Trigger(-1697596308, base.gameObject);
 		}
 	}
 
+	// Token: 0x0600896D RID: 35181 RVA: 0x00357A84 File Offset: 0x00355C84
 	private void Emit(int cell, float mass, float temperature, byte disease_idx, int disease_count)
 	{
-		SimMessages.AddRemoveSubstance(cell, info.sublimatedElement, CellEventLogger.Instance.SublimatesEmit, mass, temperature, disease_idx, disease_count);
-		Game.Instance.accumulators.Accumulate(flowAccumulator, mass);
-		if (spawnFXHash != 0)
+		SimMessages.AddRemoveSubstance(cell, this.info.sublimatedElement, CellEventLogger.Instance.SublimatesEmit, mass, temperature, disease_idx, disease_count, true, -1);
+		Game.Instance.accumulators.Accumulate(this.flowAccumulator, mass);
+		if (this.spawnFXHash != SpawnFXHashes.None)
 		{
-			Vector3 position = base.transform.GetPosition();
-			position.z = Grid.GetLayerZ(Grid.SceneLayer.Front);
-			Game.Instance.SpawnFX(spawnFXHash, base.transform.GetPosition(), 0f);
+			base.transform.GetPosition().z = Grid.GetLayerZ(Grid.SceneLayer.Front);
+			Game.Instance.SpawnFX(this.spawnFXHash, base.transform.GetPosition(), 0f);
 		}
 	}
 
+	// Token: 0x0600896E RID: 35182 RVA: 0x000F9F87 File Offset: 0x000F8187
 	public float AvgFlowRate()
 	{
-		return Game.Instance.accumulators.GetAverageRate(flowAccumulator);
+		return Game.Instance.accumulators.GetAverageRate(this.flowAccumulator);
 	}
 
-	private void RefreshStatusItem(EmitState newEmitState)
+	// Token: 0x0600896F RID: 35183 RVA: 0x00357B0C File Offset: 0x00355D0C
+	private void RefreshStatusItem(Sublimates.EmitState newEmitState)
 	{
-		if (newEmitState == lastEmitState)
+		if (newEmitState == this.lastEmitState)
 		{
 			return;
 		}
 		switch (newEmitState)
 		{
-		case EmitState.Emitting:
-			if (info.sublimatedElement == SimHashes.Oxygen)
+		case Sublimates.EmitState.Emitting:
+			if (this.info.sublimatedElement == SimHashes.Oxygen)
 			{
-				selectable.SetStatusItem(Db.Get().StatusItemCategories.Main, Db.Get().BuildingStatusItems.EmittingOxygenAvg, this);
+				this.selectable.SetStatusItem(Db.Get().StatusItemCategories.Main, Db.Get().BuildingStatusItems.EmittingOxygenAvg, this);
 			}
 			else
 			{
-				selectable.SetStatusItem(Db.Get().StatusItemCategories.Main, Db.Get().BuildingStatusItems.EmittingGasAvg, this);
+				this.selectable.SetStatusItem(Db.Get().StatusItemCategories.Main, Db.Get().BuildingStatusItems.EmittingGasAvg, this);
 			}
 			break;
-		case EmitState.BlockedOnPressure:
-			selectable.SetStatusItem(Db.Get().StatusItemCategories.Main, Db.Get().BuildingStatusItems.EmittingBlockedHighPressure, this);
+		case Sublimates.EmitState.BlockedOnPressure:
+			this.selectable.SetStatusItem(Db.Get().StatusItemCategories.Main, Db.Get().BuildingStatusItems.EmittingBlockedHighPressure, this);
 			break;
-		case EmitState.BlockedOnTemperature:
-			selectable.SetStatusItem(Db.Get().StatusItemCategories.Main, Db.Get().BuildingStatusItems.EmittingBlockedLowTemperature, this);
+		case Sublimates.EmitState.BlockedOnTemperature:
+			this.selectable.SetStatusItem(Db.Get().StatusItemCategories.Main, Db.Get().BuildingStatusItems.EmittingBlockedLowTemperature, this);
 			break;
 		}
-		lastEmitState = newEmitState;
+		this.lastEmitState = newEmitState;
+	}
+
+	// Token: 0x0400676A RID: 26474
+	[MyCmpReq]
+	private PrimaryElement primaryElement;
+
+	// Token: 0x0400676B RID: 26475
+	[MyCmpReq]
+	private KSelectable selectable;
+
+	// Token: 0x0400676C RID: 26476
+	[SerializeField]
+	public SpawnFXHashes spawnFXHash;
+
+	// Token: 0x0400676D RID: 26477
+	public bool decayStorage;
+
+	// Token: 0x0400676E RID: 26478
+	[SerializeField]
+	public Sublimates.Info info;
+
+	// Token: 0x0400676F RID: 26479
+	[Serialize]
+	private float sublimatedMass;
+
+	// Token: 0x04006770 RID: 26480
+	private HandleVector<int>.Handle flowAccumulator = HandleVector<int>.InvalidHandle;
+
+	// Token: 0x04006771 RID: 26481
+	private Sublimates.EmitState lastEmitState = (Sublimates.EmitState)(-1);
+
+	// Token: 0x04006772 RID: 26482
+	private static readonly EventSystem.IntraObjectHandler<Sublimates> OnAbsorbDelegate = new EventSystem.IntraObjectHandler<Sublimates>(delegate(Sublimates component, object data)
+	{
+		component.OnAbsorb(data);
+	});
+
+	// Token: 0x04006773 RID: 26483
+	private static readonly EventSystem.IntraObjectHandler<Sublimates> OnSplitFromChunkDelegate = new EventSystem.IntraObjectHandler<Sublimates>(delegate(Sublimates component, object data)
+	{
+		component.OnSplitFromChunk(data);
+	});
+
+	// Token: 0x020019C6 RID: 6598
+	[Serializable]
+	public struct Info
+	{
+		// Token: 0x06008972 RID: 35186 RVA: 0x000F9FEE File Offset: 0x000F81EE
+		public Info(float rate, float min_amount, float max_destination_mass, float mass_power, SimHashes element, byte disease_idx = 255, int disease_count = 0)
+		{
+			this.sublimationRate = rate;
+			this.minSublimationAmount = min_amount;
+			this.maxDestinationMass = max_destination_mass;
+			this.massPower = mass_power;
+			this.sublimatedElement = element;
+			this.diseaseIdx = disease_idx;
+			this.diseaseCount = disease_count;
+		}
+
+		// Token: 0x04006774 RID: 26484
+		public float sublimationRate;
+
+		// Token: 0x04006775 RID: 26485
+		public float minSublimationAmount;
+
+		// Token: 0x04006776 RID: 26486
+		public float maxDestinationMass;
+
+		// Token: 0x04006777 RID: 26487
+		public float massPower;
+
+		// Token: 0x04006778 RID: 26488
+		public byte diseaseIdx;
+
+		// Token: 0x04006779 RID: 26489
+		public int diseaseCount;
+
+		// Token: 0x0400677A RID: 26490
+		[HashedEnum]
+		public SimHashes sublimatedElement;
+	}
+
+	// Token: 0x020019C7 RID: 6599
+	private enum EmitState
+	{
+		// Token: 0x0400677C RID: 26492
+		Emitting,
+		// Token: 0x0400677D RID: 26493
+		BlockedOnPressure,
+		// Token: 0x0400677E RID: 26494
+		BlockedOnTemperature
 	}
 }

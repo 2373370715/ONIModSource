@@ -1,30 +1,31 @@
+﻿using System;
 using UnityEngine;
 
+// Token: 0x02001D48 RID: 7496
 public class PrefabDefinedUIPosition
 {
-	private Option<Vector2> position;
-
+	// Token: 0x06009C98 RID: 40088 RVA: 0x00105E59 File Offset: 0x00104059
 	public void SetOn(GameObject gameObject)
 	{
-		if (position.HasValue)
+		if (this.position.HasValue)
 		{
-			gameObject.rectTransform().anchoredPosition = position.Value;
+			gameObject.rectTransform().anchoredPosition = this.position.Value;
+			return;
 		}
-		else
-		{
-			position = gameObject.rectTransform().anchoredPosition;
-		}
+		this.position = gameObject.rectTransform().anchoredPosition;
 	}
 
+	// Token: 0x06009C99 RID: 40089 RVA: 0x00105E95 File Offset: 0x00104095
 	public void SetOn(Component component)
 	{
-		if (position.HasValue)
+		if (this.position.HasValue)
 		{
-			component.rectTransform().anchoredPosition = position.Value;
+			component.rectTransform().anchoredPosition = this.position.Value;
+			return;
 		}
-		else
-		{
-			position = component.rectTransform().anchoredPosition;
-		}
+		this.position = component.rectTransform().anchoredPosition;
 	}
+
+	// Token: 0x04007ACE RID: 31438
+	private Option<Vector2> position;
 }

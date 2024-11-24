@@ -1,75 +1,92 @@
+﻿using System;
 using System.Linq;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x02000FAF RID: 4015
 public class SpiceGrinderWorkable : Workable, IConfigurableConsumer
 {
-	[MyCmpAdd]
-	public Notifier notifier;
-
-	[SerializeField]
-	public Vector3 finishedSeedDropOffset;
-
-	public SpiceGrinder.StatesInstance Grinder;
-
+	// Token: 0x06005137 RID: 20791 RVA: 0x00270DAC File Offset: 0x0026EFAC
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		requiredSkillPerk = Db.Get().SkillPerks.CanSpiceGrinder.Id;
-		workerStatusItem = Db.Get().DuplicantStatusItems.Spicing;
-		attributeConverter = Db.Get().AttributeConverters.CookingSpeed;
-		attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.PART_DAY_EXPERIENCE;
-		skillExperienceSkillGroup = Db.Get().SkillGroups.Cooking.Id;
-		skillExperienceMultiplier = SKILLS.PART_DAY_EXPERIENCE;
-		overrideAnims = new KAnimFile[1] { Assets.GetAnim("anim_interacts_spice_grinder_kanim") };
-		SetWorkTime(5f);
-		showProgressBar = true;
-		lightEfficiencyBonus = true;
+		this.requiredSkillPerk = Db.Get().SkillPerks.CanSpiceGrinder.Id;
+		this.workerStatusItem = Db.Get().DuplicantStatusItems.Spicing;
+		this.attributeConverter = Db.Get().AttributeConverters.CookingSpeed;
+		this.attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.PART_DAY_EXPERIENCE;
+		this.skillExperienceSkillGroup = Db.Get().SkillGroups.Cooking.Id;
+		this.skillExperienceMultiplier = SKILLS.PART_DAY_EXPERIENCE;
+		this.overrideAnims = new KAnimFile[]
+		{
+			Assets.GetAnim("anim_interacts_spice_grinder_kanim")
+		};
+		base.SetWorkTime(5f);
+		this.showProgressBar = true;
+		this.lightEfficiencyBonus = true;
 	}
 
-	protected override void OnStartWork(Worker worker)
+	// Token: 0x06005138 RID: 20792 RVA: 0x00270E6C File Offset: 0x0026F06C
+	protected override void OnStartWork(WorkerBase worker)
 	{
-		if (Grinder.CurrentFood != null)
+		if (this.Grinder.CurrentFood != null)
 		{
-			float num = Grinder.CurrentFood.Calories * 0.001f / 1000f;
-			SetWorkTime(num * 5f);
+			float num = this.Grinder.CurrentFood.Calories * 0.001f / 1000f;
+			base.SetWorkTime(num * 5f);
 		}
 		else
 		{
-			Debug.LogWarning("SpiceGrider attempted to start spicing with no food");
-			StopWork(worker, aborted: true);
+			global::Debug.LogWarning("SpiceGrider attempted to start spicing with no food");
+			base.StopWork(worker, true);
 		}
-		Grinder.UpdateFoodSymbol();
+		this.Grinder.UpdateFoodSymbol();
 	}
 
-	protected override void OnAbortWork(Worker worker)
+	// Token: 0x06005139 RID: 20793 RVA: 0x000D4F1F File Offset: 0x000D311F
+	protected override void OnAbortWork(WorkerBase worker)
 	{
-		if (!(Grinder.CurrentFood == null))
+		if (this.Grinder.CurrentFood == null)
 		{
-			Grinder.UpdateFoodSymbol();
+			return;
 		}
+		this.Grinder.UpdateFoodSymbol();
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+	// Token: 0x0600513A RID: 20794 RVA: 0x000D4F40 File Offset: 0x000D3140
+	protected override void OnCompleteWork(WorkerBase worker)
 	{
-		if (!(Grinder.CurrentFood == null))
+		if (this.Grinder.CurrentFood == null)
 		{
-			Grinder.SpiceFood();
+			return;
 		}
+		this.Grinder.SpiceFood();
 	}
 
+	// Token: 0x0600513B RID: 20795 RVA: 0x00270ED8 File Offset: 0x0026F0D8
 	public IConfigurableConsumerOption[] GetSettingOptions()
 	{
-		return SpiceGrinder.SettingOptions.Values.ToArray();
+		return SpiceGrinder.SettingOptions.Values.ToArray<SpiceGrinder.Option>();
 	}
 
+	// Token: 0x0600513C RID: 20796 RVA: 0x000D4F61 File Offset: 0x000D3161
 	public IConfigurableConsumerOption GetSelectedOption()
 	{
-		return Grinder.SelectedOption;
+		return this.Grinder.SelectedOption;
 	}
 
+	// Token: 0x0600513D RID: 20797 RVA: 0x000D4F6E File Offset: 0x000D316E
 	public void SetSelectedOption(IConfigurableConsumerOption option)
 	{
-		Grinder.OnOptionSelected(option as SpiceGrinder.Option);
+		this.Grinder.OnOptionSelected(option as SpiceGrinder.Option);
 	}
+
+	// Token: 0x040038BB RID: 14523
+	[MyCmpAdd]
+	public Notifier notifier;
+
+	// Token: 0x040038BC RID: 14524
+	[SerializeField]
+	public Vector3 finishedSeedDropOffset;
+
+	// Token: 0x040038BD RID: 14525
+	public SpiceGrinder.StatesInstance Grinder;
 }

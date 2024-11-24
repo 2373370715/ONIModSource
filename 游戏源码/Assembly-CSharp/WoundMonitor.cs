@@ -1,119 +1,261 @@
+﻿using System;
+
+// Token: 0x02001622 RID: 5666
 public class WoundMonitor : GameStateMachine<WoundMonitor, WoundMonitor.Instance>
 {
-	public class Wounded : State
+	// Token: 0x0600754A RID: 30026 RVA: 0x00305E44 File Offset: 0x00304044
+	public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
-		public State light;
-
-		public State medium;
-
-		public State heavy;
+		default_state = this.healthy;
+		this.root.ToggleAnims("anim_hits_kanim", 0f).EventHandler(GameHashes.HealthChanged, delegate(WoundMonitor.Instance smi, object data)
+		{
+			smi.OnHealthChanged(data);
+		});
+		this.healthy.EventTransition(GameHashes.HealthChanged, this.wounded, (WoundMonitor.Instance smi) => smi.health.State > Health.HealthState.Perfect);
+		this.wounded.ToggleUrge(Db.Get().Urges.Heal).Enter(delegate(WoundMonitor.Instance smi)
+		{
+			switch (smi.health.State)
+			{
+			case Health.HealthState.Scuffed:
+				smi.GoTo(this.wounded.light);
+				return;
+			case Health.HealthState.Injured:
+				smi.GoTo(this.wounded.medium);
+				return;
+			case Health.HealthState.Critical:
+				smi.GoTo(this.wounded.heavy);
+				return;
+			default:
+				return;
+			}
+		}).EventHandler(GameHashes.HealthChanged, delegate(WoundMonitor.Instance smi)
+		{
+			smi.GoToProperHeathState();
+		});
+		this.wounded.medium.ToggleAnims("anim_loco_wounded_kanim", 1f);
+		this.wounded.heavy.ToggleAnims("anim_loco_wounded_kanim", 3f).Update("LookForAvailableClinic", delegate(WoundMonitor.Instance smi, float dt)
+		{
+			smi.FindAvailableMedicalBed();
+		}, UpdateRate.SIM_1000ms, false);
 	}
 
-	public new class Instance : GameInstance
+	// Token: 0x040057D1 RID: 22481
+	public GameStateMachine<WoundMonitor, WoundMonitor.Instance, IStateMachineTarget, object>.State healthy;
+
+	// Token: 0x040057D2 RID: 22482
+	public WoundMonitor.Wounded wounded;
+
+	// Token: 0x02001623 RID: 5667
+	public class Wounded : GameStateMachine<WoundMonitor, WoundMonitor.Instance, IStateMachineTarget, object>.State
 	{
-		public Health health;
+		// Token: 0x040057D3 RID: 22483
+		public GameStateMachine<WoundMonitor, WoundMonitor.Instance, IStateMachineTarget, object>.State light;
 
-		private Worker worker;
+		// Token: 0x040057D4 RID: 22484
+		public GameStateMachine<WoundMonitor, WoundMonitor.Instance, IStateMachineTarget, object>.State medium;
 
-		public Instance(IStateMachineTarget master)
-			: base(master)
+		// Token: 0x040057D5 RID: 22485
+		public GameStateMachine<WoundMonitor, WoundMonitor.Instance, IStateMachineTarget, object>.State heavy;
+	}
+
+	// Token: 0x02001624 RID: 5668
+	public new class Instance : GameStateMachine<WoundMonitor, WoundMonitor.Instance, IStateMachineTarget, object>.GameInstance
+	{
+		// Token: 0x0600754E RID: 30030 RVA: 0x000ED0F4 File Offset: 0x000EB2F4
+		public Instance(IStateMachineTarget master) : base(master)
 		{
-			health = master.GetComponent<Health>();
-			worker = master.GetComponent<Worker>();
+			this.health = master.GetComponent<Health>();
+			this.worker = master.GetComponent<WorkerBase>();
 		}
 
+		// Token: 0x0600754F RID: 30031 RVA: 0x00305FE8 File Offset: 0x003041E8
 		public void OnHealthChanged(object data)
 		{
 			float num = (float)data;
-			if (health.hitPoints != 0f && num < 0f)
+			if (this.health.hitPoints != 0f && num < 0f)
 			{
-				PlayHitAnimation();
+				this.PlayHitAnimation();
 			}
 		}
 
+		// Token: 0x06007550 RID: 30032 RVA: 0x0030601C File Offset: 0x0030421C
 		private void PlayHitAnimation()
 		{
 			string text = null;
-			KBatchedAnimController kBatchedAnimController = base.smi.Get<KBatchedAnimController>();
-			if (kBatchedAnimController.CurrentAnim != null)
+			KBatchedAnimController kbatchedAnimController = base.smi.Get<KBatchedAnimController>();
+			if (kbatchedAnimController.CurrentAnim != null)
 			{
-				text = kBatchedAnimController.CurrentAnim.name;
+				text = kbatchedAnimController.CurrentAnim.name;
 			}
-			KAnim.PlayMode playMode = kBatchedAnimController.PlayMode;
-			if (text == null || (!text.Contains("hit") && !text.Contains("2_0") && !text.Contains("2_1") && !text.Contains("2_-1") && !text.Contains("2_-2") && !text.Contains("1_-1") && !text.Contains("1_-2") && !text.Contains("1_1") && !text.Contains("1_2") && !text.Contains("breathe_") && !text.Contains("death_") && !text.Contains("impact")))
+			KAnim.PlayMode playMode = kbatchedAnimController.PlayMode;
+			if (text != null)
 			{
-				string text2 = "hit";
-				AttackChore.StatesInstance sMI = base.gameObject.GetSMI<AttackChore.StatesInstance>();
-				if (sMI != null && sMI.GetCurrentState() == sMI.sm.attack)
+				if (text.Contains("hit"))
 				{
-					text2 = sMI.master.GetHitAnim();
+					return;
 				}
-				if (worker.GetComponent<Navigator>().CurrentNavType == NavType.Ladder)
+				if (text.Contains("2_0"))
 				{
-					text2 = "hit_ladder";
+					return;
 				}
-				else if (worker.GetComponent<Navigator>().CurrentNavType == NavType.Pole)
+				if (text.Contains("2_1"))
 				{
-					text2 = "hit_pole";
+					return;
 				}
-				kBatchedAnimController.Play(text2);
-				if (text != null)
+				if (text.Contains("2_-1"))
 				{
-					kBatchedAnimController.Queue(text, playMode);
+					return;
 				}
+				if (text.Contains("2_-2"))
+				{
+					return;
+				}
+				if (text.Contains("1_-1"))
+				{
+					return;
+				}
+				if (text.Contains("1_-2"))
+				{
+					return;
+				}
+				if (text.Contains("1_1"))
+				{
+					return;
+				}
+				if (text.Contains("1_2"))
+				{
+					return;
+				}
+				if (text.Contains("breathe_"))
+				{
+					return;
+				}
+				if (text.Contains("death_"))
+				{
+					return;
+				}
+				if (text.Contains("impact"))
+				{
+					return;
+				}
+			}
+			string s = "hit";
+			AttackChore.StatesInstance smi = base.gameObject.GetSMI<AttackChore.StatesInstance>();
+			if (smi != null && smi.GetCurrentState() == smi.sm.attack)
+			{
+				s = smi.master.GetHitAnim();
+			}
+			if (this.worker.GetComponent<Navigator>().CurrentNavType == NavType.Ladder)
+			{
+				s = "hit_ladder";
+			}
+			else if (this.worker.GetComponent<Navigator>().CurrentNavType == NavType.Pole)
+			{
+				s = "hit_pole";
+			}
+			kbatchedAnimController.Play(s, KAnim.PlayMode.Once, 1f, 0f);
+			if (text != null)
+			{
+				kbatchedAnimController.Queue(text, playMode, 1f, 0f);
 			}
 		}
 
+		// Token: 0x06007551 RID: 30033 RVA: 0x003061A0 File Offset: 0x003043A0
 		public void PlayKnockedOverImpactAnimation()
 		{
 			string text = null;
-			KBatchedAnimController kBatchedAnimController = base.smi.Get<KBatchedAnimController>();
-			if (kBatchedAnimController.CurrentAnim != null)
+			KBatchedAnimController kbatchedAnimController = base.smi.Get<KBatchedAnimController>();
+			if (kbatchedAnimController.CurrentAnim != null)
 			{
-				text = kBatchedAnimController.CurrentAnim.name;
+				text = kbatchedAnimController.CurrentAnim.name;
 			}
-			KAnim.PlayMode playMode = kBatchedAnimController.PlayMode;
-			if (text == null || (!text.Contains("impact") && !text.Contains("2_0") && !text.Contains("2_1") && !text.Contains("2_-1") && !text.Contains("2_-2") && !text.Contains("1_-1") && !text.Contains("1_-2") && !text.Contains("1_1") && !text.Contains("1_2") && !text.Contains("breathe_") && !text.Contains("death_")))
+			KAnim.PlayMode playMode = kbatchedAnimController.PlayMode;
+			if (text != null)
 			{
-				string text2 = "impact";
-				kBatchedAnimController.Play(text2);
-				if (text != null)
+				if (text.Contains("impact"))
 				{
-					kBatchedAnimController.Queue(text, playMode);
+					return;
 				}
+				if (text.Contains("2_0"))
+				{
+					return;
+				}
+				if (text.Contains("2_1"))
+				{
+					return;
+				}
+				if (text.Contains("2_-1"))
+				{
+					return;
+				}
+				if (text.Contains("2_-2"))
+				{
+					return;
+				}
+				if (text.Contains("1_-1"))
+				{
+					return;
+				}
+				if (text.Contains("1_-2"))
+				{
+					return;
+				}
+				if (text.Contains("1_1"))
+				{
+					return;
+				}
+				if (text.Contains("1_2"))
+				{
+					return;
+				}
+				if (text.Contains("breathe_"))
+				{
+					return;
+				}
+				if (text.Contains("death_"))
+				{
+					return;
+				}
+			}
+			string s = "impact";
+			kbatchedAnimController.Play(s, KAnim.PlayMode.Once, 1f, 0f);
+			if (text != null)
+			{
+				kbatchedAnimController.Queue(text, playMode, 1f, 0f);
 			}
 		}
 
+		// Token: 0x06007552 RID: 30034 RVA: 0x003062B0 File Offset: 0x003044B0
 		public void GoToProperHeathState()
 		{
 			switch (base.smi.health.State)
 			{
 			case Health.HealthState.Perfect:
 				base.smi.GoTo(base.sm.healthy);
-				break;
-			case Health.HealthState.Critical:
-				base.smi.GoTo(base.sm.wounded.heavy);
-				break;
-			case Health.HealthState.Injured:
-				base.smi.GoTo(base.sm.wounded.medium);
+				return;
+			case Health.HealthState.Alright:
 				break;
 			case Health.HealthState.Scuffed:
 				base.smi.GoTo(base.sm.wounded.light);
 				break;
-			case Health.HealthState.Alright:
-				break;
+			case Health.HealthState.Injured:
+				base.smi.GoTo(base.sm.wounded.medium);
+				return;
+			case Health.HealthState.Critical:
+				base.smi.GoTo(base.sm.wounded.heavy);
+				return;
+			default:
+				return;
 			}
 		}
 
+		// Token: 0x06007553 RID: 30035 RVA: 0x000ED115 File Offset: 0x000EB315
 		public bool ShouldExitInfirmary()
 		{
-			if (health.State == Health.HealthState.Perfect)
-			{
-				return true;
-			}
-			return false;
+			return this.health.State == Health.HealthState.Perfect;
 		}
 
+		// Token: 0x06007554 RID: 30036 RVA: 0x00306354 File Offset: 0x00304554
 		public void FindAvailableMedicalBed()
 		{
 			AssignableSlot clinic = Db.Get().AssignableSlots.Clinic;
@@ -123,42 +265,11 @@ public class WoundMonitor : GameStateMachine<WoundMonitor, WoundMonitor.Instance
 				soleOwner.AutoAssignSlot(clinic);
 			}
 		}
-	}
 
-	public State healthy;
+		// Token: 0x040057D6 RID: 22486
+		public Health health;
 
-	public Wounded wounded;
-
-	public override void InitializeStates(out BaseState default_state)
-	{
-		default_state = healthy;
-		root.ToggleAnims("anim_hits_kanim").EventHandler(GameHashes.HealthChanged, delegate(Instance smi, object data)
-		{
-			smi.OnHealthChanged(data);
-		});
-		healthy.EventTransition(GameHashes.HealthChanged, wounded, (Instance smi) => smi.health.State != Health.HealthState.Perfect);
-		wounded.ToggleUrge(Db.Get().Urges.Heal).Enter(delegate(Instance smi)
-		{
-			switch (smi.health.State)
-			{
-			case Health.HealthState.Critical:
-				smi.GoTo(wounded.heavy);
-				break;
-			case Health.HealthState.Injured:
-				smi.GoTo(wounded.medium);
-				break;
-			case Health.HealthState.Scuffed:
-				smi.GoTo(wounded.light);
-				break;
-			}
-		}).EventHandler(GameHashes.HealthChanged, delegate(Instance smi)
-		{
-			smi.GoToProperHeathState();
-		});
-		wounded.medium.ToggleAnims("anim_loco_wounded_kanim", 1f);
-		wounded.heavy.ToggleAnims("anim_loco_wounded_kanim", 3f).Update("LookForAvailableClinic", delegate(Instance smi, float dt)
-		{
-			smi.FindAvailableMedicalBed();
-		}, UpdateRate.SIM_1000ms);
+		// Token: 0x040057D7 RID: 22487
+		private WorkerBase worker;
 	}
 }

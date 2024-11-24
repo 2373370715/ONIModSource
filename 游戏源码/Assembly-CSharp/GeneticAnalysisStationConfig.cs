@@ -1,32 +1,46 @@
+﻿using System;
 using System.Collections.Generic;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x02000365 RID: 869
 public class GeneticAnalysisStationConfig : IBuildingConfig
 {
-	public const string ID = "GeneticAnalysisStation";
-
-	public override string[] GetDlcIds()
+	// Token: 0x06000E1B RID: 3611 RVA: 0x000A5F1F File Offset: 0x000A411F
+	public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
+	// Token: 0x06000E1C RID: 3612 RVA: 0x00176388 File Offset: 0x00174588
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef("GeneticAnalysisStation", 7, 2, "genetic_analysisstation_kanim", 30, 30f, BUILDINGS.CONSTRUCTION_MASS_KG.TIER4, MATERIALS.ALL_METALS, 1600f, BuildLocationRule.OnFloor, noise: NOISE_POLLUTION.NOISY.TIER3, decor: BUILDINGS.DECOR.NONE);
-		BuildingTemplates.CreateElectricalBuildingDef(obj);
-		obj.AudioCategory = "Metal";
-		obj.AudioSize = "large";
-		obj.EnergyConsumptionWhenActive = 480f;
-		obj.ExhaustKilowattsWhenActive = 0.5f;
-		obj.SelfHeatKilowattsWhenActive = 4f;
-		obj.Deprecated = !DlcManager.FeaturePlantMutationsEnabled();
-		return obj;
+		string id = "GeneticAnalysisStation";
+		int width = 7;
+		int height = 2;
+		string anim = "genetic_analysisstation_kanim";
+		int hitpoints = 30;
+		float construction_time = 30f;
+		float[] tier = BUILDINGS.CONSTRUCTION_MASS_KG.TIER4;
+		string[] all_METALS = MATERIALS.ALL_METALS;
+		float melting_point = 1600f;
+		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
+		EffectorValues tier2 = NOISE_POLLUTION.NOISY.TIER3;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, all_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, tier2, 0.2f);
+		BuildingTemplates.CreateElectricalBuildingDef(buildingDef);
+		buildingDef.AudioCategory = "Metal";
+		buildingDef.AudioSize = "large";
+		buildingDef.EnergyConsumptionWhenActive = 480f;
+		buildingDef.ExhaustKilowattsWhenActive = 0.5f;
+		buildingDef.SelfHeatKilowattsWhenActive = 4f;
+		buildingDef.Deprecated = !DlcManager.FeaturePlantMutationsEnabled();
+		return buildingDef;
 	}
 
+	// Token: 0x06000E1D RID: 3613 RVA: 0x0017641C File Offset: 0x0017461C
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.ScienceBuilding);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.ScienceBuilding, false);
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
 		go.AddOrGetDef<GeneticAnalysisStation.Def>();
 		go.AddOrGet<GeneticAnalysisStationWorkable>().finishedSeedDropOffset = new Vector3(-3f, 1.5f, 0f);
@@ -43,20 +57,25 @@ public class GeneticAnalysisStationConfig : IBuildingConfig
 		manualDeliveryKG.capacity = 5f;
 	}
 
+	// Token: 0x06000E1E RID: 3614 RVA: 0x000A5E40 File Offset: 0x000A4040
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
+	// Token: 0x06000E1F RID: 3615 RVA: 0x001764DC File Offset: 0x001746DC
 	public override void ConfigurePost(BuildingDef def)
 	{
 		List<Tag> list = new List<Tag>();
-		foreach (GameObject item in Assets.GetPrefabsWithTag(GameTags.CropSeed))
+		foreach (GameObject gameObject in Assets.GetPrefabsWithTag(GameTags.CropSeed))
 		{
-			if (item.GetComponent<MutantPlant>() != null)
+			if (gameObject.GetComponent<MutantPlant>() != null)
 			{
-				list.Add(item.PrefabID());
+				list.Add(gameObject.PrefabID());
 			}
 		}
 		def.BuildingComplete.GetComponent<Storage>().storageFilters = list;
 	}
+
+	// Token: 0x04000A02 RID: 2562
+	public const string ID = "GeneticAnalysisStation";
 }

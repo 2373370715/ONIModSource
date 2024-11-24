@@ -1,79 +1,63 @@
+﻿using System;
 using STRINGS;
 using UnityEngine;
 
+// Token: 0x0200019A RID: 410
 public class FlopStates : GameStateMachine<FlopStates, FlopStates.Instance, IStateMachineTarget, FlopStates.Def>
 {
-	public class Def : BaseDef
+	// Token: 0x060005BC RID: 1468 RVA: 0x0015A124 File Offset: 0x00158324
+	public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
+		default_state = this.flop_pre;
+		GameStateMachine<FlopStates, FlopStates.Instance, IStateMachineTarget, FlopStates.Def>.State root = this.root;
+		string name = CREATURES.STATUSITEMS.FLOPPING.NAME;
+		string tooltip = CREATURES.STATUSITEMS.FLOPPING.TOOLTIP;
+		string icon = "";
+		StatusItem.IconType icon_type = StatusItem.IconType.Info;
+		NotificationType notification_type = NotificationType.Neutral;
+		bool allow_multiples = false;
+		StatusItemCategory main = Db.Get().StatusItemCategories.Main;
+		root.ToggleStatusItem(name, tooltip, icon, icon_type, notification_type, allow_multiples, default(HashedString), 129022, null, null, main);
+		this.flop_pre.Enter(new StateMachine<FlopStates, FlopStates.Instance, IStateMachineTarget, FlopStates.Def>.State.Callback(FlopStates.ChooseDirection)).Transition(this.flop_cycle, new StateMachine<FlopStates, FlopStates.Instance, IStateMachineTarget, FlopStates.Def>.Transition.ConditionCallback(FlopStates.ShouldFlop), UpdateRate.SIM_200ms).Transition(this.pst, GameStateMachine<FlopStates, FlopStates.Instance, IStateMachineTarget, FlopStates.Def>.Not(new StateMachine<FlopStates, FlopStates.Instance, IStateMachineTarget, FlopStates.Def>.Transition.ConditionCallback(FlopStates.ShouldFlop)), UpdateRate.SIM_200ms);
+		this.flop_cycle.PlayAnim("flop_loop", KAnim.PlayMode.Once).Transition(this.pst, new StateMachine<FlopStates, FlopStates.Instance, IStateMachineTarget, FlopStates.Def>.Transition.ConditionCallback(FlopStates.IsSubstantialLiquid), UpdateRate.SIM_200ms).Update("Flop", new Action<FlopStates.Instance, float>(FlopStates.FlopForward), UpdateRate.SIM_33ms, false).OnAnimQueueComplete(this.flop_pre);
+		this.pst.QueueAnim("flop_loop", true, null).BehaviourComplete(GameTags.Creatures.Flopping, false);
 	}
 
-	public new class Instance : GameInstance
-	{
-		public float currentDir = 1f;
-
-		public Instance(Chore<Instance> chore, Def def)
-			: base((IStateMachineTarget)chore, def)
-		{
-			chore.AddPrecondition(ChorePreconditions.instance.CheckBehaviourPrecondition, GameTags.Creatures.Flopping);
-		}
-	}
-
-	private State flop_pre;
-
-	private State flop_cycle;
-
-	private State pst;
-
-	public override void InitializeStates(out BaseState default_state)
-	{
-		default_state = flop_pre;
-		root.ToggleStatusItem(CREATURES.STATUSITEMS.FLOPPING.NAME, CREATURES.STATUSITEMS.FLOPPING.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.Neutral, allow_multiples: false, default(HashedString), 129022, null, null, Db.Get().StatusItemCategories.Main);
-		flop_pre.Enter(ChooseDirection).Transition(flop_cycle, ShouldFlop).Transition(pst, GameStateMachine<FlopStates, Instance, IStateMachineTarget, Def>.Not(ShouldFlop));
-		flop_cycle.PlayAnim("flop_loop", KAnim.PlayMode.Once).Transition(pst, IsSubstantialLiquid).Update("Flop", FlopForward, UpdateRate.SIM_33ms)
-			.OnAnimQueueComplete(flop_pre);
-		pst.QueueAnim("flop_loop", loop: true).BehaviourComplete(GameTags.Creatures.Flopping);
-	}
-
-	public static bool ShouldFlop(Instance smi)
+	// Token: 0x060005BD RID: 1469 RVA: 0x0015A23C File Offset: 0x0015843C
+	public static bool ShouldFlop(FlopStates.Instance smi)
 	{
 		int num = Grid.CellBelow(Grid.PosToCell(smi.transform.GetPosition()));
-		if (Grid.IsValidCell(num))
-		{
-			return Grid.Solid[num];
-		}
-		return false;
+		return Grid.IsValidCell(num) && Grid.Solid[num];
 	}
 
-	public static void ChooseDirection(Instance smi)
+	// Token: 0x060005BE RID: 1470 RVA: 0x0015A274 File Offset: 0x00158474
+	public static void ChooseDirection(FlopStates.Instance smi)
 	{
 		int cell = Grid.PosToCell(smi.transform.GetPosition());
-		if (SearchForLiquid(cell, 1))
+		if (FlopStates.SearchForLiquid(cell, 1))
 		{
 			smi.currentDir = 1f;
+			return;
 		}
-		else if (SearchForLiquid(cell, -1))
+		if (FlopStates.SearchForLiquid(cell, -1))
 		{
 			smi.currentDir = -1f;
+			return;
 		}
-		else if (Random.value > 0.5f)
+		if (UnityEngine.Random.value > 0.5f)
 		{
 			smi.currentDir = 1f;
+			return;
 		}
-		else
-		{
-			smi.currentDir = -1f;
-		}
+		smi.currentDir = -1f;
 	}
 
+	// Token: 0x060005BF RID: 1471 RVA: 0x0015A2E0 File Offset: 0x001584E0
 	private static bool SearchForLiquid(int cell, int delta_x)
 	{
-		while (true)
+		while (Grid.IsValidCell(cell))
 		{
-			if (!Grid.IsValidCell(cell))
-			{
-				return false;
-			}
-			if (Grid.IsSubstantialLiquid(cell))
+			if (Grid.IsSubstantialLiquid(cell, 0.35f))
 			{
 				return true;
 			}
@@ -83,37 +67,72 @@ public class FlopStates : GameStateMachine<FlopStates, FlopStates.Instance, ISta
 			}
 			if (Grid.CritterImpassable[cell])
 			{
-				break;
+				return false;
 			}
 			int num = Grid.CellBelow(cell);
-			cell = ((!Grid.IsValidCell(num) || !Grid.Solid[num]) ? num : (cell + delta_x));
+			if (Grid.IsValidCell(num) && Grid.Solid[num])
+			{
+				cell += delta_x;
+			}
+			else
+			{
+				cell = num;
+			}
 		}
 		return false;
 	}
 
-	public static void FlopForward(Instance smi, float dt)
+	// Token: 0x060005C0 RID: 1472 RVA: 0x0015A34C File Offset: 0x0015854C
+	public static void FlopForward(FlopStates.Instance smi, float dt)
 	{
 		KBatchedAnimController component = smi.GetComponent<KBatchedAnimController>();
 		int currentFrame = component.currentFrame;
-		if (!component.IsVisible() || (currentFrame >= 23 && currentFrame <= 36))
+		if (component.IsVisible() && (currentFrame < 23 || currentFrame > 36))
 		{
-			Vector3 position = smi.transform.GetPosition();
-			Vector3 vector = position;
-			vector.x = position.x + smi.currentDir * dt * 1f;
-			int num = Grid.PosToCell(vector);
-			if (Grid.IsValidCell(num) && !Grid.Solid[num] && !Grid.CritterImpassable[num])
-			{
-				smi.transform.SetPosition(vector);
-			}
-			else
-			{
-				smi.currentDir = 0f - smi.currentDir;
-			}
+			return;
 		}
+		Vector3 position = smi.transform.GetPosition();
+		Vector3 vector = position;
+		vector.x = position.x + smi.currentDir * dt * 1f;
+		int num = Grid.PosToCell(vector);
+		if (Grid.IsValidCell(num) && !Grid.Solid[num] && !Grid.CritterImpassable[num])
+		{
+			smi.transform.SetPosition(vector);
+			return;
+		}
+		smi.currentDir = -smi.currentDir;
 	}
 
-	public static bool IsSubstantialLiquid(Instance smi)
+	// Token: 0x060005C1 RID: 1473 RVA: 0x000A8782 File Offset: 0x000A6982
+	public static bool IsSubstantialLiquid(FlopStates.Instance smi)
 	{
-		return Grid.IsSubstantialLiquid(Grid.PosToCell(smi.transform.GetPosition()));
+		return Grid.IsSubstantialLiquid(Grid.PosToCell(smi.transform.GetPosition()), 0.35f);
+	}
+
+	// Token: 0x04000431 RID: 1073
+	private GameStateMachine<FlopStates, FlopStates.Instance, IStateMachineTarget, FlopStates.Def>.State flop_pre;
+
+	// Token: 0x04000432 RID: 1074
+	private GameStateMachine<FlopStates, FlopStates.Instance, IStateMachineTarget, FlopStates.Def>.State flop_cycle;
+
+	// Token: 0x04000433 RID: 1075
+	private GameStateMachine<FlopStates, FlopStates.Instance, IStateMachineTarget, FlopStates.Def>.State pst;
+
+	// Token: 0x0200019B RID: 411
+	public class Def : StateMachine.BaseDef
+	{
+	}
+
+	// Token: 0x0200019C RID: 412
+	public new class Instance : GameStateMachine<FlopStates, FlopStates.Instance, IStateMachineTarget, FlopStates.Def>.GameInstance
+	{
+		// Token: 0x060005C4 RID: 1476 RVA: 0x000A87A6 File Offset: 0x000A69A6
+		public Instance(Chore<FlopStates.Instance> chore, FlopStates.Def def) : base(chore, def)
+		{
+			chore.AddPrecondition(ChorePreconditions.instance.CheckBehaviourPrecondition, GameTags.Creatures.Flopping);
+		}
+
+		// Token: 0x04000434 RID: 1076
+		public float currentDir = 1f;
 	}
 }

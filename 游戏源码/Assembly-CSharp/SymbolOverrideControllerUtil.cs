@@ -1,7 +1,10 @@
+﻿using System;
 using UnityEngine;
 
+// Token: 0x0200093A RID: 2362
 public static class SymbolOverrideControllerUtil
 {
+	// Token: 0x06002AB8 RID: 10936 RVA: 0x000BBBF2 File Offset: 0x000B9DF2
 	public static SymbolOverrideController AddToPrefab(GameObject prefab)
 	{
 		SymbolOverrideController result = prefab.AddComponent<SymbolOverrideController>();
@@ -11,6 +14,7 @@ public static class SymbolOverrideControllerUtil
 		return result;
 	}
 
+	// Token: 0x06002AB9 RID: 10937 RVA: 0x001DBA6C File Offset: 0x001D9C6C
 	public static void AddBuildOverride(this SymbolOverrideController symbol_override_controller, KAnimFileData anim_file_data, int priority = 0)
 	{
 		for (int i = 0; i < anim_file_data.build.symbols.Length; i++)
@@ -20,6 +24,7 @@ public static class SymbolOverrideControllerUtil
 		}
 	}
 
+	// Token: 0x06002ABA RID: 10938 RVA: 0x001DBAB8 File Offset: 0x001D9CB8
 	public static void RemoveBuildOverride(this SymbolOverrideController symbol_override_controller, KAnimFileData anim_file_data, int priority = 0)
 	{
 		for (int i = 0; i < anim_file_data.build.symbols.Length; i++)
@@ -29,6 +34,7 @@ public static class SymbolOverrideControllerUtil
 		}
 	}
 
+	// Token: 0x06002ABB RID: 10939 RVA: 0x001DBB04 File Offset: 0x001D9D04
 	public static void TryRemoveBuildOverride(this SymbolOverrideController symbol_override_controller, KAnimFileData anim_file_data, int priority = 0)
 	{
 		for (int i = 0; i < anim_file_data.build.symbols.Length; i++)
@@ -38,15 +44,13 @@ public static class SymbolOverrideControllerUtil
 		}
 	}
 
+	// Token: 0x06002ABC RID: 10940 RVA: 0x000BBC17 File Offset: 0x000B9E17
 	public static bool TryRemoveSymbolOverride(this SymbolOverrideController symbol_override_controller, HashedString target_symbol, int priority = 0)
 	{
-		if (symbol_override_controller.GetSymbolOverrideIdx(target_symbol, priority) >= 0)
-		{
-			return symbol_override_controller.RemoveSymbolOverride(target_symbol, priority);
-		}
-		return false;
+		return symbol_override_controller.GetSymbolOverrideIdx(target_symbol, priority) >= 0 && symbol_override_controller.RemoveSymbolOverride(target_symbol, priority);
 	}
 
+	// Token: 0x06002ABD RID: 10941 RVA: 0x001DBB50 File Offset: 0x001D9D50
 	public static void ApplySymbolOverridesByAffix(this SymbolOverrideController symbol_override_controller, KAnimFile anim_file, string prefix = null, string postfix = null, int priority = 0)
 	{
 		for (int i = 0; i < anim_file.GetData().build.symbols.Length; i++)

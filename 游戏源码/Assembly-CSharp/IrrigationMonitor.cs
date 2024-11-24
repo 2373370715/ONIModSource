@@ -1,212 +1,276 @@
+﻿using System;
 using System.Collections.Generic;
 using Klei.AI;
 using STRINGS;
 using UnityEngine;
 
+// Token: 0x020011A9 RID: 4521
 public class IrrigationMonitor : GameStateMachine<IrrigationMonitor, IrrigationMonitor.Instance, IStateMachineTarget, IrrigationMonitor.Def>
 {
-	public class Def : BaseDef, IGameObjectEffectDescriptor
+	// Token: 0x06005C40 RID: 23616 RVA: 0x0029A3D8 File Offset: 0x002985D8
+	public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
-		public Tag wrongIrrigationTestTag;
+		default_state = this.wild;
+		base.serializable = StateMachine.SerializeType.Never;
+		this.wild.ParamTransition<GameObject>(this.resourceStorage, this.unfertilizable, (IrrigationMonitor.Instance smi, GameObject p) => p != null);
+		this.unfertilizable.Enter(delegate(IrrigationMonitor.Instance smi)
+		{
+			if (smi.AcceptsLiquid())
+			{
+				smi.GoTo(this.replanted.irrigated);
+			}
+		});
+		this.replanted.Enter(delegate(IrrigationMonitor.Instance smi)
+		{
+			ManualDeliveryKG[] components = smi.gameObject.GetComponents<ManualDeliveryKG>();
+			for (int i = 0; i < components.Length; i++)
+			{
+				components[i].Pause(false, "replanted");
+			}
+			smi.UpdateIrrigation(0.033333335f);
+		}).Target(this.resourceStorage).EventHandler(GameHashes.OnStorageChange, delegate(IrrigationMonitor.Instance smi)
+		{
+			smi.UpdateIrrigation(0.2f);
+		}).Target(this.masterTarget);
+		this.replanted.irrigated.DefaultState(this.replanted.irrigated.absorbing).TriggerOnEnter(this.ResourceRecievedEvent, null);
+		this.replanted.irrigated.absorbing.DefaultState(this.replanted.irrigated.absorbing.normal).ParamTransition<bool>(this.hasCorrectLiquid, this.replanted.starved, GameStateMachine<IrrigationMonitor, IrrigationMonitor.Instance, IStateMachineTarget, IrrigationMonitor.Def>.IsFalse).ToggleAttributeModifier("Absorbing", (IrrigationMonitor.Instance smi) => smi.absorptionRate, null).Enter(delegate(IrrigationMonitor.Instance smi)
+		{
+			smi.UpdateAbsorbing(true);
+		}).EventHandler(GameHashes.TagsChanged, delegate(IrrigationMonitor.Instance smi)
+		{
+			smi.UpdateAbsorbing(true);
+		}).Exit(delegate(IrrigationMonitor.Instance smi)
+		{
+			smi.UpdateAbsorbing(false);
+		});
+		this.replanted.irrigated.absorbing.normal.ParamTransition<bool>(this.hasIncorrectLiquid, this.replanted.irrigated.absorbing.wrongLiquid, GameStateMachine<IrrigationMonitor, IrrigationMonitor.Instance, IStateMachineTarget, IrrigationMonitor.Def>.IsTrue);
+		this.replanted.irrigated.absorbing.wrongLiquid.ParamTransition<bool>(this.hasIncorrectLiquid, this.replanted.irrigated.absorbing.normal, GameStateMachine<IrrigationMonitor, IrrigationMonitor.Instance, IStateMachineTarget, IrrigationMonitor.Def>.IsFalse);
+		this.replanted.starved.DefaultState(this.replanted.starved.normal).TriggerOnEnter(this.ResourceDepletedEvent, null).ParamTransition<bool>(this.enoughCorrectLiquidToRecover, this.replanted.irrigated.absorbing, (IrrigationMonitor.Instance smi, bool p) => p && this.hasCorrectLiquid.Get(smi)).ParamTransition<bool>(this.hasCorrectLiquid, this.replanted.irrigated.absorbing, (IrrigationMonitor.Instance smi, bool p) => p && this.enoughCorrectLiquidToRecover.Get(smi));
+		this.replanted.starved.normal.ParamTransition<bool>(this.hasIncorrectLiquid, this.replanted.starved.wrongLiquid, GameStateMachine<IrrigationMonitor, IrrigationMonitor.Instance, IStateMachineTarget, IrrigationMonitor.Def>.IsTrue);
+		this.replanted.starved.wrongLiquid.ParamTransition<bool>(this.hasIncorrectLiquid, this.replanted.starved.normal, GameStateMachine<IrrigationMonitor, IrrigationMonitor.Instance, IStateMachineTarget, IrrigationMonitor.Def>.IsFalse);
+	}
 
-		public PlantElementAbsorber.ConsumeInfo[] consumedElements;
+	// Token: 0x04004129 RID: 16681
+	public StateMachine<IrrigationMonitor, IrrigationMonitor.Instance, IStateMachineTarget, IrrigationMonitor.Def>.TargetParameter resourceStorage;
 
+	// Token: 0x0400412A RID: 16682
+	public StateMachine<IrrigationMonitor, IrrigationMonitor.Instance, IStateMachineTarget, IrrigationMonitor.Def>.BoolParameter hasCorrectLiquid;
+
+	// Token: 0x0400412B RID: 16683
+	public StateMachine<IrrigationMonitor, IrrigationMonitor.Instance, IStateMachineTarget, IrrigationMonitor.Def>.BoolParameter hasIncorrectLiquid;
+
+	// Token: 0x0400412C RID: 16684
+	public StateMachine<IrrigationMonitor, IrrigationMonitor.Instance, IStateMachineTarget, IrrigationMonitor.Def>.BoolParameter enoughCorrectLiquidToRecover;
+
+	// Token: 0x0400412D RID: 16685
+	public GameHashes ResourceRecievedEvent = GameHashes.LiquidResourceRecieved;
+
+	// Token: 0x0400412E RID: 16686
+	public GameHashes ResourceDepletedEvent = GameHashes.LiquidResourceEmpty;
+
+	// Token: 0x0400412F RID: 16687
+	public GameStateMachine<IrrigationMonitor, IrrigationMonitor.Instance, IStateMachineTarget, IrrigationMonitor.Def>.State wild;
+
+	// Token: 0x04004130 RID: 16688
+	public GameStateMachine<IrrigationMonitor, IrrigationMonitor.Instance, IStateMachineTarget, IrrigationMonitor.Def>.State unfertilizable;
+
+	// Token: 0x04004131 RID: 16689
+	public IrrigationMonitor.ReplantedStates replanted;
+
+	// Token: 0x020011AA RID: 4522
+	public class Def : StateMachine.BaseDef, IGameObjectEffectDescriptor
+	{
+		// Token: 0x06005C45 RID: 23621 RVA: 0x0029A710 File Offset: 0x00298910
 		public List<Descriptor> GetDescriptors(GameObject obj)
 		{
-			if (consumedElements.Length != 0)
+			if (this.consumedElements.Length != 0)
 			{
 				List<Descriptor> list = new List<Descriptor>();
 				float preModifiedAttributeValue = obj.GetComponent<Modifiers>().GetPreModifiedAttributeValue(Db.Get().PlantAttributes.FertilizerUsageMod);
-				PlantElementAbsorber.ConsumeInfo[] array = consumedElements;
-				for (int i = 0; i < array.Length; i++)
+				foreach (PlantElementAbsorber.ConsumeInfo consumeInfo in this.consumedElements)
 				{
-					PlantElementAbsorber.ConsumeInfo consumeInfo = array[i];
 					float num = consumeInfo.massConsumptionRate * preModifiedAttributeValue;
-					list.Add(new Descriptor(string.Format(UI.GAMEOBJECTEFFECTS.IDEAL_FERTILIZER, consumeInfo.tag.ProperName(), GameUtil.GetFormattedMass(0f - num, GameUtil.TimeSlice.PerCycle)), string.Format(UI.GAMEOBJECTEFFECTS.TOOLTIPS.IDEAL_FERTILIZER, consumeInfo.tag.ProperName(), GameUtil.GetFormattedMass(num, GameUtil.TimeSlice.PerCycle)), Descriptor.DescriptorType.Requirement));
+					list.Add(new Descriptor(string.Format(UI.GAMEOBJECTEFFECTS.IDEAL_FERTILIZER, consumeInfo.tag.ProperName(), GameUtil.GetFormattedMass(-num, GameUtil.TimeSlice.PerCycle, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}")), string.Format(UI.GAMEOBJECTEFFECTS.TOOLTIPS.IDEAL_FERTILIZER, consumeInfo.tag.ProperName(), GameUtil.GetFormattedMass(num, GameUtil.TimeSlice.PerCycle, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}")), Descriptor.DescriptorType.Requirement, false));
 				}
 				return list;
 			}
 			return null;
 		}
+
+		// Token: 0x04004132 RID: 16690
+		public Tag wrongIrrigationTestTag;
+
+		// Token: 0x04004133 RID: 16691
+		public PlantElementAbsorber.ConsumeInfo[] consumedElements;
 	}
 
-	public class VariableIrrigationStates : State
+	// Token: 0x020011AB RID: 4523
+	public class VariableIrrigationStates : GameStateMachine<IrrigationMonitor, IrrigationMonitor.Instance, IStateMachineTarget, IrrigationMonitor.Def>.State
 	{
-		public State normal;
+		// Token: 0x04004134 RID: 16692
+		public GameStateMachine<IrrigationMonitor, IrrigationMonitor.Instance, IStateMachineTarget, IrrigationMonitor.Def>.State normal;
 
-		public State wrongLiquid;
+		// Token: 0x04004135 RID: 16693
+		public GameStateMachine<IrrigationMonitor, IrrigationMonitor.Instance, IStateMachineTarget, IrrigationMonitor.Def>.State wrongLiquid;
 	}
 
-	public class Irrigated : State
+	// Token: 0x020011AC RID: 4524
+	public class Irrigated : GameStateMachine<IrrigationMonitor, IrrigationMonitor.Instance, IStateMachineTarget, IrrigationMonitor.Def>.State
 	{
-		public VariableIrrigationStates absorbing;
+		// Token: 0x04004136 RID: 16694
+		public IrrigationMonitor.VariableIrrigationStates absorbing;
 	}
 
-	public class ReplantedStates : State
+	// Token: 0x020011AD RID: 4525
+	public class ReplantedStates : GameStateMachine<IrrigationMonitor, IrrigationMonitor.Instance, IStateMachineTarget, IrrigationMonitor.Def>.State
 	{
-		public Irrigated irrigated;
+		// Token: 0x04004137 RID: 16695
+		public IrrigationMonitor.Irrigated irrigated;
 
-		public VariableIrrigationStates starved;
+		// Token: 0x04004138 RID: 16696
+		public IrrigationMonitor.VariableIrrigationStates starved;
 	}
 
-	public new class Instance : GameInstance, IWiltCause
+	// Token: 0x020011AE RID: 4526
+	public new class Instance : GameStateMachine<IrrigationMonitor, IrrigationMonitor.Instance, IStateMachineTarget, IrrigationMonitor.Def>.GameInstance, IWiltCause
 	{
-		public AttributeModifier consumptionRate;
-
-		public AttributeModifier absorptionRate;
-
-		protected AmountInstance irrigation;
-
-		private float total_available_mass;
-
-		private Storage storage;
-
-		private HandleVector<int>.Handle absorberHandle = HandleVector<int>.InvalidHandle;
-
-		public float total_fertilizer_available => total_available_mass;
-
-		public WiltCondition.Condition[] Conditions => new WiltCondition.Condition[1] { WiltCondition.Condition.Irrigation };
-
-		public string WiltStateString
+		// Token: 0x17000577 RID: 1399
+		// (get) Token: 0x06005C4A RID: 23626 RVA: 0x000DC42A File Offset: 0x000DA62A
+		public float total_fertilizer_available
 		{
 			get
 			{
-				string result = "";
-				if (base.smi.IsInsideState(base.smi.sm.replanted.irrigated.absorbing.wrongLiquid))
-				{
-					result = GetIncorrectLiquidStatusItem().resolveStringCallback(CREATURES.STATUSITEMS.WRONGIRRIGATION.NAME, this);
-				}
-				else if (base.smi.IsInsideState(base.smi.sm.replanted.starved.wrongLiquid))
-				{
-					result = GetIncorrectLiquidStatusItemMajor().resolveStringCallback(CREATURES.STATUSITEMS.WRONGIRRIGATIONMAJOR.NAME, this);
-				}
-				else if (base.smi.IsInsideState(base.smi.sm.replanted.starved))
-				{
-					result = GetStarvedStatusItem().resolveStringCallback(CREATURES.STATUSITEMS.NEEDSIRRIGATION.NAME, this);
-				}
-				return result;
+				return this.total_available_mass;
 			}
 		}
 
-		public Instance(IStateMachineTarget master, Def def)
-			: base(master, def)
+		// Token: 0x06005C4B RID: 23627 RVA: 0x000DC432 File Offset: 0x000DA632
+		public Instance(IStateMachineTarget master, IrrigationMonitor.Def def) : base(master, def)
 		{
-			AddAmounts(base.gameObject);
-			MakeModifiers();
-			master.Subscribe(1309017699, SetStorage);
+			this.AddAmounts(base.gameObject);
+			this.MakeModifiers();
+			master.Subscribe(1309017699, new Action<object>(this.SetStorage));
 		}
 
+		// Token: 0x06005C4C RID: 23628 RVA: 0x000DC471 File Offset: 0x000DA671
 		public virtual StatusItem GetStarvedStatusItem()
 		{
 			return Db.Get().CreatureStatusItems.NeedsIrrigation;
 		}
 
+		// Token: 0x06005C4D RID: 23629 RVA: 0x000DC482 File Offset: 0x000DA682
 		public virtual StatusItem GetIncorrectLiquidStatusItem()
 		{
 			return Db.Get().CreatureStatusItems.WrongIrrigation;
 		}
 
+		// Token: 0x06005C4E RID: 23630 RVA: 0x000DC493 File Offset: 0x000DA693
 		public virtual StatusItem GetIncorrectLiquidStatusItemMajor()
 		{
 			return Db.Get().CreatureStatusItems.WrongIrrigationMajor;
 		}
 
+		// Token: 0x06005C4F RID: 23631 RVA: 0x0029A7D8 File Offset: 0x002989D8
 		protected virtual void AddAmounts(GameObject gameObject)
 		{
 			Amounts amounts = gameObject.GetAmounts();
-			irrigation = amounts.Add(new AmountInstance(Db.Get().Amounts.Irrigation, gameObject));
+			this.irrigation = amounts.Add(new AmountInstance(Db.Get().Amounts.Irrigation, gameObject));
 		}
 
+		// Token: 0x06005C50 RID: 23632 RVA: 0x0029A810 File Offset: 0x00298A10
 		protected virtual void MakeModifiers()
 		{
-			consumptionRate = new AttributeModifier(Db.Get().Amounts.Irrigation.deltaAttribute.Id, -1f / 6f, CREATURES.STATS.IRRIGATION.CONSUME_MODIFIER);
-			absorptionRate = new AttributeModifier(Db.Get().Amounts.Irrigation.deltaAttribute.Id, 1.6666666f, CREATURES.STATS.IRRIGATION.ABSORBING_MODIFIER);
+			this.consumptionRate = new AttributeModifier(Db.Get().Amounts.Irrigation.deltaAttribute.Id, -0.16666667f, CREATURES.STATS.IRRIGATION.CONSUME_MODIFIER, false, false, true);
+			this.absorptionRate = new AttributeModifier(Db.Get().Amounts.Irrigation.deltaAttribute.Id, 1.6666666f, CREATURES.STATS.IRRIGATION.ABSORBING_MODIFIER, false, false, true);
 		}
 
+		// Token: 0x06005C51 RID: 23633 RVA: 0x0029A88C File Offset: 0x00298A8C
 		public static void DumpIncorrectFertilizers(Storage storage, GameObject go)
 		{
-			if (!(storage == null) && !(go == null))
+			if (storage == null)
 			{
-				Instance sMI = go.GetSMI<Instance>();
-				PlantElementAbsorber.ConsumeInfo[] consumed_infos = null;
-				if (sMI != null)
-				{
-					consumed_infos = sMI.def.consumedElements;
-				}
-				DumpIncorrectFertilizers(storage, consumed_infos, validate_solids: false);
-				FertilizationMonitor.Instance sMI2 = go.GetSMI<FertilizationMonitor.Instance>();
-				PlantElementAbsorber.ConsumeInfo[] consumed_infos2 = null;
-				if (sMI2 != null)
-				{
-					consumed_infos2 = sMI2.def.consumedElements;
-				}
-				DumpIncorrectFertilizers(storage, consumed_infos2, validate_solids: true);
+				return;
 			}
+			if (go == null)
+			{
+				return;
+			}
+			IrrigationMonitor.Instance smi = go.GetSMI<IrrigationMonitor.Instance>();
+			PlantElementAbsorber.ConsumeInfo[] consumed_infos = null;
+			if (smi != null)
+			{
+				consumed_infos = smi.def.consumedElements;
+			}
+			IrrigationMonitor.Instance.DumpIncorrectFertilizers(storage, consumed_infos, false);
+			FertilizationMonitor.Instance smi2 = go.GetSMI<FertilizationMonitor.Instance>();
+			PlantElementAbsorber.ConsumeInfo[] consumed_infos2 = null;
+			if (smi2 != null)
+			{
+				consumed_infos2 = smi2.def.consumedElements;
+			}
+			IrrigationMonitor.Instance.DumpIncorrectFertilizers(storage, consumed_infos2, true);
 		}
 
+		// Token: 0x06005C52 RID: 23634 RVA: 0x0029A8F0 File Offset: 0x00298AF0
 		private static void DumpIncorrectFertilizers(Storage storage, PlantElementAbsorber.ConsumeInfo[] consumed_infos, bool validate_solids)
 		{
 			if (storage == null)
 			{
 				return;
 			}
-			for (int num = storage.items.Count - 1; num >= 0; num--)
+			for (int i = storage.items.Count - 1; i >= 0; i--)
 			{
-				GameObject gameObject = storage.items[num];
-				if (gameObject == null)
+				GameObject gameObject = storage.items[i];
+				if (!(gameObject == null))
 				{
-					continue;
-				}
-				PrimaryElement component = gameObject.GetComponent<PrimaryElement>();
-				if (component == null || gameObject.GetComponent<ElementChunk>() == null)
-				{
-					continue;
-				}
-				if (validate_solids)
-				{
-					if (!component.Element.IsSolid)
+					PrimaryElement component = gameObject.GetComponent<PrimaryElement>();
+					if (!(component == null) && !(gameObject.GetComponent<ElementChunk>() == null))
 					{
-						continue;
-					}
-				}
-				else if (!component.Element.IsLiquid)
-				{
-					continue;
-				}
-				bool flag = false;
-				KPrefabID component2 = component.GetComponent<KPrefabID>();
-				if (consumed_infos != null)
-				{
-					for (int i = 0; i < consumed_infos.Length; i++)
-					{
-						PlantElementAbsorber.ConsumeInfo consumeInfo = consumed_infos[i];
-						if (component2.HasTag(consumeInfo.tag))
+						if (validate_solids)
 						{
-							flag = true;
-							break;
+							if (!component.Element.IsSolid)
+							{
+								goto IL_C1;
+							}
+						}
+						else if (!component.Element.IsLiquid)
+						{
+							goto IL_C1;
+						}
+						bool flag = false;
+						KPrefabID component2 = component.GetComponent<KPrefabID>();
+						if (consumed_infos != null)
+						{
+							foreach (PlantElementAbsorber.ConsumeInfo consumeInfo in consumed_infos)
+							{
+								if (component2.HasTag(consumeInfo.tag))
+								{
+									flag = true;
+									break;
+								}
+							}
+						}
+						if (!flag)
+						{
+							storage.Drop(gameObject, true);
 						}
 					}
 				}
-				if (!flag)
-				{
-					storage.Drop(gameObject);
-				}
+				IL_C1:;
 			}
 		}
 
+		// Token: 0x06005C53 RID: 23635 RVA: 0x0029A9CC File Offset: 0x00298BCC
 		public void SetStorage(object obj)
 		{
-			storage = (Storage)obj;
-			base.sm.resourceStorage.Set(storage, base.smi);
-			DumpIncorrectFertilizers(storage, base.smi.gameObject);
-			ManualDeliveryKG[] components = base.smi.gameObject.GetComponents<ManualDeliveryKG>();
-			foreach (ManualDeliveryKG manualDeliveryKG in components)
+			this.storage = (Storage)obj;
+			base.sm.resourceStorage.Set(this.storage, base.smi);
+			IrrigationMonitor.Instance.DumpIncorrectFertilizers(this.storage, base.smi.gameObject);
+			foreach (ManualDeliveryKG manualDeliveryKG in base.smi.gameObject.GetComponents<ManualDeliveryKG>())
 			{
 				bool flag = false;
-				PlantElementAbsorber.ConsumeInfo[] consumedElements = base.def.consumedElements;
-				for (int j = 0; j < consumedElements.Length; j++)
+				foreach (PlantElementAbsorber.ConsumeInfo consumeInfo in base.def.consumedElements)
 				{
-					PlantElementAbsorber.ConsumeInfo consumeInfo = consumedElements[j];
 					if (manualDeliveryKG.RequestedItemTag == consumeInfo.tag)
 					{
 						flag = true;
@@ -215,27 +279,62 @@ public class IrrigationMonitor : GameStateMachine<IrrigationMonitor, IrrigationM
 				}
 				if (flag)
 				{
-					manualDeliveryKG.SetStorage(storage);
-					manualDeliveryKG.enabled = !storage.gameObject.GetComponent<PlantablePlot>().has_liquid_pipe_input;
+					manualDeliveryKG.SetStorage(this.storage);
+					manualDeliveryKG.enabled = !this.storage.gameObject.GetComponent<PlantablePlot>().has_liquid_pipe_input;
 				}
 			}
 		}
 
+		// Token: 0x17000578 RID: 1400
+		// (get) Token: 0x06005C54 RID: 23636 RVA: 0x000DC4A4 File Offset: 0x000DA6A4
+		public WiltCondition.Condition[] Conditions
+		{
+			get
+			{
+				return new WiltCondition.Condition[]
+				{
+					WiltCondition.Condition.Irrigation
+				};
+			}
+		}
+
+		// Token: 0x17000579 RID: 1401
+		// (get) Token: 0x06005C55 RID: 23637 RVA: 0x0029AAAC File Offset: 0x00298CAC
+		public string WiltStateString
+		{
+			get
+			{
+				string result = "";
+				if (base.smi.IsInsideState(base.smi.sm.replanted.irrigated.absorbing.wrongLiquid))
+				{
+					result = this.GetIncorrectLiquidStatusItem().resolveStringCallback(CREATURES.STATUSITEMS.WRONGIRRIGATION.NAME, this);
+				}
+				else if (base.smi.IsInsideState(base.smi.sm.replanted.starved.wrongLiquid))
+				{
+					result = this.GetIncorrectLiquidStatusItemMajor().resolveStringCallback(CREATURES.STATUSITEMS.WRONGIRRIGATIONMAJOR.NAME, this);
+				}
+				else if (base.smi.IsInsideState(base.smi.sm.replanted.starved))
+				{
+					result = this.GetStarvedStatusItem().resolveStringCallback(CREATURES.STATUSITEMS.NEEDSIRRIGATION.NAME, this);
+				}
+				return result;
+			}
+		}
+
+		// Token: 0x06005C56 RID: 23638 RVA: 0x0029AB90 File Offset: 0x00298D90
 		public virtual bool AcceptsLiquid()
 		{
 			PlantablePlot component = base.sm.resourceStorage.Get(this).GetComponent<PlantablePlot>();
-			if (component != null)
-			{
-				return component.AcceptsIrrigation;
-			}
-			return false;
+			return component != null && component.AcceptsIrrigation;
 		}
 
+		// Token: 0x06005C57 RID: 23639 RVA: 0x000DC4B0 File Offset: 0x000DA6B0
 		public bool Starved()
 		{
-			return irrigation.value == 0f;
+			return this.irrigation.value == 0f;
 		}
 
+		// Token: 0x06005C58 RID: 23640 RVA: 0x0029ABC8 File Offset: 0x00298DC8
 		public void UpdateIrrigation(float dt)
 		{
 			if (base.def.consumedElements == null)
@@ -265,7 +364,7 @@ public class IrrigationMonitor : GameStateMachine<IrrigationMonitor, IrrigationM
 							value = true;
 						}
 					}
-					total_available_mass = num;
+					this.total_available_mass = num;
 					float totalValue = base.gameObject.GetAttributes().Get(Db.Get().PlantAttributes.FertilizerUsageMod).GetTotalValue();
 					if (num < consumeInfo.massConsumptionRate * totalValue * dt)
 					{
@@ -285,22 +384,23 @@ public class IrrigationMonitor : GameStateMachine<IrrigationMonitor, IrrigationM
 				flag2 = false;
 				value = false;
 			}
-			base.sm.hasCorrectLiquid.Set(flag, base.smi);
-			base.sm.hasIncorrectLiquid.Set(value, base.smi);
-			base.sm.enoughCorrectLiquidToRecover.Set(flag2 && flag, base.smi);
+			base.sm.hasCorrectLiquid.Set(flag, base.smi, false);
+			base.sm.hasIncorrectLiquid.Set(value, base.smi, false);
+			base.sm.enoughCorrectLiquidToRecover.Set(flag2 && flag, base.smi, false);
 		}
 
+		// Token: 0x06005C59 RID: 23641 RVA: 0x0029AD5C File Offset: 0x00298F5C
 		public void UpdateAbsorbing(bool allow)
 		{
 			bool flag = allow && !base.smi.gameObject.HasTag(GameTags.Wilting);
-			if (flag == absorberHandle.IsValid())
+			if (flag != this.absorberHandle.IsValid())
 			{
-				return;
-			}
-			if (flag)
-			{
-				if (base.def.consumedElements != null && base.def.consumedElements.Length != 0)
+				if (flag)
 				{
+					if (base.def.consumedElements == null || base.def.consumedElements.Length == 0)
+					{
+						return;
+					}
 					float totalValue = base.gameObject.GetAttributes().Get(Db.Get().PlantAttributes.FertilizerUsageMod).GetTotalValue();
 					PlantElementAbsorber.ConsumeInfo[] array = new PlantElementAbsorber.ConsumeInfo[base.def.consumedElements.Length];
 					for (int i = 0; i < base.def.consumedElements.Length; i++)
@@ -309,78 +409,32 @@ public class IrrigationMonitor : GameStateMachine<IrrigationMonitor, IrrigationM
 						consumeInfo.massConsumptionRate *= totalValue;
 						array[i] = consumeInfo;
 					}
-					absorberHandle = Game.Instance.plantElementAbsorbers.Add(storage, array);
+					this.absorberHandle = Game.Instance.plantElementAbsorbers.Add(this.storage, array);
+					return;
+				}
+				else
+				{
+					this.absorberHandle = Game.Instance.plantElementAbsorbers.Remove(this.absorberHandle);
 				}
 			}
-			else
-			{
-				absorberHandle = Game.Instance.plantElementAbsorbers.Remove(absorberHandle);
-			}
 		}
-	}
 
-	public TargetParameter resourceStorage;
+		// Token: 0x04004139 RID: 16697
+		public AttributeModifier consumptionRate;
 
-	public BoolParameter hasCorrectLiquid;
+		// Token: 0x0400413A RID: 16698
+		public AttributeModifier absorptionRate;
 
-	public BoolParameter hasIncorrectLiquid;
+		// Token: 0x0400413B RID: 16699
+		protected AmountInstance irrigation;
 
-	public BoolParameter enoughCorrectLiquidToRecover;
+		// Token: 0x0400413C RID: 16700
+		private float total_available_mass;
 
-	public GameHashes ResourceRecievedEvent = GameHashes.LiquidResourceRecieved;
+		// Token: 0x0400413D RID: 16701
+		private Storage storage;
 
-	public GameHashes ResourceDepletedEvent = GameHashes.LiquidResourceEmpty;
-
-	public State wild;
-
-	public State unfertilizable;
-
-	public ReplantedStates replanted;
-
-	public override void InitializeStates(out BaseState default_state)
-	{
-		default_state = wild;
-		base.serializable = SerializeType.Never;
-		wild.ParamTransition(resourceStorage, unfertilizable, (Instance smi, GameObject p) => p != null);
-		unfertilizable.Enter(delegate(Instance smi)
-		{
-			if (smi.AcceptsLiquid())
-			{
-				smi.GoTo(replanted.irrigated);
-			}
-		});
-		replanted.Enter(delegate(Instance smi)
-		{
-			ManualDeliveryKG[] components = smi.gameObject.GetComponents<ManualDeliveryKG>();
-			for (int i = 0; i < components.Length; i++)
-			{
-				components[i].Pause(pause: false, "replanted");
-			}
-			smi.UpdateIrrigation(1f / 30f);
-		}).Target(resourceStorage).EventHandler(GameHashes.OnStorageChange, delegate(Instance smi)
-		{
-			smi.UpdateIrrigation(0.2f);
-		})
-			.Target(masterTarget);
-		replanted.irrigated.DefaultState(replanted.irrigated.absorbing).TriggerOnEnter(ResourceRecievedEvent);
-		replanted.irrigated.absorbing.DefaultState(replanted.irrigated.absorbing.normal).ParamTransition(hasCorrectLiquid, replanted.starved, GameStateMachine<IrrigationMonitor, Instance, IStateMachineTarget, Def>.IsFalse).ToggleAttributeModifier("Absorbing", (Instance smi) => smi.absorptionRate)
-			.Enter(delegate(Instance smi)
-			{
-				smi.UpdateAbsorbing(allow: true);
-			})
-			.EventHandler(GameHashes.TagsChanged, delegate(Instance smi)
-			{
-				smi.UpdateAbsorbing(allow: true);
-			})
-			.Exit(delegate(Instance smi)
-			{
-				smi.UpdateAbsorbing(allow: false);
-			});
-		replanted.irrigated.absorbing.normal.ParamTransition(hasIncorrectLiquid, replanted.irrigated.absorbing.wrongLiquid, GameStateMachine<IrrigationMonitor, Instance, IStateMachineTarget, Def>.IsTrue);
-		replanted.irrigated.absorbing.wrongLiquid.ParamTransition(hasIncorrectLiquid, replanted.irrigated.absorbing.normal, GameStateMachine<IrrigationMonitor, Instance, IStateMachineTarget, Def>.IsFalse);
-		replanted.starved.DefaultState(replanted.starved.normal).TriggerOnEnter(ResourceDepletedEvent).ParamTransition(enoughCorrectLiquidToRecover, replanted.irrigated.absorbing, (Instance smi, bool p) => p && hasCorrectLiquid.Get(smi))
-			.ParamTransition(hasCorrectLiquid, replanted.irrigated.absorbing, (Instance smi, bool p) => p && enoughCorrectLiquidToRecover.Get(smi));
-		replanted.starved.normal.ParamTransition(hasIncorrectLiquid, replanted.starved.wrongLiquid, GameStateMachine<IrrigationMonitor, Instance, IStateMachineTarget, Def>.IsTrue);
-		replanted.starved.wrongLiquid.ParamTransition(hasIncorrectLiquid, replanted.starved.normal, GameStateMachine<IrrigationMonitor, Instance, IStateMachineTarget, Def>.IsFalse);
+		// Token: 0x0400413E RID: 16702
+		private HandleVector<int>.Handle absorberHandle = HandleVector<int>.InvalidHandle;
 	}
 }

@@ -1,31 +1,137 @@
+﻿using System;
 using System.Collections.Generic;
 using Klei.AI;
 using STRINGS;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x020002C9 RID: 713
 public class SpaceTreeBranchConfig : IEntityConfig
 {
-	public const string ID = "SpaceTreeBranch";
-
-	public static string[] BRANCH_NAMES = new string[5] { "<sprite=\"oni_sprite_assets\" name=\"oni_sprite_assets_syrup_tree_l\">", "<sprite=\"oni_sprite_assets\" name=\"oni_sprite_assets_syrup_tree_tl\">", "<sprite=\"oni_sprite_assets\" name=\"oni_sprite_assets_syrup_tree_t\">", "<sprite=\"oni_sprite_assets\" name=\"oni_sprite_assets_syrup_tree_tr\">", "<sprite=\"oni_sprite_assets\" name=\"oni_sprite_assets_syrup_tree_r\">" };
-
-	public const float GROWTH_DURATION = 2700f;
-
-	public const int WOOD_AMOUNT = 75;
-
-	private static Dictionary<CellOffset, string> entombDefenseAnimNames = new Dictionary<CellOffset, string>
+	// Token: 0x06000AE2 RID: 2786 RVA: 0x000A9B1E File Offset: 0x000A7D1E
+	public string[] GetDlcIds()
 	{
-		[new CellOffset(-1, 1)] = "shake_branch_b",
-		[new CellOffset(-1, 2)] = "shake_branch_c",
-		[new CellOffset(0, 2)] = "shake_branch_d",
-		[new CellOffset(1, 2)] = "shake_branch_e",
-		[new CellOffset(1, 1)] = "shake_branch_f"
-	};
+		return DlcManager.AVAILABLE_DLC_2;
+	}
 
-	private static Dictionary<CellOffset, SpaceTreeBranch.AnimSet> animationSets = new Dictionary<CellOffset, SpaceTreeBranch.AnimSet>
+	// Token: 0x06000AE3 RID: 2787 RVA: 0x0016CD20 File Offset: 0x0016AF20
+	public GameObject CreatePrefab()
 	{
-		[new CellOffset(-1, 1)] = new SpaceTreeBranch.AnimSet
+		string id = "SpaceTreeBranch";
+		string name = STRINGS.CREATURES.SPECIES.SPACETREE.NAME;
+		string desc = STRINGS.CREATURES.SPECIES.SPACETREE.DESC;
+		float mass = 8f;
+		EffectorValues tier = DECOR.BONUS.TIER1;
+		KAnimFile anim = Assets.GetAnim("syrup_tree_kanim");
+		string initialAnim = "idle_empty";
+		Grid.SceneLayer sceneLayer = Grid.SceneLayer.BuildingFront;
+		int width = 1;
+		int height = 1;
+		EffectorValues decor = tier;
+		List<Tag> additionalTags = new List<Tag>
+		{
+			GameTags.HideFromSpawnTool,
+			GameTags.PlantBranch
+		};
+		GameObject gameObject = EntityTemplates.CreatePlacedEntity(id, name, desc, mass, anim, initialAnim, sceneLayer, width, height, decor, default(EffectorValues), SimHashes.Creature, additionalTags, 255f);
+		string text = "SpaceTreeBranchOriginal";
+		string text2 = STRINGS.CREATURES.SPECIES.SPACETREE.NAME;
+		EntityTemplates.ExtendEntityToBasicPlant(gameObject, 173.15f, 198.15f, 258.15f, 293.15f, null, false, 0f, 0.15f, null, true, true, false, true, 12000f, 0f, 12200f, text, text2);
+		WiltCondition component = gameObject.GetComponent<WiltCondition>();
+		component.WiltDelay = 0f;
+		component.RecoveryDelay = 0f;
+		Modifiers component2 = gameObject.GetComponent<Modifiers>();
+		if (gameObject.GetComponent<Traits>() == null)
+		{
+			gameObject.AddOrGet<Traits>();
+			component2.initialTraits.Add(text);
+		}
+		KPrefabID component3 = gameObject.GetComponent<KPrefabID>();
+		Crop.CropVal cropVal = new Crop.CropVal("WoodLog", 2700f, 75, true);
+		GeneratedBuildings.RegisterWithOverlay(OverlayScreen.HarvestableIDs, component3.PrefabID().ToString());
+		component2.initialAttributes.Add(Db.Get().PlantAttributes.YieldAmount.Id);
+		component2.initialAmounts.Add(Db.Get().Amounts.Maturity.Id);
+		Trait trait = Db.Get().traits.Get(component2.initialTraits[0]);
+		trait.Add(new AttributeModifier(Db.Get().PlantAttributes.YieldAmount.Id, (float)cropVal.numProduced, text2, false, false, true));
+		trait.Add(new AttributeModifier(Db.Get().Amounts.Maturity.maxAttribute.Id, cropVal.cropDuration / 600f, text2, false, false, true));
+		trait.Add(new AttributeModifier(Db.Get().PlantAttributes.MinLightLux.Id, 300f, STRINGS.CREATURES.SPECIES.SPACETREE.NAME, false, false, true));
+		component2.initialAttributes.Add(Db.Get().PlantAttributes.MinLightLux.Id);
+		gameObject.AddOrGet<IlluminationVulnerable>().SetPrefersDarkness(false);
+		if (DlcManager.FeaturePlantMutationsEnabled())
+		{
+			gameObject.AddOrGet<MutantPlant>().SpeciesID = component3.PrefabTag;
+			SymbolOverrideControllerUtil.AddToPrefab(gameObject);
+		}
+		gameObject.AddOrGet<Crop>().Configure(cropVal);
+		gameObject.AddOrGet<Harvestable>();
+		gameObject.AddOrGet<HarvestDesignatable>();
+		gameObject.UpdateComponentRequirement(false);
+		gameObject.AddOrGetDef<PlantBranch.Def>().animationSetupCallback = new Action<PlantBranchGrower.Instance, PlantBranch.Instance>(this.AdjustAnimation);
+		gameObject.AddOrGetDef<SpaceTreeBranch.Def>().OPTIMAL_LUX_LEVELS = 10000;
+		gameObject.AddOrGetDef<UnstableEntombDefense.Def>().Cooldown = 5f;
+		gameObject.AddOrGet<BudUprootedMonitor>().destroyOnParentLost = true;
+		return gameObject;
+	}
+
+	// Token: 0x06000AE4 RID: 2788 RVA: 0x0016D010 File Offset: 0x0016B210
+	public void AdjustAnimation(PlantBranchGrower.Instance trunk, PlantBranch.Instance branch)
+	{
+		int base_cell = Grid.PosToCell(trunk);
+		int offset_cell = Grid.PosToCell(branch);
+		CellOffset offset = Grid.GetOffset(base_cell, offset_cell);
+		SpaceTreeBranch.Instance smi = branch.GetSMI<SpaceTreeBranch.Instance>();
+		KBatchedAnimController component = branch.GetComponent<KBatchedAnimController>();
+		if (smi != null && component != null && SpaceTreeBranchConfig.animationSets.ContainsKey(offset))
+		{
+			SpaceTreeBranch.AnimSet animations = SpaceTreeBranchConfig.animationSets[offset];
+			smi.Animations = animations;
+			component.Offset = SpaceTreeBranchConfig.animOffset[offset];
+			smi.RefreshAnimation();
+			branch.GetSMI<UnstableEntombDefense.Instance>().UnentombAnimName = SpaceTreeBranchConfig.entombDefenseAnimNames[offset];
+			return;
+		}
+		global::Debug.LogWarning(string.Concat(new string[]
+		{
+			"Error on AdjustAnimation().SpaceTreeBranchConfig.cs, spaceBranchFound: ",
+			(smi != null).ToString(),
+			", animControllerFound: ",
+			(component != null).ToString(),
+			", animationSetFound: ",
+			SpaceTreeBranchConfig.animationSets.ContainsKey(offset).ToString()
+		}));
+	}
+
+	// Token: 0x06000AE5 RID: 2789 RVA: 0x000AB156 File Offset: 0x000A9356
+	public void OnPrefabInit(GameObject inst)
+	{
+		inst.AddOrGet<Harvestable>().readyForHarvestStatusItem = Db.Get().CreatureStatusItems.ReadyForHarvest_Branch;
+		inst.AddOrGet<HarvestDesignatable>().iconOffset = new Vector2(0f, Grid.CellSizeInMeters * 0.5f);
+	}
+
+	// Token: 0x06000AE6 RID: 2790 RVA: 0x000A5E40 File Offset: 0x000A4040
+	public void OnSpawn(GameObject inst)
+	{
+	}
+
+	// Token: 0x06000AE8 RID: 2792 RVA: 0x0016D100 File Offset: 0x0016B300
+	// Note: this type is marked as 'beforefieldinit'.
+	static SpaceTreeBranchConfig()
+	{
+		Dictionary<CellOffset, string> dictionary = new Dictionary<CellOffset, string>();
+		CellOffset key = new CellOffset(-1, 1);
+		dictionary[key] = "shake_branch_b";
+		CellOffset key2 = new CellOffset(-1, 2);
+		dictionary[key2] = "shake_branch_c";
+		CellOffset key3 = new CellOffset(0, 2);
+		dictionary[key3] = "shake_branch_d";
+		CellOffset key4 = new CellOffset(1, 2);
+		dictionary[key4] = "shake_branch_e";
+		CellOffset key5 = new CellOffset(1, 1);
+		dictionary[key5] = "shake_branch_f";
+		SpaceTreeBranchConfig.entombDefenseAnimNames = dictionary;
+		Dictionary<CellOffset, SpaceTreeBranch.AnimSet> dictionary2 = new Dictionary<CellOffset, SpaceTreeBranch.AnimSet>();
+		key5 = new CellOffset(-1, 1);
+		dictionary2[key5] = new SpaceTreeBranch.AnimSet
 		{
 			spawn = "branch_b_grow",
 			undeveloped = "grow_b_healthy_short",
@@ -39,12 +145,22 @@ public class SpaceTreeBranchConfig : IEntityConfig
 			manual_harvest_pre = "syrup_harvest_branch_b_pre",
 			manual_harvest_loop = "syrup_harvest_branch_b_loop",
 			manual_harvest_pst = "syrup_harvest_branch_b_pst",
-			meterAnim_flowerWilted = new string[1] { "leaves_b_wilt" },
+			meterAnim_flowerWilted = new string[]
+			{
+				"leaves_b_wilt"
+			},
 			die = "branch_b_harvest",
-			meterTargets = new string[1] { "leaves_b_target" },
-			meterAnimNames = new string[1] { "leaves_b_meter" }
-		},
-		[new CellOffset(-1, 2)] = new SpaceTreeBranch.AnimSet
+			meterTargets = new string[]
+			{
+				"leaves_b_target"
+			},
+			meterAnimNames = new string[]
+			{
+				"leaves_b_meter"
+			}
+		};
+		key4 = new CellOffset(-1, 2);
+		dictionary2[key4] = new SpaceTreeBranch.AnimSet
 		{
 			spawn = "branch_c_grow",
 			undeveloped = "grow_c_healthy_short",
@@ -58,12 +174,22 @@ public class SpaceTreeBranchConfig : IEntityConfig
 			manual_harvest_pre = "syrup_harvest_branch_c_pre",
 			manual_harvest_loop = "syrup_harvest_branch_c_loop",
 			manual_harvest_pst = "syrup_harvest_branch_c_pst",
-			meterAnim_flowerWilted = new string[1] { "leaves_c_wilt" },
+			meterAnim_flowerWilted = new string[]
+			{
+				"leaves_c_wilt"
+			},
 			die = "branch_c_harvest",
-			meterTargets = new string[1] { "leaves_c_target" },
-			meterAnimNames = new string[1] { "leaves_c_meter" }
-		},
-		[new CellOffset(0, 2)] = new SpaceTreeBranch.AnimSet
+			meterTargets = new string[]
+			{
+				"leaves_c_target"
+			},
+			meterAnimNames = new string[]
+			{
+				"leaves_c_meter"
+			}
+		};
+		key3 = new CellOffset(0, 2);
+		dictionary2[key3] = new SpaceTreeBranch.AnimSet
 		{
 			spawn = "branch_d_grow",
 			undeveloped = "grow_d_healthy_short",
@@ -77,12 +203,22 @@ public class SpaceTreeBranchConfig : IEntityConfig
 			manual_harvest_pre = "syrup_harvest_branch_d_pre",
 			manual_harvest_loop = "syrup_harvest_branch_d_loop",
 			manual_harvest_pst = "syrup_harvest_branch_d_pst",
-			meterAnim_flowerWilted = new string[1] { "leaves_d_wilt" },
+			meterAnim_flowerWilted = new string[]
+			{
+				"leaves_d_wilt"
+			},
 			die = "branch_d_harvest",
-			meterTargets = new string[1] { "leaves_d_target" },
-			meterAnimNames = new string[1] { "leaves_d_meter" }
-		},
-		[new CellOffset(1, 2)] = new SpaceTreeBranch.AnimSet
+			meterTargets = new string[]
+			{
+				"leaves_d_target"
+			},
+			meterAnimNames = new string[]
+			{
+				"leaves_d_meter"
+			}
+		};
+		key2 = new CellOffset(1, 2);
+		dictionary2[key2] = new SpaceTreeBranch.AnimSet
 		{
 			spawn = "branch_e_grow",
 			undeveloped = "grow_e_healthy_short",
@@ -96,12 +232,22 @@ public class SpaceTreeBranchConfig : IEntityConfig
 			manual_harvest_pre = "syrup_harvest_branch_e_pre",
 			manual_harvest_loop = "syrup_harvest_branch_e_loop",
 			manual_harvest_pst = "syrup_harvest_branch_e_pst",
-			meterAnim_flowerWilted = new string[1] { "leaves_e_wilt" },
+			meterAnim_flowerWilted = new string[]
+			{
+				"leaves_e_wilt"
+			},
 			die = "branch_e_harvest",
-			meterTargets = new string[1] { "leaves_e_target" },
-			meterAnimNames = new string[1] { "leaves_e_meter" }
-		},
-		[new CellOffset(1, 1)] = new SpaceTreeBranch.AnimSet
+			meterTargets = new string[]
+			{
+				"leaves_e_target"
+			},
+			meterAnimNames = new string[]
+			{
+				"leaves_e_meter"
+			}
+		};
+		key = new CellOffset(1, 1);
+		dictionary2[key] = new SpaceTreeBranch.AnimSet
 		{
 			spawn = "branch_f_grow",
 			undeveloped = "grow_f_healthy_short",
@@ -115,101 +261,63 @@ public class SpaceTreeBranchConfig : IEntityConfig
 			manual_harvest_pre = "syrup_harvest_branch_f_pre",
 			manual_harvest_loop = "syrup_harvest_branch_f_loop",
 			manual_harvest_pst = "syrup_harvest_branch_f_pst",
-			meterAnim_flowerWilted = new string[2] { "leaves_f1_wilt", "leaves_f2_wilt" },
+			meterAnim_flowerWilted = new string[]
+			{
+				"leaves_f1_wilt",
+				"leaves_f2_wilt"
+			},
 			die = "branch_f_harvest",
-			meterTargets = new string[2] { "leaves_f1_target", "leaves_f2_target" },
-			meterAnimNames = new string[2] { "leaves_f1_meter", "leaves_f2_meter" }
-		}
+			meterTargets = new string[]
+			{
+				"leaves_f1_target",
+				"leaves_f2_target"
+			},
+			meterAnimNames = new string[]
+			{
+				"leaves_f1_meter",
+				"leaves_f2_meter"
+			}
+		};
+		SpaceTreeBranchConfig.animationSets = dictionary2;
+		Dictionary<CellOffset, Vector3> dictionary3 = new Dictionary<CellOffset, Vector3>();
+		key = new CellOffset(-1, 1);
+		dictionary3[key] = new Vector3(1f, -1f, 0f);
+		key2 = new CellOffset(-1, 2);
+		dictionary3[key2] = new Vector3(1f, -2f, 0f);
+		key3 = new CellOffset(0, 2);
+		dictionary3[key3] = new Vector3(0f, -2f, 0f);
+		key4 = new CellOffset(1, 2);
+		dictionary3[key4] = new Vector3(-1f, -2f, 0f);
+		key5 = new CellOffset(1, 1);
+		dictionary3[key5] = new Vector3(-1f, -1f, 0f);
+		SpaceTreeBranchConfig.animOffset = dictionary3;
+	}
+
+	// Token: 0x04000861 RID: 2145
+	public const string ID = "SpaceTreeBranch";
+
+	// Token: 0x04000862 RID: 2146
+	public static string[] BRANCH_NAMES = new string[]
+	{
+		"<sprite=\"oni_sprite_assets\" name=\"oni_sprite_assets_syrup_tree_l\">",
+		"<sprite=\"oni_sprite_assets\" name=\"oni_sprite_assets_syrup_tree_tl\">",
+		"<sprite=\"oni_sprite_assets\" name=\"oni_sprite_assets_syrup_tree_t\">",
+		"<sprite=\"oni_sprite_assets\" name=\"oni_sprite_assets_syrup_tree_tr\">",
+		"<sprite=\"oni_sprite_assets\" name=\"oni_sprite_assets_syrup_tree_r\">"
 	};
 
-	private static Dictionary<CellOffset, Vector3> animOffset = new Dictionary<CellOffset, Vector3>
-	{
-		[new CellOffset(-1, 1)] = new Vector3(1f, -1f, 0f),
-		[new CellOffset(-1, 2)] = new Vector3(1f, -2f, 0f),
-		[new CellOffset(0, 2)] = new Vector3(0f, -2f, 0f),
-		[new CellOffset(1, 2)] = new Vector3(-1f, -2f, 0f),
-		[new CellOffset(1, 1)] = new Vector3(-1f, -1f, 0f)
-	};
+	// Token: 0x04000863 RID: 2147
+	public const float GROWTH_DURATION = 2700f;
 
-	public string[] GetDlcIds()
-	{
-		return DlcManager.AVAILABLE_DLC_2;
-	}
+	// Token: 0x04000864 RID: 2148
+	public const int WOOD_AMOUNT = 75;
 
-	public GameObject CreatePrefab()
-	{
-		GameObject gameObject = EntityTemplates.CreatePlacedEntity("SpaceTreeBranch", STRINGS.CREATURES.SPECIES.SPACETREE.NAME, STRINGS.CREATURES.SPECIES.SPACETREE.DESC, 8f, decor: DECOR.BONUS.TIER1, anim: Assets.GetAnim("syrup_tree_kanim"), initialAnim: "idle_empty", sceneLayer: Grid.SceneLayer.BuildingFront, width: 1, height: 1, noise: default(EffectorValues), element: SimHashes.Creature, additionalTags: new List<Tag>
-		{
-			GameTags.HideFromSpawnTool,
-			GameTags.PlantBranch
-		}, defaultTemperature: 255f);
-		string text = "SpaceTreeBranchOriginal";
-		string text2 = STRINGS.CREATURES.SPECIES.SPACETREE.NAME;
-		EntityTemplates.ExtendEntityToBasicPlant(gameObject, 173.15f, 198.15f, 258.15f, 293.15f, null, pressure_sensitive: false, 0f, 0.15f, null, can_drown: true, can_tinker: true, require_solid_tile: false, should_grow_old: true, 12000f, 0f, 12200f, text, text2);
-		WiltCondition component = gameObject.GetComponent<WiltCondition>();
-		component.WiltDelay = 0f;
-		component.RecoveryDelay = 0f;
-		Modifiers component2 = gameObject.GetComponent<Modifiers>();
-		if (gameObject.GetComponent<Traits>() == null)
-		{
-			gameObject.AddOrGet<Traits>();
-			component2.initialTraits.Add(text);
-		}
-		KPrefabID component3 = gameObject.GetComponent<KPrefabID>();
-		Crop.CropVal cropval = new Crop.CropVal("WoodLog", 2700f, 75);
-		GeneratedBuildings.RegisterWithOverlay(OverlayScreen.HarvestableIDs, component3.PrefabID().ToString());
-		component2.initialAttributes.Add(Db.Get().PlantAttributes.YieldAmount.Id);
-		component2.initialAmounts.Add(Db.Get().Amounts.Maturity.Id);
-		Trait trait = Db.Get().traits.Get(component2.initialTraits[0]);
-		trait.Add(new AttributeModifier(Db.Get().PlantAttributes.YieldAmount.Id, cropval.numProduced, text2));
-		trait.Add(new AttributeModifier(Db.Get().Amounts.Maturity.maxAttribute.Id, cropval.cropDuration / 600f, text2));
-		trait.Add(new AttributeModifier(Db.Get().PlantAttributes.MinLightLux.Id, 300f, STRINGS.CREATURES.SPECIES.SPACETREE.NAME));
-		component2.initialAttributes.Add(Db.Get().PlantAttributes.MinLightLux.Id);
-		gameObject.AddOrGet<IlluminationVulnerable>().SetPrefersDarkness();
-		if (DlcManager.FeaturePlantMutationsEnabled())
-		{
-			gameObject.AddOrGet<MutantPlant>().SpeciesID = component3.PrefabTag;
-			SymbolOverrideControllerUtil.AddToPrefab(gameObject);
-		}
-		gameObject.AddOrGet<Crop>().Configure(cropval);
-		gameObject.AddOrGet<Harvestable>();
-		gameObject.AddOrGet<HarvestDesignatable>();
-		gameObject.UpdateComponentRequirement<Uprootable>(required: false);
-		gameObject.AddOrGetDef<PlantBranch.Def>().animationSetupCallback = AdjustAnimation;
-		gameObject.AddOrGetDef<SpaceTreeBranch.Def>().OPTIMAL_LUX_LEVELS = 10000;
-		gameObject.AddOrGetDef<UnstableEntombDefense.Def>().Cooldown = 5f;
-		gameObject.AddOrGet<BudUprootedMonitor>().destroyOnParentLost = true;
-		return gameObject;
-	}
+	// Token: 0x04000865 RID: 2149
+	private static Dictionary<CellOffset, string> entombDefenseAnimNames;
 
-	public void AdjustAnimation(PlantBranchGrower.Instance trunk, PlantBranch.Instance branch)
-	{
-		int base_cell = Grid.PosToCell(trunk);
-		int offset_cell = Grid.PosToCell(branch);
-		CellOffset offset = Grid.GetOffset(base_cell, offset_cell);
-		SpaceTreeBranch.Instance sMI = branch.GetSMI<SpaceTreeBranch.Instance>();
-		KBatchedAnimController component = branch.GetComponent<KBatchedAnimController>();
-		if (sMI != null && component != null && animationSets.ContainsKey(offset))
-		{
-			SpaceTreeBranch.AnimSet animations = animationSets[offset];
-			sMI.Animations = animations;
-			component.Offset = animOffset[offset];
-			sMI.RefreshAnimation();
-			branch.GetSMI<UnstableEntombDefense.Instance>().UnentombAnimName = entombDefenseAnimNames[offset];
-		}
-		else
-		{
-			Debug.LogWarning("Error on AdjustAnimation().SpaceTreeBranchConfig.cs, spaceBranchFound: " + (sMI != null) + ", animControllerFound: " + (component != null) + ", animationSetFound: " + animationSets.ContainsKey(offset));
-		}
-	}
+	// Token: 0x04000866 RID: 2150
+	private static Dictionary<CellOffset, SpaceTreeBranch.AnimSet> animationSets;
 
-	public void OnPrefabInit(GameObject inst)
-	{
-		inst.AddOrGet<Harvestable>().readyForHarvestStatusItem = Db.Get().CreatureStatusItems.ReadyForHarvest_Branch;
-		inst.AddOrGet<HarvestDesignatable>().iconOffset = new Vector2(0f, Grid.CellSizeInMeters * 0.5f);
-	}
-
-	public void OnSpawn(GameObject inst)
-	{
-	}
+	// Token: 0x04000867 RID: 2151
+	private static Dictionary<CellOffset, Vector3> animOffset;
 }

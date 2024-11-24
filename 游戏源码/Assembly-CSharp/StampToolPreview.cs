@@ -1,86 +1,103 @@
+﻿using System;
 using System.Collections;
 using UnityEngine;
 
+// Token: 0x02001459 RID: 5209
 public class StampToolPreview
 {
-	private IStampToolPreviewPlugin[] plugins;
-
-	private StampToolPreviewContext context;
-
-	private int prevOriginCell;
-
+	// Token: 0x06006C1D RID: 27677 RVA: 0x000E70B2 File Offset: 0x000E52B2
 	public StampToolPreview(InterfaceTool tool, params IStampToolPreviewPlugin[] plugins)
 	{
-		context = new StampToolPreviewContext();
-		context.previewParent = new GameObject("StampToolPreview::Preview").transform;
-		context.tool = tool;
+		this.context = new StampToolPreviewContext();
+		this.context.previewParent = new GameObject("StampToolPreview::Preview").transform;
+		this.context.tool = tool;
 		this.plugins = plugins;
 	}
 
+	// Token: 0x06006C1E RID: 27678 RVA: 0x000E70F2 File Offset: 0x000E52F2
 	public IEnumerator Setup(TemplateContainer stampTemplate)
 	{
-		Cleanup();
-		context.stampTemplate = stampTemplate;
-		if (plugins != null)
+		this.Cleanup();
+		this.context.stampTemplate = stampTemplate;
+		if (this.plugins != null)
 		{
-			IStampToolPreviewPlugin[] array = plugins;
+			IStampToolPreviewPlugin[] array = this.plugins;
 			for (int i = 0; i < array.Length; i++)
 			{
-				array[i].Setup(context);
+				array[i].Setup(this.context);
 			}
 		}
 		yield return null;
-		if (context.frameAfterSetupFn != null)
+		if (this.context.frameAfterSetupFn != null)
 		{
-			context.frameAfterSetupFn();
+			this.context.frameAfterSetupFn();
 		}
+		yield break;
 	}
 
+	// Token: 0x06006C1F RID: 27679 RVA: 0x002E53C8 File Offset: 0x002E35C8
 	public void Refresh(int originCell)
 	{
-		if (context.stampTemplate == null || originCell == prevOriginCell)
+		if (this.context.stampTemplate == null)
 		{
 			return;
 		}
-		prevOriginCell = originCell;
-		if (Grid.IsValidCell(originCell))
+		if (originCell == this.prevOriginCell)
 		{
-			if (context.refreshFn != null)
-			{
-				context.refreshFn(originCell);
-			}
-			context.previewParent.transform.SetPosition(Grid.CellToPosCBC(originCell, context.tool.visualizerLayer));
-			context.previewParent.gameObject.SetActive(value: true);
+			return;
 		}
+		this.prevOriginCell = originCell;
+		if (!Grid.IsValidCell(originCell))
+		{
+			return;
+		}
+		if (this.context.refreshFn != null)
+		{
+			this.context.refreshFn(originCell);
+		}
+		this.context.previewParent.transform.SetPosition(Grid.CellToPosCBC(originCell, this.context.tool.visualizerLayer));
+		this.context.previewParent.gameObject.SetActive(true);
 	}
 
+	// Token: 0x06006C20 RID: 27680 RVA: 0x000E7108 File Offset: 0x000E5308
 	public void OnErrorChange(string error)
 	{
-		if (context.onErrorChangeFn != null)
+		if (this.context.onErrorChangeFn != null)
 		{
-			context.onErrorChangeFn(error);
+			this.context.onErrorChangeFn(error);
 		}
 	}
 
+	// Token: 0x06006C21 RID: 27681 RVA: 0x000E7128 File Offset: 0x000E5328
 	public void OnPlace()
 	{
-		if (context.onPlaceFn != null)
+		if (this.context.onPlaceFn != null)
 		{
-			context.onPlaceFn();
+			this.context.onPlaceFn();
 		}
 	}
 
+	// Token: 0x06006C22 RID: 27682 RVA: 0x002E5460 File Offset: 0x002E3660
 	public void Cleanup()
 	{
-		if (context.cleanupFn != null)
+		if (this.context.cleanupFn != null)
 		{
-			context.cleanupFn();
+			this.context.cleanupFn();
 		}
-		prevOriginCell = Grid.InvalidCell;
-		context.stampTemplate = null;
-		context.frameAfterSetupFn = null;
-		context.refreshFn = null;
-		context.onPlaceFn = null;
-		context.cleanupFn = null;
+		this.prevOriginCell = Grid.InvalidCell;
+		this.context.stampTemplate = null;
+		this.context.frameAfterSetupFn = null;
+		this.context.refreshFn = null;
+		this.context.onPlaceFn = null;
+		this.context.cleanupFn = null;
 	}
+
+	// Token: 0x0400511E RID: 20766
+	private IStampToolPreviewPlugin[] plugins;
+
+	// Token: 0x0400511F RID: 20767
+	private StampToolPreviewContext context;
+
+	// Token: 0x04005120 RID: 20768
+	private int prevOriginCell;
 }

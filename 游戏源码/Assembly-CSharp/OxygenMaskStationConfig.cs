@@ -1,58 +1,62 @@
+﻿using System;
 using System.Collections.Generic;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x020004DB RID: 1243
 public class OxygenMaskStationConfig : IBuildingConfig
 {
-	public const string ID = "OxygenMaskStation";
-
-	public const float MATERIAL_PER_MASK = 15f;
-
-	public const float OXYGEN_PER_MASK = 20f;
-
-	public const int MASKS_PER_REFILL = 3;
-
-	public const float WORK_TIME = 5f;
-
-	public ChoreType fetchChoreType = Db.Get().ChoreTypes.Fetch;
-
-	public override string[] GetDlcIds()
-	{
-		return DlcManager.AVAILABLE_ALL_VERSIONS;
-	}
-
+	// Token: 0x060015F1 RID: 5617 RVA: 0x00195B14 File Offset: 0x00193D14
 	public override BuildingDef CreateBuildingDef()
 	{
-		string[] rAW_MINERALS = MATERIALS.RAW_MINERALS;
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef(construction_mass: BUILDINGS.CONSTRUCTION_MASS_KG.TIER1, construction_materials: rAW_MINERALS, melting_point: 1600f, build_location_rule: BuildLocationRule.OnFloor, noise: NOISE_POLLUTION.NOISY.TIER0, id: "OxygenMaskStation", width: 2, height: 3, anim: "oxygen_mask_station_kanim", hitpoints: 30, construction_time: 30f, decor: BUILDINGS.DECOR.BONUS.TIER1);
-		obj.RequiresPowerInput = true;
-		obj.EnergyConsumptionWhenActive = 60f;
-		obj.ExhaustKilowattsWhenActive = 0.5f;
-		obj.SelfHeatKilowattsWhenActive = 1f;
-		obj.PermittedRotations = PermittedRotations.FlipH;
-		obj.PreventIdleTraversalPastBuilding = true;
-		obj.Deprecated = true;
-		return obj;
+		string id = "OxygenMaskStation";
+		int width = 2;
+		int height = 3;
+		string anim = "oxygen_mask_station_kanim";
+		int hitpoints = 30;
+		float construction_time = 30f;
+		string[] raw_MINERALS = MATERIALS.RAW_MINERALS;
+		float[] tier = BUILDINGS.CONSTRUCTION_MASS_KG.TIER1;
+		string[] construction_materials = raw_MINERALS;
+		float melting_point = 1600f;
+		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
+		EffectorValues tier2 = NOISE_POLLUTION.NOISY.TIER0;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, construction_materials, melting_point, build_location_rule, BUILDINGS.DECOR.BONUS.TIER1, tier2, 0.2f);
+		buildingDef.RequiresPowerInput = true;
+		buildingDef.EnergyConsumptionWhenActive = 60f;
+		buildingDef.ExhaustKilowattsWhenActive = 0.5f;
+		buildingDef.SelfHeatKilowattsWhenActive = 1f;
+		buildingDef.PermittedRotations = PermittedRotations.FlipH;
+		buildingDef.PreventIdleTraversalPastBuilding = true;
+		buildingDef.Deprecated = true;
+		return buildingDef;
 	}
 
+	// Token: 0x060015F2 RID: 5618 RVA: 0x00195B9C File Offset: 0x00193D9C
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		Storage storage = go.AddComponent<Storage>();
 		storage.SetDefaultStoredItemModifiers(Storage.StandardSealedStorage);
 		storage.showInUI = true;
-		storage.storageFilters = new List<Tag> { GameTags.Metal };
+		storage.storageFilters = new List<Tag>
+		{
+			GameTags.Metal
+		};
 		storage.capacityKg = 45f;
 		Storage storage2 = go.AddComponent<Storage>();
 		storage2.SetDefaultStoredItemModifiers(Storage.StandardSealedStorage);
 		storage2.showInUI = true;
-		storage2.storageFilters = new List<Tag> { GameTags.Breathable };
+		storage2.storageFilters = new List<Tag>
+		{
+			GameTags.Breathable
+		};
 		MaskStation maskStation = go.AddOrGet<MaskStation>();
 		maskStation.materialConsumedPerMask = 15f;
 		maskStation.oxygenConsumedPerMask = 20f;
 		maskStation.maxUses = 3;
 		maskStation.materialTag = GameTags.Metal;
 		maskStation.oxygenTag = GameTags.Breathable;
-		maskStation.choreTypeID = fetchChoreType.Id;
+		maskStation.choreTypeID = this.fetchChoreType.Id;
 		maskStation.PathFlag = PathFinder.PotentialPath.Flags.HasOxygenMask;
 		maskStation.materialStorage = storage;
 		maskStation.oxygenStorage = storage2;
@@ -76,7 +80,26 @@ public class OxygenMaskStationConfig : IBuildingConfig
 		go.AddOrGet<LoopingSounds>();
 	}
 
+	// Token: 0x060015F3 RID: 5619 RVA: 0x000A5E40 File Offset: 0x000A4040
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
+
+	// Token: 0x04000ED0 RID: 3792
+	public const string ID = "OxygenMaskStation";
+
+	// Token: 0x04000ED1 RID: 3793
+	public const float MATERIAL_PER_MASK = 15f;
+
+	// Token: 0x04000ED2 RID: 3794
+	public const float OXYGEN_PER_MASK = 20f;
+
+	// Token: 0x04000ED3 RID: 3795
+	public const int MASKS_PER_REFILL = 3;
+
+	// Token: 0x04000ED4 RID: 3796
+	public const float WORK_TIME = 5f;
+
+	// Token: 0x04000ED5 RID: 3797
+	public ChoreType fetchChoreType = Db.Get().ChoreTypes.Fetch;
 }

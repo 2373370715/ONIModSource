@@ -1,54 +1,43 @@
+﻿using System;
 using System.Collections.Generic;
 using Klei.AI;
 using STRINGS;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x0200055A RID: 1370
 public class SweepBotConfig : IEntityConfig
 {
-	public const string ID = "SweepBot";
-
-	public const string BASE_TRAIT_ID = "SweepBotBaseTrait";
-
-	public const float STORAGE_CAPACITY = 500f;
-
-	public const float BATTERY_CAPACITY = 9000f;
-
-	public const float BATTERY_DEPLETION_RATE = 17.142857f;
-
-	public const float MAX_SWEEP_AMOUNT = 10f;
-
-	public const float MOP_SPEED = 10f;
-
-	private string name = STRINGS.ROBOTS.MODELS.SWEEPBOT.NAME;
-
-	private string desc = STRINGS.ROBOTS.MODELS.SWEEPBOT.DESC;
-
-	public static float MASS = 25f;
-
+	// Token: 0x06001828 RID: 6184 RVA: 0x000A6F3E File Offset: 0x000A513E
 	public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
+	// Token: 0x06001829 RID: 6185 RVA: 0x0019DADC File Offset: 0x0019BCDC
 	public GameObject CreatePrefab()
 	{
-		GameObject gameObject = EntityTemplates.CreatePlacedEntity("SweepBot", name, desc, MASS, decor: TUNING.BUILDINGS.DECOR.NONE, anim: Assets.GetAnim("sweep_bot_kanim"), initialAnim: "idle", sceneLayer: Grid.SceneLayer.Creatures, width: 1, height: 1);
+		string id = "SweepBot";
+		string text = this.name;
+		string text2 = this.desc;
+		float mass = SweepBotConfig.MASS;
+		EffectorValues none = TUNING.BUILDINGS.DECOR.NONE;
+		GameObject gameObject = EntityTemplates.CreatePlacedEntity(id, text, text2, mass, Assets.GetAnim("sweep_bot_kanim"), "idle", Grid.SceneLayer.Creatures, 1, 1, none, default(EffectorValues), SimHashes.Creature, null, 293f);
 		gameObject.AddOrGet<LoopingSounds>();
 		gameObject.GetComponent<KBatchedAnimController>().isMovable = true;
-		KPrefabID kPrefabID = gameObject.AddOrGet<KPrefabID>();
-		kPrefabID.AddTag(GameTags.Creature);
-		kPrefabID.AddTag(GameTags.Robot);
+		KPrefabID kprefabID = gameObject.AddOrGet<KPrefabID>();
+		kprefabID.AddTag(GameTags.Creature, false);
+		kprefabID.AddTag(GameTags.Robot, false);
 		gameObject.AddComponent<Pickupable>();
 		gameObject.AddOrGet<Clearable>().isClearable = false;
-		Trait trait = Db.Get().CreateTrait("SweepBotBaseTrait", name, name, null, should_save: false, null, positive_trait: true, is_valid_starter_trait: true);
-		trait.Add(new AttributeModifier(Db.Get().Amounts.InternalBattery.maxAttribute.Id, 9000f, name));
-		trait.Add(new AttributeModifier(Db.Get().Amounts.InternalBattery.deltaAttribute.Id, -17.142857f, name));
+		Trait trait = Db.Get().CreateTrait("SweepBotBaseTrait", this.name, this.name, null, false, null, true, true);
+		trait.Add(new AttributeModifier(Db.Get().Amounts.InternalBattery.maxAttribute.Id, 9000f, this.name, false, false, true));
+		trait.Add(new AttributeModifier(Db.Get().Amounts.InternalBattery.deltaAttribute.Id, -17.142857f, this.name, false, false, true));
 		Modifiers modifiers = gameObject.AddOrGet<Modifiers>();
 		modifiers.initialTraits.Add("SweepBotBaseTrait");
 		modifiers.initialAmounts.Add(Db.Get().Amounts.HitPoints.Id);
 		modifiers.initialAmounts.Add(Db.Get().Amounts.InternalBattery.Id);
-		gameObject.AddOrGet<KBatchedAnimController>().SetSymbolVisiblity("snapto_pivot", is_visible: false);
+		gameObject.AddOrGet<KBatchedAnimController>().SetSymbolVisiblity("snapto_pivot", false);
 		gameObject.AddOrGet<Traits>();
 		gameObject.AddOrGet<Effects>();
 		gameObject.AddOrGetDef<AnimInterruptMonitor.Def>();
@@ -62,7 +51,7 @@ public class SweepBotConfig : IEntityConfig
 		gameObject.AddOrGetDef<SweepBotTrappedMonitor.Def>();
 		gameObject.AddOrGetDef<DrinkMilkMonitor.Def>().consumesMilk = false;
 		gameObject.AddOrGet<AnimEventHandler>();
-		gameObject.AddOrGet<SnapOn>().snapPoints = new List<SnapOn.SnapPoint>(new SnapOn.SnapPoint[1]
+		gameObject.AddOrGet<SnapOn>().snapPoints = new List<SnapOn.SnapPoint>(new SnapOn.SnapPoint[]
 		{
 			new SnapOn.SnapPoint
 			{
@@ -90,32 +79,57 @@ public class SweepBotConfig : IEntityConfig
 		navigator.updateProber = true;
 		navigator.maxProbingRadius = 32;
 		navigator.sceneLayer = Grid.SceneLayer.Creatures;
-		kPrefabID.AddTag(GameTags.Creatures.Walker);
-		ChoreTable.Builder chore_table = new ChoreTable.Builder().Add(new FallStates.Def()).Add(new AnimInterruptStates.Def()).Add(new SweepBotTrappedStates.Def())
-			.Add(new DeliverToSweepLockerStates.Def())
-			.Add(new ReturnToChargeStationStates.Def())
-			.PushInterruptGroup()
-			.Add(new DrinkMilkStates.Def
-			{
-				shouldBeBehindMilkTank = true
-			})
-			.PopInterruptGroup()
-			.Add(new SweepStates.Def())
-			.Add(new IdleStates.Def());
+		kprefabID.AddTag(GameTags.Creatures.Walker, false);
+		ChoreTable.Builder chore_table = new ChoreTable.Builder().Add(new FallStates.Def(), true, -1).Add(new AnimInterruptStates.Def(), true, -1).Add(new SweepBotTrappedStates.Def(), true, -1).Add(new DeliverToSweepLockerStates.Def(), true, -1).Add(new ReturnToChargeStationStates.Def(), true, -1).PushInterruptGroup().Add(new DrinkMilkStates.Def
+		{
+			shouldBeBehindMilkTank = true
+		}, true, -1).PopInterruptGroup().Add(new SweepStates.Def(), true, -1).Add(new IdleStates.Def(), true, -1);
 		gameObject.AddOrGet<LoopingSounds>();
 		EntityTemplates.AddCreatureBrain(gameObject, chore_table, GameTags.Robots.Models.SweepBot, null);
 		return gameObject;
 	}
 
+	// Token: 0x0600182A RID: 6186 RVA: 0x000A5E40 File Offset: 0x000A4040
 	public void OnPrefabInit(GameObject prefab)
 	{
 	}
 
+	// Token: 0x0600182B RID: 6187 RVA: 0x0019DE70 File Offset: 0x0019C070
 	public void OnSpawn(GameObject inst)
 	{
-		StorageUnloadMonitor.Instance sMI = inst.GetSMI<StorageUnloadMonitor.Instance>();
-		sMI.sm.internalStorage.Set(inst.GetComponents<Storage>()[1], sMI);
+		StorageUnloadMonitor.Instance smi = inst.GetSMI<StorageUnloadMonitor.Instance>();
+		smi.sm.internalStorage.Set(inst.GetComponents<Storage>()[1], smi, false);
 		inst.GetComponent<OrnamentReceptacle>();
 		inst.GetSMI<CreatureFallMonitor.Instance>().anim = "idle_loop";
 	}
+
+	// Token: 0x04000FAA RID: 4010
+	public const string ID = "SweepBot";
+
+	// Token: 0x04000FAB RID: 4011
+	public const string BASE_TRAIT_ID = "SweepBotBaseTrait";
+
+	// Token: 0x04000FAC RID: 4012
+	public const float STORAGE_CAPACITY = 500f;
+
+	// Token: 0x04000FAD RID: 4013
+	public const float BATTERY_CAPACITY = 9000f;
+
+	// Token: 0x04000FAE RID: 4014
+	public const float BATTERY_DEPLETION_RATE = 17.142857f;
+
+	// Token: 0x04000FAF RID: 4015
+	public const float MAX_SWEEP_AMOUNT = 10f;
+
+	// Token: 0x04000FB0 RID: 4016
+	public const float MOP_SPEED = 10f;
+
+	// Token: 0x04000FB1 RID: 4017
+	private string name = STRINGS.ROBOTS.MODELS.SWEEPBOT.NAME;
+
+	// Token: 0x04000FB2 RID: 4018
+	private string desc = STRINGS.ROBOTS.MODELS.SWEEPBOT.DESC;
+
+	// Token: 0x04000FB3 RID: 4019
+	public static float MASS = 25f;
 }

@@ -1,74 +1,40 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Klei.AI;
 using STRINGS;
 using UnityEngine;
 using UnityEngine.UI;
 
+// Token: 0x02001D8D RID: 7565
 public class CrewJobsEntry : CrewListEntry
 {
-	[Serializable]
-	public struct PriorityButton
-	{
-		public Button button;
-
-		public GameObject ToggleIcon;
-
-		public ChoreGroup choreGroup;
-
-		public ToolTip tooltip;
-
-		public Image border;
-
-		public Image background;
-
-		public Color baseBorderColor;
-
-		public Color baseBackgroundColor;
-	}
-
-	public GameObject Prefab_JobPriorityButton;
-
-	public GameObject Prefab_JobPriorityButtonAllTasks;
-
-	private List<PriorityButton> PriorityButtons = new List<PriorityButton>();
-
-	private PriorityButton AllTasksButton;
-
-	public TextStyleSetting TooltipTextStyle_Title;
-
-	public TextStyleSetting TooltipTextStyle_Ability;
-
-	public TextStyleSetting TooltipTextStyle_AbilityPositiveModifier;
-
-	public TextStyleSetting TooltipTextStyle_AbilityNegativeModifier;
-
-	private bool dirty;
-
-	private CrewJobsScreen.everyoneToggleState rowToggleState;
-
+	// Token: 0x17000A55 RID: 2645
+	// (get) Token: 0x06009E23 RID: 40483 RVA: 0x00106FCE File Offset: 0x001051CE
+	// (set) Token: 0x06009E24 RID: 40484 RVA: 0x00106FD6 File Offset: 0x001051D6
 	public ChoreConsumer consumer { get; private set; }
 
+	// Token: 0x06009E25 RID: 40485 RVA: 0x003CA030 File Offset: 0x003C8230
 	public override void Populate(MinionIdentity _identity)
 	{
 		base.Populate(_identity);
-		consumer = _identity.GetComponent<ChoreConsumer>();
-		ChoreConsumer choreConsumer = consumer;
-		choreConsumer.choreRulesChanged = (System.Action)Delegate.Combine(choreConsumer.choreRulesChanged, new System.Action(Dirty));
-		foreach (ChoreGroup resource in Db.Get().ChoreGroups.resources)
+		this.consumer = _identity.GetComponent<ChoreConsumer>();
+		ChoreConsumer consumer = this.consumer;
+		consumer.choreRulesChanged = (System.Action)Delegate.Combine(consumer.choreRulesChanged, new System.Action(this.Dirty));
+		foreach (ChoreGroup chore_group in Db.Get().ChoreGroups.resources)
 		{
-			CreateChoreButton(resource);
+			this.CreateChoreButton(chore_group);
 		}
-		CreateAllTaskButton();
-		dirty = true;
+		this.CreateAllTaskButton();
+		this.dirty = true;
 	}
 
+	// Token: 0x06009E26 RID: 40486 RVA: 0x003CA0D4 File Offset: 0x003C82D4
 	private void CreateChoreButton(ChoreGroup chore_group)
 	{
-		GameObject gameObject = Util.KInstantiateUI(Prefab_JobPriorityButton, base.transform.gameObject);
+		GameObject gameObject = Util.KInstantiateUI(this.Prefab_JobPriorityButton, base.transform.gameObject, false);
 		gameObject.GetComponent<OverviewColumnIdentity>().columnID = chore_group.Id;
 		gameObject.GetComponent<OverviewColumnIdentity>().Column_DisplayName = chore_group.Name;
-		PriorityButton priorityButton = default(PriorityButton);
+		CrewJobsEntry.PriorityButton priorityButton = default(CrewJobsEntry.PriorityButton);
 		priorityButton.button = gameObject.GetComponent<Button>();
 		priorityButton.border = gameObject.transform.GetChild(1).GetComponent<Image>();
 		priorityButton.baseBorderColor = priorityButton.border.color;
@@ -77,100 +43,100 @@ public class CrewJobsEntry : CrewListEntry
 		priorityButton.choreGroup = chore_group;
 		priorityButton.ToggleIcon = gameObject.transform.GetChild(2).gameObject;
 		priorityButton.tooltip = gameObject.GetComponent<ToolTip>();
-		priorityButton.tooltip.OnToolTip = () => OnPriorityButtonTooltip(priorityButton);
-		priorityButton.button.onClick.AddListener(delegate
+		priorityButton.tooltip.OnToolTip = (() => this.OnPriorityButtonTooltip(priorityButton));
+		priorityButton.button.onClick.AddListener(delegate()
 		{
-			OnPriorityPress(chore_group);
+			this.OnPriorityPress(chore_group);
 		});
-		PriorityButtons.Add(priorityButton);
+		this.PriorityButtons.Add(priorityButton);
 	}
 
+	// Token: 0x06009E27 RID: 40487 RVA: 0x003CA250 File Offset: 0x003C8450
 	private void CreateAllTaskButton()
 	{
-		GameObject gameObject = Util.KInstantiateUI(Prefab_JobPriorityButtonAllTasks, base.transform.gameObject);
+		GameObject gameObject = Util.KInstantiateUI(this.Prefab_JobPriorityButtonAllTasks, base.transform.gameObject, false);
 		gameObject.GetComponent<OverviewColumnIdentity>().columnID = "AllTasks";
 		gameObject.GetComponent<OverviewColumnIdentity>().Column_DisplayName = "";
 		Button b = gameObject.GetComponent<Button>();
-		b.onClick.AddListener(delegate
+		b.onClick.AddListener(delegate()
 		{
-			ToggleTasksAll(b);
+			this.ToggleTasksAll(b);
 		});
-		PriorityButton allTasksButton = default(PriorityButton);
-		allTasksButton.button = gameObject.GetComponent<Button>();
-		allTasksButton.border = gameObject.transform.GetChild(1).GetComponent<Image>();
-		allTasksButton.baseBorderColor = allTasksButton.border.color;
-		allTasksButton.background = gameObject.transform.GetChild(0).GetComponent<Image>();
-		allTasksButton.baseBackgroundColor = allTasksButton.background.color;
-		allTasksButton.ToggleIcon = gameObject.transform.GetChild(2).gameObject;
-		allTasksButton.tooltip = gameObject.GetComponent<ToolTip>();
-		AllTasksButton = allTasksButton;
+		CrewJobsEntry.PriorityButton priorityButton = default(CrewJobsEntry.PriorityButton);
+		priorityButton.button = gameObject.GetComponent<Button>();
+		priorityButton.border = gameObject.transform.GetChild(1).GetComponent<Image>();
+		priorityButton.baseBorderColor = priorityButton.border.color;
+		priorityButton.background = gameObject.transform.GetChild(0).GetComponent<Image>();
+		priorityButton.baseBackgroundColor = priorityButton.background.color;
+		priorityButton.ToggleIcon = gameObject.transform.GetChild(2).gameObject;
+		priorityButton.tooltip = gameObject.GetComponent<ToolTip>();
+		this.AllTasksButton = priorityButton;
 	}
 
+	// Token: 0x06009E28 RID: 40488 RVA: 0x003CA360 File Offset: 0x003C8560
 	private void ToggleTasksAll(Button button)
 	{
-		bool flag = rowToggleState != CrewJobsScreen.everyoneToggleState.on;
-		string text = "HUD_Click_Deselect";
+		bool flag = this.rowToggleState != CrewJobsScreen.everyoneToggleState.on;
+		string name = "HUD_Click_Deselect";
 		if (flag)
 		{
-			text = "HUD_Click";
+			name = "HUD_Click";
 		}
-		KMonoBehaviour.PlaySound(GlobalAssets.GetSound(text));
-		foreach (ChoreGroup resource in Db.Get().ChoreGroups.resources)
+		KMonoBehaviour.PlaySound(GlobalAssets.GetSound(name, false));
+		foreach (ChoreGroup chore_group in Db.Get().ChoreGroups.resources)
 		{
-			consumer.SetPermittedByUser(resource, flag);
+			this.consumer.SetPermittedByUser(chore_group, flag);
 		}
 	}
 
+	// Token: 0x06009E29 RID: 40489 RVA: 0x003CA3EC File Offset: 0x003C85EC
 	private void OnPriorityPress(ChoreGroup chore_group)
 	{
-		int num = (consumer.IsPermittedByUser(chore_group) ? 1 : 0);
-		string text = "HUD_Click";
-		if (num != 0)
+		bool flag = this.consumer.IsPermittedByUser(chore_group);
+		string name = "HUD_Click";
+		if (flag)
 		{
-			text = "HUD_Click_Deselect";
+			name = "HUD_Click_Deselect";
 		}
-		KMonoBehaviour.PlaySound(GlobalAssets.GetSound(text));
-		consumer.SetPermittedByUser(chore_group, !consumer.IsPermittedByUser(chore_group));
+		KMonoBehaviour.PlaySound(GlobalAssets.GetSound(name, false));
+		this.consumer.SetPermittedByUser(chore_group, !this.consumer.IsPermittedByUser(chore_group));
 	}
 
+	// Token: 0x06009E2A RID: 40490 RVA: 0x003CA440 File Offset: 0x003C8640
 	private void Refresh(object data = null)
 	{
-		if (identity == null)
+		if (this.identity == null)
 		{
-			dirty = false;
+			this.dirty = false;
+			return;
 		}
-		else
+		if (this.dirty)
 		{
-			if (!dirty)
+			Attributes attributes = this.identity.GetAttributes();
+			foreach (CrewJobsEntry.PriorityButton priorityButton in this.PriorityButtons)
 			{
-				return;
-			}
-			Attributes attributes = identity.GetAttributes();
-			foreach (PriorityButton priorityButton in PriorityButtons)
-			{
-				bool flag = consumer.IsPermittedByUser(priorityButton.choreGroup);
+				bool flag = this.consumer.IsPermittedByUser(priorityButton.choreGroup);
 				if (priorityButton.ToggleIcon.activeSelf != flag)
 				{
 					priorityButton.ToggleIcon.SetActive(flag);
 				}
-				float num = 0f;
-				num = Mathf.Min(attributes.Get(priorityButton.choreGroup.attribute).GetTotalValue() / 10f, 1f);
+				float t = Mathf.Min(attributes.Get(priorityButton.choreGroup.attribute).GetTotalValue() / 10f, 1f);
 				Color baseBorderColor = priorityButton.baseBorderColor;
-				baseBorderColor.r = Mathf.Lerp(priorityButton.baseBorderColor.r, 0.72156864f, num);
-				baseBorderColor.g = Mathf.Lerp(priorityButton.baseBorderColor.g, 0.44313726f, num);
-				baseBorderColor.b = Mathf.Lerp(priorityButton.baseBorderColor.b, 0.5803922f, num);
+				baseBorderColor.r = Mathf.Lerp(priorityButton.baseBorderColor.r, 0.72156864f, t);
+				baseBorderColor.g = Mathf.Lerp(priorityButton.baseBorderColor.g, 0.44313726f, t);
+				baseBorderColor.b = Mathf.Lerp(priorityButton.baseBorderColor.b, 0.5803922f, t);
 				if (priorityButton.border.color != baseBorderColor)
 				{
 					priorityButton.border.color = baseBorderColor;
 				}
 				Color color = priorityButton.baseBackgroundColor;
-				color.a = Mathf.Lerp(0f, 1f, num);
-				bool flag2 = consumer.IsPermittedByTraits(priorityButton.choreGroup);
+				color.a = Mathf.Lerp(0f, 1f, t);
+				bool flag2 = this.consumer.IsPermittedByTraits(priorityButton.choreGroup);
 				if (!flag2)
 				{
 					color = Color.clear;
 					priorityButton.border.color = Color.clear;
-					priorityButton.ToggleIcon.SetActive(value: false);
+					priorityButton.ToggleIcon.SetActive(false);
 				}
 				priorityButton.button.interactable = flag2;
 				if (priorityButton.background.color != color)
@@ -178,104 +144,168 @@ public class CrewJobsEntry : CrewListEntry
 					priorityButton.background.color = color;
 				}
 			}
+			int num = 0;
 			int num2 = 0;
-			int num3 = 0;
-			foreach (ChoreGroup resource in Db.Get().ChoreGroups.resources)
+			foreach (ChoreGroup chore_group in Db.Get().ChoreGroups.resources)
 			{
-				if (consumer.IsPermittedByTraits(resource))
+				if (this.consumer.IsPermittedByTraits(chore_group))
 				{
-					num3++;
-					if (consumer.IsPermittedByUser(resource))
+					num2++;
+					if (this.consumer.IsPermittedByUser(chore_group))
 					{
-						num2++;
+						num++;
 					}
 				}
 			}
-			if (num2 == 0)
+			if (num == 0)
 			{
-				rowToggleState = CrewJobsScreen.everyoneToggleState.off;
+				this.rowToggleState = CrewJobsScreen.everyoneToggleState.off;
 			}
-			else if (num2 < num3)
+			else if (num < num2)
 			{
-				rowToggleState = CrewJobsScreen.everyoneToggleState.mixed;
+				this.rowToggleState = CrewJobsScreen.everyoneToggleState.mixed;
 			}
 			else
 			{
-				rowToggleState = CrewJobsScreen.everyoneToggleState.on;
+				this.rowToggleState = CrewJobsScreen.everyoneToggleState.on;
 			}
-			ImageToggleState component = AllTasksButton.ToggleIcon.GetComponent<ImageToggleState>();
-			switch (rowToggleState)
+			ImageToggleState component = this.AllTasksButton.ToggleIcon.GetComponent<ImageToggleState>();
+			switch (this.rowToggleState)
 			{
+			case CrewJobsScreen.everyoneToggleState.off:
+				component.SetDisabled();
+				break;
 			case CrewJobsScreen.everyoneToggleState.mixed:
 				component.SetInactive();
 				break;
 			case CrewJobsScreen.everyoneToggleState.on:
 				component.SetActive();
 				break;
-			case CrewJobsScreen.everyoneToggleState.off:
-				component.SetDisabled();
-				break;
 			}
-			dirty = false;
+			this.dirty = false;
 		}
 	}
 
-	private string OnPriorityButtonTooltip(PriorityButton b)
+	// Token: 0x06009E2B RID: 40491 RVA: 0x003CA730 File Offset: 0x003C8930
+	private string OnPriorityButtonTooltip(CrewJobsEntry.PriorityButton b)
 	{
 		b.tooltip.ClearMultiStringTooltip();
-		if (identity != null)
+		if (this.identity != null)
 		{
-			Attributes attributes = identity.GetAttributes();
+			Attributes attributes = this.identity.GetAttributes();
 			if (attributes != null)
 			{
-				if (!consumer.IsPermittedByTraits(b.choreGroup))
+				if (!this.consumer.IsPermittedByTraits(b.choreGroup))
 				{
-					string newString = string.Format(UI.TOOLTIPS.JOBSSCREEN_CANNOTPERFORMTASK, consumer.GetComponent<MinionIdentity>().GetProperName());
-					b.tooltip.AddMultiStringTooltip(newString, TooltipTextStyle_AbilityNegativeModifier);
+					string newString = string.Format(UI.TOOLTIPS.JOBSSCREEN_CANNOTPERFORMTASK, this.consumer.GetComponent<MinionIdentity>().GetProperName());
+					b.tooltip.AddMultiStringTooltip(newString, this.TooltipTextStyle_AbilityNegativeModifier);
 					return "";
 				}
-				b.tooltip.AddMultiStringTooltip(UI.TOOLTIPS.JOBSSCREEN_RELEVANT_ATTRIBUTES, TooltipTextStyle_Ability);
+				b.tooltip.AddMultiStringTooltip(UI.TOOLTIPS.JOBSSCREEN_RELEVANT_ATTRIBUTES, this.TooltipTextStyle_Ability);
 				Klei.AI.Attribute attribute = b.choreGroup.attribute;
 				AttributeInstance attributeInstance = attributes.Get(attribute);
 				float totalValue = attributeInstance.GetTotalValue();
-				TextStyleSetting styleSetting = TooltipTextStyle_Ability;
+				TextStyleSetting styleSetting = this.TooltipTextStyle_Ability;
 				if (totalValue > 0f)
 				{
-					styleSetting = TooltipTextStyle_AbilityPositiveModifier;
+					styleSetting = this.TooltipTextStyle_AbilityPositiveModifier;
 				}
 				else if (totalValue < 0f)
 				{
-					styleSetting = TooltipTextStyle_AbilityNegativeModifier;
+					styleSetting = this.TooltipTextStyle_AbilityNegativeModifier;
 				}
-				b.tooltip.AddMultiStringTooltip(attribute.Name + " " + attributeInstance.GetTotalValue(), styleSetting);
+				b.tooltip.AddMultiStringTooltip(attribute.Name + " " + attributeInstance.GetTotalValue().ToString(), styleSetting);
 			}
 		}
 		return "";
 	}
 
+	// Token: 0x06009E2C RID: 40492 RVA: 0x00106FDF File Offset: 0x001051DF
 	private void LateUpdate()
 	{
-		Refresh();
+		this.Refresh(null);
 	}
 
+	// Token: 0x06009E2D RID: 40493 RVA: 0x00106FE8 File Offset: 0x001051E8
 	private void OnLevelUp(object data)
 	{
-		Dirty();
+		this.Dirty();
 	}
 
+	// Token: 0x06009E2E RID: 40494 RVA: 0x00106FF0 File Offset: 0x001051F0
 	private void Dirty()
 	{
-		dirty = true;
-		CrewJobsScreen.Instance.Dirty();
+		this.dirty = true;
+		CrewJobsScreen.Instance.Dirty(null);
 	}
 
+	// Token: 0x06009E2F RID: 40495 RVA: 0x00107004 File Offset: 0x00105204
 	protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
-		if (consumer != null)
+		if (this.consumer != null)
 		{
-			ChoreConsumer choreConsumer = consumer;
-			choreConsumer.choreRulesChanged = (System.Action)Delegate.Remove(choreConsumer.choreRulesChanged, new System.Action(Dirty));
+			ChoreConsumer consumer = this.consumer;
+			consumer.choreRulesChanged = (System.Action)Delegate.Remove(consumer.choreRulesChanged, new System.Action(this.Dirty));
 		}
+	}
+
+	// Token: 0x04007BED RID: 31725
+	public GameObject Prefab_JobPriorityButton;
+
+	// Token: 0x04007BEE RID: 31726
+	public GameObject Prefab_JobPriorityButtonAllTasks;
+
+	// Token: 0x04007BEF RID: 31727
+	private List<CrewJobsEntry.PriorityButton> PriorityButtons = new List<CrewJobsEntry.PriorityButton>();
+
+	// Token: 0x04007BF0 RID: 31728
+	private CrewJobsEntry.PriorityButton AllTasksButton;
+
+	// Token: 0x04007BF1 RID: 31729
+	public TextStyleSetting TooltipTextStyle_Title;
+
+	// Token: 0x04007BF2 RID: 31730
+	public TextStyleSetting TooltipTextStyle_Ability;
+
+	// Token: 0x04007BF3 RID: 31731
+	public TextStyleSetting TooltipTextStyle_AbilityPositiveModifier;
+
+	// Token: 0x04007BF4 RID: 31732
+	public TextStyleSetting TooltipTextStyle_AbilityNegativeModifier;
+
+	// Token: 0x04007BF5 RID: 31733
+	private bool dirty;
+
+	// Token: 0x04007BF7 RID: 31735
+	private CrewJobsScreen.everyoneToggleState rowToggleState;
+
+	// Token: 0x02001D8E RID: 7566
+	[Serializable]
+	public struct PriorityButton
+	{
+		// Token: 0x04007BF8 RID: 31736
+		public Button button;
+
+		// Token: 0x04007BF9 RID: 31737
+		public GameObject ToggleIcon;
+
+		// Token: 0x04007BFA RID: 31738
+		public ChoreGroup choreGroup;
+
+		// Token: 0x04007BFB RID: 31739
+		public ToolTip tooltip;
+
+		// Token: 0x04007BFC RID: 31740
+		public Image border;
+
+		// Token: 0x04007BFD RID: 31741
+		public Image background;
+
+		// Token: 0x04007BFE RID: 31742
+		public Color baseBorderColor;
+
+		// Token: 0x04007BFF RID: 31743
+		public Color baseBackgroundColor;
 	}
 }

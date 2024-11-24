@@ -1,46 +1,31 @@
+﻿using System;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x02000390 RID: 912
 public class IceKettleConfig : IBuildingConfig
 {
-	public const string ID = "IceKettle";
-
-	public const SimHashes TARGET_ELEMENT = SimHashes.Ice;
-
-	public const float MASS_KG_PER_BATCH = 100f;
-
-	public const float CAPACITY = 1000f;
-
-	public const float FINAL_PRODUCT_CAPACITY = 500f;
-
-	public static Tag TARGET_ELEMENT_TAG = SimHashes.Ice.CreateTag();
-
-	public const float TARGET_TEMPERATURE = 298.15f;
-
-	public const float PRODUCTION_PER_SECOND = 20f;
-
-	public static Tag FUEL_TAG = SimHashes.WoodLog.CreateTag();
-
-	public const SimHashes EXHAUST_TAG = SimHashes.CarbonDioxide;
-
-	public const float TOTAL_ENERGY_OF_LUMBER = 7750f;
-
-	public const float ENERGY_OF_LUMBER_TAKEN_FOR_BUILDING_SELF_HEAT = 3750f;
-
-	public const float ENERGY_PER_UNIT_OF_LUMBER_TAKEN_FOR_MELTING = 4000f;
-
-	public const float FUEL_UNITS_REQUIRED_TO_MELT_ABSOLUTE_ZERO_BATCH = 15.280188f;
-
-	public const float FUEL_CAPACITY = 152.80188f;
-
-	public override string[] GetDlcIds()
+	// Token: 0x06000EF5 RID: 3829 RVA: 0x000A6337 File Offset: 0x000A4537
+	public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_DLC_2;
+		return DlcManager.DLC2;
 	}
 
+	// Token: 0x06000EF6 RID: 3830 RVA: 0x0017B6BC File Offset: 0x001798BC
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef("IceKettle", 2, 2, "icemelter_kettle_kanim", 100, 10f, BUILDINGS.CONSTRUCTION_MASS_KG.TIER4, MATERIALS.RAW_METALS, 1600f, BuildLocationRule.OnFloor, noise: NOISE_POLLUTION.NONE, decor: BUILDINGS.DECOR.NONE);
+		string id = "IceKettle";
+		int width = 2;
+		int height = 2;
+		string anim = "icemelter_kettle_kanim";
+		int hitpoints = 100;
+		float construction_time = 10f;
+		float[] tier = BUILDINGS.CONSTRUCTION_MASS_KG.TIER4;
+		string[] raw_METALS = MATERIALS.RAW_METALS;
+		float melting_point = 1600f;
+		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
+		EffectorValues none = NOISE_POLLUTION.NONE;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, raw_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, none, 0.2f);
 		float num = 3.7500002f;
 		buildingDef.SelfHeatKilowattsWhenActive = num * 0.4f;
 		buildingDef.ExhaustKilowattsWhenActive = num - buildingDef.SelfHeatKilowattsWhenActive;
@@ -56,6 +41,7 @@ public class IceKettleConfig : IBuildingConfig
 		return buildingDef;
 	}
 
+	// Token: 0x06000EF7 RID: 3831 RVA: 0x0017B77C File Offset: 0x0017997C
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<LoopingSounds>();
@@ -69,7 +55,7 @@ public class IceKettleConfig : IBuildingConfig
 		ManualDeliveryKG manualDeliveryKG = go.AddOrGet<ManualDeliveryKG>();
 		manualDeliveryKG.capacity = Mathf.Ceil(152.80188f);
 		manualDeliveryKG.SetStorage(storage);
-		manualDeliveryKG.requestedItemTag = FUEL_TAG;
+		manualDeliveryKG.requestedItemTag = IceKettleConfig.FUEL_TAG;
 		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.FetchCritical.IdHash;
 		manualDeliveryKG.ShowStatusItem = false;
 		Storage storage2 = go.AddComponent<Storage>();
@@ -80,7 +66,7 @@ public class IceKettleConfig : IBuildingConfig
 		ManualDeliveryKG manualDeliveryKG2 = go.AddComponent<ManualDeliveryKG>();
 		manualDeliveryKG2.capacity = 1000f;
 		manualDeliveryKG2.SetStorage(storage2);
-		manualDeliveryKG2.requestedItemTag = TARGET_ELEMENT_TAG;
+		manualDeliveryKG2.requestedItemTag = IceKettleConfig.TARGET_ELEMENT_TAG;
 		manualDeliveryKG2.choreTypeIDHash = Db.Get().ChoreTypes.FetchCritical.IdHash;
 		manualDeliveryKG2.refillMass = 100f;
 		manualDeliveryKG2.ShowStatusItem = false;
@@ -92,17 +78,63 @@ public class IceKettleConfig : IBuildingConfig
 		storage3.SetDefaultStoredItemModifiers(Storage.StandardInsulatedStorage);
 		IceKettle.Def def = go.AddOrGetDef<IceKettle.Def>();
 		def.exhaust_tag = SimHashes.CarbonDioxide;
-		def.targetElementTag = TARGET_ELEMENT_TAG;
+		def.targetElementTag = IceKettleConfig.TARGET_ELEMENT_TAG;
 		def.KGToMeltPerBatch = 100f;
 		def.KGMeltedPerSecond = 20f;
-		def.fuelElementTag = FUEL_TAG;
+		def.fuelElementTag = IceKettleConfig.FUEL_TAG;
 		def.TargetTemperature = 298.15f;
 		def.EnergyPerUnitOfLumber = 4000f;
 		def.ExhaustMassPerUnitOfLumber = 0.142f;
 		go.AddOrGet<IceKettleWorkable>().storage = storage3;
 	}
 
+	// Token: 0x06000EF8 RID: 3832 RVA: 0x000A5E40 File Offset: 0x000A4040
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
+
+	// Token: 0x04000ABF RID: 2751
+	public const string ID = "IceKettle";
+
+	// Token: 0x04000AC0 RID: 2752
+	public const SimHashes TARGET_ELEMENT = SimHashes.Ice;
+
+	// Token: 0x04000AC1 RID: 2753
+	public const float MASS_KG_PER_BATCH = 100f;
+
+	// Token: 0x04000AC2 RID: 2754
+	public const float CAPACITY = 1000f;
+
+	// Token: 0x04000AC3 RID: 2755
+	public const float FINAL_PRODUCT_CAPACITY = 500f;
+
+	// Token: 0x04000AC4 RID: 2756
+	public static Tag TARGET_ELEMENT_TAG = SimHashes.Ice.CreateTag();
+
+	// Token: 0x04000AC5 RID: 2757
+	public const float TARGET_TEMPERATURE = 298.15f;
+
+	// Token: 0x04000AC6 RID: 2758
+	public const float PRODUCTION_PER_SECOND = 20f;
+
+	// Token: 0x04000AC7 RID: 2759
+	public static Tag FUEL_TAG = SimHashes.WoodLog.CreateTag();
+
+	// Token: 0x04000AC8 RID: 2760
+	public const SimHashes EXHAUST_TAG = SimHashes.CarbonDioxide;
+
+	// Token: 0x04000AC9 RID: 2761
+	public const float TOTAL_ENERGY_OF_LUMBER = 7750f;
+
+	// Token: 0x04000ACA RID: 2762
+	public const float ENERGY_OF_LUMBER_TAKEN_FOR_BUILDING_SELF_HEAT = 3750f;
+
+	// Token: 0x04000ACB RID: 2763
+	public const float ENERGY_PER_UNIT_OF_LUMBER_TAKEN_FOR_MELTING = 4000f;
+
+	// Token: 0x04000ACC RID: 2764
+	public const float FUEL_UNITS_REQUIRED_TO_MELT_ABSOLUTE_ZERO_BATCH = 15.280188f;
+
+	// Token: 0x04000ACD RID: 2765
+	public const float FUEL_CAPACITY = 152.80188f;
 }

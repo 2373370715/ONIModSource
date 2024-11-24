@@ -1,20 +1,25 @@
+﻿using System;
 using UnityEngine;
 
+// Token: 0x0200176E RID: 5998
 public class CameraReferenceTexture : MonoBehaviour
 {
-	public Camera referenceCamera;
-
-	private FullScreenQuad quad;
-
+	// Token: 0x06007B6A RID: 31594 RVA: 0x0031B530 File Offset: 0x00319730
 	private void OnPreCull()
 	{
-		if (quad == null)
+		if (this.quad == null)
 		{
-			quad = new FullScreenQuad("CameraReferenceTexture", GetComponent<Camera>(), referenceCamera.GetComponent<CameraRenderTexture>().ShouldFlip());
+			this.quad = new FullScreenQuad("CameraReferenceTexture", base.GetComponent<Camera>(), this.referenceCamera.GetComponent<CameraRenderTexture>().ShouldFlip());
 		}
-		if (referenceCamera != null)
+		if (this.referenceCamera != null)
 		{
-			quad.Draw(referenceCamera.GetComponent<CameraRenderTexture>().GetTexture());
+			this.quad.Draw(this.referenceCamera.GetComponent<CameraRenderTexture>().GetTexture());
 		}
 	}
+
+	// Token: 0x04005C8B RID: 23691
+	public Camera referenceCamera;
+
+	// Token: 0x04005C8C RID: 23692
+	private FullScreenQuad quad;
 }

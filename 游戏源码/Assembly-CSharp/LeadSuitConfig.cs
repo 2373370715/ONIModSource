@@ -1,63 +1,61 @@
+﻿using System;
 using System.Collections.Generic;
 using Klei.AI;
 using STRINGS;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x020000C0 RID: 192
 public class LeadSuitConfig : IEquipmentConfig
 {
-	public const string ID = "Lead_Suit";
-
-	public const string WORN_ID = "Worn_Lead_Suit";
-
-	public static ComplexRecipe recipe;
-
-	private const PathFinder.PotentialPath.Flags suit_flags = PathFinder.PotentialPath.Flags.HasLeadSuit;
-
-	private AttributeModifier expertAthleticsModifier;
-
+	// Token: 0x0600032D RID: 813 RVA: 0x000A6566 File Offset: 0x000A4766
 	public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
 	}
 
+	// Token: 0x0600032E RID: 814 RVA: 0x0014CCE8 File Offset: 0x0014AEE8
 	public EquipmentDef CreateEquipmentDef()
 	{
 		List<AttributeModifier> list = new List<AttributeModifier>();
-		list.Add(new AttributeModifier(TUNING.EQUIPMENT.ATTRIBUTE_MOD_IDS.ATHLETICS, TUNING.EQUIPMENT.SUITS.LEADSUIT_ATHLETICS, STRINGS.EQUIPMENT.PREFABS.LEAD_SUIT.NAME));
-		list.Add(new AttributeModifier(Db.Get().Attributes.ScaldingThreshold.Id, TUNING.EQUIPMENT.SUITS.LEADSUIT_SCALDING, STRINGS.EQUIPMENT.PREFABS.LEAD_SUIT.NAME));
-		list.Add(new AttributeModifier(Db.Get().Attributes.ScoldingThreshold.Id, TUNING.EQUIPMENT.SUITS.LEADSUIT_SCOLDING, STRINGS.EQUIPMENT.PREFABS.LEAD_SUIT.NAME));
-		list.Add(new AttributeModifier(Db.Get().Attributes.RadiationResistance.Id, TUNING.EQUIPMENT.SUITS.LEADSUIT_RADIATION_SHIELDING, STRINGS.EQUIPMENT.PREFABS.LEAD_SUIT.NAME));
-		list.Add(new AttributeModifier(Db.Get().Attributes.Strength.Id, TUNING.EQUIPMENT.SUITS.LEADSUIT_STRENGTH, STRINGS.EQUIPMENT.PREFABS.LEAD_SUIT.NAME));
-		list.Add(new AttributeModifier(TUNING.EQUIPMENT.ATTRIBUTE_MOD_IDS.INSULATION, TUNING.EQUIPMENT.SUITS.LEADSUIT_INSULATION, STRINGS.EQUIPMENT.PREFABS.LEAD_SUIT.NAME));
-		list.Add(new AttributeModifier(TUNING.EQUIPMENT.ATTRIBUTE_MOD_IDS.THERMAL_CONDUCTIVITY_BARRIER, TUNING.EQUIPMENT.SUITS.LEADSUIT_THERMAL_CONDUCTIVITY_BARRIER, STRINGS.EQUIPMENT.PREFABS.LEAD_SUIT.NAME));
-		expertAthleticsModifier = new AttributeModifier(TUNING.EQUIPMENT.ATTRIBUTE_MOD_IDS.ATHLETICS, -TUNING.EQUIPMENT.SUITS.ATMOSUIT_ATHLETICS, Db.Get().Skills.Suits1.Name);
-		EquipmentDef equipmentDef = EquipmentTemplates.CreateEquipmentDef("Lead_Suit", TUNING.EQUIPMENT.SUITS.SLOT, SimHashes.Dirt, TUNING.EQUIPMENT.SUITS.ATMOSUIT_MASS, "suit_leadsuit_kanim", "", "body_leadsuit_kanim", 6, list, null, IsBody: true, EntityTemplates.CollisionShape.CIRCLE, 0.325f, 0.325f, new Tag[2]
+		list.Add(new AttributeModifier(TUNING.EQUIPMENT.ATTRIBUTE_MOD_IDS.ATHLETICS, (float)TUNING.EQUIPMENT.SUITS.LEADSUIT_ATHLETICS, STRINGS.EQUIPMENT.PREFABS.LEAD_SUIT.NAME, false, false, true));
+		list.Add(new AttributeModifier(Db.Get().Attributes.ScaldingThreshold.Id, (float)TUNING.EQUIPMENT.SUITS.LEADSUIT_SCALDING, STRINGS.EQUIPMENT.PREFABS.LEAD_SUIT.NAME, false, false, true));
+		list.Add(new AttributeModifier(Db.Get().Attributes.ScoldingThreshold.Id, (float)TUNING.EQUIPMENT.SUITS.LEADSUIT_SCOLDING, STRINGS.EQUIPMENT.PREFABS.LEAD_SUIT.NAME, false, false, true));
+		list.Add(new AttributeModifier(Db.Get().Attributes.RadiationResistance.Id, TUNING.EQUIPMENT.SUITS.LEADSUIT_RADIATION_SHIELDING, STRINGS.EQUIPMENT.PREFABS.LEAD_SUIT.NAME, false, false, true));
+		list.Add(new AttributeModifier(Db.Get().Attributes.Strength.Id, (float)TUNING.EQUIPMENT.SUITS.LEADSUIT_STRENGTH, STRINGS.EQUIPMENT.PREFABS.LEAD_SUIT.NAME, false, false, true));
+		list.Add(new AttributeModifier(TUNING.EQUIPMENT.ATTRIBUTE_MOD_IDS.INSULATION, (float)TUNING.EQUIPMENT.SUITS.LEADSUIT_INSULATION, STRINGS.EQUIPMENT.PREFABS.LEAD_SUIT.NAME, false, false, true));
+		list.Add(new AttributeModifier(TUNING.EQUIPMENT.ATTRIBUTE_MOD_IDS.THERMAL_CONDUCTIVITY_BARRIER, TUNING.EQUIPMENT.SUITS.LEADSUIT_THERMAL_CONDUCTIVITY_BARRIER, STRINGS.EQUIPMENT.PREFABS.LEAD_SUIT.NAME, false, false, true));
+		this.expertAthleticsModifier = new AttributeModifier(TUNING.EQUIPMENT.ATTRIBUTE_MOD_IDS.ATHLETICS, (float)(-(float)TUNING.EQUIPMENT.SUITS.ATMOSUIT_ATHLETICS), Db.Get().Skills.Suits1.Name, false, false, true);
+		EquipmentDef equipmentDef = EquipmentTemplates.CreateEquipmentDef("Lead_Suit", TUNING.EQUIPMENT.SUITS.SLOT, SimHashes.Dirt, (float)TUNING.EQUIPMENT.SUITS.ATMOSUIT_MASS, "suit_leadsuit_kanim", "", "body_leadsuit_kanim", 6, list, null, true, EntityTemplates.CollisionShape.CIRCLE, 0.325f, 0.325f, new Tag[]
 		{
 			GameTags.Suit,
 			GameTags.Clothes
-		});
+		}, null);
 		equipmentDef.wornID = "Worn_Lead_Suit";
 		equipmentDef.RecipeDescription = STRINGS.EQUIPMENT.PREFABS.LEAD_SUIT.RECIPE_DESC;
 		equipmentDef.EffectImmunites.Add(Db.Get().effects.Get("SoakingWet"));
 		equipmentDef.EffectImmunites.Add(Db.Get().effects.Get("WetFeet"));
+		equipmentDef.EffectImmunites.Add(Db.Get().effects.Get("ColdAir"));
+		equipmentDef.EffectImmunites.Add(Db.Get().effects.Get("WarmAir"));
 		equipmentDef.EffectImmunites.Add(Db.Get().effects.Get("PoppedEarDrums"));
+		equipmentDef.EffectImmunites.Add(Db.Get().effects.Get("Slipped"));
 		equipmentDef.OnEquipCallBack = delegate(Equippable eq)
 		{
-			Ownables soleOwner2 = eq.assignee.GetSoleOwner();
-			if (soleOwner2 != null)
+			Ownables soleOwner = eq.assignee.GetSoleOwner();
+			if (soleOwner != null)
 			{
-				GameObject targetGameObject2 = soleOwner2.GetComponent<MinionAssignablesProxy>().GetTargetGameObject();
-				Navigator component3 = targetGameObject2.GetComponent<Navigator>();
-				if (component3 != null)
+				GameObject targetGameObject = soleOwner.GetComponent<MinionAssignablesProxy>().GetTargetGameObject();
+				Navigator component = targetGameObject.GetComponent<Navigator>();
+				if (component != null)
 				{
-					component3.SetFlags(PathFinder.PotentialPath.Flags.HasLeadSuit);
+					component.SetFlags(PathFinder.PotentialPath.Flags.HasLeadSuit);
 				}
-				MinionResume component4 = targetGameObject2.GetComponent<MinionResume>();
-				if (component4 != null && component4.HasPerk(Db.Get().SkillPerks.ExosuitExpertise.Id))
+				MinionResume component2 = targetGameObject.GetComponent<MinionResume>();
+				if (component2 != null && component2.HasPerk(Db.Get().SkillPerks.ExosuitExpertise.Id))
 				{
-					targetGameObject2.GetAttributes().Get(Db.Get().Attributes.Athletics).Add(expertAthleticsModifier);
+					targetGameObject.GetAttributes().Get(Db.Get().Attributes.Athletics).Add(this.expertAthleticsModifier);
 				}
+				targetGameObject.AddTag(GameTags.HasAirtightSuit);
 			}
 		};
 		equipmentDef.OnUnequipCallBack = delegate(Equippable eq)
@@ -68,9 +66,13 @@ public class LeadSuitConfig : IEquipmentConfig
 				if (soleOwner != null)
 				{
 					GameObject targetGameObject = soleOwner.GetComponent<MinionAssignablesProxy>().GetTargetGameObject();
-					if ((bool)targetGameObject)
+					if (targetGameObject)
 					{
-						targetGameObject.GetAttributes()?.Get(Db.Get().Attributes.Athletics).Remove(expertAthleticsModifier);
+						Attributes attributes = targetGameObject.GetAttributes();
+						if (attributes != null)
+						{
+							attributes.Get(Db.Get().Attributes.Athletics).Remove(this.expertAthleticsModifier);
+						}
 						Navigator component = targetGameObject.GetComponent<Navigator>();
 						if (component != null)
 						{
@@ -81,6 +83,7 @@ public class LeadSuitConfig : IEquipmentConfig
 						{
 							component2.Remove("SoiledSuit");
 						}
+						targetGameObject.RemoveTag(GameTags.HasAirtightSuit);
 					}
 					Tag elementTag = eq.GetComponent<SuitTank>().elementTag;
 					eq.GetComponent<Storage>().DropUnlessHasTag(elementTag);
@@ -92,18 +95,19 @@ public class LeadSuitConfig : IEquipmentConfig
 		return equipmentDef;
 	}
 
+	// Token: 0x0600032F RID: 815 RVA: 0x0014CFC8 File Offset: 0x0014B1C8
 	public void DoPostConfigure(GameObject go)
 	{
 		SuitTank suitTank = go.AddComponent<SuitTank>();
 		suitTank.element = "Oxygen";
-		suitTank.capacity = 40f;
+		suitTank.capacity = DUPLICANTSTATS.STANDARD.BaseStats.OXYGEN_USED_PER_SECOND * 400f;
 		suitTank.elementTag = GameTags.Breathable;
 		go.AddComponent<LeadSuitTank>().batteryDuration = 200f;
 		go.AddComponent<HelmetController>();
 		KPrefabID component = go.GetComponent<KPrefabID>();
-		component.AddTag(GameTags.Clothes);
-		component.AddTag(GameTags.PedestalDisplayable);
-		component.AddTag(GameTags.AirtightSuit);
+		component.AddTag(GameTags.Clothes, false);
+		component.AddTag(GameTags.PedestalDisplayable, false);
+		component.AddTag(GameTags.AirtightSuit, false);
 		Durability durability = go.AddComponent<Durability>();
 		durability.wornEquipmentPrefabID = "Worn_Lead_Suit";
 		durability.durabilityLossPerCycle = TUNING.EQUIPMENT.SUITS.ATMOSUIT_DECAY;
@@ -113,4 +117,19 @@ public class LeadSuitConfig : IEquipmentConfig
 		go.AddOrGet<AtmoSuit>();
 		go.AddComponent<SuitDiseaseHandler>();
 	}
+
+	// Token: 0x040001EE RID: 494
+	public const string ID = "Lead_Suit";
+
+	// Token: 0x040001EF RID: 495
+	public const string WORN_ID = "Worn_Lead_Suit";
+
+	// Token: 0x040001F0 RID: 496
+	public static ComplexRecipe recipe;
+
+	// Token: 0x040001F1 RID: 497
+	private const PathFinder.PotentialPath.Flags suit_flags = PathFinder.PotentialPath.Flags.HasLeadSuit;
+
+	// Token: 0x040001F2 RID: 498
+	private AttributeModifier expertAthleticsModifier;
 }

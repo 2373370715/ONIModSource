@@ -1,61 +1,72 @@
+﻿using System;
 using System.Collections.Generic;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x020005BE RID: 1470
 public class SugarEngineConfig : IBuildingConfig
 {
-	public const string ID = "SugarEngine";
-
-	public const SimHashes FUEL = SimHashes.Sucrose;
-
-	public const float FUEL_CAPACITY = 450f;
-
-	public static float FUEL_EFFICIENCY = 0.125f;
-
-	public override string[] GetDlcIds()
+	// Token: 0x06001A55 RID: 6741 RVA: 0x000A5F1F File Offset: 0x000A411F
+	public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
+	// Token: 0x06001A56 RID: 6742 RVA: 0x001A6C28 File Offset: 0x001A4E28
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef("SugarEngine", 3, 3, "rocket_sugar_engine_kanim", 1000, 30f, BUILDINGS.ROCKETRY_MASS_KG.DENSE_TIER1, MATERIALS.RAW_METALS, 9999f, BuildLocationRule.Anywhere, noise: NOISE_POLLUTION.NOISY.TIER2, decor: BUILDINGS.DECOR.NONE);
-		BuildingTemplates.CreateRocketBuildingDef(obj);
-		obj.AttachmentSlotTag = GameTags.Rocket;
-		obj.SceneLayer = Grid.SceneLayer.Building;
-		obj.OverheatTemperature = 2273.15f;
-		obj.Floodable = false;
-		obj.attachablePosition = new CellOffset(0, 0);
-		obj.ObjectLayer = ObjectLayer.Building;
-		obj.InputConduitType = ConduitType.None;
-		obj.GeneratorWattageRating = 60f;
-		obj.GeneratorBaseCapacity = 2000f;
-		obj.RequiresPowerInput = false;
-		obj.RequiresPowerOutput = false;
-		obj.CanMove = true;
-		obj.Cancellable = false;
-		return obj;
+		string id = "SugarEngine";
+		int width = 3;
+		int height = 3;
+		string anim = "rocket_sugar_engine_kanim";
+		int hitpoints = 1000;
+		float construction_time = 30f;
+		float[] dense_TIER = BUILDINGS.ROCKETRY_MASS_KG.DENSE_TIER1;
+		string[] raw_METALS = MATERIALS.RAW_METALS;
+		float melting_point = 9999f;
+		BuildLocationRule build_location_rule = BuildLocationRule.Anywhere;
+		EffectorValues tier = NOISE_POLLUTION.NOISY.TIER2;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, dense_TIER, raw_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, tier, 0.2f);
+		BuildingTemplates.CreateRocketBuildingDef(buildingDef);
+		buildingDef.AttachmentSlotTag = GameTags.Rocket;
+		buildingDef.SceneLayer = Grid.SceneLayer.Building;
+		buildingDef.OverheatTemperature = 2273.15f;
+		buildingDef.Floodable = false;
+		buildingDef.attachablePosition = new CellOffset(0, 0);
+		buildingDef.ObjectLayer = ObjectLayer.Building;
+		buildingDef.InputConduitType = ConduitType.None;
+		buildingDef.GeneratorWattageRating = 60f;
+		buildingDef.GeneratorBaseCapacity = buildingDef.GeneratorWattageRating;
+		buildingDef.RequiresPowerInput = false;
+		buildingDef.RequiresPowerOutput = false;
+		buildingDef.CanMove = true;
+		buildingDef.Cancellable = false;
+		return buildingDef;
 	}
 
+	// Token: 0x06001A57 RID: 6743 RVA: 0x001747BC File Offset: 0x001729BC
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
 		go.AddOrGet<LoopingSounds>();
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery);
-		go.AddOrGet<BuildingAttachPoint>().points = new BuildingAttachPoint.HardPoint[1]
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
+		go.AddOrGet<BuildingAttachPoint>().points = new BuildingAttachPoint.HardPoint[]
 		{
 			new BuildingAttachPoint.HardPoint(new CellOffset(0, 3), GameTags.Rocket, null)
 		};
 	}
 
+	// Token: 0x06001A58 RID: 6744 RVA: 0x000A5E40 File Offset: 0x000A4040
 	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
 	}
 
+	// Token: 0x06001A59 RID: 6745 RVA: 0x000A5E40 File Offset: 0x000A4040
 	public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 	}
 
+	// Token: 0x06001A5A RID: 6746 RVA: 0x001A6CEC File Offset: 0x001A4EEC
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		RocketEngineCluster rocketEngineCluster = go.AddOrGet<RocketEngineCluster>();
@@ -89,9 +100,21 @@ public class SugarEngineConfig : IBuildingConfig
 		manualDeliveryKG.capacity = storage.capacityKg;
 		manualDeliveryKG.operationalRequirement = Operational.State.None;
 		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.MachineFetch.IdHash;
-		BuildingTemplates.ExtendBuildingToRocketModuleCluster(go, null, ROCKETRY.BURDEN.INSIGNIFICANT, ROCKETRY.ENGINE_POWER.EARLY_WEAK, FUEL_EFFICIENCY);
-		go.GetComponent<KPrefabID>().prefabInitFn += delegate
+		BuildingTemplates.ExtendBuildingToRocketModuleCluster(go, null, ROCKETRY.BURDEN.INSIGNIFICANT, (float)ROCKETRY.ENGINE_POWER.EARLY_WEAK, SugarEngineConfig.FUEL_EFFICIENCY);
+		go.GetComponent<KPrefabID>().prefabInitFn += delegate(GameObject inst)
 		{
 		};
 	}
+
+	// Token: 0x040010C1 RID: 4289
+	public const string ID = "SugarEngine";
+
+	// Token: 0x040010C2 RID: 4290
+	public const SimHashes FUEL = SimHashes.Sucrose;
+
+	// Token: 0x040010C3 RID: 4291
+	public const float FUEL_CAPACITY = 450f;
+
+	// Token: 0x040010C4 RID: 4292
+	public static float FUEL_EFFICIENCY = 0.125f;
 }

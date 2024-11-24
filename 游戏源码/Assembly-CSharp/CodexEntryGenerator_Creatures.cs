@@ -1,243 +1,183 @@
+﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Klei.AI;
 using STRINGS;
 using UnityEngine;
 
+// Token: 0x02001C30 RID: 7216
 public class CodexEntryGenerator_Creatures
 {
-	public const string CATEGORY_ID = "CREATURES";
-
-	public const string GUIDE_ID = "CREATURES::GUIDE";
-
-	public const string GUIDE_METABOLISM_ID = "CREATURES::GUIDE::METABOLISM";
-
-	public const string GUIDE_MOOD_ID = "CREATURES::GUIDE::MOOD";
-
-	public const string GUIDE_FERTILITY_ID = "CREATURES::GUIDE::FERTILITY";
-
-	public const string GUIDE_DOMESTICATION_ID = "CREATURES::GUIDE::DOMESTICATION";
-
+	// Token: 0x06009693 RID: 38547 RVA: 0x003A5854 File Offset: 0x003A3A54
 	public static Dictionary<string, CodexEntry> GenerateEntries()
 	{
-		Dictionary<string, CodexEntry> results = new Dictionary<string, CodexEntry>();
-		List<GameObject> brains = Assets.GetPrefabsWithComponent<CreatureBrain>();
-		List<(string, CodexEntry)> critterEntries = new List<(string, CodexEntry)>();
-		AddEntry("CREATURES::GUIDE", GenerateFieldGuideEntry(), "CREATURES");
-		PushCritterEntry(GameTags.Creatures.Species.PuftSpecies, CREATURES.FAMILY_PLURAL.PUFTSPECIES);
-		PushCritterEntry(GameTags.Creatures.Species.PacuSpecies, CREATURES.FAMILY_PLURAL.PACUSPECIES);
-		PushCritterEntry(GameTags.Creatures.Species.OilFloaterSpecies, CREATURES.FAMILY_PLURAL.OILFLOATERSPECIES);
-		PushCritterEntry(GameTags.Creatures.Species.LightBugSpecies, CREATURES.FAMILY_PLURAL.LIGHTBUGSPECIES);
-		PushCritterEntry(GameTags.Creatures.Species.HatchSpecies, CREATURES.FAMILY_PLURAL.HATCHSPECIES);
-		PushCritterEntry(GameTags.Creatures.Species.GlomSpecies, CREATURES.FAMILY_PLURAL.GLOMSPECIES);
-		PushCritterEntry(GameTags.Creatures.Species.DreckoSpecies, CREATURES.FAMILY_PLURAL.DRECKOSPECIES);
-		PushCritterEntry(GameTags.Creatures.Species.MooSpecies, CREATURES.FAMILY_PLURAL.MOOSPECIES);
-		PushCritterEntry(GameTags.Creatures.Species.MoleSpecies, CREATURES.FAMILY_PLURAL.MOLESPECIES);
-		PushCritterEntry(GameTags.Creatures.Species.SquirrelSpecies, CREATURES.FAMILY_PLURAL.SQUIRRELSPECIES);
-		PushCritterEntry(GameTags.Creatures.Species.CrabSpecies, CREATURES.FAMILY_PLURAL.CRABSPECIES);
-		PushCritterEntry(GameTags.Robots.Models.ScoutRover, CREATURES.FAMILY_PLURAL.SCOUTROVER);
-		PushCritterEntry(GameTags.Creatures.Species.StaterpillarSpecies, CREATURES.FAMILY_PLURAL.STATERPILLARSPECIES);
-		PushCritterEntry(GameTags.Creatures.Species.BeetaSpecies, CREATURES.FAMILY_PLURAL.BEETASPECIES);
-		PushCritterEntry(GameTags.Creatures.Species.DivergentSpecies, CREATURES.FAMILY_PLURAL.DIVERGENTSPECIES);
-		PushCritterEntry(GameTags.Robots.Models.SweepBot, CREATURES.FAMILY_PLURAL.SWEEPBOT);
-		PushCritterEntry(GameTags.Creatures.Species.DeerSpecies, CREATURES.FAMILY_PLURAL.DEERSPECIES);
-		PushCritterEntry(GameTags.Creatures.Species.SealSpecies, CREATURES.FAMILY_PLURAL.SEALSPECIES);
-		PushCritterEntry(GameTags.Creatures.Species.BellySpecies, CREATURES.FAMILY_PLURAL.BELLYSPECIES);
-		PopAndAddAllCritterEntries();
-		return results;
-		void AddEntry(string entryId, CodexEntry entry, string parentEntryId)
-		{
-			if (entry != null)
-			{
-				entry.parentId = parentEntryId;
-				CodexCache.AddEntry(entryId, entry);
-				results.Add(entryId, entry);
-			}
-		}
-		void PopAndAddAllCritterEntries()
-		{
-			foreach (var (entryId2, entry2) in critterEntries.StableSort(((string, CodexEntry) pair) => UI.StripLinkFormatting(pair.Item2.name)))
-			{
-				AddEntry(entryId2, entry2, "CREATURES");
-			}
-		}
-		void PushCritterEntry(Tag speciesTag, string name)
-		{
-			CodexEntry codexEntry = GenerateCritterEntry(speciesTag, name, brains);
-			if (codexEntry != null)
-			{
-				critterEntries.Add((speciesTag.ToString(), codexEntry));
-			}
-		}
+		CodexEntryGenerator_Creatures.<>c__DisplayClass6_0 CS$<>8__locals1;
+		CS$<>8__locals1.results = new Dictionary<string, CodexEntry>();
+		CS$<>8__locals1.brains = Assets.GetPrefabsWithComponent<CreatureBrain>();
+		CS$<>8__locals1.critterEntries = new List<ValueTuple<string, CodexEntry>>();
+		CodexEntryGenerator_Creatures.<GenerateEntries>g__AddEntry|6_0("CREATURES::GUIDE", CodexEntryGenerator_Creatures.GenerateFieldGuideEntry(), "CREATURES", ref CS$<>8__locals1);
+		CodexEntryGenerator_Creatures.<GenerateEntries>g__PushCritterEntry|6_1(GameTags.Creatures.Species.PuftSpecies, CREATURES.FAMILY_PLURAL.PUFTSPECIES, ref CS$<>8__locals1);
+		CodexEntryGenerator_Creatures.<GenerateEntries>g__PushCritterEntry|6_1(GameTags.Creatures.Species.PacuSpecies, CREATURES.FAMILY_PLURAL.PACUSPECIES, ref CS$<>8__locals1);
+		CodexEntryGenerator_Creatures.<GenerateEntries>g__PushCritterEntry|6_1(GameTags.Creatures.Species.OilFloaterSpecies, CREATURES.FAMILY_PLURAL.OILFLOATERSPECIES, ref CS$<>8__locals1);
+		CodexEntryGenerator_Creatures.<GenerateEntries>g__PushCritterEntry|6_1(GameTags.Creatures.Species.LightBugSpecies, CREATURES.FAMILY_PLURAL.LIGHTBUGSPECIES, ref CS$<>8__locals1);
+		CodexEntryGenerator_Creatures.<GenerateEntries>g__PushCritterEntry|6_1(GameTags.Creatures.Species.HatchSpecies, CREATURES.FAMILY_PLURAL.HATCHSPECIES, ref CS$<>8__locals1);
+		CodexEntryGenerator_Creatures.<GenerateEntries>g__PushCritterEntry|6_1(GameTags.Creatures.Species.GlomSpecies, CREATURES.FAMILY_PLURAL.GLOMSPECIES, ref CS$<>8__locals1);
+		CodexEntryGenerator_Creatures.<GenerateEntries>g__PushCritterEntry|6_1(GameTags.Creatures.Species.DreckoSpecies, CREATURES.FAMILY_PLURAL.DRECKOSPECIES, ref CS$<>8__locals1);
+		CodexEntryGenerator_Creatures.<GenerateEntries>g__PushCritterEntry|6_1(GameTags.Creatures.Species.MooSpecies, CREATURES.FAMILY_PLURAL.MOOSPECIES, ref CS$<>8__locals1);
+		CodexEntryGenerator_Creatures.<GenerateEntries>g__PushCritterEntry|6_1(GameTags.Creatures.Species.MoleSpecies, CREATURES.FAMILY_PLURAL.MOLESPECIES, ref CS$<>8__locals1);
+		CodexEntryGenerator_Creatures.<GenerateEntries>g__PushCritterEntry|6_1(GameTags.Creatures.Species.SquirrelSpecies, CREATURES.FAMILY_PLURAL.SQUIRRELSPECIES, ref CS$<>8__locals1);
+		CodexEntryGenerator_Creatures.<GenerateEntries>g__PushCritterEntry|6_1(GameTags.Creatures.Species.CrabSpecies, CREATURES.FAMILY_PLURAL.CRABSPECIES, ref CS$<>8__locals1);
+		CodexEntryGenerator_Creatures.<GenerateEntries>g__PushCritterEntry|6_1(GameTags.Robots.Models.ScoutRover, CREATURES.FAMILY_PLURAL.SCOUTROVER, ref CS$<>8__locals1);
+		CodexEntryGenerator_Creatures.<GenerateEntries>g__PushCritterEntry|6_1(GameTags.Creatures.Species.StaterpillarSpecies, CREATURES.FAMILY_PLURAL.STATERPILLARSPECIES, ref CS$<>8__locals1);
+		CodexEntryGenerator_Creatures.<GenerateEntries>g__PushCritterEntry|6_1(GameTags.Creatures.Species.BeetaSpecies, CREATURES.FAMILY_PLURAL.BEETASPECIES, ref CS$<>8__locals1);
+		CodexEntryGenerator_Creatures.<GenerateEntries>g__PushCritterEntry|6_1(GameTags.Creatures.Species.DivergentSpecies, CREATURES.FAMILY_PLURAL.DIVERGENTSPECIES, ref CS$<>8__locals1);
+		CodexEntryGenerator_Creatures.<GenerateEntries>g__PushCritterEntry|6_1(GameTags.Robots.Models.SweepBot, CREATURES.FAMILY_PLURAL.SWEEPBOT, ref CS$<>8__locals1);
+		CodexEntryGenerator_Creatures.<GenerateEntries>g__PushCritterEntry|6_1(GameTags.Creatures.Species.DeerSpecies, CREATURES.FAMILY_PLURAL.DEERSPECIES, ref CS$<>8__locals1);
+		CodexEntryGenerator_Creatures.<GenerateEntries>g__PushCritterEntry|6_1(GameTags.Creatures.Species.SealSpecies, CREATURES.FAMILY_PLURAL.SEALSPECIES, ref CS$<>8__locals1);
+		CodexEntryGenerator_Creatures.<GenerateEntries>g__PushCritterEntry|6_1(GameTags.Creatures.Species.BellySpecies, CREATURES.FAMILY_PLURAL.BELLYSPECIES, ref CS$<>8__locals1);
+		CodexEntryGenerator_Creatures.<GenerateEntries>g__PopAndAddAllCritterEntries|6_2(ref CS$<>8__locals1);
+		return CS$<>8__locals1.results;
 	}
 
+	// Token: 0x06009694 RID: 38548 RVA: 0x003A5A4C File Offset: 0x003A3C4C
 	private static CodexEntry GenerateFieldGuideEntry()
 	{
-		CodexEntry generalInfoEntry = new CodexEntry("CREATURES", new List<ContentContainer>(), CODEX.CRITTERSTATUS.CRITTERSTATUS_TITLE);
-		generalInfoEntry.icon = Assets.GetSprite("codex_critter_emotions");
-		List<ICodexWidget> subEntryContents = null;
-		SubEntry subEntry = null;
-		AddSubEntry("CREATURES::GUIDE::METABOLISM", CODEX.CRITTERSTATUS.METABOLISM.TITLE);
-		AddImage(Assets.GetSprite("codex_metabolism"));
-		AddBody(CODEX.CRITTERSTATUS.METABOLISM.BODY.CONTAINER1);
-		AddSubtitle(CODEX.CRITTERSTATUS.METABOLISM.HUNGRY.TITLE);
-		AddBody(CODEX.CRITTERSTATUS.METABOLISM.HUNGRY.CONTAINER1);
-		AddSubtitle(CODEX.CRITTERSTATUS.METABOLISM.STARVING.TITLE);
-		AddBody(string.Format(DlcManager.IsExpansion1Active() ? CODEX.CRITTERSTATUS.METABOLISM.STARVING.CONTAINER1_DLC1 : CODEX.CRITTERSTATUS.METABOLISM.STARVING.CONTAINER1_VANILLA, 10));
-		AddSpacer();
-		AddSubEntry("CREATURES::GUIDE::MOOD", CODEX.CRITTERSTATUS.MOOD.TITLE);
-		AddImage(Assets.GetSprite("codex_mood"));
-		AddBody(CODEX.CRITTERSTATUS.MOOD.BODY.CONTAINER1);
-		AddSubtitle(CODEX.CRITTERSTATUS.MOOD.HAPPY.TITLE);
-		AddBody(CODEX.CRITTERSTATUS.MOOD.HAPPY.CONTAINER1);
-		AddBody(CODEX.CRITTERSTATUS.MOOD.HAPPY.SUBTITLE);
-		AddBulletPoint(CODEX.CRITTERSTATUS.MOOD.HAPPY.HAPPY_METABOLISM);
-		AddSubtitle(CODEX.CRITTERSTATUS.MOOD.NEUTRAL.TITLE);
-		AddBody(CODEX.CRITTERSTATUS.MOOD.NEUTRAL.CONTAINER1);
-		AddSubtitle(CODEX.CRITTERSTATUS.MOOD.GLUM.TITLE);
-		AddBody(CODEX.CRITTERSTATUS.MOOD.GLUM.CONTAINER1);
-		AddBody(CODEX.CRITTERSTATUS.MOOD.GLUM.SUBTITLE);
-		AddBulletPoint(CODEX.CRITTERSTATUS.MOOD.GLUM.GLUMWILD_METABOLISM);
-		AddSubtitle(CODEX.CRITTERSTATUS.MOOD.MISERABLE.TITLE);
-		AddBody(CODEX.CRITTERSTATUS.MOOD.MISERABLE.CONTAINER1);
-		AddBody(CODEX.CRITTERSTATUS.MOOD.MISERABLE.SUBTITLE);
-		AddBulletPoint(CODEX.CRITTERSTATUS.MOOD.MISERABLE.MISERABLEWILD_METABOLISM);
-		AddBulletPoint(CODEX.CRITTERSTATUS.MOOD.MISERABLE.MISERABLEWILD_FERTILITY);
-		AddSubtitle(CODEX.CRITTERSTATUS.MOOD.HOSTILE.TITLE);
-		AddBody(DlcManager.IsExpansion1Active() ? CODEX.CRITTERSTATUS.MOOD.HOSTILE.CONTAINER1_DLC1 : CODEX.CRITTERSTATUS.MOOD.HOSTILE.CONTAINER1_VANILLA);
-		AddSubtitle(CODEX.CRITTERSTATUS.MOOD.CONFINED.TITLE);
-		AddBody(CODEX.CRITTERSTATUS.MOOD.CONFINED.CONTAINER1);
-		AddBody(CODEX.CRITTERSTATUS.MOOD.CONFINED.SUBTITLE);
-		AddBulletPoint(CODEX.CRITTERSTATUS.MOOD.CONFINED.CONFINED_FERTILITY);
-		AddBulletPoint(CODEX.CRITTERSTATUS.MOOD.CONFINED.CONFINED_HAPPINESS);
-		AddSubtitle(CODEX.CRITTERSTATUS.MOOD.OVERCROWDED.TITLE);
-		AddBody(CODEX.CRITTERSTATUS.MOOD.OVERCROWDED.CONTAINER1);
-		AddBody(CODEX.CRITTERSTATUS.MOOD.OVERCROWDED.SUBTITLE);
-		AddBulletPoint(CODEX.CRITTERSTATUS.MOOD.OVERCROWDED.OVERCROWDED_HAPPY1);
-		AddSpacer();
-		AddSubEntry("CREATURES::GUIDE::FERTILITY", CODEX.CRITTERSTATUS.FERTILITY.TITLE);
-		AddImage(Assets.GetSprite("codex_reproduction"));
-		AddBody(CODEX.CRITTERSTATUS.FERTILITY.BODY.CONTAINER1);
-		AddSubtitle(CODEX.CRITTERSTATUS.FERTILITY.FERTILITYRATE.TITLE);
-		AddBody(CODEX.CRITTERSTATUS.FERTILITY.FERTILITYRATE.CONTAINER1);
-		AddSubtitle(CODEX.CRITTERSTATUS.FERTILITY.EGGCHANCES.TITLE);
-		AddBody(CODEX.CRITTERSTATUS.FERTILITY.EGGCHANCES.CONTAINER1);
-		AddSubtitle(CODEX.CRITTERSTATUS.FERTILITY.FUTURE_OVERCROWDED.TITLE);
-		AddBody(CODEX.CRITTERSTATUS.FERTILITY.FUTURE_OVERCROWDED.CONTAINER1);
-		AddBody(CODEX.CRITTERSTATUS.FERTILITY.FUTURE_OVERCROWDED.SUBTITLE);
-		AddBulletPoint(CODEX.CRITTERSTATUS.FERTILITY.FUTURE_OVERCROWDED.CRAMPED_FERTILITY);
-		AddSubtitle(CODEX.CRITTERSTATUS.FERTILITY.INCUBATION.TITLE);
-		AddBody(CODEX.CRITTERSTATUS.FERTILITY.INCUBATION.CONTAINER1);
-		AddSubtitle(CODEX.CRITTERSTATUS.FERTILITY.MAXAGE.TITLE);
-		AddBody(DlcManager.IsExpansion1Active() ? CODEX.CRITTERSTATUS.FERTILITY.MAXAGE.CONTAINER1_DLC1 : CODEX.CRITTERSTATUS.FERTILITY.MAXAGE.CONTAINER1_VANILLA);
-		AddSpacer();
-		AddSubEntry("CREATURES::GUIDE::DOMESTICATION", CODEX.CRITTERSTATUS.DOMESTICATION.TITLE);
-		AddImage(Assets.GetSprite("codex_domestication"));
-		AddBody(CODEX.CRITTERSTATUS.DOMESTICATION.BODY.CONTAINER1);
-		AddSubtitle(CODEX.CRITTERSTATUS.DOMESTICATION.WILD.TITLE);
-		AddBody(CODEX.CRITTERSTATUS.DOMESTICATION.WILD.CONTAINER1);
-		AddBody(CODEX.CRITTERSTATUS.DOMESTICATION.WILD.SUBTITLE);
-		AddBulletPoint(CODEX.CRITTERSTATUS.DOMESTICATION.WILD.WILD_METABOLISM);
-		AddBulletPoint(CODEX.CRITTERSTATUS.DOMESTICATION.WILD.WILD_POOP);
-		AddSubtitle(CODEX.CRITTERSTATUS.DOMESTICATION.TAME.TITLE);
-		AddBody(CODEX.CRITTERSTATUS.DOMESTICATION.TAME.CONTAINER1);
-		AddBody(CODEX.CRITTERSTATUS.DOMESTICATION.TAME.SUBTITLE);
-		AddBulletPoint(CODEX.CRITTERSTATUS.DOMESTICATION.TAME.TAME_HAPPINESS);
-		AddBulletPoint(CODEX.CRITTERSTATUS.DOMESTICATION.TAME.TAME_METABOLISM);
-		return generalInfoEntry;
-		void AddBody(string text)
-		{
-			subEntryContents.Add(new CodexText(text));
-		}
-		void AddBulletPoint(string text)
-		{
-			if (text.StartsWith("    • "))
-			{
-				text = text.Substring("    • ".Length);
-			}
-			text = "<indent=13px>•<indent=21px>" + text + "</indent></indent>";
-			subEntryContents.Add(new CodexText(text));
-		}
-		void AddImage(Sprite sprite)
-		{
-			subEntryContents.Add(new CodexImage(432, 1, sprite));
-		}
-		void AddSpacer()
-		{
-			subEntryContents.Add(new CodexSpacer());
-		}
-		void AddSubEntry(string id, string name)
-		{
-			subEntryContents = new List<ICodexWidget>();
-			subEntryContents.Add(new CodexText(name, CodexTextStyle.Title));
-			subEntry = new SubEntry(id, "CREATURES::GUIDE", new List<ContentContainer>
-			{
-				new ContentContainer(subEntryContents, ContentContainer.ContentLayout.Vertical)
-			}, name);
-			generalInfoEntry.subEntries.Add(subEntry);
-		}
-		void AddSubtitle(string text)
-		{
-			AddSpacer();
-			subEntryContents.Add(new CodexText(text, CodexTextStyle.Subtitle));
-		}
+		CodexEntryGenerator_Creatures.<>c__DisplayClass7_0 CS$<>8__locals1;
+		CS$<>8__locals1.generalInfoEntry = new CodexEntry("CREATURES", new List<ContentContainer>(), CODEX.CRITTERSTATUS.CRITTERSTATUS_TITLE);
+		CS$<>8__locals1.generalInfoEntry.icon = Assets.GetSprite("codex_critter_emotions");
+		CodexEntryGenerator_Creatures.<>c__DisplayClass7_1 CS$<>8__locals2;
+		CS$<>8__locals2.subEntryContents = null;
+		CS$<>8__locals2.subEntry = null;
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddSubEntry|7_0("CREATURES::GUIDE::METABOLISM", CODEX.CRITTERSTATUS.METABOLISM.TITLE, ref CS$<>8__locals1, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddImage|7_1(Assets.GetSprite("codex_metabolism"), ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddBody|7_3(CODEX.CRITTERSTATUS.METABOLISM.BODY.CONTAINER1, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddSubtitle|7_2(CODEX.CRITTERSTATUS.METABOLISM.HUNGRY.TITLE, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddBody|7_3(CODEX.CRITTERSTATUS.METABOLISM.HUNGRY.CONTAINER1, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddSubtitle|7_2(CODEX.CRITTERSTATUS.METABOLISM.STARVING.TITLE, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddBody|7_3(string.Format(DlcManager.IsExpansion1Active() ? CODEX.CRITTERSTATUS.METABOLISM.STARVING.CONTAINER1_DLC1 : CODEX.CRITTERSTATUS.METABOLISM.STARVING.CONTAINER1_VANILLA, 10), ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddSpacer|7_4(ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddSubEntry|7_0("CREATURES::GUIDE::MOOD", CODEX.CRITTERSTATUS.MOOD.TITLE, ref CS$<>8__locals1, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddImage|7_1(Assets.GetSprite("codex_mood"), ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddBody|7_3(CODEX.CRITTERSTATUS.MOOD.BODY.CONTAINER1, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddSubtitle|7_2(CODEX.CRITTERSTATUS.MOOD.HAPPY.TITLE, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddBody|7_3(CODEX.CRITTERSTATUS.MOOD.HAPPY.CONTAINER1, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddBody|7_3(CODEX.CRITTERSTATUS.MOOD.HAPPY.SUBTITLE, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddBulletPoint|7_5(CODEX.CRITTERSTATUS.MOOD.HAPPY.HAPPY_METABOLISM, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddSubtitle|7_2(CODEX.CRITTERSTATUS.MOOD.NEUTRAL.TITLE, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddBody|7_3(CODEX.CRITTERSTATUS.MOOD.NEUTRAL.CONTAINER1, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddSubtitle|7_2(CODEX.CRITTERSTATUS.MOOD.GLUM.TITLE, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddBody|7_3(CODEX.CRITTERSTATUS.MOOD.GLUM.CONTAINER1, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddBody|7_3(CODEX.CRITTERSTATUS.MOOD.GLUM.SUBTITLE, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddBulletPoint|7_5(CODEX.CRITTERSTATUS.MOOD.GLUM.GLUMWILD_METABOLISM, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddSubtitle|7_2(CODEX.CRITTERSTATUS.MOOD.MISERABLE.TITLE, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddBody|7_3(CODEX.CRITTERSTATUS.MOOD.MISERABLE.CONTAINER1, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddBody|7_3(CODEX.CRITTERSTATUS.MOOD.MISERABLE.SUBTITLE, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddBulletPoint|7_5(CODEX.CRITTERSTATUS.MOOD.MISERABLE.MISERABLEWILD_METABOLISM, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddBulletPoint|7_5(CODEX.CRITTERSTATUS.MOOD.MISERABLE.MISERABLEWILD_FERTILITY, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddSubtitle|7_2(CODEX.CRITTERSTATUS.MOOD.HOSTILE.TITLE, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddBody|7_3(DlcManager.IsExpansion1Active() ? CODEX.CRITTERSTATUS.MOOD.HOSTILE.CONTAINER1_DLC1 : CODEX.CRITTERSTATUS.MOOD.HOSTILE.CONTAINER1_VANILLA, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddSubtitle|7_2(CODEX.CRITTERSTATUS.MOOD.CONFINED.TITLE, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddBody|7_3(CODEX.CRITTERSTATUS.MOOD.CONFINED.CONTAINER1, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddBody|7_3(CODEX.CRITTERSTATUS.MOOD.CONFINED.SUBTITLE, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddBulletPoint|7_5(CODEX.CRITTERSTATUS.MOOD.CONFINED.CONFINED_FERTILITY, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddBulletPoint|7_5(CODEX.CRITTERSTATUS.MOOD.CONFINED.CONFINED_HAPPINESS, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddSubtitle|7_2(CODEX.CRITTERSTATUS.MOOD.OVERCROWDED.TITLE, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddBody|7_3(CODEX.CRITTERSTATUS.MOOD.OVERCROWDED.CONTAINER1, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddBody|7_3(CODEX.CRITTERSTATUS.MOOD.OVERCROWDED.SUBTITLE, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddBulletPoint|7_5(CODEX.CRITTERSTATUS.MOOD.OVERCROWDED.OVERCROWDED_HAPPY1, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddSpacer|7_4(ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddSubEntry|7_0("CREATURES::GUIDE::FERTILITY", CODEX.CRITTERSTATUS.FERTILITY.TITLE, ref CS$<>8__locals1, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddImage|7_1(Assets.GetSprite("codex_reproduction"), ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddBody|7_3(CODEX.CRITTERSTATUS.FERTILITY.BODY.CONTAINER1, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddSubtitle|7_2(CODEX.CRITTERSTATUS.FERTILITY.FERTILITYRATE.TITLE, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddBody|7_3(CODEX.CRITTERSTATUS.FERTILITY.FERTILITYRATE.CONTAINER1, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddSubtitle|7_2(CODEX.CRITTERSTATUS.FERTILITY.EGGCHANCES.TITLE, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddBody|7_3(CODEX.CRITTERSTATUS.FERTILITY.EGGCHANCES.CONTAINER1, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddSubtitle|7_2(CODEX.CRITTERSTATUS.FERTILITY.FUTURE_OVERCROWDED.TITLE, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddBody|7_3(CODEX.CRITTERSTATUS.FERTILITY.FUTURE_OVERCROWDED.CONTAINER1, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddBody|7_3(CODEX.CRITTERSTATUS.FERTILITY.FUTURE_OVERCROWDED.SUBTITLE, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddBulletPoint|7_5(CODEX.CRITTERSTATUS.FERTILITY.FUTURE_OVERCROWDED.CRAMPED_FERTILITY, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddSubtitle|7_2(CODEX.CRITTERSTATUS.FERTILITY.INCUBATION.TITLE, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddBody|7_3(CODEX.CRITTERSTATUS.FERTILITY.INCUBATION.CONTAINER1, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddSubtitle|7_2(CODEX.CRITTERSTATUS.FERTILITY.MAXAGE.TITLE, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddBody|7_3(DlcManager.IsExpansion1Active() ? CODEX.CRITTERSTATUS.FERTILITY.MAXAGE.CONTAINER1_DLC1 : CODEX.CRITTERSTATUS.FERTILITY.MAXAGE.CONTAINER1_VANILLA, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddSpacer|7_4(ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddSubEntry|7_0("CREATURES::GUIDE::DOMESTICATION", CODEX.CRITTERSTATUS.DOMESTICATION.TITLE, ref CS$<>8__locals1, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddImage|7_1(Assets.GetSprite("codex_domestication"), ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddBody|7_3(CODEX.CRITTERSTATUS.DOMESTICATION.BODY.CONTAINER1, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddSubtitle|7_2(CODEX.CRITTERSTATUS.DOMESTICATION.WILD.TITLE, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddBody|7_3(CODEX.CRITTERSTATUS.DOMESTICATION.WILD.CONTAINER1, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddBody|7_3(CODEX.CRITTERSTATUS.DOMESTICATION.WILD.SUBTITLE, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddBulletPoint|7_5(CODEX.CRITTERSTATUS.DOMESTICATION.WILD.WILD_METABOLISM, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddBulletPoint|7_5(CODEX.CRITTERSTATUS.DOMESTICATION.WILD.WILD_POOP, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddSubtitle|7_2(CODEX.CRITTERSTATUS.DOMESTICATION.TAME.TITLE, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddBody|7_3(CODEX.CRITTERSTATUS.DOMESTICATION.TAME.CONTAINER1, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddBody|7_3(CODEX.CRITTERSTATUS.DOMESTICATION.TAME.SUBTITLE, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddBulletPoint|7_5(CODEX.CRITTERSTATUS.DOMESTICATION.TAME.TAME_HAPPINESS, ref CS$<>8__locals2);
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddBulletPoint|7_5(CODEX.CRITTERSTATUS.DOMESTICATION.TAME.TAME_METABOLISM, ref CS$<>8__locals2);
+		return CS$<>8__locals1.generalInfoEntry;
 	}
 
+	// Token: 0x06009695 RID: 38549 RVA: 0x003A5F64 File Offset: 0x003A4164
 	private static CodexEntry GenerateCritterEntry(Tag speciesTag, string name, List<GameObject> brains)
 	{
 		CodexEntry codexEntry = null;
 		List<ContentContainer> list = new List<ContentContainer>();
-		foreach (GameObject brain in brains)
+		foreach (GameObject gameObject in brains)
 		{
-			if (brain.GetDef<BabyMonitor.Def>() != null || !SaveLoader.Instance.IsDlcListActiveForCurrentSave(brain.GetComponent<KPrefabID>().requiredDlcIds))
+			if (gameObject.GetDef<BabyMonitor.Def>() == null && SaveLoader.Instance.IsDlcListActiveForCurrentSave(gameObject.GetComponent<KPrefabID>().requiredDlcIds))
 			{
-				continue;
-			}
-			Sprite sprite = null;
-			Sprite sprite2 = null;
-			CreatureBrain component = brain.GetComponent<CreatureBrain>();
-			if (!(component.species != speciesTag))
-			{
-				if (codexEntry == null)
+				Sprite sprite = null;
+				CreatureBrain component = gameObject.GetComponent<CreatureBrain>();
+				if (!(component.species != speciesTag))
 				{
-					codexEntry = new CodexEntry("CREATURES", list, name);
-					codexEntry.sortString = name;
-					list.Add(new ContentContainer(new List<ICodexWidget>
+					if (codexEntry == null)
 					{
-						new CodexSpacer(),
-						new CodexSpacer()
-					}, ContentContainer.ContentLayout.Vertical));
+						codexEntry = new CodexEntry("CREATURES", list, name);
+						codexEntry.sortString = name;
+						list.Add(new ContentContainer(new List<ICodexWidget>
+						{
+							new CodexSpacer(),
+							new CodexSpacer()
+						}, ContentContainer.ContentLayout.Vertical));
+					}
+					List<ContentContainer> list2 = new List<ContentContainer>();
+					string symbolPrefix = component.symbolPrefix;
+					Sprite first = Def.GetUISprite(gameObject, symbolPrefix + "ui", false).first;
+					GameObject gameObject2 = Assets.TryGetPrefab(gameObject.PrefabID().ToString() + "Baby");
+					if (gameObject2 != null)
+					{
+						sprite = Def.GetUISprite(gameObject2, "ui", false).first;
+					}
+					if (sprite)
+					{
+						CodexEntryGenerator.GenerateImageContainers(new Sprite[]
+						{
+							first,
+							sprite
+						}, list2, ContentContainer.ContentLayout.Horizontal);
+					}
+					else
+					{
+						CodexEntryGenerator.GenerateImageContainers(first, list2);
+					}
+					CodexEntryGenerator_Creatures.GenerateCreatureDescriptionContainers(gameObject, list2);
+					SubEntry subEntry = new SubEntry(component.PrefabID().ToString(), speciesTag.ToString(), list2, component.GetProperName());
+					subEntry.icon = first;
+					subEntry.iconColor = Color.white;
+					codexEntry.subEntries.Add(subEntry);
 				}
-				List<ContentContainer> list2 = new List<ContentContainer>();
-				string symbolPrefix = component.symbolPrefix;
-				sprite = Def.GetUISprite(brain, symbolPrefix + "ui").first;
-				GameObject gameObject = Assets.TryGetPrefab(brain.PrefabID().ToString() + "Baby");
-				if (gameObject != null)
-				{
-					sprite2 = Def.GetUISprite(gameObject).first;
-				}
-				if ((bool)sprite2)
-				{
-					CodexEntryGenerator.GenerateImageContainers(new Sprite[2] { sprite, sprite2 }, list2, ContentContainer.ContentLayout.Horizontal);
-				}
-				else
-				{
-					CodexEntryGenerator.GenerateImageContainers(sprite, list2);
-				}
-				GenerateCreatureDescriptionContainers(brain, list2);
-				SubEntry subEntry = new SubEntry(component.PrefabID().ToString(), speciesTag.ToString(), list2, component.GetProperName());
-				subEntry.icon = sprite;
-				subEntry.iconColor = Color.white;
-				codexEntry.subEntries.Add(subEntry);
 			}
 		}
 		return codexEntry;
 	}
 
+	// Token: 0x06009696 RID: 38550 RVA: 0x003A6148 File Offset: 0x003A4348
 	private static void GenerateCreatureDescriptionContainers(GameObject creature, List<ContentContainer> containers)
 	{
 		containers.Add(new ContentContainer(new List<ICodexWidget>
 		{
-			new CodexText(creature.GetComponent<InfoDescription>().description)
+			new CodexText(creature.GetComponent<InfoDescription>().description, CodexTextStyle.Body, null)
 		}, ContentContainer.ContentLayout.Vertical));
 		RobotBatteryMonitor.Def def = creature.GetDef<RobotBatteryMonitor.Def>();
 		if (def != null)
@@ -247,8 +187,8 @@ public class CodexEntryGenerator_Creatures
 			containers.Add(new ContentContainer(new List<ICodexWidget>
 			{
 				new CodexSpacer(),
-				new CodexText(CODEX.HEADERS.INTERNALBATTERY, CodexTextStyle.Subtitle),
-				new CodexText("    • " + string.Format(CODEX.ROBOT_DESCRIPTORS.BATTERY.CAPACITY, value))
+				new CodexText(CODEX.HEADERS.INTERNALBATTERY, CodexTextStyle.Subtitle, null),
+				new CodexText("    • " + string.Format(CODEX.ROBOT_DESCRIPTORS.BATTERY.CAPACITY, value), CodexTextStyle.Body, null)
 			}, ContentContainer.ContentLayout.Vertical));
 		}
 		if (creature.GetDef<StorageUnloadMonitor.Def>() != null)
@@ -256,8 +196,8 @@ public class CodexEntryGenerator_Creatures
 			containers.Add(new ContentContainer(new List<ICodexWidget>
 			{
 				new CodexSpacer(),
-				new CodexText(CODEX.HEADERS.INTERNALSTORAGE, CodexTextStyle.Subtitle),
-				new CodexText("    • " + string.Format(CODEX.ROBOT_DESCRIPTORS.STORAGE.CAPACITY, creature.GetComponents<Storage>()[1].Capacity()))
+				new CodexText(CODEX.HEADERS.INTERNALSTORAGE, CodexTextStyle.Subtitle, null),
+				new CodexText("    • " + string.Format(CODEX.ROBOT_DESCRIPTORS.STORAGE.CAPACITY, creature.GetComponents<Storage>()[1].Capacity()), CodexTextStyle.Body, null)
 			}, ContentContainer.ContentLayout.Vertical));
 		}
 		List<GameObject> prefabsWithTag = Assets.GetPrefabsWithTag((creature.PrefabID().ToString() + "Egg").ToTag());
@@ -266,13 +206,13 @@ public class CodexEntryGenerator_Creatures
 			containers.Add(new ContentContainer(new List<ICodexWidget>
 			{
 				new CodexSpacer(),
-				new CodexText(CODEX.HEADERS.HATCHESFROMEGG, CodexTextStyle.Subtitle)
+				new CodexText(CODEX.HEADERS.HATCHESFROMEGG, CodexTextStyle.Subtitle, null)
 			}, ContentContainer.ContentLayout.Vertical));
-			foreach (GameObject item4 in prefabsWithTag)
+			foreach (GameObject gameObject in prefabsWithTag)
 			{
 				containers.Add(new ContentContainer(new List<ICodexWidget>
 				{
-					new CodexIndentedLabelWithIcon(item4.GetProperName(), CodexTextStyle.Body, Def.GetUISprite(item4))
+					new CodexIndentedLabelWithIcon(gameObject.GetProperName(), CodexTextStyle.Body, Def.GetUISprite(gameObject, "ui", false))
 				}, ContentContainer.ContentLayout.Horizontal));
 			}
 		}
@@ -282,24 +222,32 @@ public class CodexEntryGenerator_Creatures
 			containers.Add(new ContentContainer(new List<ICodexWidget>
 			{
 				new CodexSpacer(),
-				new CodexText(CODEX.HEADERS.COMFORTRANGE, CodexTextStyle.Subtitle),
-				new CodexText("    • " + string.Format(CODEX.CREATURE_DESCRIPTORS.TEMPERATURE.COMFORT_RANGE, GameUtil.GetFormattedTemperature(def2.temperatureColdUncomfortable), GameUtil.GetFormattedTemperature(def2.temperatureHotUncomfortable))),
-				new CodexText("    • " + string.Format(CODEX.CREATURE_DESCRIPTORS.TEMPERATURE.NON_LETHAL_RANGE, GameUtil.GetFormattedTemperature(def2.temperatureColdDeadly), GameUtil.GetFormattedTemperature(def2.temperatureHotDeadly)))
+				new CodexText(CODEX.HEADERS.COMFORTRANGE, CodexTextStyle.Subtitle, null),
+				new CodexText("    • " + string.Format(CODEX.CREATURE_DESCRIPTORS.TEMPERATURE.COMFORT_RANGE, GameUtil.GetFormattedTemperature(def2.temperatureColdUncomfortable, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false), GameUtil.GetFormattedTemperature(def2.temperatureHotUncomfortable, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false)), CodexTextStyle.Body, null),
+				new CodexText("    • " + string.Format(CODEX.CREATURE_DESCRIPTORS.TEMPERATURE.NON_LETHAL_RANGE, GameUtil.GetFormattedTemperature(def2.temperatureColdDeadly, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false), GameUtil.GetFormattedTemperature(def2.temperatureHotDeadly, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false)), CodexTextStyle.Body, null)
 			}, ContentContainer.ContentLayout.Vertical));
 		}
 		Modifiers component = creature.GetComponent<Modifiers>();
 		if (component != null)
 		{
-			Attribute maxAttribute = Db.Get().Amounts.Age.maxAttribute;
+			Klei.AI.Attribute maxAttribute = Db.Get().Amounts.Age.maxAttribute;
 			float totalValue = AttributeInstance.GetTotalValue(maxAttribute, component.GetPreModifiers(maxAttribute));
-			string text = ((!Mathf.Approximately(totalValue, 0f)) ? string.Format(CODEX.CREATURE_DESCRIPTORS.MAXAGE, maxAttribute.formatter.GetFormattedValue(totalValue, GameUtil.TimeSlice.None)) : null);
+			string text;
+			if (Mathf.Approximately(totalValue, 0f))
+			{
+				text = null;
+			}
+			else
+			{
+				text = string.Format(CODEX.CREATURE_DESCRIPTORS.MAXAGE, maxAttribute.formatter.GetFormattedValue(totalValue, GameUtil.TimeSlice.None));
+			}
 			if (text != null)
 			{
 				containers.Add(new ContentContainer(new List<ICodexWidget>
 				{
 					new CodexSpacer(),
-					new CodexText(CODEX.HEADERS.CRITTERMAXAGE, CodexTextStyle.Subtitle),
-					new CodexText(text)
+					new CodexText(CODEX.HEADERS.CRITTERMAXAGE, CodexTextStyle.Subtitle, null),
+					new CodexText(text, CodexTextStyle.Body, null)
 				}, ContentContainer.ContentLayout.Vertical));
 			}
 		}
@@ -309,9 +257,9 @@ public class CodexEntryGenerator_Creatures
 			containers.Add(new ContentContainer(new List<ICodexWidget>
 			{
 				new CodexSpacer(),
-				new CodexText(CODEX.HEADERS.CRITTEROVERCROWDING, CodexTextStyle.Subtitle),
-				new CodexText("    • " + string.Format(CODEX.CREATURE_DESCRIPTORS.OVERCROWDING, def3.spaceRequiredPerCreature)),
-				new CodexText("    • " + string.Format(CODEX.CREATURE_DESCRIPTORS.CONFINED, def3.spaceRequiredPerCreature))
+				new CodexText(CODEX.HEADERS.CRITTEROVERCROWDING, CodexTextStyle.Subtitle, null),
+				new CodexText("    • " + string.Format(CODEX.CREATURE_DESCRIPTORS.OVERCROWDING, def3.spaceRequiredPerCreature), CodexTextStyle.Body, null),
+				new CodexText("    • " + string.Format(CODEX.CREATURE_DESCRIPTORS.CONFINED, def3.spaceRequiredPerCreature), CodexTextStyle.Body, null)
 			}, ContentContainer.ContentLayout.Vertical));
 		}
 		int num = 0;
@@ -326,86 +274,197 @@ public class CodexEntryGenerator_Creatures
 				item = (tag.Name = component2.drops[0]);
 			}
 		}
+		string text2 = null;
 		string text3 = null;
-		string text4 = null;
 		if (tag.IsValid)
 		{
-			text3 = TagManager.GetProperName(tag);
-			text4 = "\t" + GameUtil.GetFormattedByTag(tag, num);
+			text2 = TagManager.GetProperName(tag, false);
+			text3 = "\t" + GameUtil.GetFormattedByTag(tag, (float)num, GameUtil.TimeSlice.None);
 		}
-		if (!string.IsNullOrEmpty(text3) && !string.IsNullOrEmpty(text4))
+		if (!string.IsNullOrEmpty(text2) && !string.IsNullOrEmpty(text3))
 		{
 			ContentContainer item2 = new ContentContainer(new List<ICodexWidget>
 			{
 				new CodexSpacer(),
-				new CodexText(CODEX.HEADERS.CRITTERDROPS, CodexTextStyle.Subtitle)
+				new CodexText(CODEX.HEADERS.CRITTERDROPS, CodexTextStyle.Subtitle, null)
 			}, ContentContainer.ContentLayout.Vertical);
 			ContentContainer item3 = new ContentContainer(new List<ICodexWidget>
 			{
-				new CodexIndentedLabelWithIcon(text3, CodexTextStyle.Body, Def.GetUISprite(item)),
-				new CodexText(text4)
+				new CodexIndentedLabelWithIcon(text2, CodexTextStyle.Body, Def.GetUISprite(item, "ui", false)),
+				new CodexText(text3, CodexTextStyle.Body, null)
 			}, ContentContainer.ContentLayout.Vertical);
 			containers.Add(item2);
 			containers.Add(item3);
 		}
 		new List<Tag>();
 		Diet prefabDiet = DietManager.Instance.GetPrefabDiet(creature);
-		if (prefabDiet == null)
+		if (prefabDiet != null)
 		{
-			return;
-		}
-		Diet.Info[] infos = prefabDiet.infos;
-		if (infos == null || infos.Length == 0)
-		{
-			return;
-		}
-		float num2 = 0f;
-		foreach (AttributeModifier selfModifier in Db.Get().traits.Get(creature.GetComponent<Modifiers>().initialTraits[0]).SelfModifiers)
-		{
-			if (selfModifier.AttributeId == Db.Get().Amounts.Calories.deltaAttribute.Id)
+			Diet.Info[] infos = prefabDiet.infos;
+			if (infos != null && infos.Length != 0)
 			{
-				num2 = selfModifier.Value;
-			}
-		}
-		List<ICodexWidget> list = new List<ICodexWidget>();
-		Diet.Info[] array = infos;
-		foreach (Diet.Info info in array)
-		{
-			if (info.consumedTags.Count == 0)
-			{
-				continue;
-			}
-			foreach (Tag consumedTag in info.consumedTags)
-			{
-				Element element = ElementLoader.FindElementByHash(ElementLoader.GetElementID(consumedTag));
-				if ((element.id != SimHashes.Vacuum && element.id != SimHashes.Void) || !(Assets.GetPrefab(consumedTag) == null))
+				float num2 = 0f;
+				foreach (AttributeModifier attributeModifier in Db.Get().traits.Get(creature.GetComponent<Modifiers>().initialTraits[0]).SelfModifiers)
 				{
-					bool num3 = prefabDiet.IsConsumedTagAbleToBeEatenDirectly(consumedTag);
-					float num4 = (0f - num2) / info.caloriesPerKg;
-					float outputAmount = num4 * info.producedConversionRate;
-					if (num3)
+					if (attributeModifier.AttributeId == Db.Get().Amounts.Calories.deltaAttribute.Id)
 					{
-						list.Add(new CodexConversionPanel(consumedTag.ProperName(), consumedTag, num4, inputContinuous: true, GameUtil.GetFormattedPlantConsumptionValuePerCycle, info.producedElement, outputAmount, outputContinuous: true, null, creature));
-					}
-					else
-					{
-						list.Add(new CodexConversionPanel(consumedTag.ProperName(), consumedTag, num4, inputContinuous: true, info.producedElement, outputAmount, outputContinuous: true, creature));
+						num2 = attributeModifier.Value;
 					}
 				}
+				List<ICodexWidget> list = new List<ICodexWidget>();
+				foreach (Diet.Info info in infos)
+				{
+					if (info.consumedTags.Count != 0)
+					{
+						foreach (Tag tag2 in info.consumedTags)
+						{
+							Element element = ElementLoader.FindElementByHash(ElementLoader.GetElementID(tag2));
+							if ((element.id != SimHashes.Vacuum && element.id != SimHashes.Void) || !(Assets.GetPrefab(tag2) == null))
+							{
+								bool flag = prefabDiet.IsConsumedTagAbleToBeEatenDirectly(tag2);
+								float num3 = -num2 / info.caloriesPerKg;
+								float outputAmount = num3 * info.producedConversionRate;
+								if (flag)
+								{
+									if (info.foodType == Diet.Info.FoodType.EatPlantDirectly)
+									{
+										list.Add(new CodexConversionPanel(tag2.ProperName(), tag2, num3, true, new Func<Tag, float, bool, string>(GameUtil.GetFormattedDirectPlantConsumptionValuePerCycle), info.producedElement, outputAmount, true, null, creature));
+									}
+									else if (info.foodType == Diet.Info.FoodType.EatPlantStorage)
+									{
+										list.Add(new CodexConversionPanel(tag2.ProperName(), tag2, num3, true, new Func<Tag, float, bool, string>(GameUtil.GetFormattedPlantStorageConsumptionValuePerCycle), info.producedElement, outputAmount, true, null, creature));
+									}
+								}
+								else
+								{
+									list.Add(new CodexConversionPanel(tag2.ProperName(), tag2, num3, true, info.producedElement, outputAmount, true, creature));
+								}
+							}
+						}
+					}
+				}
+				ContentContainer contentContainer = new ContentContainer(list, ContentContainer.ContentLayout.Vertical);
+				containers.Add(new ContentContainer(new List<ICodexWidget>
+				{
+					new CodexSpacer(),
+					new CodexCollapsibleHeader(CODEX.HEADERS.DIET, contentContainer)
+				}, ContentContainer.ContentLayout.Vertical));
+				containers.Add(contentContainer);
+				containers.Add(new ContentContainer(new List<ICodexWidget>
+				{
+					new CodexSpacer(),
+					new CodexSpacer()
+				}, ContentContainer.ContentLayout.Vertical));
+				CodexEntryGenerator_Elements.GenerateMadeAndUsedContainers(creature.PrefabID(), containers);
 			}
 		}
-		ContentContainer contentContainer = new ContentContainer(list, ContentContainer.ContentLayout.Vertical);
-		containers.Add(new ContentContainer(new List<ICodexWidget>
-		{
-			new CodexSpacer(),
-			new CodexCollapsibleHeader(CODEX.HEADERS.DIET, contentContainer)
-		}, ContentContainer.ContentLayout.Vertical));
-		containers.Add(contentContainer);
-		containers.Add(new ContentContainer(new List<ICodexWidget>
-		{
-			new CodexSpacer(),
-			new CodexSpacer()
-		}, ContentContainer.ContentLayout.Vertical));
-		CodexEntryGenerator_Elements.GenerateMadeAndUsedContainers(creature.PrefabID(), containers);
 	}
+
+	// Token: 0x06009698 RID: 38552 RVA: 0x00101E7A File Offset: 0x0010007A
+	[CompilerGenerated]
+	internal static void <GenerateEntries>g__AddEntry|6_0(string entryId, CodexEntry entry, string parentEntryId = "CREATURES", ref CodexEntryGenerator_Creatures.<>c__DisplayClass6_0 A_3)
+	{
+		if (entry == null)
+		{
+			return;
+		}
+		entry.parentId = parentEntryId;
+		CodexCache.AddEntry(entryId, entry, null);
+		A_3.results.Add(entryId, entry);
+	}
+
+	// Token: 0x06009699 RID: 38553 RVA: 0x003A69AC File Offset: 0x003A4BAC
+	[CompilerGenerated]
+	internal static void <GenerateEntries>g__PushCritterEntry|6_1(Tag speciesTag, string name, ref CodexEntryGenerator_Creatures.<>c__DisplayClass6_0 A_2)
+	{
+		CodexEntry codexEntry = CodexEntryGenerator_Creatures.GenerateCritterEntry(speciesTag, name, A_2.brains);
+		if (codexEntry != null)
+		{
+			A_2.critterEntries.Add(new ValueTuple<string, CodexEntry>(speciesTag.ToString(), codexEntry));
+		}
+	}
+
+	// Token: 0x0600969A RID: 38554 RVA: 0x003A69E8 File Offset: 0x003A4BE8
+	[CompilerGenerated]
+	internal static void <GenerateEntries>g__PopAndAddAllCritterEntries|6_2(ref CodexEntryGenerator_Creatures.<>c__DisplayClass6_0 A_0)
+	{
+		foreach (ValueTuple<string, CodexEntry> valueTuple in A_0.critterEntries.StableSort((ValueTuple<string, CodexEntry> pair) => UI.StripLinkFormatting(pair.Item2.name)))
+		{
+			string item = valueTuple.Item1;
+			CodexEntry item2 = valueTuple.Item2;
+			CodexEntryGenerator_Creatures.<GenerateEntries>g__AddEntry|6_0(item, item2, "CREATURES", ref A_0);
+		}
+	}
+
+	// Token: 0x0600969B RID: 38555 RVA: 0x003A6A6C File Offset: 0x003A4C6C
+	[CompilerGenerated]
+	internal static void <GenerateFieldGuideEntry>g__AddSubEntry|7_0(string id, string name, ref CodexEntryGenerator_Creatures.<>c__DisplayClass7_0 A_2, ref CodexEntryGenerator_Creatures.<>c__DisplayClass7_1 A_3)
+	{
+		A_3.subEntryContents = new List<ICodexWidget>();
+		A_3.subEntryContents.Add(new CodexText(name, CodexTextStyle.Title, null));
+		A_3.subEntry = new SubEntry(id, "CREATURES::GUIDE", new List<ContentContainer>
+		{
+			new ContentContainer(A_3.subEntryContents, ContentContainer.ContentLayout.Vertical)
+		}, name);
+		A_2.generalInfoEntry.subEntries.Add(A_3.subEntry);
+	}
+
+	// Token: 0x0600969C RID: 38556 RVA: 0x00101E9C File Offset: 0x0010009C
+	[CompilerGenerated]
+	internal static void <GenerateFieldGuideEntry>g__AddImage|7_1(Sprite sprite, ref CodexEntryGenerator_Creatures.<>c__DisplayClass7_1 A_1)
+	{
+		A_1.subEntryContents.Add(new CodexImage(432, 1, sprite));
+	}
+
+	// Token: 0x0600969D RID: 38557 RVA: 0x00101EB5 File Offset: 0x001000B5
+	[CompilerGenerated]
+	internal static void <GenerateFieldGuideEntry>g__AddSubtitle|7_2(string text, ref CodexEntryGenerator_Creatures.<>c__DisplayClass7_1 A_1)
+	{
+		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddSpacer|7_4(ref A_1);
+		A_1.subEntryContents.Add(new CodexText(text, CodexTextStyle.Subtitle, null));
+	}
+
+	// Token: 0x0600969E RID: 38558 RVA: 0x00101ED0 File Offset: 0x001000D0
+	[CompilerGenerated]
+	internal static void <GenerateFieldGuideEntry>g__AddBody|7_3(string text, ref CodexEntryGenerator_Creatures.<>c__DisplayClass7_1 A_1)
+	{
+		A_1.subEntryContents.Add(new CodexText(text, CodexTextStyle.Body, null));
+	}
+
+	// Token: 0x0600969F RID: 38559 RVA: 0x00101EE5 File Offset: 0x001000E5
+	[CompilerGenerated]
+	internal static void <GenerateFieldGuideEntry>g__AddSpacer|7_4(ref CodexEntryGenerator_Creatures.<>c__DisplayClass7_1 A_0)
+	{
+		A_0.subEntryContents.Add(new CodexSpacer());
+	}
+
+	// Token: 0x060096A0 RID: 38560 RVA: 0x003A6AD8 File Offset: 0x003A4CD8
+	[CompilerGenerated]
+	internal static void <GenerateFieldGuideEntry>g__AddBulletPoint|7_5(string text, ref CodexEntryGenerator_Creatures.<>c__DisplayClass7_1 A_1)
+	{
+		if (text.StartsWith("    • "))
+		{
+			text = text.Substring("    • ".Length);
+		}
+		text = "<indent=13px>•<indent=21px>" + text + "</indent></indent>";
+		A_1.subEntryContents.Add(new CodexText(text, CodexTextStyle.Body, null));
+	}
+
+	// Token: 0x040074BC RID: 29884
+	public const string CATEGORY_ID = "CREATURES";
+
+	// Token: 0x040074BD RID: 29885
+	public const string GUIDE_ID = "CREATURES::GUIDE";
+
+	// Token: 0x040074BE RID: 29886
+	public const string GUIDE_METABOLISM_ID = "CREATURES::GUIDE::METABOLISM";
+
+	// Token: 0x040074BF RID: 29887
+	public const string GUIDE_MOOD_ID = "CREATURES::GUIDE::MOOD";
+
+	// Token: 0x040074C0 RID: 29888
+	public const string GUIDE_FERTILITY_ID = "CREATURES::GUIDE::FERTILITY";
+
+	// Token: 0x040074C1 RID: 29889
+	public const string GUIDE_DOMESTICATION_ID = "CREATURES::GUIDE::DOMESTICATION";
 }

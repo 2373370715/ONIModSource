@@ -1,24 +1,27 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
+// Token: 0x0200199A RID: 6554
 public class SpaceTreeSeededComet : Comet
 {
+	// Token: 0x060088AB RID: 34987 RVA: 0x00354C50 File Offset: 0x00352E50
 	protected override void DepositTiles(int cell, Element element, int world, int prev_cell, float temperature)
 	{
-		int depthOfElement = GetDepthOfElement(cell, element, world);
+		float depthOfElement = (float)base.GetDepthOfElement(cell2, element, world);
 		float num = 1f;
-		float num2 = (float)(depthOfElement - addTilesMinHeight) / (float)(addTilesMaxHeight - addTilesMinHeight);
+		float num2 = (depthOfElement - (float)this.addTilesMinHeight) / (float)(this.addTilesMaxHeight - this.addTilesMinHeight);
 		if (!float.IsNaN(num2))
 		{
 			num -= num2;
 		}
-		int num3 = Mathf.Min(addTiles, Mathf.Clamp(Mathf.RoundToInt((float)addTiles * num), 1, addTiles));
+		int num3 = Mathf.Min(this.addTiles, Mathf.Clamp(Mathf.RoundToInt((float)this.addTiles * num), 1, this.addTiles));
 		HashSetPool<int, Comet>.PooledHashSet pooledHashSet = HashSetPool<int, Comet>.Allocate();
 		HashSetPool<int, Comet>.PooledHashSet pooledHashSet2 = HashSetPool<int, Comet>.Allocate();
 		QueuePool<GameUtil.FloodFillInfo, Comet>.PooledQueue pooledQueue = QueuePool<GameUtil.FloodFillInfo, Comet>.Allocate();
 		int num4 = -1;
 		int num5 = 1;
-		if (velocity.x < 0f)
+		if (this.velocity.x < 0f)
 		{
 			num4 *= -1;
 			num5 *= -1;
@@ -40,33 +43,38 @@ public class SpaceTreeSeededComet : Comet
 		});
 		Func<int, bool> condition = (int cell) => Grid.IsValidCellInWorld(cell, world) && !Grid.Solid[cell];
 		GameUtil.FloodFillConditional(pooledQueue, condition, pooledHashSet2, pooledHashSet, 10);
-		float mass = ((num3 > 0) ? (addTileMass / (float)addTiles) : 1f);
-		int disease_count = addDiseaseCount / num3;
+		float mass = (num3 > 0) ? (this.addTileMass / (float)this.addTiles) : 1f;
+		int disease_count = this.addDiseaseCount / num3;
 		float value = UnityEngine.Random.value;
-		float num6 = ((num3 == 0) ? (-1f) : (1f / (float)num3));
+		float num6 = (num3 == 0) ? -1f : (1f / (float)num3);
 		float num7 = 0f;
 		bool flag = false;
-		foreach (int viable_cell in pooledHashSet)
+		using (HashSet<int>.Enumerator enumerator = pooledHashSet.GetEnumerator())
 		{
-			if (num3 <= 0)
+			while (enumerator.MoveNext())
 			{
-				break;
+				int viable_cell = enumerator.Current;
+				if (num3 <= 0)
+				{
+					break;
+				}
+				num7 += num6;
+				bool flag2 = !flag && num6 >= 0f && value <= num7;
+				int callbackIdx = flag2 ? Game.Instance.callbackManager.Add(new Game.CallbackInfo(delegate()
+				{
+					SpaceTreeSeededComet.PlantTreeOnSolidTileCreated(viable_cell, this.addTilesMaxHeight);
+				}, false)).index : -1;
+				SimMessages.AddRemoveSubstance(viable_cell, element.id, CellEventLogger.Instance.ElementEmitted, mass, temperature, this.diseaseIdx, disease_count, true, callbackIdx);
+				num3--;
+				flag = (flag || flag2);
 			}
-			num7 += num6;
-			bool flag2 = !flag && num6 >= 0f && value <= num7;
-			int callbackIdx = (flag2 ? Game.Instance.callbackManager.Add(new Game.CallbackInfo(delegate
-			{
-				PlantTreeOnSolidTileCreated(viable_cell, addTilesMaxHeight);
-			})).index : (-1));
-			SimMessages.AddRemoveSubstance(viable_cell, element.id, CellEventLogger.Instance.ElementEmitted, mass, temperature, diseaseIdx, disease_count, do_vertical_solid_displacement: true, callbackIdx);
-			num3--;
-			flag = flag || flag2;
 		}
 		pooledHashSet.Recycle();
 		pooledHashSet2.Recycle();
 		pooledQueue.Recycle();
 	}
 
+	// Token: 0x060088AC RID: 34988 RVA: 0x00354EF0 File Offset: 0x003530F0
 	private static void PlantTreeOnSolidTileCreated(int cell, int tileMaxHeight)
 	{
 		byte worldIdx = Grid.WorldIdx[cell];
@@ -78,30 +86,36 @@ public class SpaceTreeSeededComet : Comet
 		{
 			return;
 		}
-		do
+		for (;;)
 		{
 			num2 = num3;
 			num3 = Grid.OffsetCell(num2, 0, -1);
 			if (!Grid.IsValidCell(num3))
 			{
-				return;
+				break;
 			}
-			if (Grid.Solid[num3] && CanGrowOnCell(num2, worldIdx))
+			if (Grid.Solid[num3] && SpaceTreeSeededComet.CanGrowOnCell(num2, worldIdx))
 			{
 				flag = true;
 			}
 			num--;
+			if (flag || num <= 0)
+			{
+				goto IL_5F;
+			}
 		}
-		while (!flag && num > 0);
+		return;
+		IL_5F:
 		if (flag)
 		{
 			GameObject prefab = Assets.GetPrefab("SpaceTree");
 			KBatchedAnimController component = prefab.GetComponent<KBatchedAnimController>();
 			Vector3 position = Grid.CellToPosCBC(num2, component.sceneLayer);
-			Util.KInstantiate(prefab, position).SetActive(value: true);
+			Util.KInstantiate(prefab, position).SetActive(true);
 		}
 	}
 
+	// Token: 0x060088AD RID: 34989 RVA: 0x00354F94 File Offset: 0x00353194
 	public static bool CanGrowOnCell(int spawnCell, byte worldIdx)
 	{
 		CellOffset[] occupiedCellsOffsets = Assets.GetPrefab("SpaceTree").GetComponent<OccupyArea>().OccupiedCellsOffsets;
@@ -110,7 +124,11 @@ public class SpaceTreeSeededComet : Comet
 		while (flag && num < occupiedCellsOffsets.Length)
 		{
 			int num2 = Grid.OffsetCell(spawnCell, occupiedCellsOffsets[num]);
-			flag = flag && Grid.IsValidCellInWorld(num2, worldIdx) && (!Grid.IsSolidCell(num2) || Grid.Element[num2].HasTag(GameTags.Unstable)) && Grid.Objects[num2, 1] == null && Grid.Objects[num2, 5] == null && !Grid.Foundation[num2];
+			flag = (flag && Grid.IsValidCellInWorld(num2, (int)worldIdx));
+			flag = (flag && (!Grid.IsSolidCell(num2) || Grid.Element[num2].HasTag(GameTags.Unstable)));
+			flag = (flag && Grid.Objects[num2, 1] == null);
+			flag = (flag && Grid.Objects[num2, 5] == null);
+			flag = (flag && !Grid.Foundation[num2]);
 			num++;
 		}
 		return flag;

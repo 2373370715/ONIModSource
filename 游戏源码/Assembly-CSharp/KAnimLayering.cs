@@ -1,164 +1,189 @@
+﻿using System;
 using UnityEngine;
 
+// Token: 0x0200091B RID: 2331
 public class KAnimLayering
 {
-	private bool isForeground;
-
-	private KAnimControllerBase controller;
-
-	private KAnimControllerBase foregroundController;
-
-	private KAnimLink link;
-
-	private Grid.SceneLayer layer = Grid.SceneLayer.BuildingFront;
-
-	public static readonly KAnimHashedString UI = new KAnimHashedString("ui");
-
+	// Token: 0x060029C7 RID: 10695 RVA: 0x000BB279 File Offset: 0x000B9479
 	public KAnimLayering(KAnimControllerBase controller, Grid.SceneLayer layer)
 	{
 		this.controller = controller;
 		this.layer = layer;
 	}
 
+	// Token: 0x060029C8 RID: 10696 RVA: 0x001D6D3C File Offset: 0x001D4F3C
 	public void SetLayer(Grid.SceneLayer layer)
 	{
 		this.layer = layer;
-		if (foregroundController != null)
+		if (this.foregroundController != null)
 		{
-			TransformExtensions.SetLocalPosition(position: new Vector3(0f, 0f, Grid.GetLayerZ(layer) - controller.gameObject.transform.GetPosition().z - 0.1f), transform: foregroundController.transform);
+			Vector3 position = new Vector3(0f, 0f, Grid.GetLayerZ(layer) - this.controller.gameObject.transform.GetPosition().z - 0.1f);
+			this.foregroundController.transform.SetLocalPosition(position);
 		}
 	}
 
+	// Token: 0x060029C9 RID: 10697 RVA: 0x000BB297 File Offset: 0x000B9497
 	public void SetIsForeground(bool is_foreground)
 	{
-		isForeground = is_foreground;
+		this.isForeground = is_foreground;
 	}
 
+	// Token: 0x060029CA RID: 10698 RVA: 0x000BB2A0 File Offset: 0x000B94A0
 	public bool GetIsForeground()
 	{
-		return isForeground;
+		return this.isForeground;
 	}
 
+	// Token: 0x060029CB RID: 10699 RVA: 0x000BB2A8 File Offset: 0x000B94A8
 	public KAnimLink GetLink()
 	{
-		return link;
+		return this.link;
 	}
 
+	// Token: 0x060029CC RID: 10700 RVA: 0x001D6DA8 File Offset: 0x001D4FA8
 	private static bool IsAnimLayered(KAnimFile[] anims)
 	{
-		foreach (KAnimFile kAnimFile in anims)
+		foreach (KAnimFile kanimFile in anims)
 		{
-			if (kAnimFile == null)
+			if (!(kanimFile == null))
 			{
-				continue;
-			}
-			KAnimFileData data = kAnimFile.GetData();
-			if (data.build == null)
-			{
-				continue;
-			}
-			KAnim.Build.Symbol[] symbols = data.build.symbols;
-			for (int j = 0; j < symbols.Length; j++)
-			{
-				if (((uint)symbols[j].flags & 8u) != 0)
+				KAnimFileData data = kanimFile.GetData();
+				if (data.build != null)
 				{
-					return true;
+					KAnim.Build.Symbol[] symbols = data.build.symbols;
+					for (int j = 0; j < symbols.Length; j++)
+					{
+						if ((symbols[j].flags & 8) != 0)
+						{
+							return true;
+						}
+					}
 				}
 			}
 		}
 		return false;
 	}
 
+	// Token: 0x060029CD RID: 10701 RVA: 0x001D6E10 File Offset: 0x001D5010
 	private void HideSymbolsInternal()
 	{
-		KAnimFile[] animFiles = controller.AnimFiles;
-		foreach (KAnimFile kAnimFile in animFiles)
+		foreach (KAnimFile kanimFile in this.controller.AnimFiles)
 		{
-			if (kAnimFile == null)
+			if (!(kanimFile == null))
 			{
-				continue;
-			}
-			KAnimFileData data = kAnimFile.GetData();
-			if (data.build == null)
-			{
-				continue;
-			}
-			KAnim.Build.Symbol[] symbols = data.build.symbols;
-			for (int j = 0; j < symbols.Length; j++)
-			{
-				if ((symbols[j].flags & 8) != 0 != isForeground && !(symbols[j].hash == UI))
+				KAnimFileData data = kanimFile.GetData();
+				if (data.build != null)
 				{
-					controller.SetSymbolVisiblity(symbols[j].hash, is_visible: false);
+					KAnim.Build.Symbol[] symbols = data.build.symbols;
+					for (int j = 0; j < symbols.Length; j++)
+					{
+						if ((symbols[j].flags & 8) != 0 != this.isForeground && !(symbols[j].hash == KAnimLayering.UI))
+						{
+							this.controller.SetSymbolVisiblity(symbols[j].hash, false);
+						}
+					}
 				}
 			}
 		}
 	}
 
+	// Token: 0x060029CE RID: 10702 RVA: 0x001D6EBC File Offset: 0x001D50BC
 	public void HideSymbols()
 	{
-		if (EntityPrefabs.Instance == null || isForeground)
+		if (EntityPrefabs.Instance == null)
 		{
 			return;
 		}
-		KAnimFile[] animFiles = controller.AnimFiles;
-		bool flag = IsAnimLayered(animFiles);
-		if (flag && layer != Grid.SceneLayer.NoLayer)
+		if (this.isForeground)
 		{
-			bool num = foregroundController == null;
-			if (num)
+			return;
+		}
+		KAnimFile[] animFiles = this.controller.AnimFiles;
+		bool flag = KAnimLayering.IsAnimLayered(animFiles);
+		if (flag && this.layer != Grid.SceneLayer.NoLayer)
+		{
+			bool flag2 = this.foregroundController == null;
+			if (flag2)
 			{
-				GameObject gameObject = Util.KInstantiate(EntityPrefabs.Instance.ForegroundLayer, controller.gameObject);
-				gameObject.name = controller.name + "_fg";
-				foregroundController = gameObject.GetComponent<KAnimControllerBase>();
-				link = new KAnimLink(controller, foregroundController);
+				GameObject gameObject = Util.KInstantiate(EntityPrefabs.Instance.ForegroundLayer, this.controller.gameObject, null);
+				gameObject.name = this.controller.name + "_fg";
+				this.foregroundController = gameObject.GetComponent<KAnimControllerBase>();
+				this.link = new KAnimLink(this.controller, this.foregroundController);
 			}
-			foregroundController.AnimFiles = animFiles;
-			foregroundController.GetLayering().SetIsForeground(is_foreground: true);
-			foregroundController.initialAnim = controller.initialAnim;
-			Dirty();
-			KAnimSynchronizer synchronizer = controller.GetSynchronizer();
-			if (num)
+			this.foregroundController.AnimFiles = animFiles;
+			this.foregroundController.GetLayering().SetIsForeground(true);
+			this.foregroundController.initialAnim = this.controller.initialAnim;
+			this.Dirty();
+			KAnimSynchronizer synchronizer = this.controller.GetSynchronizer();
+			if (flag2)
 			{
-				synchronizer.Add(foregroundController);
+				synchronizer.Add(this.foregroundController);
 			}
 			else
 			{
-				foregroundController.GetComponent<KBatchedAnimController>().SwapAnims(foregroundController.AnimFiles);
+				this.foregroundController.GetComponent<KBatchedAnimController>().SwapAnims(this.foregroundController.AnimFiles);
 			}
-			synchronizer.Sync(foregroundController);
-			TransformExtensions.SetLocalPosition(position: new Vector3(0f, 0f, Grid.GetLayerZ(layer) - controller.gameObject.transform.GetPosition().z - 0.1f), transform: foregroundController.gameObject.transform);
-			foregroundController.gameObject.SetActive(value: true);
+			synchronizer.Sync(this.foregroundController);
+			Vector3 position = new Vector3(0f, 0f, Grid.GetLayerZ(this.layer) - this.controller.gameObject.transform.GetPosition().z - 0.1f);
+			this.foregroundController.gameObject.transform.SetLocalPosition(position);
+			this.foregroundController.gameObject.SetActive(true);
 		}
-		else if (!flag && foregroundController != null)
+		else if (!flag && this.foregroundController != null)
 		{
-			controller.GetSynchronizer().Remove(foregroundController);
-			foregroundController.gameObject.DeleteObject();
-			link = null;
+			this.controller.GetSynchronizer().Remove(this.foregroundController);
+			this.foregroundController.gameObject.DeleteObject();
+			this.link = null;
 		}
-		if (foregroundController != null)
+		if (this.foregroundController != null)
 		{
-			HideSymbolsInternal();
-			foregroundController.GetLayering()?.HideSymbolsInternal();
+			this.HideSymbolsInternal();
+			KAnimLayering layering = this.foregroundController.GetLayering();
+			if (layering != null)
+			{
+				layering.HideSymbolsInternal();
+			}
 		}
 	}
 
+	// Token: 0x060029CF RID: 10703 RVA: 0x000BB2B0 File Offset: 0x000B94B0
 	public void RefreshForegroundBatchGroup()
 	{
-		if (!(foregroundController == null))
+		if (this.foregroundController == null)
 		{
-			foregroundController.GetComponent<KBatchedAnimController>().SwapAnims(foregroundController.AnimFiles);
+			return;
 		}
+		this.foregroundController.GetComponent<KBatchedAnimController>().SwapAnims(this.foregroundController.AnimFiles);
 	}
 
+	// Token: 0x060029D0 RID: 10704 RVA: 0x001D70C0 File Offset: 0x001D52C0
 	public void Dirty()
 	{
-		if (!(foregroundController == null))
+		if (this.foregroundController == null)
 		{
-			foregroundController.Offset = controller.Offset;
-			foregroundController.Pivot = controller.Pivot;
-			foregroundController.Rotation = controller.Rotation;
-			foregroundController.FlipX = controller.FlipX;
-			foregroundController.FlipY = controller.FlipY;
+			return;
 		}
+		this.foregroundController.Offset = this.controller.Offset;
+		this.foregroundController.Pivot = this.controller.Pivot;
+		this.foregroundController.Rotation = this.controller.Rotation;
+		this.foregroundController.FlipX = this.controller.FlipX;
+		this.foregroundController.FlipY = this.controller.FlipY;
 	}
+
+	// Token: 0x04001BD3 RID: 7123
+	private bool isForeground;
+
+	// Token: 0x04001BD4 RID: 7124
+	private KAnimControllerBase controller;
+
+	// Token: 0x04001BD5 RID: 7125
+	private KAnimControllerBase foregroundController;
+
+	// Token: 0x04001BD6 RID: 7126
+	private KAnimLink link;
+
+	// Token: 0x04001BD7 RID: 7127
+	private Grid.SceneLayer layer = Grid.SceneLayer.BuildingFront;
+
+	// Token: 0x04001BD8 RID: 7128
+	public static readonly KAnimHashedString UI = new KAnimHashedString("ui");
 }

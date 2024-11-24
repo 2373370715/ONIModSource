@@ -1,34 +1,24 @@
+﻿using System;
 using UnityEngine;
 
+// Token: 0x02000813 RID: 2067
 public class WorkableReactable : Reactable
 {
-	public enum AllowedDirection
-	{
-		Any,
-		Left,
-		Right
-	}
-
-	protected Workable workable;
-
-	private Worker worker;
-
-	public AllowedDirection allowedDirection;
-
-	public WorkableReactable(Workable workable, HashedString id, ChoreType chore_type, AllowedDirection allowed_direction = AllowedDirection.Any)
-		: base(workable.gameObject, id, chore_type, 1, 1)
+	// Token: 0x06002509 RID: 9481 RVA: 0x001CB620 File Offset: 0x001C9820
+	public WorkableReactable(Workable workable, HashedString id, ChoreType chore_type, WorkableReactable.AllowedDirection allowed_direction = WorkableReactable.AllowedDirection.Any) : base(workable.gameObject, id, chore_type, 1, 1, false, 0f, 0f, float.PositiveInfinity, 0f, ObjectLayer.NumLayers)
 	{
 		this.workable = workable;
-		allowedDirection = allowed_direction;
+		this.allowedDirection = allowed_direction;
 	}
 
+	// Token: 0x0600250A RID: 9482 RVA: 0x001CB664 File Offset: 0x001C9864
 	public override bool InternalCanBegin(GameObject new_reactor, Navigator.ActiveTransition transition)
 	{
-		if (workable == null)
+		if (this.workable == null)
 		{
 			return false;
 		}
-		if (reactor != null)
+		if (this.reactor != null)
 		{
 			return false;
 		}
@@ -50,7 +40,7 @@ public class WorkableReactable : Reactable
 		{
 			return false;
 		}
-		if (allowedDirection == AllowedDirection.Any)
+		if (this.allowedDirection == WorkableReactable.AllowedDirection.Any)
 		{
 			return true;
 		}
@@ -60,44 +50,61 @@ public class WorkableReactable : Reactable
 			return false;
 		}
 		bool facing = component3.GetFacing();
-		if (facing && allowedDirection == AllowedDirection.Right)
-		{
-			return false;
-		}
-		if (!facing && allowedDirection == AllowedDirection.Left)
-		{
-			return false;
-		}
-		return true;
+		return (!facing || this.allowedDirection != WorkableReactable.AllowedDirection.Right) && (facing || this.allowedDirection != WorkableReactable.AllowedDirection.Left);
 	}
 
+	// Token: 0x0600250B RID: 9483 RVA: 0x000B8220 File Offset: 0x000B6420
 	protected override void InternalBegin()
 	{
-		worker = reactor.GetComponent<Worker>();
-		worker.StartWork(new Worker.StartWorkInfo(workable));
+		this.worker = this.reactor.GetComponent<WorkerBase>();
+		this.worker.StartWork(new WorkerBase.StartWorkInfo(this.workable));
 	}
 
+	// Token: 0x0600250C RID: 9484 RVA: 0x000B8249 File Offset: 0x000B6449
 	public override void Update(float dt)
 	{
-		if (worker.workable == null)
+		if (this.worker.GetWorkable() == null)
 		{
-			End();
+			base.End();
+			return;
 		}
-		else if (worker.Work(dt) != Worker.WorkResult.InProgress)
+		if (this.worker.Work(dt) != WorkerBase.WorkResult.InProgress)
 		{
-			End();
+			base.End();
 		}
 	}
 
+	// Token: 0x0600250D RID: 9485 RVA: 0x000B827A File Offset: 0x000B647A
 	protected override void InternalEnd()
 	{
-		if (worker != null)
+		if (this.worker != null)
 		{
-			worker.StopWork();
+			this.worker.StopWork();
 		}
 	}
 
+	// Token: 0x0600250E RID: 9486 RVA: 0x000A5E40 File Offset: 0x000A4040
 	protected override void InternalCleanup()
 	{
+	}
+
+	// Token: 0x0400190E RID: 6414
+	protected Workable workable;
+
+	// Token: 0x0400190F RID: 6415
+	private WorkerBase worker;
+
+	// Token: 0x04001910 RID: 6416
+	public WorkableReactable.AllowedDirection allowedDirection;
+
+	// Token: 0x02000814 RID: 2068
+	public enum AllowedDirection
+	{
+		// Token: 0x04001912 RID: 6418
+		Any,
+		// Token: 0x04001913 RID: 6419
+		Left,
+		// Token: 0x04001914 RID: 6420
+		Right
 	}
 }

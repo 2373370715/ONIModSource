@@ -1,50 +1,21 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using STRINGS;
 using UnityEngine;
 using UnityEngine.UI;
 
+// Token: 0x02001F89 RID: 8073
 public class MinionTodoSideScreen : SideScreenContent
 {
-	private bool useOffscreenIndicators;
-
-	public MinionTodoChoreEntry taskEntryPrefab;
-
-	public GameObject priorityGroupPrefab;
-
-	public GameObject taskEntryContainer;
-
-	public MinionTodoChoreEntry currentTask;
-
-	public LocText currentScheduleBlockLabel;
-
-	private List<Tuple<PriorityScreen.PriorityClass, int, HierarchyReferences>> priorityGroups = new List<Tuple<PriorityScreen.PriorityClass, int, HierarchyReferences>>();
-
-	private List<MinionTodoChoreEntry> choreEntries = new List<MinionTodoChoreEntry>();
-
-	private List<GameObject> choreTargets = new List<GameObject>();
-
-	private SchedulerHandle refreshHandle;
-
-	private ChoreConsumer choreConsumer;
-
-	[SerializeField]
-	private ColorStyleSetting buttonColorSettingCurrent;
-
-	[SerializeField]
-	private ColorStyleSetting buttonColorSettingStandard;
-
-	private static List<JobsTableScreen.PriorityInfo> _priorityInfo;
-
-	private int activeChoreEntries;
-
+	// Token: 0x17000AD5 RID: 2773
+	// (get) Token: 0x0600AA60 RID: 43616 RVA: 0x00405650 File Offset: 0x00403850
 	public static List<JobsTableScreen.PriorityInfo> priorityInfo
 	{
 		get
 		{
-			if (_priorityInfo == null)
+			if (MinionTodoSideScreen._priorityInfo == null)
 			{
-				_priorityInfo = new List<JobsTableScreen.PriorityInfo>
+				MinionTodoSideScreen._priorityInfo = new List<JobsTableScreen.PriorityInfo>
 				{
 					new JobsTableScreen.PriorityInfo(4, Assets.GetSprite("ic_dupe"), UI.JOBSSCREEN.PRIORITY_CLASS.COMPULSORY),
 					new JobsTableScreen.PriorityInfo(3, Assets.GetSprite("notification_exclamation"), UI.JOBSSCREEN.PRIORITY_CLASS.EMERGENCY),
@@ -54,107 +25,108 @@ public class MinionTodoSideScreen : SideScreenContent
 					new JobsTableScreen.PriorityInfo(-1, Assets.GetSprite("icon_gear"), UI.JOBSSCREEN.PRIORITY_CLASS.IDLE)
 				};
 			}
-			return _priorityInfo;
+			return MinionTodoSideScreen._priorityInfo;
 		}
 	}
 
+	// Token: 0x0600AA61 RID: 43617 RVA: 0x00405728 File Offset: 0x00403928
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		if (priorityGroups.Count != 0)
+		if (this.priorityGroups.Count != 0)
 		{
 			return;
 		}
-		foreach (JobsTableScreen.PriorityInfo item in MinionTodoSideScreen.priorityInfo)
+		foreach (JobsTableScreen.PriorityInfo priorityInfo in MinionTodoSideScreen.priorityInfo)
 		{
-			PriorityScreen.PriorityClass priority = (PriorityScreen.PriorityClass)item.priority;
+			PriorityScreen.PriorityClass priority = (PriorityScreen.PriorityClass)priorityInfo.priority;
 			if (priority == PriorityScreen.PriorityClass.basic)
 			{
-				for (int num = 5; num >= 0; num--)
+				for (int i = 5; i >= 0; i--)
 				{
-					Tuple<PriorityScreen.PriorityClass, int, HierarchyReferences> tuple = new Tuple<PriorityScreen.PriorityClass, int, HierarchyReferences>(priority, num, Util.KInstantiateUI<HierarchyReferences>(priorityGroupPrefab, taskEntryContainer));
-					tuple.third.name = string.Concat("PriorityGroup_", item.name, "_", num.ToString());
-					tuple.third.gameObject.SetActive(value: true);
-					JobsTableScreen.PriorityInfo priorityInfo = JobsTableScreen.priorityInfo[num];
-					tuple.third.GetReference<LocText>("Title").text = priorityInfo.name.text.ToUpper();
-					tuple.third.GetReference<Image>("PriorityIcon").sprite = priorityInfo.sprite;
-					priorityGroups.Add(tuple);
+					global::Tuple<PriorityScreen.PriorityClass, int, HierarchyReferences> tuple = new global::Tuple<PriorityScreen.PriorityClass, int, HierarchyReferences>(priority, i, Util.KInstantiateUI<HierarchyReferences>(this.priorityGroupPrefab, this.taskEntryContainer, false));
+					tuple.third.name = "PriorityGroup_" + priorityInfo.name + "_" + i.ToString();
+					tuple.third.gameObject.SetActive(true);
+					JobsTableScreen.PriorityInfo priorityInfo2 = JobsTableScreen.priorityInfo[i];
+					tuple.third.GetReference<LocText>("Title").text = priorityInfo2.name.text.ToUpper();
+					tuple.third.GetReference<Image>("PriorityIcon").sprite = priorityInfo2.sprite;
+					this.priorityGroups.Add(tuple);
 				}
 			}
 			else
 			{
-				Tuple<PriorityScreen.PriorityClass, int, HierarchyReferences> tuple2 = new Tuple<PriorityScreen.PriorityClass, int, HierarchyReferences>(priority, 3, Util.KInstantiateUI<HierarchyReferences>(priorityGroupPrefab, taskEntryContainer));
-				tuple2.third.name = "PriorityGroup_" + item.name;
-				tuple2.third.gameObject.SetActive(value: true);
-				tuple2.third.GetReference<LocText>("Title").text = item.name.text.ToUpper();
-				tuple2.third.GetReference<Image>("PriorityIcon").sprite = item.sprite;
-				priorityGroups.Add(tuple2);
+				global::Tuple<PriorityScreen.PriorityClass, int, HierarchyReferences> tuple2 = new global::Tuple<PriorityScreen.PriorityClass, int, HierarchyReferences>(priority, 3, Util.KInstantiateUI<HierarchyReferences>(this.priorityGroupPrefab, this.taskEntryContainer, false));
+				tuple2.third.name = "PriorityGroup_" + priorityInfo.name;
+				tuple2.third.gameObject.SetActive(true);
+				tuple2.third.GetReference<LocText>("Title").text = priorityInfo.name.text.ToUpper();
+				tuple2.third.GetReference<Image>("PriorityIcon").sprite = priorityInfo.sprite;
+				this.priorityGroups.Add(tuple2);
 			}
 		}
 	}
 
+	// Token: 0x0600AA62 RID: 43618 RVA: 0x0010EB50 File Offset: 0x0010CD50
 	public override bool IsValidForTarget(GameObject target)
 	{
-		if (target.GetComponent<MinionIdentity>() != null)
-		{
-			return !target.HasTag(GameTags.Dead);
-		}
-		return false;
+		return target.GetComponent<MinionIdentity>() != null && !target.HasTag(GameTags.Dead);
 	}
 
+	// Token: 0x0600AA63 RID: 43619 RVA: 0x0010EB70 File Offset: 0x0010CD70
 	public override void ClearTarget()
 	{
 		base.ClearTarget();
-		refreshHandle.ClearScheduler();
+		this.refreshHandle.ClearScheduler();
 	}
 
+	// Token: 0x0600AA64 RID: 43620 RVA: 0x0010EB83 File Offset: 0x0010CD83
 	public override void SetTarget(GameObject target)
 	{
-		refreshHandle.ClearScheduler();
-		if (priorityGroups.Count == 0)
+		this.refreshHandle.ClearScheduler();
+		if (this.priorityGroups.Count == 0)
 		{
-			OnPrefabInit();
+			this.OnPrefabInit();
 		}
 		base.SetTarget(target);
 	}
 
+	// Token: 0x0600AA65 RID: 43621 RVA: 0x0010EBAA File Offset: 0x0010CDAA
 	public override void ScreenUpdate(bool topLevel)
 	{
 		base.ScreenUpdate(topLevel);
-		PopulateElements();
+		this.PopulateElements(null);
 	}
 
+	// Token: 0x0600AA66 RID: 43622 RVA: 0x00405914 File Offset: 0x00403B14
 	protected override void OnShow(bool show)
 	{
 		base.OnShow(show);
-		refreshHandle.ClearScheduler();
+		this.refreshHandle.ClearScheduler();
 		if (!show)
 		{
-			if (!useOffscreenIndicators)
+			if (this.useOffscreenIndicators)
 			{
-				return;
-			}
-			{
-				foreach (GameObject choreTarget in choreTargets)
+				foreach (GameObject target in this.choreTargets)
 				{
-					OffscreenIndicator.Instance.DeactivateIndicator(choreTarget);
+					OffscreenIndicator.Instance.DeactivateIndicator(target);
 				}
-				return;
 			}
+			return;
 		}
-		if (!(DetailsScreen.Instance.target == null))
+		if (DetailsScreen.Instance.target == null)
 		{
-			choreConsumer = DetailsScreen.Instance.target.GetComponent<ChoreConsumer>();
-			PopulateElements();
+			return;
 		}
+		this.choreConsumer = DetailsScreen.Instance.target.GetComponent<ChoreConsumer>();
+		this.PopulateElements(null);
 	}
 
+	// Token: 0x0600AA67 RID: 43623 RVA: 0x004059B8 File Offset: 0x00403BB8
 	private void PopulateElements(object data = null)
 	{
-		refreshHandle.ClearScheduler();
-		refreshHandle = UIScheduler.Instance.Schedule("RefreshToDoList", 0.1f, PopulateElements);
+		this.refreshHandle.ClearScheduler();
+		this.refreshHandle = UIScheduler.Instance.Schedule("RefreshToDoList", 0.1f, new Action<object>(this.PopulateElements), null, null);
 		ListPool<Chore.Precondition.Context, BuildingChoresPanel>.PooledList pooledList = ListPool<Chore.Precondition.Context, BuildingChoresPanel>.Allocate();
-		ChoreConsumer.PreconditionSnapshot lastPreconditionSnapshot = choreConsumer.GetLastPreconditionSnapshot();
+		ChoreConsumer.PreconditionSnapshot lastPreconditionSnapshot = this.choreConsumer.GetLastPreconditionSnapshot();
 		if (lastPreconditionSnapshot.doFailedContextsNeedSorting)
 		{
 			lastPreconditionSnapshot.failedContexts.Sort();
@@ -170,42 +142,42 @@ public class MinionTodoSideScreen : SideScreenContent
 		Schedule schedule = component.GetSchedule();
 		if (schedule != null)
 		{
-			arg = schedule.GetBlock(Schedule.GetBlockIdx()).name;
+			arg = schedule.GetCurrentScheduleBlock().name;
 		}
-		currentScheduleBlockLabel.SetText(string.Format(UI.UISIDESCREENS.MINIONTODOSIDESCREEN.CURRENT_SCHEDULE_BLOCK, arg));
-		choreTargets.Clear();
+		this.currentScheduleBlockLabel.SetText(string.Format(UI.UISIDESCREENS.MINIONTODOSIDESCREEN.CURRENT_SCHEDULE_BLOCK, arg));
+		this.choreTargets.Clear();
 		bool flag = false;
-		activeChoreEntries = 0;
-		for (int num2 = pooledList.Count - 1; num2 >= 0; num2--)
+		this.activeChoreEntries = 0;
+		for (int i = pooledList.Count - 1; i >= 0; i--)
 		{
-			if (pooledList[num2].chore != null && !pooledList[num2].chore.target.isNull && !(pooledList[num2].chore.target.gameObject == null) && pooledList[num2].IsPotentialSuccess())
+			if (pooledList[i].chore != null && !pooledList[i].chore.target.isNull && !(pooledList[i].chore.target.gameObject == null) && pooledList[i].IsPotentialSuccess())
 			{
-				if (pooledList[num2].chore.driver == choreConsumer.choreDriver)
+				if (pooledList[i].chore.driver == this.choreConsumer.choreDriver)
 				{
-					currentTask.Apply(pooledList[num2]);
-					minionTodoChoreEntry = currentTask;
-					choreB = pooledList[num2];
+					this.currentTask.Apply(pooledList[i]);
+					minionTodoChoreEntry = this.currentTask;
+					choreB = pooledList[i];
 					num = 0;
 					flag = true;
 				}
-				else if (!flag && activeChoreEntries != 0 && GameUtil.AreChoresUIMergeable(pooledList[num2], choreB))
+				else if (!flag && this.activeChoreEntries != 0 && GameUtil.AreChoresUIMergeable(pooledList[i], choreB))
 				{
 					num++;
 					minionTodoChoreEntry.SetMoreAmount(num);
 				}
 				else
 				{
-					HierarchyReferences hierarchyReferences = PriorityGroupForPriority(choreConsumer, pooledList[num2].chore);
+					HierarchyReferences hierarchyReferences = this.PriorityGroupForPriority(this.choreConsumer, pooledList[i].chore);
 					if (hierarchyReferences == null)
 					{
-						DebugUtil.DevLogError($"Priority group was null for {pooledList[num2].chore.GetReportName()} with priority class {pooledList[num2].chore.masterPriority.priority_class} and personaly priority {choreConsumer.GetPersonalPriority(pooledList[num2].chore.choreType)}");
+						DebugUtil.DevLogError(string.Format("Priority group was null for {0} with priority class {1} and personaly priority {2}", pooledList[i].chore.GetReportName(null), pooledList[i].chore.masterPriority.priority_class, this.choreConsumer.GetPersonalPriority(pooledList[i].chore.choreType)));
 					}
 					else
 					{
-						MinionTodoChoreEntry choreEntry = GetChoreEntry(hierarchyReferences.GetReference<RectTransform>("EntriesContainer"));
-						choreEntry.Apply(pooledList[num2]);
+						MinionTodoChoreEntry choreEntry = this.GetChoreEntry(hierarchyReferences.GetReference<RectTransform>("EntriesContainer"));
+						choreEntry.Apply(pooledList[i]);
 						minionTodoChoreEntry = choreEntry;
-						choreB = pooledList[num2];
+						choreB = pooledList[i];
 						num = 0;
 						flag = false;
 					}
@@ -213,57 +185,107 @@ public class MinionTodoSideScreen : SideScreenContent
 			}
 		}
 		pooledList.Recycle();
-		for (int num3 = choreEntries.Count - 1; num3 >= activeChoreEntries; num3--)
+		for (int j = this.choreEntries.Count - 1; j >= this.activeChoreEntries; j--)
 		{
-			choreEntries[num3].gameObject.SetActive(value: false);
+			this.choreEntries[j].gameObject.SetActive(false);
 		}
-		foreach (Tuple<PriorityScreen.PriorityClass, int, HierarchyReferences> priorityGroup in priorityGroups)
+		foreach (global::Tuple<PriorityScreen.PriorityClass, int, HierarchyReferences> tuple in this.priorityGroups)
 		{
-			RectTransform reference = priorityGroup.third.GetReference<RectTransform>("EntriesContainer");
-			priorityGroup.third.gameObject.SetActive(reference.childCount > 0);
+			RectTransform reference = tuple.third.GetReference<RectTransform>("EntriesContainer");
+			tuple.third.gameObject.SetActive(reference.childCount > 0);
 		}
 	}
 
+	// Token: 0x0600AA68 RID: 43624 RVA: 0x00405D10 File Offset: 0x00403F10
 	private MinionTodoChoreEntry GetChoreEntry(RectTransform parent)
 	{
 		MinionTodoChoreEntry minionTodoChoreEntry;
-		if (activeChoreEntries >= choreEntries.Count - 1)
+		if (this.activeChoreEntries >= this.choreEntries.Count - 1)
 		{
-			minionTodoChoreEntry = Util.KInstantiateUI<MinionTodoChoreEntry>(taskEntryPrefab.gameObject, parent.gameObject);
-			choreEntries.Add(minionTodoChoreEntry);
+			minionTodoChoreEntry = Util.KInstantiateUI<MinionTodoChoreEntry>(this.taskEntryPrefab.gameObject, parent.gameObject, false);
+			this.choreEntries.Add(minionTodoChoreEntry);
 		}
 		else
 		{
-			minionTodoChoreEntry = choreEntries[activeChoreEntries];
+			minionTodoChoreEntry = this.choreEntries[this.activeChoreEntries];
 			minionTodoChoreEntry.transform.SetParent(parent);
 			minionTodoChoreEntry.transform.SetAsLastSibling();
 		}
-		activeChoreEntries++;
-		minionTodoChoreEntry.gameObject.SetActive(value: true);
+		this.activeChoreEntries++;
+		minionTodoChoreEntry.gameObject.SetActive(true);
 		return minionTodoChoreEntry;
 	}
 
+	// Token: 0x0600AA69 RID: 43625 RVA: 0x00405D9C File Offset: 0x00403F9C
 	private HierarchyReferences PriorityGroupForPriority(ChoreConsumer choreConsumer, Chore chore)
 	{
-		foreach (Tuple<PriorityScreen.PriorityClass, int, HierarchyReferences> priorityGroup in priorityGroups)
+		foreach (global::Tuple<PriorityScreen.PriorityClass, int, HierarchyReferences> tuple in this.priorityGroups)
 		{
-			if (priorityGroup.first == chore.masterPriority.priority_class)
+			if (tuple.first == chore.masterPriority.priority_class)
 			{
-				if (chore.masterPriority.priority_class != 0)
+				if (chore.masterPriority.priority_class != PriorityScreen.PriorityClass.basic)
 				{
-					return priorityGroup.third;
+					return tuple.third;
 				}
-				if (priorityGroup.second == choreConsumer.GetPersonalPriority(chore.choreType))
+				if (tuple.second == choreConsumer.GetPersonalPriority(chore.choreType))
 				{
-					return priorityGroup.third;
+					return tuple.third;
 				}
 			}
 		}
 		return null;
 	}
 
+	// Token: 0x0600AA6A RID: 43626 RVA: 0x000ABCB6 File Offset: 0x000A9EB6
 	private void Button_onPointerEnter()
 	{
 		throw new NotImplementedException();
 	}
+
+	// Token: 0x040085F7 RID: 34295
+	private bool useOffscreenIndicators;
+
+	// Token: 0x040085F8 RID: 34296
+	public MinionTodoChoreEntry taskEntryPrefab;
+
+	// Token: 0x040085F9 RID: 34297
+	public GameObject priorityGroupPrefab;
+
+	// Token: 0x040085FA RID: 34298
+	public GameObject taskEntryContainer;
+
+	// Token: 0x040085FB RID: 34299
+	public MinionTodoChoreEntry currentTask;
+
+	// Token: 0x040085FC RID: 34300
+	public LocText currentScheduleBlockLabel;
+
+	// Token: 0x040085FD RID: 34301
+	private List<global::Tuple<PriorityScreen.PriorityClass, int, HierarchyReferences>> priorityGroups = new List<global::Tuple<PriorityScreen.PriorityClass, int, HierarchyReferences>>();
+
+	// Token: 0x040085FE RID: 34302
+	private List<MinionTodoChoreEntry> choreEntries = new List<MinionTodoChoreEntry>();
+
+	// Token: 0x040085FF RID: 34303
+	private List<GameObject> choreTargets = new List<GameObject>();
+
+	// Token: 0x04008600 RID: 34304
+	private SchedulerHandle refreshHandle;
+
+	// Token: 0x04008601 RID: 34305
+	private ChoreConsumer choreConsumer;
+
+	// Token: 0x04008602 RID: 34306
+	[SerializeField]
+	private ColorStyleSetting buttonColorSettingCurrent;
+
+	// Token: 0x04008603 RID: 34307
+	[SerializeField]
+	private ColorStyleSetting buttonColorSettingStandard;
+
+	// Token: 0x04008604 RID: 34308
+	private static List<JobsTableScreen.PriorityInfo> _priorityInfo;
+
+	// Token: 0x04008605 RID: 34309
+	private int activeChoreEntries;
 }

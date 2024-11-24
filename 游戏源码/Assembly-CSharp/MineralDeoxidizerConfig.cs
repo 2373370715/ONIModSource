@@ -1,51 +1,56 @@
+﻿using System;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x02000425 RID: 1061
 public class MineralDeoxidizerConfig : IBuildingConfig
 {
-	public const string ID = "MineralDeoxidizer";
-
-	private const float ALGAE_BURN_RATE = 0.55f;
-
-	private const float ALGAE_STORAGE = 330f;
-
-	private const float OXYGEN_GENERATION_RATE = 0.5f;
-
-	private const float OXYGEN_TEMPERATURE = 303.15f;
-
+	// Token: 0x06001200 RID: 4608 RVA: 0x001872A8 File Offset: 0x001854A8
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef("MineralDeoxidizer", 1, 2, "mineraldeoxidizer_kanim", 30, 30f, BUILDINGS.CONSTRUCTION_MASS_KG.TIER3, MATERIALS.ALL_METALS, 800f, BuildLocationRule.OnFloor, noise: NOISE_POLLUTION.NOISY.TIER3, decor: BUILDINGS.DECOR.PENALTY.TIER1);
-		obj.RequiresPowerInput = true;
-		obj.EnergyConsumptionWhenActive = 120f;
-		obj.ExhaustKilowattsWhenActive = 0.5f;
-		obj.SelfHeatKilowattsWhenActive = 1f;
-		obj.LogicInputPorts = LogicOperationalController.CreateSingleInputPortList(new CellOffset(0, 1));
-		obj.ViewMode = OverlayModes.Oxygen.ID;
-		obj.AudioCategory = "HollowMetal";
-		obj.Breakable = true;
-		return obj;
+		string id = "MineralDeoxidizer";
+		int width = 1;
+		int height = 2;
+		string anim = "mineraldeoxidizer_kanim";
+		int hitpoints = 30;
+		float construction_time = 30f;
+		float[] tier = BUILDINGS.CONSTRUCTION_MASS_KG.TIER3;
+		string[] all_METALS = MATERIALS.ALL_METALS;
+		float melting_point = 800f;
+		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
+		EffectorValues tier2 = NOISE_POLLUTION.NOISY.TIER3;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, all_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.PENALTY.TIER1, tier2, 0.2f);
+		buildingDef.RequiresPowerInput = true;
+		buildingDef.EnergyConsumptionWhenActive = 120f;
+		buildingDef.ExhaustKilowattsWhenActive = 0.5f;
+		buildingDef.SelfHeatKilowattsWhenActive = 1f;
+		buildingDef.LogicInputPorts = LogicOperationalController.CreateSingleInputPortList(new CellOffset(0, 1));
+		buildingDef.ViewMode = OverlayModes.Oxygen.ID;
+		buildingDef.AudioCategory = "HollowMetal";
+		buildingDef.Breakable = true;
+		return buildingDef;
 	}
 
+	// Token: 0x06001201 RID: 4609 RVA: 0x00187348 File Offset: 0x00185548
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
-		CellOffset emissionOffset = new CellOffset(0, 1);
+		CellOffset cellOffset = new CellOffset(0, 1);
 		Prioritizable.AddRef(go);
 		Electrolyzer electrolyzer = go.AddOrGet<Electrolyzer>();
 		electrolyzer.maxMass = 1.8f;
 		electrolyzer.hasMeter = false;
-		electrolyzer.emissionOffset = emissionOffset;
+		electrolyzer.emissionOffset = cellOffset;
 		Storage storage = go.AddOrGet<Storage>();
 		storage.capacityKg = 330f;
 		storage.showInUI = true;
 		ElementConverter elementConverter = go.AddOrGet<ElementConverter>();
-		elementConverter.consumedElements = new ElementConverter.ConsumedElement[1]
+		elementConverter.consumedElements = new ElementConverter.ConsumedElement[]
 		{
-			new ElementConverter.ConsumedElement(new Tag("Algae"), 0.55f)
+			new ElementConverter.ConsumedElement(new Tag("Algae"), 0.55f, true)
 		};
-		elementConverter.outputElements = new ElementConverter.OutputElement[1]
+		elementConverter.outputElements = new ElementConverter.OutputElement[]
 		{
-			new ElementConverter.OutputElement(0.5f, SimHashes.Oxygen, 303.15f, useEntityTemperature: false, storeOutput: false, emissionOffset.x, emissionOffset.y)
+			new ElementConverter.OutputElement(0.5f, SimHashes.Oxygen, 303.15f, false, false, (float)cellOffset.x, (float)cellOffset.y, 1f, byte.MaxValue, 0, true)
 		};
 		ManualDeliveryKG manualDeliveryKG = go.AddOrGet<ManualDeliveryKG>();
 		manualDeliveryKG.SetStorage(storage);
@@ -55,9 +60,25 @@ public class MineralDeoxidizerConfig : IBuildingConfig
 		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.FetchCritical.IdHash;
 	}
 
+	// Token: 0x06001202 RID: 4610 RVA: 0x000A5FB5 File Offset: 0x000A41B5
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicOperationalController>();
 		go.AddOrGetDef<PoweredActiveController.Def>();
 	}
+
+	// Token: 0x04000C4E RID: 3150
+	public const string ID = "MineralDeoxidizer";
+
+	// Token: 0x04000C4F RID: 3151
+	private const float ALGAE_BURN_RATE = 0.55f;
+
+	// Token: 0x04000C50 RID: 3152
+	private const float ALGAE_STORAGE = 330f;
+
+	// Token: 0x04000C51 RID: 3153
+	private const float OXYGEN_GENERATION_RATE = 0.5f;
+
+	// Token: 0x04000C52 RID: 3154
+	private const float OXYGEN_TEMPERATURE = 303.15f;
 }

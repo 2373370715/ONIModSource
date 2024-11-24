@@ -1,33 +1,52 @@
+﻿using System;
 using System.Collections.Generic;
 using STRINGS;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x020003EB RID: 1003
 public class LogicPowerRelayConfig : IBuildingConfig
 {
-	public static string ID = "LogicPowerRelay";
-
+	// Token: 0x060010CF RID: 4303 RVA: 0x00181AC0 File Offset: 0x0017FCC0
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef(ID, 1, 1, "switchpowershutoff_kanim", 10, 30f, TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER2, MATERIALS.ALL_METALS, 1600f, BuildLocationRule.Anywhere, noise: NOISE_POLLUTION.NONE, decor: TUNING.BUILDINGS.DECOR.NONE);
-		obj.Overheatable = false;
-		obj.Floodable = false;
-		obj.Entombable = false;
-		obj.ViewMode = OverlayModes.Power.ID;
-		obj.AudioCategory = "Metal";
-		obj.SceneLayer = Grid.SceneLayer.Building;
-		obj.LogicInputPorts = new List<LogicPorts.Port> { LogicPorts.Port.InputPort(LogicOperationalController.PORT_ID, new CellOffset(0, 0), STRINGS.BUILDINGS.PREFABS.LOGICPOWERRELAY.LOGIC_PORT, STRINGS.BUILDINGS.PREFABS.LOGICPOWERRELAY.LOGIC_PORT_ACTIVE, STRINGS.BUILDINGS.PREFABS.LOGICPOWERRELAY.LOGIC_PORT_INACTIVE, show_wire_missing_icon: true) };
+		string id = LogicPowerRelayConfig.ID;
+		int width = 1;
+		int height = 1;
+		string anim = "switchpowershutoff_kanim";
+		int hitpoints = 10;
+		float construction_time = 30f;
+		float[] tier = TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER2;
+		string[] all_METALS = MATERIALS.ALL_METALS;
+		float melting_point = 1600f;
+		BuildLocationRule build_location_rule = BuildLocationRule.Anywhere;
+		EffectorValues none = NOISE_POLLUTION.NONE;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, all_METALS, melting_point, build_location_rule, TUNING.BUILDINGS.DECOR.NONE, none, 0.2f);
+		buildingDef.Overheatable = false;
+		buildingDef.Floodable = false;
+		buildingDef.Entombable = false;
+		buildingDef.ViewMode = OverlayModes.Power.ID;
+		buildingDef.AudioCategory = "Metal";
+		buildingDef.SceneLayer = Grid.SceneLayer.Building;
+		buildingDef.LogicInputPorts = new List<LogicPorts.Port>
+		{
+			LogicPorts.Port.InputPort(LogicOperationalController.PORT_ID, new CellOffset(0, 0), STRINGS.BUILDINGS.PREFABS.LOGICPOWERRELAY.LOGIC_PORT, STRINGS.BUILDINGS.PREFABS.LOGICPOWERRELAY.LOGIC_PORT_ACTIVE, STRINGS.BUILDINGS.PREFABS.LOGICPOWERRELAY.LOGIC_PORT_INACTIVE, true, false)
+		};
 		SoundEventVolumeCache.instance.AddVolume("switchpower_kanim", "PowerSwitch_on", NOISE_POLLUTION.NOISY.TIER3);
 		SoundEventVolumeCache.instance.AddVolume("switchpower_kanim", "PowerSwitch_off", NOISE_POLLUTION.NOISY.TIER3);
-		GeneratedBuildings.RegisterWithOverlay(OverlayModes.Logic.HighlightItemIDs, ID);
-		return obj;
+		GeneratedBuildings.RegisterWithOverlay(OverlayModes.Logic.HighlightItemIDs, LogicPowerRelayConfig.ID);
+		return buildingDef;
 	}
 
+	// Token: 0x060010D0 RID: 4304 RVA: 0x000AD710 File Offset: 0x000AB910
 	public override void DoPostConfigureComplete(GameObject go)
 	{
-		Object.DestroyImmediate(go.GetComponent<BuildingEnabledButton>());
+		UnityEngine.Object.DestroyImmediate(go.GetComponent<BuildingEnabledButton>());
 		go.AddOrGet<LogicOperationalController>();
 		go.AddOrGet<OperationalControlledSwitch>().objectLayer = ObjectLayer.Wire;
-		go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayInFrontOfConduits);
+		go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayInFrontOfConduits, false);
 	}
+
+	// Token: 0x04000B8E RID: 2958
+	public static string ID = "LogicPowerRelay";
 }

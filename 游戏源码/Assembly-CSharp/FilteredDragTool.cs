@@ -1,40 +1,27 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Token: 0x0200142F RID: 5167
 public class FilteredDragTool : DragTool
 {
-	private Dictionary<string, ToolParameterMenu.ToggleState> filterTargets = new Dictionary<string, ToolParameterMenu.ToggleState>();
-
-	private Dictionary<string, ToolParameterMenu.ToggleState> overlayFilterTargets = new Dictionary<string, ToolParameterMenu.ToggleState>();
-
-	private Dictionary<string, ToolParameterMenu.ToggleState> currentFilterTargets;
-
-	private bool active;
-
+	// Token: 0x06006AD3 RID: 27347 RVA: 0x000E6203 File Offset: 0x000E4403
 	public bool IsActiveLayer(string layer)
 	{
-		if (currentFilterTargets[ToolParameterMenu.FILTERLAYERS.ALL] != 0)
-		{
-			if (currentFilterTargets.ContainsKey(layer.ToUpper()))
-			{
-				return currentFilterTargets[layer.ToUpper()] == ToolParameterMenu.ToggleState.On;
-			}
-			return false;
-		}
-		return true;
+		return this.currentFilterTargets[ToolParameterMenu.FILTERLAYERS.ALL] == ToolParameterMenu.ToggleState.On || (this.currentFilterTargets.ContainsKey(layer.ToUpper()) && this.currentFilterTargets[layer.ToUpper()] == ToolParameterMenu.ToggleState.On);
 	}
 
+	// Token: 0x06006AD4 RID: 27348 RVA: 0x002E0650 File Offset: 0x002DE850
 	public bool IsActiveLayer(ObjectLayer layer)
 	{
-		if (currentFilterTargets.ContainsKey(ToolParameterMenu.FILTERLAYERS.ALL) && currentFilterTargets[ToolParameterMenu.FILTERLAYERS.ALL] == ToolParameterMenu.ToggleState.On)
+		if (this.currentFilterTargets.ContainsKey(ToolParameterMenu.FILTERLAYERS.ALL) && this.currentFilterTargets[ToolParameterMenu.FILTERLAYERS.ALL] == ToolParameterMenu.ToggleState.On)
 		{
 			return true;
 		}
 		bool result = false;
-		foreach (KeyValuePair<string, ToolParameterMenu.ToggleState> currentFilterTarget in currentFilterTargets)
+		foreach (KeyValuePair<string, ToolParameterMenu.ToggleState> keyValuePair in this.currentFilterTargets)
 		{
-			if (currentFilterTarget.Value == ToolParameterMenu.ToggleState.On && GetObjectLayerFromFilterLayer(currentFilterTarget.Key) == layer)
+			if (keyValuePair.Value == ToolParameterMenu.ToggleState.On && this.GetObjectLayerFromFilterLayer(keyValuePair.Key) == layer)
 			{
 				result = true;
 				break;
@@ -43,6 +30,7 @@ public class FilteredDragTool : DragTool
 		return result;
 	}
 
+	// Token: 0x06006AD5 RID: 27349 RVA: 0x002E06E4 File Offset: 0x002DE8E4
 	protected virtual void GetDefaultFilters(Dictionary<string, ToolParameterMenu.ToggleState> filters)
 	{
 		filters.Add(ToolParameterMenu.FILTERLAYERS.ALL, ToolParameterMenu.ToggleState.On);
@@ -55,63 +43,71 @@ public class FilteredDragTool : DragTool
 		filters.Add(ToolParameterMenu.FILTERLAYERS.BACKWALL, ToolParameterMenu.ToggleState.Off);
 	}
 
+	// Token: 0x06006AD6 RID: 27350 RVA: 0x000E6242 File Offset: 0x000E4442
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		ResetFilter(filterTargets);
+		this.ResetFilter(this.filterTargets);
 	}
 
+	// Token: 0x06006AD7 RID: 27351 RVA: 0x000E6256 File Offset: 0x000E4456
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		OverlayScreen instance = OverlayScreen.Instance;
-		instance.OnOverlayChanged = (Action<HashedString>)Delegate.Combine(instance.OnOverlayChanged, new Action<HashedString>(OnOverlayChanged));
+		instance.OnOverlayChanged = (Action<HashedString>)Delegate.Combine(instance.OnOverlayChanged, new Action<HashedString>(this.OnOverlayChanged));
 	}
 
+	// Token: 0x06006AD8 RID: 27352 RVA: 0x000E6284 File Offset: 0x000E4484
 	protected override void OnCleanUp()
 	{
 		OverlayScreen instance = OverlayScreen.Instance;
-		instance.OnOverlayChanged = (Action<HashedString>)Delegate.Remove(instance.OnOverlayChanged, new Action<HashedString>(OnOverlayChanged));
+		instance.OnOverlayChanged = (Action<HashedString>)Delegate.Remove(instance.OnOverlayChanged, new Action<HashedString>(this.OnOverlayChanged));
 		base.OnCleanUp();
 	}
 
+	// Token: 0x06006AD9 RID: 27353 RVA: 0x000E62B2 File Offset: 0x000E44B2
 	public void ResetFilter()
 	{
-		ResetFilter(filterTargets);
+		this.ResetFilter(this.filterTargets);
 	}
 
+	// Token: 0x06006ADA RID: 27354 RVA: 0x000E62C0 File Offset: 0x000E44C0
 	protected void ResetFilter(Dictionary<string, ToolParameterMenu.ToggleState> filters)
 	{
 		filters.Clear();
-		GetDefaultFilters(filters);
-		currentFilterTargets = filters;
+		this.GetDefaultFilters(filters);
+		this.currentFilterTargets = filters;
 	}
 
+	// Token: 0x06006ADB RID: 27355 RVA: 0x000E62D6 File Offset: 0x000E44D6
 	protected override void OnActivateTool()
 	{
-		active = true;
+		this.active = true;
 		base.OnActivateTool();
-		OnOverlayChanged(OverlayScreen.Instance.mode);
+		this.OnOverlayChanged(OverlayScreen.Instance.mode);
 	}
 
+	// Token: 0x06006ADC RID: 27356 RVA: 0x000E62F5 File Offset: 0x000E44F5
 	protected override void OnDeactivateTool(InterfaceTool new_tool)
 	{
-		active = false;
+		this.active = false;
 		ToolMenu.Instance.toolParameterMenu.ClearMenu();
 		base.OnDeactivateTool(new_tool);
 	}
 
+	// Token: 0x06006ADD RID: 27357 RVA: 0x002E0754 File Offset: 0x002DE954
 	public virtual string GetFilterLayerFromGameObject(GameObject input)
 	{
 		BuildingComplete component = input.GetComponent<BuildingComplete>();
 		BuildingUnderConstruction component2 = input.GetComponent<BuildingUnderConstruction>();
-		if ((bool)component)
+		if (component)
 		{
-			return GetFilterLayerFromObjectLayer(component.Def.ObjectLayer);
+			return this.GetFilterLayerFromObjectLayer(component.Def.ObjectLayer);
 		}
-		if ((bool)component2)
+		if (component2)
 		{
-			return GetFilterLayerFromObjectLayer(component2.Def.ObjectLayer);
+			return this.GetFilterLayerFromObjectLayer(component2.Def.ObjectLayer);
 		}
 		if (input.GetComponent<Clearable>() != null || input.GetComponent<Moppable>() != null)
 		{
@@ -124,57 +120,148 @@ public class FilteredDragTool : DragTool
 		return "Default";
 	}
 
+	// Token: 0x06006ADE RID: 27358 RVA: 0x002E07E0 File Offset: 0x002DE9E0
 	public string GetFilterLayerFromObjectLayer(ObjectLayer gamer_layer)
 	{
-		switch (gamer_layer)
+		if (gamer_layer > ObjectLayer.FoundationTile)
 		{
-		case ObjectLayer.Building:
-		case ObjectLayer.Gantry:
-			return "Buildings";
-		case ObjectLayer.Wire:
-		case ObjectLayer.WireConnectors:
-			return "Wires";
-		case ObjectLayer.LiquidConduit:
-		case ObjectLayer.LiquidConduitConnection:
-			return "LiquidPipes";
-		case ObjectLayer.GasConduit:
-		case ObjectLayer.GasConduitConnection:
-			return "GasPipes";
-		case ObjectLayer.SolidConduit:
-		case ObjectLayer.SolidConduitConnection:
+			switch (gamer_layer)
+			{
+			case ObjectLayer.GasConduit:
+			case ObjectLayer.GasConduitConnection:
+				return "GasPipes";
+			case ObjectLayer.GasConduitTile:
+			case ObjectLayer.ReplacementGasConduit:
+			case ObjectLayer.LiquidConduitTile:
+			case ObjectLayer.ReplacementLiquidConduit:
+				goto IL_AC;
+			case ObjectLayer.LiquidConduit:
+			case ObjectLayer.LiquidConduitConnection:
+				return "LiquidPipes";
+			case ObjectLayer.SolidConduit:
+				break;
+			default:
+				switch (gamer_layer)
+				{
+				case ObjectLayer.SolidConduitConnection:
+					break;
+				case ObjectLayer.LadderTile:
+				case ObjectLayer.ReplacementLadder:
+				case ObjectLayer.WireTile:
+				case ObjectLayer.ReplacementWire:
+					goto IL_AC;
+				case ObjectLayer.Wire:
+				case ObjectLayer.WireConnectors:
+					return "Wires";
+				case ObjectLayer.LogicGate:
+				case ObjectLayer.LogicWire:
+					return "Logic";
+				default:
+					if (gamer_layer == ObjectLayer.Gantry)
+					{
+						goto IL_7C;
+					}
+					goto IL_AC;
+				}
+				break;
+			}
 			return "SolidConduits";
-		case ObjectLayer.FoundationTile:
-			return "Tiles";
-		case ObjectLayer.LogicGate:
-		case ObjectLayer.LogicWire:
-			return "Logic";
-		case ObjectLayer.Backwall:
-			return "BackWall";
-		default:
-			return "Default";
 		}
+		if (gamer_layer != ObjectLayer.Building)
+		{
+			if (gamer_layer == ObjectLayer.Backwall)
+			{
+				return "BackWall";
+			}
+			if (gamer_layer != ObjectLayer.FoundationTile)
+			{
+				goto IL_AC;
+			}
+			return "Tiles";
+		}
+		IL_7C:
+		return "Buildings";
+		IL_AC:
+		return "Default";
 	}
 
+	// Token: 0x06006ADF RID: 27359 RVA: 0x002E08A0 File Offset: 0x002DEAA0
 	private ObjectLayer GetObjectLayerFromFilterLayer(string filter_layer)
 	{
-		ObjectLayer objectLayer = ObjectLayer.NumLayers;
-		return filter_layer.ToLower() switch
+		string text = filter_layer.ToLower();
+		uint num = <PrivateImplementationDetails>.ComputeStringHash(text);
+		if (num <= 2200975418U)
 		{
-			"buildings" => ObjectLayer.Building, 
-			"wires" => ObjectLayer.Wire, 
-			"liquidpipes" => ObjectLayer.LiquidConduit, 
-			"gaspipes" => ObjectLayer.GasConduit, 
-			"solidconduits" => ObjectLayer.SolidConduit, 
-			"tiles" => ObjectLayer.FoundationTile, 
-			"logic" => ObjectLayer.LogicWire, 
-			"backwall" => ObjectLayer.Backwall, 
-			_ => throw new ArgumentException("Invalid filter layer: " + filter_layer), 
-		};
+			if (num <= 388608975U)
+			{
+				if (num != 25076977U)
+				{
+					if (num == 388608975U)
+					{
+						if (text == "solidconduits")
+						{
+							return ObjectLayer.SolidConduit;
+						}
+					}
+				}
+				else if (text == "wires")
+				{
+					return ObjectLayer.Wire;
+				}
+			}
+			else if (num != 614364310U)
+			{
+				if (num == 2200975418U)
+				{
+					if (text == "backwall")
+					{
+						return ObjectLayer.Backwall;
+					}
+				}
+			}
+			else if (text == "liquidpipes")
+			{
+				return ObjectLayer.LiquidConduit;
+			}
+		}
+		else if (num <= 2875565775U)
+		{
+			if (num != 2366751346U)
+			{
+				if (num == 2875565775U)
+				{
+					if (text == "gaspipes")
+					{
+						return ObjectLayer.GasConduit;
+					}
+				}
+			}
+			else if (text == "buildings")
+			{
+				return ObjectLayer.Building;
+			}
+		}
+		else if (num != 3464443665U)
+		{
+			if (num == 4178729166U)
+			{
+				if (text == "tiles")
+				{
+					return ObjectLayer.FoundationTile;
+				}
+			}
+		}
+		else if (text == "logic")
+		{
+			return ObjectLayer.LogicWire;
+		}
+		throw new ArgumentException("Invalid filter layer: " + filter_layer);
 	}
 
+	// Token: 0x06006AE0 RID: 27360 RVA: 0x002E09E8 File Offset: 0x002DEBE8
 	private void OnOverlayChanged(HashedString overlay)
 	{
-		if (!active)
+		if (!this.active)
 		{
 			return;
 		}
@@ -199,26 +286,41 @@ public class FilteredDragTool : DragTool
 		{
 			text = ToolParameterMenu.FILTERLAYERS.LOGIC;
 		}
-		currentFilterTargets = filterTargets;
+		this.currentFilterTargets = this.filterTargets;
 		if (text != null)
 		{
-			foreach (string item in new List<string>(filterTargets.Keys))
+			using (List<string>.Enumerator enumerator = new List<string>(this.filterTargets.Keys).GetEnumerator())
 			{
-				filterTargets[item] = ToolParameterMenu.ToggleState.Disabled;
-				if (item == text)
+				while (enumerator.MoveNext())
 				{
-					filterTargets[item] = ToolParameterMenu.ToggleState.On;
+					string text2 = enumerator.Current;
+					this.filterTargets[text2] = ToolParameterMenu.ToggleState.Disabled;
+					if (text2 == text)
+					{
+						this.filterTargets[text2] = ToolParameterMenu.ToggleState.On;
+					}
 				}
+				goto IL_102;
 			}
 		}
-		else
+		if (this.overlayFilterTargets.Count == 0)
 		{
-			if (overlayFilterTargets.Count == 0)
-			{
-				ResetFilter(overlayFilterTargets);
-			}
-			currentFilterTargets = overlayFilterTargets;
+			this.ResetFilter(this.overlayFilterTargets);
 		}
-		ToolMenu.Instance.toolParameterMenu.PopulateMenu(currentFilterTargets);
+		this.currentFilterTargets = this.overlayFilterTargets;
+		IL_102:
+		ToolMenu.Instance.toolParameterMenu.PopulateMenu(this.currentFilterTargets);
 	}
+
+	// Token: 0x0400507E RID: 20606
+	private Dictionary<string, ToolParameterMenu.ToggleState> filterTargets = new Dictionary<string, ToolParameterMenu.ToggleState>();
+
+	// Token: 0x0400507F RID: 20607
+	private Dictionary<string, ToolParameterMenu.ToggleState> overlayFilterTargets = new Dictionary<string, ToolParameterMenu.ToggleState>();
+
+	// Token: 0x04005080 RID: 20608
+	private Dictionary<string, ToolParameterMenu.ToggleState> currentFilterTargets;
+
+	// Token: 0x04005081 RID: 20609
+	private bool active;
 }

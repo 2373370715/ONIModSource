@@ -1,144 +1,175 @@
+﻿using System;
 using System.Collections.Generic;
 using STRINGS;
 using UnityEngine;
 using UnityEngine.UI;
 
+// Token: 0x02001F6A RID: 8042
 public class FilterSideScreen : SingleItemSelectionSideScreenBase
 {
-	public HierarchyReferences categoryFoldoutPrefab;
-
-	public RectTransform elementEntryContainer;
-
-	public Image outputIcon;
-
-	public Image everythingElseIcon;
-
-	public LocText outputElementHeaderLabel;
-
-	public LocText everythingElseHeaderLabel;
-
-	public LocText selectElementHeaderLabel;
-
-	public LocText currentSelectionLabel;
-
-	private SingleItemSelectionRow voidRow;
-
-	public bool isLogicFilter;
-
-	private Filterable targetFilterable;
-
+	// Token: 0x0600A9B5 RID: 43445 RVA: 0x004023B4 File Offset: 0x004005B4
 	public override bool IsValidForTarget(GameObject target)
 	{
-		bool flag = false;
-		if ((!isLogicFilter) ? (target.GetComponent<ElementFilter>() != null || target.GetComponent<RocketConduitStorageAccess>() != null || target.GetComponent<DevPump>() != null) : (target.GetComponent<ConduitElementSensor>() != null || target.GetComponent<LogicElementSensor>() != null))
+		bool flag;
+		if (this.isLogicFilter)
 		{
-			return target.GetComponent<Filterable>() != null;
+			flag = (target.GetComponent<ConduitElementSensor>() != null || target.GetComponent<LogicElementSensor>() != null);
 		}
-		return false;
+		else
+		{
+			flag = (target.GetComponent<ElementFilter>() != null || target.GetComponent<RocketConduitStorageAccess>() != null || target.GetComponent<DevPump>() != null);
+		}
+		return flag && target.GetComponent<Filterable>() != null;
 	}
 
+	// Token: 0x0600A9B6 RID: 43446 RVA: 0x00402428 File Offset: 0x00400628
 	public override void SetTarget(GameObject target)
 	{
 		base.SetTarget(target);
-		targetFilterable = target.GetComponent<Filterable>();
-		if (!(targetFilterable == null))
+		this.targetFilterable = target.GetComponent<Filterable>();
+		if (this.targetFilterable == null)
 		{
-			switch (targetFilterable.filterElementState)
-			{
-			case Filterable.ElementState.Solid:
-				everythingElseHeaderLabel.text = UI.UISIDESCREENS.FILTERSIDESCREEN.UNFILTEREDELEMENTS.SOLID;
-				break;
-			case Filterable.ElementState.Gas:
-				everythingElseHeaderLabel.text = UI.UISIDESCREENS.FILTERSIDESCREEN.UNFILTEREDELEMENTS.GAS;
-				break;
-			default:
-				everythingElseHeaderLabel.text = UI.UISIDESCREENS.FILTERSIDESCREEN.UNFILTEREDELEMENTS.LIQUID;
-				break;
-			}
-			Configure(targetFilterable);
-			SetFilterTag(targetFilterable.SelectedTag);
+			return;
 		}
+		switch (this.targetFilterable.filterElementState)
+		{
+		case Filterable.ElementState.Solid:
+			this.everythingElseHeaderLabel.text = UI.UISIDESCREENS.FILTERSIDESCREEN.UNFILTEREDELEMENTS.SOLID;
+			goto IL_87;
+		case Filterable.ElementState.Gas:
+			this.everythingElseHeaderLabel.text = UI.UISIDESCREENS.FILTERSIDESCREEN.UNFILTEREDELEMENTS.GAS;
+			goto IL_87;
+		}
+		this.everythingElseHeaderLabel.text = UI.UISIDESCREENS.FILTERSIDESCREEN.UNFILTEREDELEMENTS.LIQUID;
+		IL_87:
+		this.Configure(this.targetFilterable);
+		this.SetFilterTag(this.targetFilterable.SelectedTag);
 	}
 
+	// Token: 0x0600A9B7 RID: 43447 RVA: 0x0010E3CC File Offset: 0x0010C5CC
 	public override void ItemRowClicked(SingleItemSelectionRow rowClicked)
 	{
-		SetFilterTag(rowClicked.tag);
+		this.SetFilterTag(rowClicked.tag);
 		base.ItemRowClicked(rowClicked);
 	}
 
+	// Token: 0x0600A9B8 RID: 43448 RVA: 0x004024DC File Offset: 0x004006DC
 	private void Configure(Filterable filterable)
 	{
 		Dictionary<Tag, HashSet<Tag>> tagOptions = filterable.GetTagOptions();
 		Tag tag = GameTags.Void;
-		foreach (Tag key in tagOptions.Keys)
+		foreach (Tag tag2 in tagOptions.Keys)
 		{
-			foreach (Tag item in tagOptions[key])
+			using (HashSet<Tag>.Enumerator enumerator2 = tagOptions[tag2].GetEnumerator())
 			{
-				if (item == filterable.SelectedTag)
+				while (enumerator2.MoveNext())
 				{
-					tag = key;
-					break;
+					if (enumerator2.Current == filterable.SelectedTag)
+					{
+						tag = tag2;
+						break;
+					}
 				}
 			}
 		}
-		SetData(tagOptions);
-		Category value = null;
-		if (categories.TryGetValue(GameTags.Void, out value))
+		this.SetData(tagOptions);
+		SingleItemSelectionSideScreenBase.Category category = null;
+		if (this.categories.TryGetValue(GameTags.Void, out category))
 		{
-			value.SetProihibedState(isPohibited: true);
+			category.SetProihibedState(true);
 		}
 		if (tag != GameTags.Void)
 		{
-			categories[tag].SetUnfoldedState(Category.UnfoldedStates.Unfolded);
+			this.categories[tag].SetUnfoldedState(SingleItemSelectionSideScreenBase.Category.UnfoldedStates.Unfolded);
 		}
-		if (voidRow == null)
+		if (this.voidRow == null)
 		{
-			voidRow = GetOrCreateItemRow(GameTags.Void);
+			this.voidRow = this.GetOrCreateItemRow(GameTags.Void);
 		}
-		voidRow.transform.SetAsFirstSibling();
+		this.voidRow.transform.SetAsFirstSibling();
 		if (filterable.SelectedTag != GameTags.Void)
 		{
-			SetSelectedItem(filterable.SelectedTag);
+			this.SetSelectedItem(filterable.SelectedTag);
 		}
 		else
 		{
-			SetSelectedItem(voidRow);
+			this.SetSelectedItem(this.voidRow);
 		}
-		RefreshUI();
+		this.RefreshUI();
 	}
 
+	// Token: 0x0600A9B9 RID: 43449 RVA: 0x0010E3E1 File Offset: 0x0010C5E1
 	private void SetFilterTag(Tag tag)
 	{
-		if (!(targetFilterable == null))
+		if (this.targetFilterable == null)
 		{
-			if (tag.IsValid)
-			{
-				targetFilterable.SelectedTag = tag;
-			}
-			RefreshUI();
+			return;
 		}
+		if (tag.IsValid)
+		{
+			this.targetFilterable.SelectedTag = tag;
+		}
+		this.RefreshUI();
 	}
 
+	// Token: 0x0600A9BA RID: 43450 RVA: 0x0040262C File Offset: 0x0040082C
 	private void RefreshUI()
 	{
-		LocString locString = targetFilterable.filterElementState switch
+		LocString loc_string;
+		switch (this.targetFilterable.filterElementState)
 		{
-			Filterable.ElementState.Solid => UI.UISIDESCREENS.FILTERSIDESCREEN.FILTEREDELEMENT.SOLID, 
-			Filterable.ElementState.Gas => UI.UISIDESCREENS.FILTERSIDESCREEN.FILTEREDELEMENT.GAS, 
-			_ => UI.UISIDESCREENS.FILTERSIDESCREEN.FILTEREDELEMENT.LIQUID, 
-		};
-		currentSelectionLabel.text = string.Format(locString, UI.UISIDESCREENS.FILTERSIDESCREEN.NOELEMENTSELECTED);
-		if (base.CurrentSelectedItem == null || base.CurrentSelectedItem.tag != targetFilterable.SelectedTag)
-		{
-			SetSelectedItem(targetFilterable.SelectedTag);
+		case Filterable.ElementState.Solid:
+			loc_string = UI.UISIDESCREENS.FILTERSIDESCREEN.FILTEREDELEMENT.SOLID;
+			goto IL_38;
+		case Filterable.ElementState.Gas:
+			loc_string = UI.UISIDESCREENS.FILTERSIDESCREEN.FILTEREDELEMENT.GAS;
+			goto IL_38;
 		}
-		if (targetFilterable.SelectedTag != GameTags.Void)
+		loc_string = UI.UISIDESCREENS.FILTERSIDESCREEN.FILTEREDELEMENT.LIQUID;
+		IL_38:
+		this.currentSelectionLabel.text = string.Format(loc_string, UI.UISIDESCREENS.FILTERSIDESCREEN.NOELEMENTSELECTED);
+		if (base.CurrentSelectedItem == null || base.CurrentSelectedItem.tag != this.targetFilterable.SelectedTag)
 		{
-			currentSelectionLabel.text = string.Format(locString, targetFilterable.SelectedTag.ProperName());
+			this.SetSelectedItem(this.targetFilterable.SelectedTag);
 		}
-		else
+		if (this.targetFilterable.SelectedTag != GameTags.Void)
 		{
-			currentSelectionLabel.text = UI.UISIDESCREENS.FILTERSIDESCREEN.NO_SELECTION;
+			this.currentSelectionLabel.text = string.Format(loc_string, this.targetFilterable.SelectedTag.ProperName());
+			return;
 		}
+		this.currentSelectionLabel.text = UI.UISIDESCREENS.FILTERSIDESCREEN.NO_SELECTION;
 	}
+
+	// Token: 0x04008572 RID: 34162
+	public HierarchyReferences categoryFoldoutPrefab;
+
+	// Token: 0x04008573 RID: 34163
+	public RectTransform elementEntryContainer;
+
+	// Token: 0x04008574 RID: 34164
+	public Image outputIcon;
+
+	// Token: 0x04008575 RID: 34165
+	public Image everythingElseIcon;
+
+	// Token: 0x04008576 RID: 34166
+	public LocText outputElementHeaderLabel;
+
+	// Token: 0x04008577 RID: 34167
+	public LocText everythingElseHeaderLabel;
+
+	// Token: 0x04008578 RID: 34168
+	public LocText selectElementHeaderLabel;
+
+	// Token: 0x04008579 RID: 34169
+	public LocText currentSelectionLabel;
+
+	// Token: 0x0400857A RID: 34170
+	private SingleItemSelectionRow voidRow;
+
+	// Token: 0x0400857B RID: 34171
+	public bool isLogicFilter;
+
+	// Token: 0x0400857C RID: 34172
+	private Filterable targetFilterable;
 }

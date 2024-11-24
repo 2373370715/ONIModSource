@@ -1,29 +1,36 @@
+﻿using System;
 using System.Collections.Generic;
 
-namespace Database;
-
-public class ArtifactDropRate : Resource
+namespace Database
 {
-	public List<Tuple<ArtifactTier, float>> rates = new List<Tuple<ArtifactTier, float>>();
-
-	public float totalWeight;
-
-	public void AddItem(ArtifactTier tier, float weight)
+	// Token: 0x02002113 RID: 8467
+	public class ArtifactDropRate : Resource
 	{
-		rates.Add(new Tuple<ArtifactTier, float>(tier, weight));
-		totalWeight += weight;
-	}
-
-	public float GetTierWeight(ArtifactTier tier)
-	{
-		float result = 0f;
-		foreach (Tuple<ArtifactTier, float> rate in rates)
+		// Token: 0x0600B3F0 RID: 46064 RVA: 0x00114AE9 File Offset: 0x00112CE9
+		public void AddItem(ArtifactTier tier, float weight)
 		{
-			if (rate.first == tier)
-			{
-				result = rate.second;
-			}
+			this.rates.Add(new global::Tuple<ArtifactTier, float>(tier, weight));
+			this.totalWeight += weight;
 		}
-		return result;
+
+		// Token: 0x0600B3F1 RID: 46065 RVA: 0x0043C3E4 File Offset: 0x0043A5E4
+		public float GetTierWeight(ArtifactTier tier)
+		{
+			float result = 0f;
+			foreach (global::Tuple<ArtifactTier, float> tuple in this.rates)
+			{
+				if (tuple.first == tier)
+				{
+					result = tuple.second;
+				}
+			}
+			return result;
+		}
+
+		// Token: 0x04008E29 RID: 36393
+		public List<global::Tuple<ArtifactTier, float>> rates = new List<global::Tuple<ArtifactTier, float>>();
+
+		// Token: 0x04008E2A RID: 36394
+		public float totalWeight;
 	}
 }

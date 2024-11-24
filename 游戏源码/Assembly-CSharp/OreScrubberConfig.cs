@@ -1,33 +1,46 @@
+﻿using System;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x020004D2 RID: 1234
 public class OreScrubberConfig : IBuildingConfig
 {
-	public const string ID = "OreScrubber";
-
-	private const float MASS_PER_USE = 0.07f;
-
-	private const int DISEASE_REMOVAL_COUNT = 480000;
-
-	private const SimHashes CONSUMED_ELEMENT = SimHashes.ChlorineGas;
-
+	// Token: 0x060015C9 RID: 5577 RVA: 0x00194D78 File Offset: 0x00192F78
 	public override BuildingDef CreateBuildingDef()
 	{
-		string[] array = new string[1] { "Metal" };
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef(construction_mass: new float[1] { BUILDINGS.CONSTRUCTION_MASS_KG.TIER3[0] }, construction_materials: array, melting_point: 1600f, build_location_rule: BuildLocationRule.OnFloor, noise: NOISE_POLLUTION.NONE, id: "OreScrubber", width: 3, height: 3, anim: "orescrubber_kanim", hitpoints: 30, construction_time: 30f, decor: BUILDINGS.DECOR.BONUS.TIER1);
-		obj.UtilityInputOffset = new CellOffset(1, 1);
-		obj.ForegroundLayer = Grid.SceneLayer.BuildingFront;
-		obj.InputConduitType = ConduitType.Gas;
-		return obj;
+		string id = "OreScrubber";
+		int width = 3;
+		int height = 3;
+		string anim = "orescrubber_kanim";
+		int hitpoints = 30;
+		float construction_time = 30f;
+		string[] array = new string[]
+		{
+			"Metal"
+		};
+		float[] construction_mass = new float[]
+		{
+			BUILDINGS.CONSTRUCTION_MASS_KG.TIER3[0]
+		};
+		string[] construction_materials = array;
+		float melting_point = 1600f;
+		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
+		EffectorValues none = NOISE_POLLUTION.NONE;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, construction_mass, construction_materials, melting_point, build_location_rule, BUILDINGS.DECOR.BONUS.TIER1, none, 0.2f);
+		buildingDef.UtilityInputOffset = new CellOffset(1, 1);
+		buildingDef.ForegroundLayer = Grid.SceneLayer.BuildingFront;
+		buildingDef.InputConduitType = ConduitType.Gas;
+		return buildingDef;
 	}
 
+	// Token: 0x060015CA RID: 5578 RVA: 0x00194DF0 File Offset: 0x00192FF0
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		OreScrubber oreScrubber = go.AddOrGet<OreScrubber>();
 		oreScrubber.massConsumedPerUse = 0.07f;
 		oreScrubber.consumedElement = SimHashes.ChlorineGas;
-		oreScrubber.diseaseRemovalCount = 480000;
+		oreScrubber.diseaseRemovalCount = OreScrubberConfig.DISEASE_REMOVAL_COUNT;
 		ConduitConsumer conduitConsumer = go.AddOrGet<ConduitConsumer>();
 		conduitConsumer.conduitType = ConduitType.Liquid;
 		conduitConsumer.consumptionRate = 1f;
@@ -36,15 +49,31 @@ public class OreScrubberConfig : IBuildingConfig
 		conduitConsumer.capacityTag = ElementLoader.FindElementByHash(SimHashes.ChlorineGas).tag;
 		go.AddOrGet<DirectionControl>();
 		OreScrubber.Work work = go.AddOrGet<OreScrubber.Work>();
-		work.overrideAnims = new KAnimFile[1] { Assets.GetAnim("anim_interacts_ore_scrubber_kanim") };
+		work.overrideAnims = new KAnimFile[]
+		{
+			Assets.GetAnim("anim_interacts_ore_scrubber_kanim")
+		};
 		work.workTime = 10.200001f;
 		work.trackUses = true;
 		work.workLayer = Grid.SceneLayer.BuildingUse;
 		go.AddOrGet<Storage>().SetDefaultStoredItemModifiers(Storage.StandardSealedStorage);
 	}
 
+	// Token: 0x060015CB RID: 5579 RVA: 0x000AC8CD File Offset: 0x000AAACD
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.GetComponent<RequireInputs>().requireConduitHasMass = false;
 	}
+
+	// Token: 0x04000EBC RID: 3772
+	public const string ID = "OreScrubber";
+
+	// Token: 0x04000EBD RID: 3773
+	private const float MASS_PER_USE = 0.07f;
+
+	// Token: 0x04000EBE RID: 3774
+	private static readonly int DISEASE_REMOVAL_COUNT = WashBasinConfig.DISEASE_REMOVAL_COUNT * 4;
+
+	// Token: 0x04000EBF RID: 3775
+	private const SimHashes CONSUMED_ELEMENT = SimHashes.ChlorineGas;
 }

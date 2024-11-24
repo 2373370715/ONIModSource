@@ -1,52 +1,61 @@
-using System;
+﻿using System;
 using UnityEngine;
 
+// Token: 0x020006E2 RID: 1762
 public class MoveToSafetyChore : Chore<MoveToSafetyChore.StatesInstance>
 {
-	public class StatesInstance : GameStateMachine<States, StatesInstance, MoveToSafetyChore, object>.GameInstance
+	// Token: 0x06001FB7 RID: 8119 RVA: 0x001B98A4 File Offset: 0x001B7AA4
+	public MoveToSafetyChore(IStateMachineTarget target) : base(Db.Get().ChoreTypes.MoveToSafety, target, target.GetComponent<ChoreProvider>(), false, null, null, null, PriorityScreen.PriorityClass.idle, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
 	{
-		private SafeCellSensor sensor;
+		base.smi = new MoveToSafetyChore.StatesInstance(this, target.gameObject);
+	}
 
-		public int targetCell;
-
-		public StatesInstance(MoveToSafetyChore master, GameObject mover)
-			: base(master)
+	// Token: 0x020006E3 RID: 1763
+	public class StatesInstance : GameStateMachine<MoveToSafetyChore.States, MoveToSafetyChore.StatesInstance, MoveToSafetyChore, object>.GameInstance
+	{
+		// Token: 0x06001FB8 RID: 8120 RVA: 0x001B98EC File Offset: 0x001B7AEC
+		public StatesInstance(MoveToSafetyChore master, GameObject mover) : base(master)
 		{
-			base.sm.mover.Set(mover, base.smi);
-			sensor = base.sm.mover.Get<Sensors>(base.smi).GetSensor<SafeCellSensor>();
-			targetCell = sensor.GetSensorCell();
+			base.sm.mover.Set(mover, base.smi, false);
+			this.sensor = base.sm.mover.Get<Sensors>(base.smi).GetSensor<SafeCellSensor>();
+			this.targetCell = this.sensor.GetSensorCell();
 		}
 
+		// Token: 0x06001FB9 RID: 8121 RVA: 0x000B4D30 File Offset: 0x000B2F30
 		public void UpdateTargetCell()
 		{
-			targetCell = sensor.GetSensorCell();
+			this.targetCell = this.sensor.GetSensorCell();
 		}
+
+		// Token: 0x0400149B RID: 5275
+		private SafeCellSensor sensor;
+
+		// Token: 0x0400149C RID: 5276
+		public int targetCell;
 	}
 
-	public class States : GameStateMachine<States, StatesInstance, MoveToSafetyChore>
+	// Token: 0x020006E4 RID: 1764
+	public class States : GameStateMachine<MoveToSafetyChore.States, MoveToSafetyChore.StatesInstance, MoveToSafetyChore>
 	{
-		public TargetParameter mover;
-
-		public State move;
-
-		public override void InitializeStates(out BaseState default_state)
+		// Token: 0x06001FBA RID: 8122 RVA: 0x001B994C File Offset: 0x001B7B4C
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
-			default_state = move;
-			Target(mover);
-			root.ToggleTag(GameTags.Idle);
-			move.Enter("UpdateLocatorPosition", delegate(StatesInstance smi)
+			default_state = this.move;
+			base.Target(this.mover);
+			this.root.ToggleTag(GameTags.Idle);
+			this.move.Enter("UpdateLocatorPosition", delegate(MoveToSafetyChore.StatesInstance smi)
 			{
 				smi.UpdateTargetCell();
-			}).Update("UpdateLocatorPosition", delegate(StatesInstance smi, float dt)
+			}).Update("UpdateLocatorPosition", delegate(MoveToSafetyChore.StatesInstance smi, float dt)
 			{
 				smi.UpdateTargetCell();
-			}).MoveTo((StatesInstance smi) => smi.targetCell, null, null, update_cell: true);
+			}, UpdateRate.SIM_200ms, false).MoveTo((MoveToSafetyChore.StatesInstance smi) => smi.targetCell, null, null, true);
 		}
-	}
 
-	public MoveToSafetyChore(IStateMachineTarget target)
-		: base(Db.Get().ChoreTypes.MoveToSafety, target, target.GetComponent<ChoreProvider>(), run_until_complete: false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.idle, 5, is_preemptable: false, allow_in_context_menu: true, 0, add_to_daily_report: false, ReportManager.ReportType.WorkTime)
-	{
-		base.smi = new StatesInstance(this, target.gameObject);
+		// Token: 0x0400149D RID: 5277
+		public StateMachine<MoveToSafetyChore.States, MoveToSafetyChore.StatesInstance, MoveToSafetyChore, object>.TargetParameter mover;
+
+		// Token: 0x0400149E RID: 5278
+		public GameStateMachine<MoveToSafetyChore.States, MoveToSafetyChore.StatesInstance, MoveToSafetyChore, object>.State move;
 	}
 }

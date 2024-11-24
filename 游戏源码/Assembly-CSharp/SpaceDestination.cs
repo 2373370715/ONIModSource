@@ -1,3 +1,4 @@
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.Serialization;
@@ -7,162 +8,87 @@ using STRINGS;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x0200193E RID: 6462
 [SerializationConfig(MemberSerialization.OptIn)]
 [DebuggerDisplay("{id}: {type} at distance {distance}")]
 public class SpaceDestination
 {
-	[SerializationConfig(MemberSerialization.OptIn)]
-	public class ResearchOpportunity
+	// Token: 0x0600869B RID: 34459 RVA: 0x0034D40C File Offset: 0x0034B60C
+	private static global::Tuple<SimHashes, MathUtil.MinMax> GetRareElement(SimHashes id)
 	{
-		[Serialize]
-		public string description;
-
-		[Serialize]
-		public int dataValue;
-
-		[Serialize]
-		public bool completed;
-
-		[Serialize]
-		public SimHashes discoveredRareResource = SimHashes.Void;
-
-		[Serialize]
-		public string discoveredRareItem;
-
-		[OnDeserialized]
-		private void OnDeserialized()
+		foreach (global::Tuple<SimHashes, MathUtil.MinMax> tuple in SpaceDestination.RARE_ELEMENTS)
 		{
-			if (discoveredRareResource == (SimHashes)0)
+			if (tuple.first == id)
 			{
-				discoveredRareResource = SimHashes.Void;
-			}
-			if (dataValue > 50)
-			{
-				dataValue = 50;
-			}
-		}
-
-		public ResearchOpportunity(string description, int pointValue)
-		{
-			this.description = description;
-			dataValue = pointValue;
-		}
-
-		public bool TryComplete(SpaceDestination destination)
-		{
-			if (!completed)
-			{
-				completed = true;
-				if (discoveredRareResource != SimHashes.Void && !destination.recoverableElements.ContainsKey(discoveredRareResource))
-				{
-					destination.recoverableElements.Add(discoveredRareResource, Random.value);
-				}
-				return true;
-			}
-			return false;
-		}
-	}
-
-	private const int MASS_TO_RECOVER_AMOUNT = 1000;
-
-	private static List<Tuple<float, int>> RARE_ELEMENT_CHANCES = new List<Tuple<float, int>>
-	{
-		new Tuple<float, int>(1f, 0),
-		new Tuple<float, int>(0.33f, 1),
-		new Tuple<float, int>(0.03f, 2)
-	};
-
-	private static readonly List<Tuple<SimHashes, MathUtil.MinMax>> RARE_ELEMENTS = new List<Tuple<SimHashes, MathUtil.MinMax>>
-	{
-		new Tuple<SimHashes, MathUtil.MinMax>(SimHashes.Katairite, new MathUtil.MinMax(1f, 10f)),
-		new Tuple<SimHashes, MathUtil.MinMax>(SimHashes.Niobium, new MathUtil.MinMax(1f, 10f)),
-		new Tuple<SimHashes, MathUtil.MinMax>(SimHashes.Fullerene, new MathUtil.MinMax(1f, 10f)),
-		new Tuple<SimHashes, MathUtil.MinMax>(SimHashes.Isoresin, new MathUtil.MinMax(1f, 10f))
-	};
-
-	private const float RARE_ITEM_CHANCE = 0.33f;
-
-	private static readonly List<Tuple<string, MathUtil.MinMax>> RARE_ITEMS = new List<Tuple<string, MathUtil.MinMax>>
-	{
-		new Tuple<string, MathUtil.MinMax>("GeneShufflerRecharge", new MathUtil.MinMax(1f, 2f))
-	};
-
-	[Serialize]
-	public int id;
-
-	[Serialize]
-	public string type;
-
-	public bool startAnalyzed;
-
-	[Serialize]
-	public int distance;
-
-	[Serialize]
-	public float activePeriod = 20f;
-
-	[Serialize]
-	public float inactivePeriod = 10f;
-
-	[Serialize]
-	public float startingOrbitPercentage;
-
-	[Serialize]
-	public Dictionary<SimHashes, float> recoverableElements = new Dictionary<SimHashes, float>();
-
-	[Serialize]
-	public List<ResearchOpportunity> researchOpportunities = new List<ResearchOpportunity>();
-
-	[Serialize]
-	private float availableMass;
-
-	public int OneBasedDistance => distance + 1;
-
-	public float CurrentMass => (float)GetDestinationType().minimumMass + availableMass;
-
-	public float AvailableMass => availableMass;
-
-	private static Tuple<SimHashes, MathUtil.MinMax> GetRareElement(SimHashes id)
-	{
-		foreach (Tuple<SimHashes, MathUtil.MinMax> rARE_ELEMENT in RARE_ELEMENTS)
-		{
-			if (rARE_ELEMENT.first == id)
-			{
-				return rARE_ELEMENT;
+				return tuple;
 			}
 		}
 		return null;
 	}
 
+	// Token: 0x170008E1 RID: 2273
+	// (get) Token: 0x0600869C RID: 34460 RVA: 0x000F8246 File Offset: 0x000F6446
+	public int OneBasedDistance
+	{
+		get
+		{
+			return this.distance + 1;
+		}
+	}
+
+	// Token: 0x170008E2 RID: 2274
+	// (get) Token: 0x0600869D RID: 34461 RVA: 0x000F8250 File Offset: 0x000F6450
+	public float CurrentMass
+	{
+		get
+		{
+			return (float)this.GetDestinationType().minimumMass + this.availableMass;
+		}
+	}
+
+	// Token: 0x170008E3 RID: 2275
+	// (get) Token: 0x0600869E RID: 34462 RVA: 0x000F8265 File Offset: 0x000F6465
+	public float AvailableMass
+	{
+		get
+		{
+			return this.availableMass;
+		}
+	}
+
+	// Token: 0x0600869F RID: 34463 RVA: 0x0034D468 File Offset: 0x0034B668
 	public SpaceDestination(int id, string type, int distance)
 	{
 		this.id = id;
 		this.type = type;
 		this.distance = distance;
-		SpaceDestinationType destinationType = GetDestinationType();
-		availableMass = destinationType.maxiumMass - destinationType.minimumMass;
-		GenerateSurfaceElements();
-		GenerateResearchOpportunities();
+		SpaceDestinationType destinationType = this.GetDestinationType();
+		this.availableMass = (float)(destinationType.maxiumMass - destinationType.minimumMass);
+		this.GenerateSurfaceElements();
+		this.GenerateResearchOpportunities();
 	}
 
+	// Token: 0x060086A0 RID: 34464 RVA: 0x0034D4E4 File Offset: 0x0034B6E4
 	[OnDeserialized]
 	private void OnDeserialized()
 	{
 		if (SaveLoader.Instance.GameInfo.IsVersionOlderThan(7, 9))
 		{
-			SpaceDestinationType destinationType = GetDestinationType();
-			availableMass = destinationType.maxiumMass - destinationType.minimumMass;
+			SpaceDestinationType destinationType = this.GetDestinationType();
+			this.availableMass = (float)(destinationType.maxiumMass - destinationType.minimumMass);
 		}
 	}
 
+	// Token: 0x060086A1 RID: 34465 RVA: 0x000F826D File Offset: 0x000F646D
 	public SpaceDestinationType GetDestinationType()
 	{
-		return Db.Get().SpaceDestinationTypes.Get(type);
+		return Db.Get().SpaceDestinationTypes.Get(this.type);
 	}
 
-	public ResearchOpportunity TryCompleteResearchOpportunity()
+	// Token: 0x060086A2 RID: 34466 RVA: 0x0034D524 File Offset: 0x0034B724
+	public SpaceDestination.ResearchOpportunity TryCompleteResearchOpportunity()
 	{
-		foreach (ResearchOpportunity researchOpportunity in researchOpportunities)
+		foreach (SpaceDestination.ResearchOpportunity researchOpportunity in this.researchOpportunities)
 		{
 			if (researchOpportunity.TryComplete(this))
 			{
@@ -172,57 +98,61 @@ public class SpaceDestination
 		return null;
 	}
 
+	// Token: 0x060086A3 RID: 34467 RVA: 0x0034D580 File Offset: 0x0034B780
 	public void GenerateSurfaceElements()
 	{
-		foreach (KeyValuePair<SimHashes, MathUtil.MinMax> item in GetDestinationType().elementTable)
+		foreach (KeyValuePair<SimHashes, MathUtil.MinMax> keyValuePair in this.GetDestinationType().elementTable)
 		{
-			recoverableElements.Add(item.Key, Random.value);
+			this.recoverableElements.Add(keyValuePair.Key, UnityEngine.Random.value);
 		}
 	}
 
+	// Token: 0x060086A4 RID: 34468 RVA: 0x000F8284 File Offset: 0x000F6484
 	public SpacecraftManager.DestinationAnalysisState AnalysisState()
 	{
 		return SpacecraftManager.instance.GetDestinationAnalysisState(this);
 	}
 
+	// Token: 0x060086A5 RID: 34469 RVA: 0x0034D5E8 File Offset: 0x0034B7E8
 	public void GenerateResearchOpportunities()
 	{
-		researchOpportunities.Add(new ResearchOpportunity(UI.STARMAP.DESTINATIONSTUDY.UPPERATMO, ROCKETRY.DESTINATION_RESEARCH.BASIC));
-		researchOpportunities.Add(new ResearchOpportunity(UI.STARMAP.DESTINATIONSTUDY.LOWERATMO, ROCKETRY.DESTINATION_RESEARCH.BASIC));
-		researchOpportunities.Add(new ResearchOpportunity(UI.STARMAP.DESTINATIONSTUDY.MAGNETICFIELD, ROCKETRY.DESTINATION_RESEARCH.BASIC));
-		researchOpportunities.Add(new ResearchOpportunity(UI.STARMAP.DESTINATIONSTUDY.SURFACE, ROCKETRY.DESTINATION_RESEARCH.BASIC));
-		researchOpportunities.Add(new ResearchOpportunity(UI.STARMAP.DESTINATIONSTUDY.SUBSURFACE, ROCKETRY.DESTINATION_RESEARCH.BASIC));
+		this.researchOpportunities.Add(new SpaceDestination.ResearchOpportunity(UI.STARMAP.DESTINATIONSTUDY.UPPERATMO, ROCKETRY.DESTINATION_RESEARCH.BASIC));
+		this.researchOpportunities.Add(new SpaceDestination.ResearchOpportunity(UI.STARMAP.DESTINATIONSTUDY.LOWERATMO, ROCKETRY.DESTINATION_RESEARCH.BASIC));
+		this.researchOpportunities.Add(new SpaceDestination.ResearchOpportunity(UI.STARMAP.DESTINATIONSTUDY.MAGNETICFIELD, ROCKETRY.DESTINATION_RESEARCH.BASIC));
+		this.researchOpportunities.Add(new SpaceDestination.ResearchOpportunity(UI.STARMAP.DESTINATIONSTUDY.SURFACE, ROCKETRY.DESTINATION_RESEARCH.BASIC));
+		this.researchOpportunities.Add(new SpaceDestination.ResearchOpportunity(UI.STARMAP.DESTINATIONSTUDY.SUBSURFACE, ROCKETRY.DESTINATION_RESEARCH.BASIC));
 		float num = 0f;
-		foreach (Tuple<float, int> rARE_ELEMENT_CHANCE in RARE_ELEMENT_CHANCES)
+		foreach (global::Tuple<float, int> tuple in SpaceDestination.RARE_ELEMENT_CHANCES)
 		{
-			num += rARE_ELEMENT_CHANCE.first;
+			num += tuple.first;
 		}
-		float num2 = Random.value * num;
+		float num2 = UnityEngine.Random.value * num;
 		int num3 = 0;
-		foreach (Tuple<float, int> rARE_ELEMENT_CHANCE2 in RARE_ELEMENT_CHANCES)
+		foreach (global::Tuple<float, int> tuple2 in SpaceDestination.RARE_ELEMENT_CHANCES)
 		{
-			num2 -= rARE_ELEMENT_CHANCE2.first;
+			num2 -= tuple2.first;
 			if (num2 <= 0f)
 			{
-				num3 = rARE_ELEMENT_CHANCE2.second;
+				num3 = tuple2.second;
 			}
 		}
 		for (int i = 0; i < num3; i++)
 		{
-			researchOpportunities[Random.Range(0, researchOpportunities.Count)].discoveredRareResource = RARE_ELEMENTS[Random.Range(0, RARE_ELEMENTS.Count)].first;
+			this.researchOpportunities[UnityEngine.Random.Range(0, this.researchOpportunities.Count)].discoveredRareResource = SpaceDestination.RARE_ELEMENTS[UnityEngine.Random.Range(0, SpaceDestination.RARE_ELEMENTS.Count)].first;
 		}
-		if (Random.value < 0.33f)
+		if (UnityEngine.Random.value < 0.33f)
 		{
-			int index = Random.Range(0, researchOpportunities.Count);
-			researchOpportunities[index].discoveredRareItem = RARE_ITEMS[Random.Range(0, RARE_ITEMS.Count)].first;
+			int index = UnityEngine.Random.Range(0, this.researchOpportunities.Count);
+			this.researchOpportunities[index].discoveredRareItem = SpaceDestination.RARE_ITEMS[UnityEngine.Random.Range(0, SpaceDestination.RARE_ITEMS.Count)].first;
 		}
 	}
 
+	// Token: 0x060086A6 RID: 34470 RVA: 0x0034D7E0 File Offset: 0x0034B9E0
 	public float GetResourceValue(SimHashes resource, float roll)
 	{
-		if (GetDestinationType().elementTable.ContainsKey(resource))
+		if (this.GetDestinationType().elementTable.ContainsKey(resource))
 		{
-			return GetDestinationType().elementTable[resource].Lerp(roll);
+			return this.GetDestinationType().elementTable[resource].Lerp(roll);
 		}
 		if (SpaceDestinationTypes.extendedElementTable.ContainsKey(resource))
 		{
@@ -231,61 +161,64 @@ public class SpaceDestination
 		return 0f;
 	}
 
+	// Token: 0x060086A7 RID: 34471 RVA: 0x0034D844 File Offset: 0x0034BA44
 	public Dictionary<SimHashes, float> GetMissionResourceResult(float totalCargoSpace, float reservedMass, bool solids = true, bool liquids = true, bool gasses = true)
 	{
 		Dictionary<SimHashes, float> dictionary = new Dictionary<SimHashes, float>();
 		float num = 0f;
-		foreach (KeyValuePair<SimHashes, float> recoverableElement in recoverableElements)
+		foreach (KeyValuePair<SimHashes, float> keyValuePair in this.recoverableElements)
 		{
-			if ((ElementLoader.FindElementByHash(recoverableElement.Key).IsSolid && solids) || (ElementLoader.FindElementByHash(recoverableElement.Key).IsLiquid && liquids) || (ElementLoader.FindElementByHash(recoverableElement.Key).IsGas && gasses))
+			if ((ElementLoader.FindElementByHash(keyValuePair.Key).IsSolid && solids) || (ElementLoader.FindElementByHash(keyValuePair.Key).IsLiquid && liquids) || (ElementLoader.FindElementByHash(keyValuePair.Key).IsGas && gasses))
 			{
-				num += GetResourceValue(recoverableElement.Key, recoverableElement.Value);
+				num += this.GetResourceValue(keyValuePair.Key, keyValuePair.Value);
 			}
 		}
-		float num2 = Mathf.Min(CurrentMass + reservedMass - (float)GetDestinationType().minimumMass, totalCargoSpace);
-		foreach (KeyValuePair<SimHashes, float> recoverableElement2 in recoverableElements)
+		float num2 = Mathf.Min(this.CurrentMass + reservedMass - (float)this.GetDestinationType().minimumMass, totalCargoSpace);
+		foreach (KeyValuePair<SimHashes, float> keyValuePair2 in this.recoverableElements)
 		{
-			if ((ElementLoader.FindElementByHash(recoverableElement2.Key).IsSolid && solids) || (ElementLoader.FindElementByHash(recoverableElement2.Key).IsLiquid && liquids) || (ElementLoader.FindElementByHash(recoverableElement2.Key).IsGas && gasses))
+			if ((ElementLoader.FindElementByHash(keyValuePair2.Key).IsSolid && solids) || (ElementLoader.FindElementByHash(keyValuePair2.Key).IsLiquid && liquids) || (ElementLoader.FindElementByHash(keyValuePair2.Key).IsGas && gasses))
 			{
-				float value = num2 * (GetResourceValue(recoverableElement2.Key, recoverableElement2.Value) / num);
-				dictionary.Add(recoverableElement2.Key, value);
+				float value = num2 * (this.GetResourceValue(keyValuePair2.Key, keyValuePair2.Value) / num);
+				dictionary.Add(keyValuePair2.Key, value);
 			}
 		}
 		return dictionary;
 	}
 
+	// Token: 0x060086A8 RID: 34472 RVA: 0x0034D9B8 File Offset: 0x0034BBB8
 	public Dictionary<Tag, int> GetRecoverableEntities()
 	{
 		Dictionary<Tag, int> dictionary = new Dictionary<Tag, int>();
-		Dictionary<string, int> recoverableEntities = GetDestinationType().recoverableEntities;
+		Dictionary<string, int> recoverableEntities = this.GetDestinationType().recoverableEntities;
 		if (recoverableEntities != null)
 		{
-			foreach (KeyValuePair<string, int> item in recoverableEntities)
+			foreach (KeyValuePair<string, int> keyValuePair in recoverableEntities)
 			{
-				dictionary.Add(item.Key, item.Value);
+				dictionary.Add(keyValuePair.Key, keyValuePair.Value);
 			}
 		}
 		return dictionary;
 	}
 
+	// Token: 0x060086A9 RID: 34473 RVA: 0x000F8291 File Offset: 0x000F6491
 	public Dictionary<Tag, int> GetMissionEntityResult()
 	{
-		return GetRecoverableEntities();
+		return this.GetRecoverableEntities();
 	}
 
+	// Token: 0x060086AA RID: 34474 RVA: 0x0034DA30 File Offset: 0x0034BC30
 	public float ReserveResources(CargoBay bay)
 	{
 		float num = 0f;
 		if (bay != null)
 		{
 			Storage component = bay.GetComponent<Storage>();
-			foreach (KeyValuePair<SimHashes, float> recoverableElement in recoverableElements)
+			foreach (KeyValuePair<SimHashes, float> keyValuePair in this.recoverableElements)
 			{
-				_ = recoverableElement;
-				if (HasElementType(bay.storageType))
+				if (this.HasElementType(bay.storageType))
 				{
 					num += component.capacityKg;
-					availableMass = Mathf.Max(0f, availableMass - component.capacityKg);
+					this.availableMass = Mathf.Max(0f, this.availableMass - component.capacityKg);
 					break;
 				}
 			}
@@ -293,11 +226,12 @@ public class SpaceDestination
 		return num;
 	}
 
+	// Token: 0x060086AB RID: 34475 RVA: 0x0034DACC File Offset: 0x0034BCCC
 	public bool HasElementType(CargoBay.CargoType type)
 	{
-		foreach (KeyValuePair<SimHashes, float> recoverableElement in recoverableElements)
+		foreach (KeyValuePair<SimHashes, float> keyValuePair in this.recoverableElements)
 		{
-			if ((ElementLoader.FindElementByHash(recoverableElement.Key).IsSolid && type == CargoBay.CargoType.Solids) || (ElementLoader.FindElementByHash(recoverableElement.Key).IsLiquid && type == CargoBay.CargoType.Liquids) || (ElementLoader.FindElementByHash(recoverableElement.Key).IsGas && type == CargoBay.CargoType.Gasses))
+			if ((ElementLoader.FindElementByHash(keyValuePair.Key).IsSolid && type == CargoBay.CargoType.Solids) || (ElementLoader.FindElementByHash(keyValuePair.Key).IsLiquid && type == CargoBay.CargoType.Liquids) || (ElementLoader.FindElementByHash(keyValuePair.Key).IsGas && type == CargoBay.CargoType.Gasses))
 			{
 				return true;
 			}
@@ -305,36 +239,168 @@ public class SpaceDestination
 		return false;
 	}
 
+	// Token: 0x060086AC RID: 34476 RVA: 0x0034DB64 File Offset: 0x0034BD64
 	public void Replenish(float dt)
 	{
-		SpaceDestinationType destinationType = GetDestinationType();
-		if (CurrentMass < (float)destinationType.maxiumMass)
+		SpaceDestinationType destinationType = this.GetDestinationType();
+		if (this.CurrentMass < (float)destinationType.maxiumMass)
 		{
-			availableMass += destinationType.replishmentPerSim1000ms;
+			this.availableMass += destinationType.replishmentPerSim1000ms;
 		}
 	}
 
+	// Token: 0x060086AD RID: 34477 RVA: 0x0034DB9C File Offset: 0x0034BD9C
 	public float GetAvailableResourcesPercentage(CargoBay.CargoType cargoType)
 	{
 		float num = 0f;
-		float totalMass = GetTotalMass();
-		foreach (KeyValuePair<SimHashes, float> recoverableElement in recoverableElements)
+		float totalMass = this.GetTotalMass();
+		foreach (KeyValuePair<SimHashes, float> keyValuePair in this.recoverableElements)
 		{
-			if ((ElementLoader.FindElementByHash(recoverableElement.Key).IsSolid && cargoType == CargoBay.CargoType.Solids) || (ElementLoader.FindElementByHash(recoverableElement.Key).IsLiquid && cargoType == CargoBay.CargoType.Liquids) || (ElementLoader.FindElementByHash(recoverableElement.Key).IsGas && cargoType == CargoBay.CargoType.Gasses))
+			if ((ElementLoader.FindElementByHash(keyValuePair.Key).IsSolid && cargoType == CargoBay.CargoType.Solids) || (ElementLoader.FindElementByHash(keyValuePair.Key).IsLiquid && cargoType == CargoBay.CargoType.Liquids) || (ElementLoader.FindElementByHash(keyValuePair.Key).IsGas && cargoType == CargoBay.CargoType.Gasses))
 			{
-				num += GetResourceValue(recoverableElement.Key, recoverableElement.Value) / totalMass;
+				num += this.GetResourceValue(keyValuePair.Key, keyValuePair.Value) / totalMass;
 			}
 		}
 		return num;
 	}
 
+	// Token: 0x060086AE RID: 34478 RVA: 0x0034DC54 File Offset: 0x0034BE54
 	public float GetTotalMass()
 	{
 		float num = 0f;
-		foreach (KeyValuePair<SimHashes, float> recoverableElement in recoverableElements)
+		foreach (KeyValuePair<SimHashes, float> keyValuePair in this.recoverableElements)
 		{
-			num += GetResourceValue(recoverableElement.Key, recoverableElement.Value);
+			num += this.GetResourceValue(keyValuePair.Key, keyValuePair.Value);
 		}
 		return num;
+	}
+
+	// Token: 0x040065A6 RID: 26022
+	private const int MASS_TO_RECOVER_AMOUNT = 1000;
+
+	// Token: 0x040065A7 RID: 26023
+	private static List<global::Tuple<float, int>> RARE_ELEMENT_CHANCES = new List<global::Tuple<float, int>>
+	{
+		new global::Tuple<float, int>(1f, 0),
+		new global::Tuple<float, int>(0.33f, 1),
+		new global::Tuple<float, int>(0.03f, 2)
+	};
+
+	// Token: 0x040065A8 RID: 26024
+	private static readonly List<global::Tuple<SimHashes, MathUtil.MinMax>> RARE_ELEMENTS = new List<global::Tuple<SimHashes, MathUtil.MinMax>>
+	{
+		new global::Tuple<SimHashes, MathUtil.MinMax>(SimHashes.Katairite, new MathUtil.MinMax(1f, 10f)),
+		new global::Tuple<SimHashes, MathUtil.MinMax>(SimHashes.Niobium, new MathUtil.MinMax(1f, 10f)),
+		new global::Tuple<SimHashes, MathUtil.MinMax>(SimHashes.Fullerene, new MathUtil.MinMax(1f, 10f)),
+		new global::Tuple<SimHashes, MathUtil.MinMax>(SimHashes.Isoresin, new MathUtil.MinMax(1f, 10f))
+	};
+
+	// Token: 0x040065A9 RID: 26025
+	private const float RARE_ITEM_CHANCE = 0.33f;
+
+	// Token: 0x040065AA RID: 26026
+	private static readonly List<global::Tuple<string, MathUtil.MinMax>> RARE_ITEMS = new List<global::Tuple<string, MathUtil.MinMax>>
+	{
+		new global::Tuple<string, MathUtil.MinMax>("GeneShufflerRecharge", new MathUtil.MinMax(1f, 2f))
+	};
+
+	// Token: 0x040065AB RID: 26027
+	[Serialize]
+	public int id;
+
+	// Token: 0x040065AC RID: 26028
+	[Serialize]
+	public string type;
+
+	// Token: 0x040065AD RID: 26029
+	public bool startAnalyzed;
+
+	// Token: 0x040065AE RID: 26030
+	[Serialize]
+	public int distance;
+
+	// Token: 0x040065AF RID: 26031
+	[Serialize]
+	public float activePeriod = 20f;
+
+	// Token: 0x040065B0 RID: 26032
+	[Serialize]
+	public float inactivePeriod = 10f;
+
+	// Token: 0x040065B1 RID: 26033
+	[Serialize]
+	public float startingOrbitPercentage;
+
+	// Token: 0x040065B2 RID: 26034
+	[Serialize]
+	public Dictionary<SimHashes, float> recoverableElements = new Dictionary<SimHashes, float>();
+
+	// Token: 0x040065B3 RID: 26035
+	[Serialize]
+	public List<SpaceDestination.ResearchOpportunity> researchOpportunities = new List<SpaceDestination.ResearchOpportunity>();
+
+	// Token: 0x040065B4 RID: 26036
+	[Serialize]
+	private float availableMass;
+
+	// Token: 0x0200193F RID: 6463
+	[SerializationConfig(MemberSerialization.OptIn)]
+	public class ResearchOpportunity
+	{
+		// Token: 0x060086B0 RID: 34480 RVA: 0x000F8299 File Offset: 0x000F6499
+		[OnDeserialized]
+		private void OnDeserialized()
+		{
+			if (this.discoveredRareResource == (SimHashes)0)
+			{
+				this.discoveredRareResource = SimHashes.Void;
+			}
+			if (this.dataValue > 50)
+			{
+				this.dataValue = 50;
+			}
+		}
+
+		// Token: 0x060086B1 RID: 34481 RVA: 0x000F82C0 File Offset: 0x000F64C0
+		public ResearchOpportunity(string description, int pointValue)
+		{
+			this.description = description;
+			this.dataValue = pointValue;
+		}
+
+		// Token: 0x060086B2 RID: 34482 RVA: 0x0034DDBC File Offset: 0x0034BFBC
+		public bool TryComplete(SpaceDestination destination)
+		{
+			if (!this.completed)
+			{
+				this.completed = true;
+				if (this.discoveredRareResource != SimHashes.Void && !destination.recoverableElements.ContainsKey(this.discoveredRareResource))
+				{
+					destination.recoverableElements.Add(this.discoveredRareResource, UnityEngine.Random.value);
+				}
+				return true;
+			}
+			return false;
+		}
+
+		// Token: 0x040065B5 RID: 26037
+		[Serialize]
+		public string description;
+
+		// Token: 0x040065B6 RID: 26038
+		[Serialize]
+		public int dataValue;
+
+		// Token: 0x040065B7 RID: 26039
+		[Serialize]
+		public bool completed;
+
+		// Token: 0x040065B8 RID: 26040
+		[Serialize]
+		public SimHashes discoveredRareResource = SimHashes.Void;
+
+		// Token: 0x040065B9 RID: 26041
+		[Serialize]
+		public string discoveredRareItem;
 	}
 }

@@ -1,12 +1,22 @@
+﻿using System;
 using Klei.AI;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x020000D2 RID: 210
 public static class BaseBeeConfig
 {
+	// Token: 0x06000377 RID: 887 RVA: 0x0014E6A0 File Offset: 0x0014C8A0
 	public static GameObject BaseBee(string id, string name, string desc, string anim_file, string traitId, EffectorValues decor, bool is_baby, string symbolOverridePrefix = null)
 	{
-		GameObject gameObject = EntityTemplates.CreatePlacedEntity(id, name, desc, 5f, Assets.GetAnim(anim_file), "idle_loop", Grid.SceneLayer.Creatures, 1, 1, decor, default(EffectorValues), SimHashes.Creature, null, CREATURES.TEMPERATURE.FREEZING_3);
+		float mass = 5f;
+		KAnimFile anim = Assets.GetAnim(anim_file);
+		string initialAnim = "idle_loop";
+		Grid.SceneLayer sceneLayer = Grid.SceneLayer.Creatures;
+		int width = 1;
+		int height = 1;
+		float freezing_ = CREATURES.TEMPERATURE.FREEZING_3;
+		GameObject gameObject = EntityTemplates.CreatePlacedEntity(id, name, desc, mass, anim, initialAnim, sceneLayer, width, height, decor, default(EffectorValues), SimHashes.Creature, null, freezing_);
 		string navGridName = "FlyerNavGrid1x1";
 		NavType navType = NavType.Hover;
 		int num = 5;
@@ -16,10 +26,10 @@ public static class BaseBeeConfig
 			navType = NavType.Floor;
 			num = 1;
 		}
-		EntityTemplates.ExtendEntityToBasicCreature(gameObject, FactionManager.FactionID.Hostile, traitId, navGridName, navType, 32, num, "Meat", 0, drownVulnerable: true, entombVulnerable: true, 223.15f, 273.15f, 173.15f, 283.15f);
+		EntityTemplates.ExtendEntityToBasicCreature(gameObject, FactionManager.FactionID.Hostile, traitId, navGridName, navType, 32, (float)num, "Meat", 0, true, true, 223.15f, 273.15f, 173.15f, 283.15f);
 		if (symbolOverridePrefix != null)
 		{
-			gameObject.AddOrGet<SymbolOverrideController>().ApplySymbolOverridesByAffix(Assets.GetAnim(anim_file), symbolOverridePrefix);
+			gameObject.AddOrGet<SymbolOverrideController>().ApplySymbolOverridesByAffix(Assets.GetAnim(anim_file), symbolOverridePrefix, null, 0);
 		}
 		Pickupable pickupable = gameObject.AddOrGet<Pickupable>();
 		int sortOrder = CREATURES.SORTING.CRITTER_ORDER["Bee"];
@@ -31,21 +41,22 @@ public static class BaseBeeConfig
 		};
 		gameObject.AddOrGet<LoopingSounds>();
 		gameObject.AddOrGetDef<ThreatMonitor.Def>();
-		EntityTemplates.CreateAndRegisterBaggedCreature(gameObject, must_stand_on_top_for_pickup: true, allow_mark_for_capture: false);
+		EntityTemplates.CreateAndRegisterBaggedCreature(gameObject, true, false, false);
 		gameObject.AddOrGetDef<AgeMonitor.Def>();
 		Bee bee = gameObject.AddOrGet<Bee>();
 		RadiationEmitter radiationEmitter = gameObject.AddComponent<RadiationEmitter>();
 		radiationEmitter.emitRate = 0.1f;
+		gameObject.AddOrGet<DiseaseSourceVisualizer>().alwaysShowDisease = "RadiationSickness";
 		if (!is_baby)
 		{
-			component.AddTag(GameTags.Creatures.Flyer);
+			component.AddTag(GameTags.Creatures.Flyer, false);
 			bee.radiationOutputAmount = 240f;
 			radiationEmitter.radiusProportionalToRads = false;
 			radiationEmitter.emitRadiusX = 3;
 			radiationEmitter.emitRadiusY = 3;
 			radiationEmitter.emitType = RadiationEmitter.RadiationEmitterType.Constant;
 			gameObject.AddOrGetDef<SubmergedMonitor.Def>();
-			gameObject.AddWeapon(2f, 3f);
+			gameObject.AddWeapon(2f, 3f, AttackProperties.DamageType.Standard, AttackProperties.TargetType.Single, 1, 0f);
 		}
 		else
 		{
@@ -57,7 +68,7 @@ public static class BaseBeeConfig
 			gameObject.AddOrGetDef<CreatureFallMonitor.Def>();
 			gameObject.AddOrGetDef<BeeHiveMonitor.Def>();
 			gameObject.AddOrGet<Trappable>();
-			EntityTemplates.CreateAndRegisterBaggedCreature(gameObject, must_stand_on_top_for_pickup: true, allow_mark_for_capture: true);
+			EntityTemplates.CreateAndRegisterBaggedCreature(gameObject, true, true, false);
 		}
 		gameObject.AddOrGetDef<OvercrowdingMonitor.Def>().spaceRequiredPerCreature = CREATURES.SPACE_REQUIREMENTS.TIER1;
 		gameObject.AddOrGetDef<BeeHappinessMonitor.Def>();
@@ -70,35 +81,23 @@ public static class BaseBeeConfig
 		elementConsumer.isRequired = false;
 		elementConsumer.storeOnConsume = false;
 		elementConsumer.showDescriptor = true;
-		elementConsumer.EnableConsumption(enabled: false);
+		elementConsumer.EnableConsumption(false);
 		gameObject.AddOrGetDef<BeeSleepMonitor.Def>();
 		gameObject.AddOrGetDef<BeeForagingMonitor.Def>();
 		gameObject.AddOrGet<Storage>();
-		ChoreTable.Builder chore_table = new ChoreTable.Builder().Add(new DeathStates.Def()).Add(new AnimInterruptStates.Def()).Add(new GrowUpStates.Def())
-			.Add(new TrappedStates.Def())
-			.Add(new BaggedStates.Def())
-			.Add(new FallStates.Def())
-			.Add(new StunnedStates.Def())
-			.Add(new DebugGoToStates.Def())
-			.Add(new DrowningStates.Def())
-			.Add(new BeeSleepStates.Def())
-			.Add(new FleeStates.Def())
-			.Add(new AttackStates.Def("attack_pre", "attack_pst", new CellOffset[3]
-			{
-				new CellOffset(0, 1),
-				new CellOffset(1, 1),
-				new CellOffset(-1, 1)
-			}), !is_baby)
-			.Add(new FixedCaptureStates.Def())
-			.Add(new BeeMakeHiveStates.Def())
-			.Add(new BeeForageStates.Def(SimHashes.UraniumOre.CreateTag(), BeeHiveTuning.ORE_DELIVERY_AMOUNT))
-			.Add(new BuzzStates.Def());
+		ChoreTable.Builder chore_table = new ChoreTable.Builder().Add(new DeathStates.Def(), true, -1).Add(new AnimInterruptStates.Def(), true, -1).Add(new GrowUpStates.Def(), true, -1).Add(new TrappedStates.Def(), true, -1).Add(new BaggedStates.Def(), true, -1).Add(new FallStates.Def(), true, -1).Add(new StunnedStates.Def(), true, -1).Add(new DebugGoToStates.Def(), true, -1).Add(new DrowningStates.Def(), true, -1).Add(new BeeSleepStates.Def(), true, -1).Add(new FleeStates.Def(), true, -1).Add(new AttackStates.Def("attack_pre", "attack_pst", new CellOffset[]
+		{
+			new CellOffset(0, 1),
+			new CellOffset(1, 1),
+			new CellOffset(-1, 1)
+		}), !is_baby, -1).Add(new FixedCaptureStates.Def(), true, -1).Add(new BeeMakeHiveStates.Def(), true, -1).Add(new BeeForageStates.Def(SimHashes.UraniumOre.CreateTag(), BeeHiveTuning.ORE_DELIVERY_AMOUNT), true, -1).Add(new BuzzStates.Def(), true, -1);
 		EntityTemplates.AddCreatureBrain(gameObject, chore_table, GameTags.Creatures.Species.BeetaSpecies, symbolOverridePrefix);
 		return gameObject;
 	}
 
+	// Token: 0x06000378 RID: 888 RVA: 0x000A7158 File Offset: 0x000A5358
 	public static void SetupLoopingSounds(GameObject inst)
 	{
-		inst.GetComponent<LoopingSounds>().StartSound(GlobalAssets.GetSound("Bee_wings_LP"));
+		inst.GetComponent<LoopingSounds>().StartSound(GlobalAssets.GetSound("Bee_wings_LP", false));
 	}
 }

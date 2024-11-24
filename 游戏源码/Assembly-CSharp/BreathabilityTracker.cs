@@ -1,40 +1,48 @@
+﻿using System;
 using UnityEngine;
 
+// Token: 0x02000B42 RID: 2882
 public class BreathabilityTracker : WorldTracker
 {
-	public BreathabilityTracker(int worldID)
-		: base(worldID)
+	// Token: 0x060036BA RID: 14010 RVA: 0x000C3935 File Offset: 0x000C1B35
+	public BreathabilityTracker(int worldID) : base(worldID)
 	{
 	}
 
+	// Token: 0x060036BB RID: 14011 RVA: 0x00214848 File Offset: 0x00212A48
 	public override void UpdateData()
 	{
 		float num = 0f;
-		int count = Components.LiveMinionIdentities.GetWorldItems(base.WorldID).Count;
-		if (count == 0)
+		if (Components.LiveMinionIdentities.GetWorldItems(base.WorldID, false).Count == 0)
 		{
-			AddPoint(0f);
+			base.AddPoint(0f);
 			return;
 		}
-		foreach (MinionIdentity worldItem in Components.LiveMinionIdentities.GetWorldItems(base.WorldID))
+		int num2 = 0;
+		foreach (MinionIdentity minionIdentity in Components.LiveMinionIdentities.GetWorldItems(base.WorldID, false))
 		{
-			OxygenBreather component = worldItem.GetComponent<OxygenBreather>();
-			OxygenBreather.IGasProvider gasProvider = component.GetGasProvider();
-			if (!component.IsSuffocating)
+			OxygenBreather component = minionIdentity.GetComponent<OxygenBreather>();
+			if (!(component == null))
 			{
-				num += 100f;
-				if (gasProvider.IsLowOxygen())
+				OxygenBreather.IGasProvider gasProvider = component.GetGasProvider();
+				num2++;
+				if (!component.IsSuffocating)
 				{
-					num -= 50f;
+					num += 100f;
+					if (gasProvider.IsLowOxygen())
+					{
+						num -= 50f;
+					}
 				}
 			}
 		}
-		num /= (float)count;
-		AddPoint(Mathf.RoundToInt(num));
+		num /= (float)num2;
+		base.AddPoint((float)Mathf.RoundToInt(num));
 	}
 
+	// Token: 0x060036BC RID: 14012 RVA: 0x000C398F File Offset: 0x000C1B8F
 	public override string FormatValueString(float value)
 	{
-		return value + "%";
+		return value.ToString() + "%";
 	}
 }

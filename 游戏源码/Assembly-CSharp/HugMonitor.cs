@@ -1,238 +1,288 @@
+﻿using System;
 using Klei.AI;
 using STRINGS;
 using UnityEngine;
 
+// Token: 0x02000A15 RID: 2581
 public class HugMonitor : GameStateMachine<HugMonitor, HugMonitor.Instance, IStateMachineTarget, HugMonitor.Def>
 {
+	// Token: 0x06002F38 RID: 12088 RVA: 0x001F7654 File Offset: 0x001F5854
+	public override void InitializeStates(out StateMachine.BaseState default_state)
+	{
+		default_state = this.normal;
+		base.serializable = StateMachine.SerializeType.ParamsOnly;
+		this.root.Update(new Action<HugMonitor.Instance, float>(this.UpdateHugEggCooldownTimer), UpdateRate.SIM_1000ms, false).ToggleBehaviour(GameTags.Creatures.WantsToTendEgg, (HugMonitor.Instance smi) => smi.UpdateHasTarget(), delegate(HugMonitor.Instance smi)
+		{
+			smi.hugTarget = null;
+		});
+		this.normal.DefaultState(this.normal.idle).ParamTransition<float>(this.hugFrenzyTimer, this.hugFrenzy, GameStateMachine<HugMonitor, HugMonitor.Instance, IStateMachineTarget, HugMonitor.Def>.IsGTZero);
+		this.normal.idle.ParamTransition<float>(this.wantsHugCooldownTimer, this.normal.hugReady.seekingHug, GameStateMachine<HugMonitor, HugMonitor.Instance, IStateMachineTarget, HugMonitor.Def>.IsLTEZero).Update(new Action<HugMonitor.Instance, float>(this.UpdateWantsHugCooldownTimer), UpdateRate.SIM_1000ms, false);
+		this.normal.hugReady.ToggleReactable(new Func<HugMonitor.Instance, Reactable>(this.GetHugReactable));
+		GameStateMachine<HugMonitor, HugMonitor.Instance, IStateMachineTarget, HugMonitor.Def>.State state = this.normal.hugReady.passiveHug.ParamTransition<float>(this.wantsHugCooldownTimer, this.normal.hugReady.seekingHug, GameStateMachine<HugMonitor, HugMonitor.Instance, IStateMachineTarget, HugMonitor.Def>.IsLTEZero).Update(new Action<HugMonitor.Instance, float>(this.UpdateWantsHugCooldownTimer), UpdateRate.SIM_1000ms, false);
+		string name = CREATURES.STATUSITEMS.HUGMINIONWAITING.NAME;
+		string tooltip = CREATURES.STATUSITEMS.HUGMINIONWAITING.TOOLTIP;
+		string icon = "";
+		StatusItem.IconType icon_type = StatusItem.IconType.Info;
+		NotificationType notification_type = NotificationType.Neutral;
+		bool allow_multiples = false;
+		StatusItemCategory main = Db.Get().StatusItemCategories.Main;
+		state.ToggleStatusItem(name, tooltip, icon, icon_type, notification_type, allow_multiples, default(HashedString), 129022, null, null, main);
+		this.normal.hugReady.seekingHug.ToggleBehaviour(GameTags.Creatures.WantsAHug, (HugMonitor.Instance smi) => true, delegate(HugMonitor.Instance smi)
+		{
+			this.wantsHugCooldownTimer.Set(smi.def.hugFrenzyCooldownFailed, smi, false);
+			smi.GoTo(this.normal.hugReady.passiveHug);
+		});
+		this.hugFrenzy.ParamTransition<float>(this.hugFrenzyTimer, this.normal, (HugMonitor.Instance smi, float p) => p <= 0f && !smi.IsHugging()).Update(new Action<HugMonitor.Instance, float>(this.UpdateHugFrenzyTimer), UpdateRate.SIM_1000ms, false).ToggleEffect((HugMonitor.Instance smi) => smi.frenzyEffect).ToggleLoopingSound(HugMonitor.soundPath, null, true, true, true).Enter(delegate(HugMonitor.Instance smi)
+		{
+			smi.hugParticleFx = Util.KInstantiate(EffectPrefabs.Instance.HugFrenzyFX, smi.master.transform.GetPosition() + smi.hugParticleOffset);
+			smi.hugParticleFx.transform.SetParent(smi.master.transform);
+			smi.hugParticleFx.SetActive(true);
+		}).Exit(delegate(HugMonitor.Instance smi)
+		{
+			Util.KDestroyGameObject(smi.hugParticleFx);
+			this.wantsHugCooldownTimer.Set(smi.def.hugFrenzyCooldown, smi, false);
+		});
+	}
+
+	// Token: 0x06002F39 RID: 12089 RVA: 0x000BEA39 File Offset: 0x000BCC39
+	private Reactable GetHugReactable(HugMonitor.Instance smi)
+	{
+		return new HugMinionReactable(smi.gameObject);
+	}
+
+	// Token: 0x06002F3A RID: 12090 RVA: 0x000BEA46 File Offset: 0x000BCC46
+	private void UpdateWantsHugCooldownTimer(HugMonitor.Instance smi, float dt)
+	{
+		this.wantsHugCooldownTimer.DeltaClamp(-dt, 0f, float.MaxValue, smi);
+	}
+
+	// Token: 0x06002F3B RID: 12091 RVA: 0x000BEA61 File Offset: 0x000BCC61
+	private void UpdateHugEggCooldownTimer(HugMonitor.Instance smi, float dt)
+	{
+		this.hugEggCooldownTimer.DeltaClamp(-dt, 0f, float.MaxValue, smi);
+	}
+
+	// Token: 0x06002F3C RID: 12092 RVA: 0x000BEA7C File Offset: 0x000BCC7C
+	private void UpdateHugFrenzyTimer(HugMonitor.Instance smi, float dt)
+	{
+		this.hugFrenzyTimer.DeltaClamp(-dt, 0f, float.MaxValue, smi);
+	}
+
+	// Token: 0x04001FDA RID: 8154
+	private static string soundPath = GlobalAssets.GetSound("Squirrel_hug_frenzyFX", false);
+
+	// Token: 0x04001FDB RID: 8155
+	private static Effect hugEffect;
+
+	// Token: 0x04001FDC RID: 8156
+	private StateMachine<HugMonitor, HugMonitor.Instance, IStateMachineTarget, HugMonitor.Def>.FloatParameter hugFrenzyTimer;
+
+	// Token: 0x04001FDD RID: 8157
+	private StateMachine<HugMonitor, HugMonitor.Instance, IStateMachineTarget, HugMonitor.Def>.FloatParameter wantsHugCooldownTimer;
+
+	// Token: 0x04001FDE RID: 8158
+	private StateMachine<HugMonitor, HugMonitor.Instance, IStateMachineTarget, HugMonitor.Def>.FloatParameter hugEggCooldownTimer;
+
+	// Token: 0x04001FDF RID: 8159
+	public HugMonitor.NormalStates normal;
+
+	// Token: 0x04001FE0 RID: 8160
+	public GameStateMachine<HugMonitor, HugMonitor.Instance, IStateMachineTarget, HugMonitor.Def>.State hugFrenzy;
+
+	// Token: 0x02000A16 RID: 2582
 	public class HUGTUNING
 	{
+		// Token: 0x04001FE1 RID: 8161
 		public const float HUG_EGG_TIME = 15f;
 
+		// Token: 0x04001FE2 RID: 8162
 		public const float HUG_DUPE_WAIT = 60f;
 
+		// Token: 0x04001FE3 RID: 8163
 		public const float FRENZY_EGGS_PER_CYCLE = 6f;
 
+		// Token: 0x04001FE4 RID: 8164
 		public const float FRENZY_EGG_TRAVEL_TIME_BUFFER = 5f;
 
+		// Token: 0x04001FE5 RID: 8165
 		public const float HUG_FRENZY_DURATION = 120f;
 	}
 
-	public class Def : BaseDef
+	// Token: 0x02000A17 RID: 2583
+	public class Def : StateMachine.BaseDef
 	{
+		// Token: 0x04001FE6 RID: 8166
 		public float hugsPerCycle = 2f;
 
+		// Token: 0x04001FE7 RID: 8167
 		public float scanningInterval = 30f;
 
+		// Token: 0x04001FE8 RID: 8168
 		public float hugFrenzyDuration = 120f;
 
+		// Token: 0x04001FE9 RID: 8169
 		public float hugFrenzyCooldown = 480f;
 
+		// Token: 0x04001FEA RID: 8170
 		public float hugFrenzyCooldownFailed = 120f;
 
+		// Token: 0x04001FEB RID: 8171
 		public float scanningIntervalFrenzy = 15f;
 
+		// Token: 0x04001FEC RID: 8172
 		public int maxSearchCost = 30;
 	}
 
-	public class HugReadyStates : State
+	// Token: 0x02000A18 RID: 2584
+	public class HugReadyStates : GameStateMachine<HugMonitor, HugMonitor.Instance, IStateMachineTarget, HugMonitor.Def>.State
 	{
-		public State passiveHug;
+		// Token: 0x04001FED RID: 8173
+		public GameStateMachine<HugMonitor, HugMonitor.Instance, IStateMachineTarget, HugMonitor.Def>.State passiveHug;
 
-		public State seekingHug;
+		// Token: 0x04001FEE RID: 8174
+		public GameStateMachine<HugMonitor, HugMonitor.Instance, IStateMachineTarget, HugMonitor.Def>.State seekingHug;
 	}
 
-	public class NormalStates : State
+	// Token: 0x02000A19 RID: 2585
+	public class NormalStates : GameStateMachine<HugMonitor, HugMonitor.Instance, IStateMachineTarget, HugMonitor.Def>.State
 	{
-		public State idle;
+		// Token: 0x04001FEF RID: 8175
+		public GameStateMachine<HugMonitor, HugMonitor.Instance, IStateMachineTarget, HugMonitor.Def>.State idle;
 
-		public HugReadyStates hugReady;
+		// Token: 0x04001FF0 RID: 8176
+		public HugMonitor.HugReadyStates hugReady;
 	}
 
-	public new class Instance : GameInstance
+	// Token: 0x02000A1A RID: 2586
+	public new class Instance : GameStateMachine<HugMonitor, HugMonitor.Instance, IStateMachineTarget, HugMonitor.Def>.GameInstance
 	{
-		public GameObject hugParticleFx;
-
-		public Vector3 hugParticleOffset;
-
-		public Effect frenzyEffect;
-
-		public KPrefabID hugTarget;
-
-		[MyCmpGet]
-		private Navigator navigator;
-
-		public Instance(IStateMachineTarget master, Def def)
-			: base(master, def)
+		// Token: 0x06002F45 RID: 12101 RVA: 0x001F7938 File Offset: 0x001F5B38
+		public Instance(IStateMachineTarget master, HugMonitor.Def def) : base(master, def)
 		{
-			frenzyEffect = Db.Get().effects.Get("HuggingFrenzy");
-			RefreshSearchTime();
-			if (hugEffect == null)
+			this.frenzyEffect = Db.Get().effects.Get("HuggingFrenzy");
+			this.RefreshSearchTime();
+			if (HugMonitor.hugEffect == null)
 			{
-				hugEffect = Db.Get().effects.Get("EggHug");
+				HugMonitor.hugEffect = Db.Get().effects.Get("EggHug");
 			}
-			base.smi.sm.wantsHugCooldownTimer.Set(Random.Range(base.smi.def.hugFrenzyCooldownFailed, base.smi.def.hugFrenzyCooldown), base.smi);
+			base.smi.sm.wantsHugCooldownTimer.Set(UnityEngine.Random.Range(base.smi.def.hugFrenzyCooldownFailed, base.smi.def.hugFrenzyCooldown), base.smi, false);
 		}
 
+		// Token: 0x06002F46 RID: 12102 RVA: 0x001F79D0 File Offset: 0x001F5BD0
 		private void RefreshSearchTime()
 		{
-			if (hugTarget == null)
+			if (this.hugTarget == null)
 			{
-				base.smi.sm.hugEggCooldownTimer.Set(GetScanningInterval(), base.smi);
+				base.smi.sm.hugEggCooldownTimer.Set(this.GetScanningInterval(), base.smi, false);
+				return;
 			}
-			else
-			{
-				base.smi.sm.hugEggCooldownTimer.Set(GetHugInterval(), base.smi);
-			}
+			base.smi.sm.hugEggCooldownTimer.Set(this.GetHugInterval(), base.smi, false);
 		}
 
+		// Token: 0x06002F47 RID: 12103 RVA: 0x000BEB10 File Offset: 0x000BCD10
 		private float GetScanningInterval()
 		{
-			if (!IsHuggingFrenzy())
+			if (!this.IsHuggingFrenzy())
 			{
 				return base.def.scanningInterval;
 			}
 			return base.def.scanningIntervalFrenzy;
 		}
 
+		// Token: 0x06002F48 RID: 12104 RVA: 0x000BEB31 File Offset: 0x000BCD31
 		private float GetHugInterval()
 		{
-			if (IsHuggingFrenzy())
+			if (this.IsHuggingFrenzy())
 			{
 				return 0f;
 			}
 			return 600f / base.def.hugsPerCycle;
 		}
 
+		// Token: 0x06002F49 RID: 12105 RVA: 0x000BEB52 File Offset: 0x000BCD52
 		public bool IsHuggingFrenzy()
 		{
 			return base.smi.GetCurrentState() == base.smi.sm.hugFrenzy;
 		}
 
+		// Token: 0x06002F4A RID: 12106 RVA: 0x000BEB71 File Offset: 0x000BCD71
 		public bool IsHugging()
 		{
 			return base.smi.GetSMI<AnimInterruptMonitor.Instance>().anims != null;
 		}
 
+		// Token: 0x06002F4B RID: 12107 RVA: 0x001F7A34 File Offset: 0x001F5C34
 		public bool UpdateHasTarget()
 		{
-			if (hugTarget == null)
+			if (this.hugTarget == null)
 			{
 				if (base.smi.sm.hugEggCooldownTimer.Get(base.smi) > 0f)
 				{
 					return false;
 				}
-				FindEgg();
-				RefreshSearchTime();
+				this.FindEgg();
+				this.RefreshSearchTime();
 			}
-			return hugTarget != null;
+			return this.hugTarget != null;
 		}
 
+		// Token: 0x06002F4C RID: 12108 RVA: 0x001F7A8C File Offset: 0x001F5C8C
 		public void EnterHuggingFrenzy()
 		{
-			base.smi.sm.hugFrenzyTimer.Set(base.smi.def.hugFrenzyDuration, base.smi);
-			base.smi.sm.hugEggCooldownTimer.Set(0f, base.smi);
+			base.smi.sm.hugFrenzyTimer.Set(base.smi.def.hugFrenzyDuration, base.smi, false);
+			base.smi.sm.hugEggCooldownTimer.Set(0f, base.smi, false);
 		}
 
+		// Token: 0x06002F4D RID: 12109 RVA: 0x001F7AE8 File Offset: 0x001F5CE8
 		private void FindEgg()
 		{
 			int cell = Grid.PosToCell(base.gameObject);
 			CavityInfo cavityForCell = Game.Instance.roomProber.GetCavityForCell(cell);
 			int num = base.def.maxSearchCost;
-			hugTarget = null;
-			if (cavityForCell == null)
+			this.hugTarget = null;
+			if (cavityForCell != null)
 			{
-				return;
-			}
-			foreach (KPrefabID egg in cavityForCell.eggs)
-			{
-				KPrefabID kPrefabID = egg;
-				if (kPrefabID.HasTag(GameTags.Creatures.ReservedByCreature) || kPrefabID.GetComponent<Effects>().HasEffect(hugEffect))
+				foreach (KPrefabID kprefabID in cavityForCell.eggs)
 				{
-					continue;
-				}
-				int num2 = Grid.PosToCell(kPrefabID);
-				if (kPrefabID.HasTag(GameTags.Stored))
-				{
-					if (!Grid.ObjectLayers[1].TryGetValue(num2, out var value) || !value.TryGetComponent<KPrefabID>(out var component) || !component.IsPrefabID("EggIncubator"))
+					if (!kprefabID.HasTag(GameTags.Creatures.ReservedByCreature) && !kprefabID.GetComponent<Effects>().HasEffect(HugMonitor.hugEffect))
 					{
-						continue;
+						int num2 = Grid.PosToCell(kprefabID);
+						if (kprefabID.HasTag(GameTags.Stored))
+						{
+							GameObject gameObject;
+							KPrefabID kprefabID2;
+							if (!Grid.ObjectLayers[1].TryGetValue(num2, out gameObject) || !gameObject.TryGetComponent<KPrefabID>(out kprefabID2) || !kprefabID2.IsPrefabID("EggIncubator"))
+							{
+								continue;
+							}
+							num2 = Grid.PosToCell(gameObject);
+							kprefabID = kprefabID2;
+						}
+						int navigationCost = this.navigator.GetNavigationCost(num2);
+						if (navigationCost != -1 && navigationCost < num)
+						{
+							this.hugTarget = kprefabID;
+							num = navigationCost;
+						}
 					}
-					num2 = Grid.PosToCell(value);
-					kPrefabID = component;
-				}
-				int navigationCost = navigator.GetNavigationCost(num2);
-				if (navigationCost != -1 && navigationCost < num)
-				{
-					hugTarget = kPrefabID;
-					num = navigationCost;
 				}
 			}
 		}
-	}
 
-	private static string soundPath = GlobalAssets.GetSound("Squirrel_hug_frenzyFX");
+		// Token: 0x04001FF1 RID: 8177
+		public GameObject hugParticleFx;
 
-	private static Effect hugEffect;
+		// Token: 0x04001FF2 RID: 8178
+		public Vector3 hugParticleOffset;
 
-	private FloatParameter hugFrenzyTimer;
+		// Token: 0x04001FF3 RID: 8179
+		public Effect frenzyEffect;
 
-	private FloatParameter wantsHugCooldownTimer;
+		// Token: 0x04001FF4 RID: 8180
+		public KPrefabID hugTarget;
 
-	private FloatParameter hugEggCooldownTimer;
-
-	public NormalStates normal;
-
-	public State hugFrenzy;
-
-	public override void InitializeStates(out BaseState default_state)
-	{
-		default_state = normal;
-		base.serializable = SerializeType.ParamsOnly;
-		root.Update(UpdateHugEggCooldownTimer, UpdateRate.SIM_1000ms).ToggleBehaviour(GameTags.Creatures.WantsToTendEgg, (Instance smi) => smi.UpdateHasTarget(), delegate(Instance smi)
-		{
-			smi.hugTarget = null;
-		});
-		normal.DefaultState(normal.idle).ParamTransition(hugFrenzyTimer, hugFrenzy, GameStateMachine<HugMonitor, Instance, IStateMachineTarget, Def>.IsGTZero);
-		normal.idle.ParamTransition(wantsHugCooldownTimer, normal.hugReady.seekingHug, GameStateMachine<HugMonitor, Instance, IStateMachineTarget, Def>.IsLTEZero).Update(UpdateWantsHugCooldownTimer, UpdateRate.SIM_1000ms);
-		normal.hugReady.ToggleReactable(GetHugReactable);
-		normal.hugReady.passiveHug.ParamTransition(wantsHugCooldownTimer, normal.hugReady.seekingHug, GameStateMachine<HugMonitor, Instance, IStateMachineTarget, Def>.IsLTEZero).Update(UpdateWantsHugCooldownTimer, UpdateRate.SIM_1000ms).ToggleStatusItem(CREATURES.STATUSITEMS.HUGMINIONWAITING.NAME, CREATURES.STATUSITEMS.HUGMINIONWAITING.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.Neutral, allow_multiples: false, default(HashedString), 129022, null, null, Db.Get().StatusItemCategories.Main);
-		normal.hugReady.seekingHug.ToggleBehaviour(GameTags.Creatures.WantsAHug, (Instance smi) => true, delegate(Instance smi)
-		{
-			wantsHugCooldownTimer.Set(smi.def.hugFrenzyCooldownFailed, smi);
-			smi.GoTo(normal.hugReady.passiveHug);
-		});
-		hugFrenzy.ParamTransition(hugFrenzyTimer, normal, (Instance smi, float p) => p <= 0f && !smi.IsHugging()).Update(UpdateHugFrenzyTimer, UpdateRate.SIM_1000ms).ToggleEffect((Instance smi) => smi.frenzyEffect)
-			.ToggleLoopingSound(soundPath)
-			.Enter(delegate(Instance smi)
-			{
-				smi.hugParticleFx = Util.KInstantiate(EffectPrefabs.Instance.HugFrenzyFX, smi.master.transform.GetPosition() + smi.hugParticleOffset);
-				smi.hugParticleFx.transform.SetParent(smi.master.transform);
-				smi.hugParticleFx.SetActive(value: true);
-			})
-			.Exit(delegate(Instance smi)
-			{
-				Util.KDestroyGameObject(smi.hugParticleFx);
-				wantsHugCooldownTimer.Set(smi.def.hugFrenzyCooldown, smi);
-			});
-	}
-
-	private Reactable GetHugReactable(Instance smi)
-	{
-		return new HugMinionReactable(smi.gameObject);
-	}
-
-	private void UpdateWantsHugCooldownTimer(Instance smi, float dt)
-	{
-		wantsHugCooldownTimer.DeltaClamp(0f - dt, 0f, float.MaxValue, smi);
-	}
-
-	private void UpdateHugEggCooldownTimer(Instance smi, float dt)
-	{
-		hugEggCooldownTimer.DeltaClamp(0f - dt, 0f, float.MaxValue, smi);
-	}
-
-	private void UpdateHugFrenzyTimer(Instance smi, float dt)
-	{
-		hugFrenzyTimer.DeltaClamp(0f - dt, 0f, float.MaxValue, smi);
+		// Token: 0x04001FF5 RID: 8181
+		[MyCmpGet]
+		private Navigator navigator;
 	}
 }

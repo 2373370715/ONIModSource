@@ -1,157 +1,104 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using FMOD;
 using FMOD.Studio;
 using FMODUnity;
 using UnityEngine;
 
+// Token: 0x02000A87 RID: 2695
 [AddComponentMenu("KMonoBehaviour/scripts/LoopingSoundManager")]
 public class LoopingSoundManager : KMonoBehaviour, IRenderEveryTick
 {
-	public class Tuning : TuningData<Tuning>
-	{
-		public float velocityScale;
-	}
-
-	public struct Sound
-	{
-		[Flags]
-		public enum Flags
-		{
-			PLAYING = 1,
-			PAUSE_ON_GAME_PAUSED = 2,
-			ENABLE_CULLING = 4,
-			ENABLE_CAMERA_SCALED_POSITION = 8
-		}
-
-		public EventInstance ev;
-
-		public Transform transform;
-
-		public KBatchedAnimController animController;
-
-		public float falloffDistanceSq;
-
-		public HashedString path;
-
-		public Vector3 pos;
-
-		public Vector2 velocity;
-
-		public HashedString firstParameter;
-
-		public HashedString secondParameter;
-
-		public float firstParameterValue;
-
-		public float secondParameterValue;
-
-		public float vol;
-
-		public bool objectIsSelectedAndVisible;
-
-		public Flags flags;
-
-		public bool IsPlaying => (flags & Flags.PLAYING) != 0;
-
-		public bool ShouldPauseOnGamePaused => (flags & Flags.PAUSE_ON_GAME_PAUSED) != 0;
-
-		public bool IsCullingEnabled => (flags & Flags.ENABLE_CULLING) != 0;
-
-		public bool ShouldCameraScalePosition => (flags & Flags.ENABLE_CAMERA_SCALED_POSITION) != 0;
-	}
-
-	private static LoopingSoundManager instance;
-
-	private bool GameIsPaused;
-
-	private Dictionary<HashedString, LoopingSoundParameterUpdater> parameterUpdaters = new Dictionary<HashedString, LoopingSoundParameterUpdater>();
-
-	private KCompactedVector<Sound> sounds = new KCompactedVector<Sound>();
-
+	// Token: 0x060031CA RID: 12746 RVA: 0x000C05A8 File Offset: 0x000BE7A8
 	public static void DestroyInstance()
 	{
-		instance = null;
+		LoopingSoundManager.instance = null;
 	}
 
+	// Token: 0x060031CB RID: 12747 RVA: 0x000C05B0 File Offset: 0x000BE7B0
 	protected override void OnPrefabInit()
 	{
-		instance = this;
-		CollectParameterUpdaters();
+		LoopingSoundManager.instance = this;
+		this.CollectParameterUpdaters();
 	}
 
+	// Token: 0x060031CC RID: 12748 RVA: 0x00200598 File Offset: 0x001FE798
 	protected override void OnSpawn()
 	{
 		if (SpeedControlScreen.Instance != null && Game.Instance != null)
 		{
-			Game.Instance.Subscribe(-1788536802, instance.OnPauseChanged);
+			Game.Instance.Subscribe(-1788536802, new Action<object>(LoopingSoundManager.instance.OnPauseChanged));
 		}
-		Game.Instance.Subscribe(1983128072, delegate
+		Game.Instance.Subscribe(1983128072, delegate(object worlds)
 		{
-			OnActiveWorldChanged();
+			this.OnActiveWorldChanged();
 		});
 	}
 
+	// Token: 0x060031CD RID: 12749 RVA: 0x000C05BE File Offset: 0x000BE7BE
 	private void OnActiveWorldChanged()
 	{
-		StopAllSounds();
+		this.StopAllSounds();
 	}
 
+	// Token: 0x060031CE RID: 12750 RVA: 0x002005FC File Offset: 0x001FE7FC
 	private void CollectParameterUpdaters()
 	{
-		foreach (Type currentDomainType in App.GetCurrentDomainTypes())
+		foreach (Type type in App.GetCurrentDomainTypes())
 		{
-			if (currentDomainType.IsAbstract)
+			if (!type.IsAbstract)
 			{
-				continue;
-			}
-			bool flag = false;
-			Type baseType = currentDomainType.BaseType;
-			while (baseType != null)
-			{
-				if (baseType == typeof(LoopingSoundParameterUpdater))
+				bool flag = false;
+				Type baseType = type.BaseType;
+				while (baseType != null)
 				{
-					flag = true;
-					break;
+					if (baseType == typeof(LoopingSoundParameterUpdater))
+					{
+						flag = true;
+						break;
+					}
+					baseType = baseType.BaseType;
 				}
-				baseType = baseType.BaseType;
-			}
-			if (flag)
-			{
-				LoopingSoundParameterUpdater loopingSoundParameterUpdater = (LoopingSoundParameterUpdater)Activator.CreateInstance(currentDomainType);
-				DebugUtil.Assert(!parameterUpdaters.ContainsKey(loopingSoundParameterUpdater.parameter));
-				parameterUpdaters[loopingSoundParameterUpdater.parameter] = loopingSoundParameterUpdater;
+				if (flag)
+				{
+					LoopingSoundParameterUpdater loopingSoundParameterUpdater = (LoopingSoundParameterUpdater)Activator.CreateInstance(type);
+					DebugUtil.Assert(!this.parameterUpdaters.ContainsKey(loopingSoundParameterUpdater.parameter));
+					this.parameterUpdaters[loopingSoundParameterUpdater.parameter] = loopingSoundParameterUpdater;
+				}
 			}
 		}
 	}
 
+	// Token: 0x060031CF RID: 12751 RVA: 0x002006C4 File Offset: 0x001FE8C4
 	public void UpdateFirstParameter(HandleVector<int>.Handle handle, HashedString parameter, float value)
 	{
-		Sound data = sounds.GetData(handle);
+		LoopingSoundManager.Sound data = this.sounds.GetData(handle);
 		data.firstParameterValue = value;
 		data.firstParameter = parameter;
 		if (data.IsPlaying)
 		{
-			data.ev.setParameterByID(GetSoundDescription(data.path).GetParameterId(parameter), value);
+			data.ev.setParameterByID(this.GetSoundDescription(data.path).GetParameterId(parameter), value, false);
 		}
-		sounds.SetData(handle, data);
+		this.sounds.SetData(handle, data);
 	}
 
+	// Token: 0x060031D0 RID: 12752 RVA: 0x00200728 File Offset: 0x001FE928
 	public void UpdateSecondParameter(HandleVector<int>.Handle handle, HashedString parameter, float value)
 	{
-		Sound data = sounds.GetData(handle);
+		LoopingSoundManager.Sound data = this.sounds.GetData(handle);
 		data.secondParameterValue = value;
 		data.secondParameter = parameter;
 		if (data.IsPlaying)
 		{
-			data.ev.setParameterByID(GetSoundDescription(data.path).GetParameterId(parameter), value);
+			data.ev.setParameterByID(this.GetSoundDescription(data.path).GetParameterId(parameter), value, false);
 		}
-		sounds.SetData(handle, data);
+		this.sounds.SetData(handle, data);
 	}
 
+	// Token: 0x060031D1 RID: 12753 RVA: 0x0020078C File Offset: 0x001FE98C
 	public void UpdateObjectSelection(HandleVector<int>.Handle handle, Vector3 sound_pos, float vol, bool objectIsSelectedAndVisible)
 	{
-		Sound data = sounds.GetData(handle);
+		LoopingSoundManager.Sound data = this.sounds.GetData(handle);
 		data.pos = sound_pos;
 		data.vol = vol;
 		data.objectIsSelectedAndVisible = objectIsSelectedAndVisible;
@@ -161,27 +108,29 @@ public class LoopingSoundManager : KMonoBehaviour, IRenderEveryTick
 			data.ev.set3DAttributes(attributes);
 			data.ev.setVolume(vol);
 		}
-		sounds.SetData(handle, data);
+		this.sounds.SetData(handle, data);
 	}
 
+	// Token: 0x060031D2 RID: 12754 RVA: 0x002007F8 File Offset: 0x001FE9F8
 	public void UpdateVelocity(HandleVector<int>.Handle handle, Vector2 velocity)
 	{
-		Sound data = sounds.GetData(handle);
+		LoopingSoundManager.Sound data = this.sounds.GetData(handle);
 		data.velocity = velocity;
-		sounds.SetData(handle, data);
+		this.sounds.SetData(handle, data);
 	}
 
+	// Token: 0x060031D3 RID: 12755 RVA: 0x00200828 File Offset: 0x001FEA28
 	public void RenderEveryTick(float dt)
 	{
-		ListPool<Sound, LoopingSoundManager>.PooledList pooledList = ListPool<Sound, LoopingSoundManager>.Allocate();
+		ListPool<LoopingSoundManager.Sound, LoopingSoundManager>.PooledList pooledList = ListPool<LoopingSoundManager.Sound, LoopingSoundManager>.Allocate();
 		ListPool<int, LoopingSoundManager>.PooledList pooledList2 = ListPool<int, LoopingSoundManager>.Allocate();
 		ListPool<int, LoopingSoundManager>.PooledList pooledList3 = ListPool<int, LoopingSoundManager>.Allocate();
-		List<Sound> dataList = sounds.GetDataList();
+		List<LoopingSoundManager.Sound> dataList = this.sounds.GetDataList();
 		bool flag = Time.timeScale == 0f;
 		SoundCuller soundCuller = CameraController.Instance.soundCuller;
 		for (int i = 0; i < dataList.Count; i++)
 		{
-			Sound sound = dataList[i];
+			LoopingSoundManager.Sound sound = dataList[i];
 			if (sound.objectIsSelectedAndVisible)
 			{
 				sound.pos = SoundEvent.AudioHighlightListenerPosition(sound.transform.GetPosition());
@@ -195,17 +144,18 @@ public class LoopingSoundManager : KMonoBehaviour, IRenderEveryTick
 			if (sound.animController != null)
 			{
 				Vector3 offset = sound.animController.Offset;
-				sound.pos.x += offset.x;
-				sound.pos.y += offset.y;
+				sound.pos.x = sound.pos.x + offset.x;
+				sound.pos.y = sound.pos.y + offset.y;
 			}
-			bool num = !sound.IsCullingEnabled || (sound.ShouldCameraScalePosition && soundCuller.IsAudible(sound.pos, sound.falloffDistanceSq)) || soundCuller.IsAudibleNoCameraScaling(sound.pos, sound.falloffDistanceSq);
+			bool flag2 = !sound.IsCullingEnabled || (sound.ShouldCameraScalePosition && soundCuller.IsAudible(sound.pos, sound.falloffDistanceSq)) || soundCuller.IsAudibleNoCameraScaling(sound.pos, sound.falloffDistanceSq);
 			bool isPlaying = sound.IsPlaying;
-			if (num)
+			if (flag2)
 			{
 				pooledList.Add(sound);
 				if (!isPlaying)
 				{
-					sound.ev = KFMOD.CreateInstance(GetSoundDescription(sound.path).path);
+					SoundDescription soundDescription = this.GetSoundDescription(sound.path);
+					sound.ev = KFMOD.CreateInstance(soundDescription.path);
 					dataList[i] = sound;
 					pooledList2.Add(i);
 				}
@@ -215,231 +165,357 @@ public class LoopingSoundManager : KMonoBehaviour, IRenderEveryTick
 				pooledList3.Add(i);
 			}
 		}
-		foreach (int item in pooledList2)
+		foreach (int index in pooledList2)
 		{
-			Sound value = dataList[item];
-			SoundDescription soundDescription = GetSoundDescription(value.path);
-			value.ev.setPaused(flag && value.ShouldPauseOnGamePaused);
-			value.pos.z = 0f;
-			Vector3 pos = value.pos;
-			if (value.objectIsSelectedAndVisible)
+			LoopingSoundManager.Sound sound2 = dataList[index];
+			SoundDescription soundDescription2 = this.GetSoundDescription(sound2.path);
+			sound2.ev.setPaused(flag && sound2.ShouldPauseOnGamePaused);
+			sound2.pos.z = 0f;
+			Vector3 pos = sound2.pos;
+			if (sound2.objectIsSelectedAndVisible)
 			{
-				value.pos = SoundEvent.AudioHighlightListenerPosition(value.transform.GetPosition());
-				value.vol = 1f;
+				sound2.pos = SoundEvent.AudioHighlightListenerPosition(sound2.transform.GetPosition());
+				sound2.vol = 1f;
 			}
-			else if (value.transform != null)
+			else if (sound2.transform != null)
 			{
-				value.pos = value.transform.GetPosition();
+				sound2.pos = sound2.transform.GetPosition();
 			}
-			value.ev.set3DAttributes(pos.To3DAttributes());
-			value.ev.setVolume(value.vol);
-			value.ev.start();
-			value.flags |= Sound.Flags.PLAYING;
-			if (value.firstParameter != HashedString.Invalid)
+			sound2.ev.set3DAttributes(pos.To3DAttributes());
+			sound2.ev.setVolume(sound2.vol);
+			sound2.ev.start();
+			sound2.flags |= LoopingSoundManager.Sound.Flags.PLAYING;
+			if (sound2.firstParameter != HashedString.Invalid)
 			{
-				value.ev.setParameterByID(soundDescription.GetParameterId(value.firstParameter), value.firstParameterValue);
+				sound2.ev.setParameterByID(soundDescription2.GetParameterId(sound2.firstParameter), sound2.firstParameterValue, false);
 			}
-			if (value.secondParameter != HashedString.Invalid)
+			if (sound2.secondParameter != HashedString.Invalid)
 			{
-				value.ev.setParameterByID(soundDescription.GetParameterId(value.secondParameter), value.secondParameterValue);
+				sound2.ev.setParameterByID(soundDescription2.GetParameterId(sound2.secondParameter), sound2.secondParameterValue, false);
 			}
-			LoopingSoundParameterUpdater.Sound sound2 = default(LoopingSoundParameterUpdater.Sound);
-			sound2.ev = value.ev;
-			sound2.path = value.path;
-			sound2.description = soundDescription;
-			sound2.transform = value.transform;
-			sound2.objectIsSelectedAndVisible = false;
-			LoopingSoundParameterUpdater.Sound sound3 = sound2;
-			SoundDescription.Parameter[] parameters = soundDescription.parameters;
-			for (int j = 0; j < parameters.Length; j++)
+			LoopingSoundParameterUpdater.Sound sound3 = new LoopingSoundParameterUpdater.Sound
 			{
-				SoundDescription.Parameter parameter = parameters[j];
-				LoopingSoundParameterUpdater value2 = null;
-				if (parameterUpdaters.TryGetValue(parameter.name, out value2))
+				ev = sound2.ev,
+				path = sound2.path,
+				description = soundDescription2,
+				transform = sound2.transform,
+				objectIsSelectedAndVisible = false
+			};
+			foreach (SoundDescription.Parameter parameter in soundDescription2.parameters)
+			{
+				LoopingSoundParameterUpdater loopingSoundParameterUpdater = null;
+				if (this.parameterUpdaters.TryGetValue(parameter.name, out loopingSoundParameterUpdater))
 				{
-					value2.Add(sound3);
+					loopingSoundParameterUpdater.Add(sound3);
 				}
 			}
-			dataList[item] = value;
+			dataList[index] = sound2;
 		}
 		pooledList2.Recycle();
-		foreach (int item2 in pooledList3)
+		foreach (int index2 in pooledList3)
 		{
-			Sound value3 = dataList[item2];
-			SoundDescription soundDescription2 = GetSoundDescription(value3.path);
-			LoopingSoundParameterUpdater.Sound sound2 = default(LoopingSoundParameterUpdater.Sound);
-			sound2.ev = value3.ev;
-			sound2.path = value3.path;
-			sound2.description = soundDescription2;
-			sound2.transform = value3.transform;
-			sound2.objectIsSelectedAndVisible = false;
-			LoopingSoundParameterUpdater.Sound sound4 = sound2;
-			SoundDescription.Parameter[] parameters = soundDescription2.parameters;
-			for (int j = 0; j < parameters.Length; j++)
+			LoopingSoundManager.Sound sound4 = dataList[index2];
+			SoundDescription soundDescription3 = this.GetSoundDescription(sound4.path);
+			LoopingSoundParameterUpdater.Sound sound5 = new LoopingSoundParameterUpdater.Sound
 			{
-				SoundDescription.Parameter parameter2 = parameters[j];
-				LoopingSoundParameterUpdater value4 = null;
-				if (parameterUpdaters.TryGetValue(parameter2.name, out value4))
+				ev = sound4.ev,
+				path = sound4.path,
+				description = soundDescription3,
+				transform = sound4.transform,
+				objectIsSelectedAndVisible = false
+			};
+			foreach (SoundDescription.Parameter parameter2 in soundDescription3.parameters)
+			{
+				LoopingSoundParameterUpdater loopingSoundParameterUpdater2 = null;
+				if (this.parameterUpdaters.TryGetValue(parameter2.name, out loopingSoundParameterUpdater2))
 				{
-					value4.Remove(sound4);
+					loopingSoundParameterUpdater2.Remove(sound5);
 				}
 			}
-			if (value3.ShouldCameraScalePosition)
+			if (sound4.ShouldCameraScalePosition)
 			{
-				value3.ev.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+				sound4.ev.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
 			}
 			else
 			{
-				value3.ev.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+				sound4.ev.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
 			}
-			value3.flags &= ~Sound.Flags.PLAYING;
-			value3.ev.release();
-			dataList[item2] = value3;
+			sound4.flags &= ~LoopingSoundManager.Sound.Flags.PLAYING;
+			sound4.ev.release();
+			dataList[index2] = sound4;
 		}
 		pooledList3.Recycle();
-		float velocityScale = TuningData<Tuning>.Get().velocityScale;
-		foreach (Sound item3 in pooledList)
+		float velocityScale = TuningData<LoopingSoundManager.Tuning>.Get().velocityScale;
+		foreach (LoopingSoundManager.Sound sound6 in pooledList)
 		{
-			ATTRIBUTES_3D attributes = SoundEvent.GetCameraScaledPosition(item3.pos, item3.objectIsSelectedAndVisible).To3DAttributes();
-			attributes.velocity = RuntimeUtils.ToFMODVector(item3.velocity * velocityScale);
-			EventInstance ev = item3.ev;
+			ATTRIBUTES_3D attributes = SoundEvent.GetCameraScaledPosition(sound6.pos, sound6.objectIsSelectedAndVisible).To3DAttributes();
+			attributes.velocity = (sound6.velocity * velocityScale).ToFMODVector();
+			EventInstance ev = sound6.ev;
 			ev.set3DAttributes(attributes);
 		}
-		foreach (KeyValuePair<HashedString, LoopingSoundParameterUpdater> parameterUpdater in parameterUpdaters)
+		foreach (KeyValuePair<HashedString, LoopingSoundParameterUpdater> keyValuePair in this.parameterUpdaters)
 		{
-			parameterUpdater.Value.Update(dt);
+			keyValuePair.Value.Update(dt);
 		}
 		pooledList.Recycle();
 	}
 
+	// Token: 0x060031D4 RID: 12756 RVA: 0x000C05C6 File Offset: 0x000BE7C6
 	public static LoopingSoundManager Get()
 	{
-		return instance;
+		return LoopingSoundManager.instance;
 	}
 
+	// Token: 0x060031D5 RID: 12757 RVA: 0x00200E64 File Offset: 0x001FF064
 	public void StopAllSounds()
 	{
-		foreach (Sound data in sounds.GetDataList())
+		foreach (LoopingSoundManager.Sound sound in this.sounds.GetDataList())
 		{
-			if (data.IsPlaying)
+			if (sound.IsPlaying)
 			{
-				EventInstance ev = data.ev;
+				EventInstance ev = sound.ev;
 				ev.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
-				ev = data.ev;
+				ev = sound.ev;
 				ev.release();
 			}
 		}
 	}
 
+	// Token: 0x060031D6 RID: 12758 RVA: 0x000C05CD File Offset: 0x000BE7CD
 	private SoundDescription GetSoundDescription(HashedString path)
 	{
 		return KFMOD.GetSoundEventDescription(path);
 	}
 
+	// Token: 0x060031D7 RID: 12759 RVA: 0x00200EE0 File Offset: 0x001FF0E0
 	public HandleVector<int>.Handle Add(string path, Vector3 pos, Transform transform = null, bool pause_on_game_pause = true, bool enable_culling = true, bool enable_camera_scaled_position = true, float vol = 1f, bool objectIsSelectedAndVisible = false)
 	{
 		SoundDescription soundEventDescription = KFMOD.GetSoundEventDescription(path);
-		Sound.Flags flags = (Sound.Flags)0;
+		LoopingSoundManager.Sound.Flags flags = (LoopingSoundManager.Sound.Flags)0;
 		if (pause_on_game_pause)
 		{
-			flags |= Sound.Flags.PAUSE_ON_GAME_PAUSED;
+			flags |= LoopingSoundManager.Sound.Flags.PAUSE_ON_GAME_PAUSED;
 		}
 		if (enable_culling)
 		{
-			flags |= Sound.Flags.ENABLE_CULLING;
+			flags |= LoopingSoundManager.Sound.Flags.ENABLE_CULLING;
 		}
 		if (enable_camera_scaled_position)
 		{
-			flags |= Sound.Flags.ENABLE_CAMERA_SCALED_POSITION;
+			flags |= LoopingSoundManager.Sound.Flags.ENABLE_CAMERA_SCALED_POSITION;
 		}
 		KBatchedAnimController animController = null;
 		if (transform != null)
 		{
 			animController = transform.GetComponent<KBatchedAnimController>();
 		}
-		Sound sound = default(Sound);
-		sound.transform = transform;
-		sound.animController = animController;
-		sound.falloffDistanceSq = soundEventDescription.falloffDistanceSq;
-		sound.path = path;
-		sound.pos = pos;
-		sound.flags = flags;
-		sound.firstParameter = HashedString.Invalid;
-		sound.secondParameter = HashedString.Invalid;
-		sound.vol = vol;
-		sound.objectIsSelectedAndVisible = objectIsSelectedAndVisible;
-		Sound initial_data = sound;
-		return sounds.Allocate(initial_data);
+		LoopingSoundManager.Sound initial_data = new LoopingSoundManager.Sound
+		{
+			transform = transform,
+			animController = animController,
+			falloffDistanceSq = soundEventDescription.falloffDistanceSq,
+			path = path,
+			pos = pos,
+			flags = flags,
+			firstParameter = HashedString.Invalid,
+			secondParameter = HashedString.Invalid,
+			vol = vol,
+			objectIsSelectedAndVisible = objectIsSelectedAndVisible
+		};
+		return this.sounds.Allocate(initial_data);
 	}
 
+	// Token: 0x060031D8 RID: 12760 RVA: 0x000C05D5 File Offset: 0x000BE7D5
 	public static HandleVector<int>.Handle StartSound(EventReference event_ref, Vector3 pos, bool pause_on_game_pause = true, bool enable_culling = true)
 	{
-		return StartSound(KFMOD.GetEventReferencePath(event_ref), pos, pause_on_game_pause, enable_culling);
+		return LoopingSoundManager.StartSound(KFMOD.GetEventReferencePath(event_ref), pos, pause_on_game_pause, enable_culling);
 	}
 
+	// Token: 0x060031D9 RID: 12761 RVA: 0x00200FA0 File Offset: 0x001FF1A0
 	public static HandleVector<int>.Handle StartSound(string path, Vector3 pos, bool pause_on_game_pause = true, bool enable_culling = true)
 	{
 		if (string.IsNullOrEmpty(path))
 		{
-			Debug.LogWarning("Missing sound");
+			global::Debug.LogWarning("Missing sound");
 			return HandleVector<int>.InvalidHandle;
 		}
-		return Get().Add(path, pos, null, pause_on_game_pause, enable_culling);
+		return LoopingSoundManager.Get().Add(path, pos, null, pause_on_game_pause, enable_culling, true, 1f, false);
 	}
 
+	// Token: 0x060031DA RID: 12762 RVA: 0x00200FDC File Offset: 0x001FF1DC
 	public static void StopSound(HandleVector<int>.Handle handle)
 	{
-		if (Get() == null)
+		if (LoopingSoundManager.Get() == null)
 		{
 			return;
 		}
-		Sound data = Get().sounds.GetData(handle);
+		LoopingSoundManager.Sound data = LoopingSoundManager.Get().sounds.GetData(handle);
 		if (data.IsPlaying)
 		{
-			data.ev.stop(Get().GameIsPaused ? FMOD.Studio.STOP_MODE.IMMEDIATE : FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+			data.ev.stop(LoopingSoundManager.Get().GameIsPaused ? FMOD.Studio.STOP_MODE.IMMEDIATE : FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
 			data.ev.release();
 			SoundDescription soundEventDescription = KFMOD.GetSoundEventDescription(data.path);
-			SoundDescription.Parameter[] parameters = soundEventDescription.parameters;
-			for (int i = 0; i < parameters.Length; i++)
+			foreach (SoundDescription.Parameter parameter in soundEventDescription.parameters)
 			{
-				SoundDescription.Parameter parameter = parameters[i];
-				LoopingSoundParameterUpdater value = null;
-				if (Get().parameterUpdaters.TryGetValue(parameter.name, out value))
+				LoopingSoundParameterUpdater loopingSoundParameterUpdater = null;
+				if (LoopingSoundManager.Get().parameterUpdaters.TryGetValue(parameter.name, out loopingSoundParameterUpdater))
 				{
-					LoopingSoundParameterUpdater.Sound sound = default(LoopingSoundParameterUpdater.Sound);
-					sound.ev = data.ev;
-					sound.path = data.path;
-					sound.description = soundEventDescription;
-					sound.transform = data.transform;
-					sound.objectIsSelectedAndVisible = false;
-					LoopingSoundParameterUpdater.Sound sound2 = sound;
-					value.Remove(sound2);
+					LoopingSoundParameterUpdater.Sound sound = new LoopingSoundParameterUpdater.Sound
+					{
+						ev = data.ev,
+						path = data.path,
+						description = soundEventDescription,
+						transform = data.transform,
+						objectIsSelectedAndVisible = false
+					};
+					loopingSoundParameterUpdater.Remove(sound);
 				}
 			}
 		}
-		Get().sounds.Free(handle);
+		LoopingSoundManager.Get().sounds.Free(handle);
 	}
 
+	// Token: 0x060031DB RID: 12763 RVA: 0x002010E4 File Offset: 0x001FF2E4
 	public static void PauseSound(HandleVector<int>.Handle handle, bool paused)
 	{
-		Sound data = Get().sounds.GetData(handle);
+		LoopingSoundManager.Sound data = LoopingSoundManager.Get().sounds.GetData(handle);
 		if (data.IsPlaying)
 		{
 			data.ev.setPaused(paused);
 		}
 	}
 
+	// Token: 0x060031DC RID: 12764 RVA: 0x0020111C File Offset: 0x001FF31C
 	private void OnPauseChanged(object data)
 	{
 		bool flag = (bool)data;
-		GameIsPaused = flag;
-		foreach (Sound data2 in sounds.GetDataList())
+		this.GameIsPaused = flag;
+		foreach (LoopingSoundManager.Sound sound in this.sounds.GetDataList())
 		{
-			if (data2.IsPlaying)
+			if (sound.IsPlaying)
 			{
-				EventInstance ev = data2.ev;
-				ev.setPaused(flag && data2.ShouldPauseOnGamePaused);
+				EventInstance ev = sound.ev;
+				ev.setPaused(flag && sound.ShouldPauseOnGamePaused);
 			}
+		}
+	}
+
+	// Token: 0x04002173 RID: 8563
+	private static LoopingSoundManager instance;
+
+	// Token: 0x04002174 RID: 8564
+	private bool GameIsPaused;
+
+	// Token: 0x04002175 RID: 8565
+	private Dictionary<HashedString, LoopingSoundParameterUpdater> parameterUpdaters = new Dictionary<HashedString, LoopingSoundParameterUpdater>();
+
+	// Token: 0x04002176 RID: 8566
+	private KCompactedVector<LoopingSoundManager.Sound> sounds = new KCompactedVector<LoopingSoundManager.Sound>(0);
+
+	// Token: 0x02000A88 RID: 2696
+	public class Tuning : TuningData<LoopingSoundManager.Tuning>
+	{
+		// Token: 0x04002177 RID: 8567
+		public float velocityScale;
+	}
+
+	// Token: 0x02000A89 RID: 2697
+	public struct Sound
+	{
+		// Token: 0x17000202 RID: 514
+		// (get) Token: 0x060031E0 RID: 12768 RVA: 0x000C0614 File Offset: 0x000BE814
+		public bool IsPlaying
+		{
+			get
+			{
+				return (this.flags & LoopingSoundManager.Sound.Flags.PLAYING) > (LoopingSoundManager.Sound.Flags)0;
+			}
+		}
+
+		// Token: 0x17000203 RID: 515
+		// (get) Token: 0x060031E1 RID: 12769 RVA: 0x000C0621 File Offset: 0x000BE821
+		public bool ShouldPauseOnGamePaused
+		{
+			get
+			{
+				return (this.flags & LoopingSoundManager.Sound.Flags.PAUSE_ON_GAME_PAUSED) > (LoopingSoundManager.Sound.Flags)0;
+			}
+		}
+
+		// Token: 0x17000204 RID: 516
+		// (get) Token: 0x060031E2 RID: 12770 RVA: 0x000C062E File Offset: 0x000BE82E
+		public bool IsCullingEnabled
+		{
+			get
+			{
+				return (this.flags & LoopingSoundManager.Sound.Flags.ENABLE_CULLING) > (LoopingSoundManager.Sound.Flags)0;
+			}
+		}
+
+		// Token: 0x17000205 RID: 517
+		// (get) Token: 0x060031E3 RID: 12771 RVA: 0x000C063B File Offset: 0x000BE83B
+		public bool ShouldCameraScalePosition
+		{
+			get
+			{
+				return (this.flags & LoopingSoundManager.Sound.Flags.ENABLE_CAMERA_SCALED_POSITION) > (LoopingSoundManager.Sound.Flags)0;
+			}
+		}
+
+		// Token: 0x04002178 RID: 8568
+		public EventInstance ev;
+
+		// Token: 0x04002179 RID: 8569
+		public Transform transform;
+
+		// Token: 0x0400217A RID: 8570
+		public KBatchedAnimController animController;
+
+		// Token: 0x0400217B RID: 8571
+		public float falloffDistanceSq;
+
+		// Token: 0x0400217C RID: 8572
+		public HashedString path;
+
+		// Token: 0x0400217D RID: 8573
+		public Vector3 pos;
+
+		// Token: 0x0400217E RID: 8574
+		public Vector2 velocity;
+
+		// Token: 0x0400217F RID: 8575
+		public HashedString firstParameter;
+
+		// Token: 0x04002180 RID: 8576
+		public HashedString secondParameter;
+
+		// Token: 0x04002181 RID: 8577
+		public float firstParameterValue;
+
+		// Token: 0x04002182 RID: 8578
+		public float secondParameterValue;
+
+		// Token: 0x04002183 RID: 8579
+		public float vol;
+
+		// Token: 0x04002184 RID: 8580
+		public bool objectIsSelectedAndVisible;
+
+		// Token: 0x04002185 RID: 8581
+		public LoopingSoundManager.Sound.Flags flags;
+
+		// Token: 0x02000A8A RID: 2698
+		[Flags]
+		public enum Flags
+		{
+			// Token: 0x04002187 RID: 8583
+			PLAYING = 1,
+			// Token: 0x04002188 RID: 8584
+			PAUSE_ON_GAME_PAUSED = 2,
+			// Token: 0x04002189 RID: 8585
+			ENABLE_CULLING = 4,
+			// Token: 0x0400218A RID: 8586
+			ENABLE_CAMERA_SCALED_POSITION = 8
 		}
 	}
 }

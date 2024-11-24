@@ -1,41 +1,48 @@
-using System;
+﻿using System;
 
+// Token: 0x020009AB RID: 2475
 [SkipSaveFileSerialization]
 public class CancellableDig : Cancellable
 {
+	// Token: 0x06002D4E RID: 11598 RVA: 0x001F005C File Offset: 0x001EE25C
 	protected override void OnCancel(object data)
 	{
 		if (data != null && (bool)data)
 		{
-			OnAnimationDone("ScaleDown");
+			this.OnAnimationDone("ScaleDown");
 			return;
 		}
-		EasingAnimations componentInChildren = GetComponentInChildren<EasingAnimations>();
+		EasingAnimations componentInChildren = base.GetComponentInChildren<EasingAnimations>();
 		int num = Grid.PosToCell(this);
-		if (componentInChildren.IsPlaying && Grid.Element[num].hardness == byte.MaxValue)
+		if (componentInChildren.IsPlaying && Grid.Element[num].hardness == 255)
 		{
-			componentInChildren.OnAnimationDone = (Action<string>)Delegate.Combine(componentInChildren.OnAnimationDone, new Action<string>(DoCancelAnim));
+			EasingAnimations easingAnimations = componentInChildren;
+			easingAnimations.OnAnimationDone = (Action<string>)Delegate.Combine(easingAnimations.OnAnimationDone, new Action<string>(this.DoCancelAnim));
 			return;
 		}
-		componentInChildren.OnAnimationDone = (Action<string>)Delegate.Combine(componentInChildren.OnAnimationDone, new Action<string>(OnAnimationDone));
+		EasingAnimations easingAnimations2 = componentInChildren;
+		easingAnimations2.OnAnimationDone = (Action<string>)Delegate.Combine(easingAnimations2.OnAnimationDone, new Action<string>(this.OnAnimationDone));
 		componentInChildren.PlayAnimation("ScaleDown", 0.1f);
 	}
 
+	// Token: 0x06002D4F RID: 11599 RVA: 0x001F0104 File Offset: 0x001EE304
 	private void DoCancelAnim(string animName)
 	{
-		EasingAnimations componentInChildren = GetComponentInChildren<EasingAnimations>();
-		componentInChildren.OnAnimationDone = (Action<string>)Delegate.Remove(componentInChildren.OnAnimationDone, new Action<string>(DoCancelAnim));
-		componentInChildren.OnAnimationDone = (Action<string>)Delegate.Combine(componentInChildren.OnAnimationDone, new Action<string>(OnAnimationDone));
+		EasingAnimations componentInChildren = base.GetComponentInChildren<EasingAnimations>();
+		componentInChildren.OnAnimationDone = (Action<string>)Delegate.Remove(componentInChildren.OnAnimationDone, new Action<string>(this.DoCancelAnim));
+		componentInChildren.OnAnimationDone = (Action<string>)Delegate.Combine(componentInChildren.OnAnimationDone, new Action<string>(this.OnAnimationDone));
 		componentInChildren.PlayAnimation("ScaleDown", 0.1f);
 	}
 
+	// Token: 0x06002D50 RID: 11600 RVA: 0x000BD5AE File Offset: 0x000BB7AE
 	private void OnAnimationDone(string animationName)
 	{
-		if (!(animationName != "ScaleDown"))
+		if (animationName != "ScaleDown")
 		{
-			EasingAnimations componentInChildren = GetComponentInChildren<EasingAnimations>();
-			componentInChildren.OnAnimationDone = (Action<string>)Delegate.Remove(componentInChildren.OnAnimationDone, new Action<string>(OnAnimationDone));
-			this.DeleteObject();
+			return;
 		}
+		EasingAnimations componentInChildren = base.GetComponentInChildren<EasingAnimations>();
+		componentInChildren.OnAnimationDone = (Action<string>)Delegate.Remove(componentInChildren.OnAnimationDone, new Action<string>(this.OnAnimationDone));
+		this.DeleteObject();
 	}
 }

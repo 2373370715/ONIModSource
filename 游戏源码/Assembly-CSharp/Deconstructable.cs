@@ -1,54 +1,21 @@
+﻿using System;
 using System.Collections.Generic;
 using KSerialization;
 using STRINGS;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x02000A2E RID: 2606
 [AddComponentMenu("KMonoBehaviour/Workable/Deconstructable")]
 public class Deconstructable : Workable
 {
-	public Chore chore;
-
-	public bool allowDeconstruction = true;
-
-	public string audioSize;
-
-	public float customWorkTime = -1f;
-
-	private Reconstructable reconstructable;
-
-	[Serialize]
-	private bool isMarkedForDeconstruction;
-
-	[Serialize]
-	public Tag[] constructionElements;
-
-	public bool looseEntityDeconstructable;
-
-	private static readonly EventSystem.IntraObjectHandler<Deconstructable> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<Deconstructable>(delegate(Deconstructable component, object data)
-	{
-		component.OnRefreshUserMenu(data);
-	});
-
-	private static readonly EventSystem.IntraObjectHandler<Deconstructable> OnCancelDelegate = new EventSystem.IntraObjectHandler<Deconstructable>(delegate(Deconstructable component, object data)
-	{
-		component.OnCancel(data);
-	});
-
-	private static readonly EventSystem.IntraObjectHandler<Deconstructable> OnDeconstructDelegate = new EventSystem.IntraObjectHandler<Deconstructable>(delegate(Deconstructable component, object data)
-	{
-		component.OnDeconstruct(data);
-	});
-
-	private static readonly Vector2 INITIAL_VELOCITY_RANGE = new Vector2(0.5f, 4f);
-
-	private bool destroyed;
-
+	// Token: 0x170001D2 RID: 466
+	// (get) Token: 0x06002F92 RID: 12178 RVA: 0x001F8780 File Offset: 0x001F6980
 	private CellOffset[] placementOffsets
 	{
 		get
 		{
-			Building component = GetComponent<Building>();
+			Building component = base.GetComponent<Building>();
 			if (component != null)
 			{
 				CellOffset[] array = component.Def.PlacementOffsets;
@@ -63,106 +30,106 @@ public class Deconstructable : Workable
 				}
 				return array;
 			}
-			OccupyArea component3 = GetComponent<OccupyArea>();
+			OccupyArea component3 = base.GetComponent<OccupyArea>();
 			if (component3 != null)
 			{
 				return component3.OccupiedCellsOffsets;
 			}
-			if (looseEntityDeconstructable)
+			if (this.looseEntityDeconstructable)
 			{
-				return new CellOffset[1]
+				return new CellOffset[]
 				{
 					new CellOffset(0, 0)
 				};
 			}
-			Debug.Assert(condition: false, "Ack! We put a Deconstructable on something that's neither a Building nor OccupyArea!", this);
+			global::Debug.Assert(false, "Ack! We put a Deconstructable on something that's neither a Building nor OccupyArea!", this);
 			return null;
 		}
 	}
 
-	public bool HasBeenDestroyed => destroyed;
-
+	// Token: 0x06002F93 RID: 12179 RVA: 0x001F8844 File Offset: 0x001F6A44
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		faceTargetWhenWorking = true;
-		synchronizeAnims = false;
-		workerStatusItem = Db.Get().DuplicantStatusItems.Deconstructing;
-		attributeConverter = Db.Get().AttributeConverters.ConstructionSpeed;
-		attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.MOST_DAY_EXPERIENCE;
-		minimumAttributeMultiplier = 0.75f;
-		skillExperienceSkillGroup = Db.Get().SkillGroups.Building.Id;
-		skillExperienceMultiplier = SKILLS.MOST_DAY_EXPERIENCE;
-		multitoolContext = "build";
-		multitoolHitEffectTag = EffectConfigs.BuildSplashId;
-		workingPstComplete = null;
-		workingPstFailed = null;
-		if (customWorkTime > 0f)
+		this.faceTargetWhenWorking = true;
+		this.synchronizeAnims = false;
+		this.workerStatusItem = Db.Get().DuplicantStatusItems.Deconstructing;
+		this.attributeConverter = Db.Get().AttributeConverters.ConstructionSpeed;
+		this.attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.MOST_DAY_EXPERIENCE;
+		this.minimumAttributeMultiplier = 0.75f;
+		this.skillExperienceSkillGroup = Db.Get().SkillGroups.Building.Id;
+		this.skillExperienceMultiplier = SKILLS.MOST_DAY_EXPERIENCE;
+		this.multitoolContext = "build";
+		this.multitoolHitEffectTag = EffectConfigs.BuildSplashId;
+		this.workingPstComplete = null;
+		this.workingPstFailed = null;
+		if (this.customWorkTime > 0f)
 		{
-			SetWorkTime(customWorkTime);
+			base.SetWorkTime(this.customWorkTime);
 			return;
 		}
-		Building component = GetComponent<Building>();
+		Building component = base.GetComponent<Building>();
 		if (component != null && component.Def.IsTilePiece)
 		{
-			SetWorkTime(component.Def.ConstructionTime * 0.5f);
+			base.SetWorkTime(component.Def.ConstructionTime * 0.5f);
+			return;
 		}
-		else
-		{
-			SetWorkTime(30f);
-		}
+		base.SetWorkTime(30f);
 	}
 
+	// Token: 0x06002F94 RID: 12180 RVA: 0x001F8954 File Offset: 0x001F6B54
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		CellOffset[] filter = null;
 		CellOffset[][] table = OffsetGroups.InvertedStandardTable;
-		Building component = GetComponent<Building>();
+		Building component = base.GetComponent<Building>();
 		if (component != null && component.Def.IsTilePiece)
 		{
 			table = OffsetGroups.InvertedStandardTableWithCorners;
 			filter = component.Def.ConstructionOffsetFilter;
 		}
-		CellOffset[][] offsetTable = OffsetGroups.BuildReachabilityTable(placementOffsets, table, filter);
-		SetOffsetTable(offsetTable);
-		Subscribe(493375141, OnRefreshUserMenuDelegate);
-		Subscribe(-111137758, OnRefreshUserMenuDelegate);
-		Subscribe(2127324410, OnCancelDelegate);
-		Subscribe(-790448070, OnDeconstructDelegate);
-		if (constructionElements == null || constructionElements.Length == 0)
+		CellOffset[][] offsetTable = OffsetGroups.BuildReachabilityTable(this.placementOffsets, table, filter);
+		base.SetOffsetTable(offsetTable);
+		base.Subscribe<Deconstructable>(493375141, Deconstructable.OnRefreshUserMenuDelegate);
+		base.Subscribe<Deconstructable>(-111137758, Deconstructable.OnRefreshUserMenuDelegate);
+		base.Subscribe<Deconstructable>(2127324410, Deconstructable.OnCancelDelegate);
+		base.Subscribe<Deconstructable>(-790448070, Deconstructable.OnDeconstructDelegate);
+		if (this.constructionElements == null || this.constructionElements.Length == 0)
 		{
-			constructionElements = new Tag[1];
-			constructionElements[0] = GetComponent<PrimaryElement>().Element.tag;
+			this.constructionElements = new Tag[1];
+			this.constructionElements[0] = base.GetComponent<PrimaryElement>().Element.tag;
 		}
-		if (isMarkedForDeconstruction)
+		if (this.isMarkedForDeconstruction)
 		{
-			QueueDeconstruction(userTriggered: false);
+			this.QueueDeconstruction(false);
 		}
-		reconstructable = GetComponent<Reconstructable>();
+		this.reconstructable = base.GetComponent<Reconstructable>();
 	}
 
-	protected override void OnStartWork(Worker worker)
+	// Token: 0x06002F95 RID: 12181 RVA: 0x001F8A4C File Offset: 0x001F6C4C
+	protected override void OnStartWork(WorkerBase worker)
 	{
-		progressBar.barColor = ProgressBarsConfig.Instance.GetBarColor("DeconstructBar");
-		GetComponent<KSelectable>().RemoveStatusItem(Db.Get().BuildingStatusItems.PendingDeconstruction);
-		Trigger(1830962028, this);
+		this.progressBar.barColor = ProgressBarsConfig.Instance.GetBarColor("DeconstructBar");
+		base.GetComponent<KSelectable>().RemoveStatusItem(Db.Get().BuildingStatusItems.PendingDeconstruction, false);
+		base.Trigger(1830962028, this);
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+	// Token: 0x06002F96 RID: 12182 RVA: 0x001F8A9C File Offset: 0x001F6C9C
+	protected override void OnCompleteWork(WorkerBase worker)
 	{
-		Trigger(-702296337, this);
-		if (reconstructable != null)
+		base.Trigger(-702296337, this);
+		if (this.reconstructable != null)
 		{
-			reconstructable.TryCommenceReconstruct();
+			this.reconstructable.TryCommenceReconstruct();
 		}
-		Building component = GetComponent<Building>();
-		SimCellOccupier component2 = GetComponent<SimCellOccupier>();
+		Building component = base.GetComponent<Building>();
+		SimCellOccupier component2 = base.GetComponent<SimCellOccupier>();
 		if (DetailsScreen.Instance != null && DetailsScreen.Instance.CompareTargetWith(base.gameObject))
 		{
-			DetailsScreen.Instance.Show(show: false);
+			DetailsScreen.Instance.Show(false);
 		}
-		PrimaryElement component3 = GetComponent<PrimaryElement>();
+		PrimaryElement component3 = base.GetComponent<PrimaryElement>();
 		float temperature = component3.Temperature;
 		byte disease_idx = component3.DiseaseIdx;
 		int disease_count = component3.DiseaseCount;
@@ -181,16 +148,16 @@ public class Deconstructable : Workable
 			}
 			component2.DestroySelf(delegate
 			{
-				TriggerDestroy(temperature, disease_idx, disease_count, worker);
+				this.TriggerDestroy(temperature, disease_idx, disease_count, worker);
 			});
 		}
 		else
 		{
-			TriggerDestroy(temperature, disease_idx, disease_count);
+			this.TriggerDestroy(temperature, disease_idx, disease_count);
 		}
 		if (component == null || component.Def.PlayConstructionSounds)
 		{
-			string sound = GlobalAssets.GetSound("Finish_Deconstruction_" + ((!audioSize.IsNullOrWhiteSpace()) ? audioSize : component.Def.AudioSize));
+			string sound = GlobalAssets.GetSound("Finish_Deconstruction_" + ((!this.audioSize.IsNullOrWhiteSpace()) ? this.audioSize : component.Def.AudioSize), false);
 			if (sound != null)
 			{
 				KMonoBehaviour.PlaySound3DAtLocation(sound, base.gameObject.transform.GetPosition());
@@ -198,45 +165,64 @@ public class Deconstructable : Workable
 		}
 	}
 
+	// Token: 0x170001D3 RID: 467
+	// (get) Token: 0x06002F97 RID: 12183 RVA: 0x000BEEBE File Offset: 0x000BD0BE
+	public bool HasBeenDestroyed
+	{
+		get
+		{
+			return this.destroyed;
+		}
+	}
+
+	// Token: 0x06002F98 RID: 12184 RVA: 0x001F8C84 File Offset: 0x001F6E84
 	public List<GameObject> ForceDestroyAndGetMaterials()
 	{
-		PrimaryElement component = GetComponent<PrimaryElement>();
+		PrimaryElement component = base.GetComponent<PrimaryElement>();
 		float temperature = component.Temperature;
 		byte diseaseIdx = component.DiseaseIdx;
 		int diseaseCount = component.DiseaseCount;
-		return TriggerDestroy(temperature, diseaseIdx, diseaseCount);
+		return this.TriggerDestroy(temperature, diseaseIdx, diseaseCount);
 	}
 
-	private List<GameObject> TriggerDestroy(float temperature, byte disease_idx, int disease_count, Worker tile_worker)
+	// Token: 0x06002F99 RID: 12185 RVA: 0x001F8CB4 File Offset: 0x001F6EB4
+	private List<GameObject> TriggerDestroy(float temperature, byte disease_idx, int disease_count, WorkerBase tile_worker)
 	{
-		if (this == null || destroyed)
+		if (this == null || this.destroyed)
 		{
 			return null;
 		}
-		List<GameObject> result = SpawnItemsFromConstruction(temperature, disease_idx, disease_count, tile_worker);
-		destroyed = true;
+		if (base.transform.parent != null)
+		{
+			Storage component = base.transform.parent.GetComponent<Storage>();
+			if (component != null)
+			{
+				component.Remove(base.gameObject, true);
+			}
+		}
+		List<GameObject> result = this.SpawnItemsFromConstruction(temperature, disease_idx, disease_count, tile_worker);
+		this.destroyed = true;
 		base.gameObject.DeleteObject();
 		return result;
 	}
 
+	// Token: 0x06002F9A RID: 12186 RVA: 0x000BEEC6 File Offset: 0x000BD0C6
 	private List<GameObject> TriggerDestroy(float temperature, byte disease_idx, int disease_count)
 	{
-		return TriggerDestroy(temperature, disease_idx, disease_count, base.worker);
+		return this.TriggerDestroy(temperature, disease_idx, disease_count, base.worker);
 	}
 
+	// Token: 0x06002F9B RID: 12187 RVA: 0x001F8D2C File Offset: 0x001F6F2C
 	public void QueueDeconstruction(bool userTriggered)
 	{
 		if (userTriggered && DebugHandler.InstantBuildMode)
 		{
-			OnCompleteWork(null);
+			this.OnCompleteWork(null);
+			return;
 		}
-		else
+		if (this.chore == null)
 		{
-			if (chore != null)
-			{
-				return;
-			}
-			BuildingComplete component = GetComponent<BuildingComplete>();
+			BuildingComplete component = base.GetComponent<BuildingComplete>();
 			if (component != null && component.Def.ReplacementLayer != ObjectLayer.NumLayers)
 			{
 				int cell = Grid.PosToCell(component);
@@ -246,135 +232,168 @@ public class Deconstructable : Workable
 				}
 			}
 			Prioritizable.AddRef(base.gameObject);
-			chore = new WorkChore<Deconstructable>(Db.Get().ChoreTypes.Deconstruct, this, null, run_until_complete: true, null, null, null, allow_in_red_alert: true, null, ignore_schedule_block: false, only_when_operational: false, null, is_preemptable: true, allow_in_context_menu: true, allow_prioritization: true, PriorityScreen.PriorityClass.basic, 5, ignore_building_assignment: true);
-			GetComponent<KSelectable>().AddStatusItem(Db.Get().BuildingStatusItems.PendingDeconstruction, this);
-			isMarkedForDeconstruction = true;
-			Trigger(2108245096, "Deconstruct");
+			this.chore = new WorkChore<Deconstructable>(Db.Get().ChoreTypes.Deconstruct, this, null, true, null, null, null, true, null, false, false, null, true, true, true, PriorityScreen.PriorityClass.basic, 5, true, true);
+			base.GetComponent<KSelectable>().AddStatusItem(Db.Get().BuildingStatusItems.PendingDeconstruction, this);
+			this.isMarkedForDeconstruction = true;
+			base.Trigger(2108245096, "Deconstruct");
 		}
 	}
 
+	// Token: 0x06002F9C RID: 12188 RVA: 0x000BEED7 File Offset: 0x000BD0D7
 	private void QueueDeconstruction()
 	{
-		QueueDeconstruction(userTriggered: true);
+		this.QueueDeconstruction(true);
 	}
 
+	// Token: 0x06002F9D RID: 12189 RVA: 0x000BEEE0 File Offset: 0x000BD0E0
 	private void OnDeconstruct()
 	{
-		if (chore == null)
+		if (this.chore == null)
 		{
-			QueueDeconstruction();
+			this.QueueDeconstruction();
+			return;
 		}
-		else
-		{
-			CancelDeconstruction();
-		}
+		this.CancelDeconstruction();
 	}
 
+	// Token: 0x06002F9E RID: 12190 RVA: 0x000BEEF7 File Offset: 0x000BD0F7
 	public bool IsMarkedForDeconstruction()
 	{
-		return chore != null;
+		return this.chore != null;
 	}
 
+	// Token: 0x06002F9F RID: 12191 RVA: 0x000BEF02 File Offset: 0x000BD102
 	public void SetAllowDeconstruction(bool allow)
 	{
-		allowDeconstruction = allow;
-		if (!allowDeconstruction)
+		this.allowDeconstruction = allow;
+		if (!this.allowDeconstruction)
 		{
-			CancelDeconstruction();
+			this.CancelDeconstruction();
 		}
 	}
 
-	public void SpawnItemsFromConstruction(Worker chore_worker)
+	// Token: 0x06002FA0 RID: 12192 RVA: 0x001F8E08 File Offset: 0x001F7008
+	public void SpawnItemsFromConstruction(WorkerBase chore_worker)
 	{
-		PrimaryElement component = GetComponent<PrimaryElement>();
+		PrimaryElement component = base.GetComponent<PrimaryElement>();
 		float temperature = component.Temperature;
 		byte diseaseIdx = component.DiseaseIdx;
 		int diseaseCount = component.DiseaseCount;
-		SpawnItemsFromConstruction(temperature, diseaseIdx, diseaseCount, chore_worker);
+		this.SpawnItemsFromConstruction(temperature, diseaseIdx, diseaseCount, chore_worker);
 	}
 
-	private List<GameObject> SpawnItemsFromConstruction(float temperature, byte disease_idx, int disease_count, Worker construction_worker)
+	// Token: 0x06002FA1 RID: 12193 RVA: 0x001F8E3C File Offset: 0x001F703C
+	private List<GameObject> SpawnItemsFromConstruction(float temperature, byte disease_idx, int disease_count, WorkerBase construction_worker)
 	{
 		List<GameObject> list = new List<GameObject>();
-		if (!allowDeconstruction)
+		if (!this.allowDeconstruction)
 		{
 			return list;
 		}
-		Building component = GetComponent<Building>();
-		float[] array = ((!(component != null)) ? new float[1] { GetComponent<PrimaryElement>().Mass } : component.Def.Mass);
-		for (int i = 0; i < constructionElements.Length && array.Length > i; i++)
+		Building component = base.GetComponent<Building>();
+		float[] array;
+		if (component != null)
 		{
-			GameObject gameObject = SpawnItem(base.transform.GetPosition(), constructionElements[i], array[i], temperature, disease_idx, disease_count, construction_worker);
-			int num = Grid.PosToCell(gameObject.transform.GetPosition());
-			int num2 = Grid.CellAbove(num);
-			Vector2 initial_velocity = (((!Grid.IsValidCell(num) || !Grid.Solid[num]) && (!Grid.IsValidCell(num2) || !Grid.Solid[num2])) ? new Vector2(Random.Range(-1f, 1f) * INITIAL_VELOCITY_RANGE.x, INITIAL_VELOCITY_RANGE.y) : Vector2.zero);
+			array = component.Def.Mass;
+		}
+		else
+		{
+			array = new float[]
+			{
+				base.GetComponent<PrimaryElement>().Mass
+			};
+		}
+		int num = 0;
+		while (num < this.constructionElements.Length && array.Length > num)
+		{
+			GameObject gameObject = this.SpawnItem(base.transform.GetPosition(), this.constructionElements[num], array[num], temperature, disease_idx, disease_count, construction_worker);
+			int num2 = Grid.PosToCell(gameObject.transform.GetPosition());
+			int num3 = Grid.CellAbove(num2);
+			Vector2 zero;
+			if ((Grid.IsValidCell(num2) && Grid.Solid[num2]) || (Grid.IsValidCell(num3) && Grid.Solid[num3]))
+			{
+				zero = Vector2.zero;
+			}
+			else
+			{
+				zero = new Vector2(UnityEngine.Random.Range(-1f, 1f) * Deconstructable.INITIAL_VELOCITY_RANGE.x, Deconstructable.INITIAL_VELOCITY_RANGE.y);
+			}
 			if (GameComps.Fallers.Has(gameObject))
 			{
 				GameComps.Fallers.Remove(gameObject);
 			}
-			GameComps.Fallers.Add(gameObject, initial_velocity);
+			GameComps.Fallers.Add(gameObject, zero);
 			list.Add(gameObject);
+			num++;
 		}
 		return list;
 	}
 
-	public GameObject SpawnItem(Vector3 position, Tag src_element, float src_mass, float src_temperature, byte disease_idx, int disease_count, Worker chore_worker)
+	// Token: 0x06002FA2 RID: 12194 RVA: 0x001F8F88 File Offset: 0x001F7188
+	public GameObject SpawnItem(Vector3 position, Tag src_element, float src_mass, float src_temperature, byte disease_idx, int disease_count, WorkerBase chore_worker)
 	{
 		GameObject gameObject = null;
 		int cell = Grid.PosToCell(position);
-		CellOffset[] array = placementOffsets;
+		CellOffset[] placementOffsets = this.placementOffsets;
 		Element element = ElementLoader.GetElement(src_element);
 		if (element != null)
 		{
 			float num = src_mass;
-			for (int i = 0; (float)i < src_mass / 400f; i++)
+			int num2 = 0;
+			while ((float)num2 < src_mass / 400f)
 			{
-				int num2 = i % array.Length;
-				int cell2 = Grid.OffsetCell(cell, array[num2]);
+				int num3 = num2 % placementOffsets.Length;
+				int cell2 = Grid.OffsetCell(cell, placementOffsets[num3]);
 				float mass = num;
 				if (num > 400f)
 				{
 					mass = 400f;
 					num -= 400f;
 				}
-				gameObject = element.substance.SpawnResource(Grid.CellToPosCBC(cell2, Grid.SceneLayer.Ore), mass, src_temperature, disease_idx, disease_count);
+				gameObject = element.substance.SpawnResource(Grid.CellToPosCBC(cell2, Grid.SceneLayer.Ore), mass, src_temperature, disease_idx, disease_count, false, false, false);
 				gameObject.Trigger(580035959, chore_worker);
+				num2++;
 			}
 		}
 		else
 		{
-			for (int j = 0; (float)j < src_mass; j++)
+			int num4 = 0;
+			while ((float)num4 < src_mass)
 			{
-				int num3 = j % array.Length;
-				int cell3 = Grid.OffsetCell(cell, array[num3]);
-				gameObject = GameUtil.KInstantiate(Assets.GetPrefab(src_element), Grid.CellToPosCBC(cell3, Grid.SceneLayer.Ore), Grid.SceneLayer.Ore);
-				gameObject.SetActive(value: true);
+				int num5 = num4 % placementOffsets.Length;
+				int cell3 = Grid.OffsetCell(cell, placementOffsets[num5]);
+				gameObject = GameUtil.KInstantiate(Assets.GetPrefab(src_element), Grid.CellToPosCBC(cell3, Grid.SceneLayer.Ore), Grid.SceneLayer.Ore, null, 0);
+				gameObject.SetActive(true);
 				gameObject.Trigger(580035959, chore_worker);
+				num4++;
 			}
 		}
 		return gameObject;
 	}
 
+	// Token: 0x06002FA3 RID: 12195 RVA: 0x001F9088 File Offset: 0x001F7288
 	private void OnRefreshUserMenu(object data)
 	{
-		if (allowDeconstruction)
+		if (!this.allowDeconstruction)
 		{
-			KIconButtonMenu.ButtonInfo button = ((chore == null) ? new KIconButtonMenu.ButtonInfo("action_deconstruct", UI.USERMENUACTIONS.DECONSTRUCT.NAME, OnDeconstruct, Action.NumActions, null, null, null, UI.USERMENUACTIONS.DECONSTRUCT.TOOLTIP) : new KIconButtonMenu.ButtonInfo("action_deconstruct", UI.USERMENUACTIONS.DECONSTRUCT.NAME_OFF, OnDeconstruct, Action.NumActions, null, null, null, UI.USERMENUACTIONS.DECONSTRUCT.TOOLTIP_OFF));
-			Game.Instance.userMenu.AddButton(base.gameObject, button, 0f);
+			return;
 		}
+		KIconButtonMenu.ButtonInfo button = (this.chore == null) ? new KIconButtonMenu.ButtonInfo("action_deconstruct", UI.USERMENUACTIONS.DECONSTRUCT.NAME, new System.Action(this.OnDeconstruct), global::Action.NumActions, null, null, null, UI.USERMENUACTIONS.DECONSTRUCT.TOOLTIP, true) : new KIconButtonMenu.ButtonInfo("action_deconstruct", UI.USERMENUACTIONS.DECONSTRUCT.NAME_OFF, new System.Action(this.OnDeconstruct), global::Action.NumActions, null, null, null, UI.USERMENUACTIONS.DECONSTRUCT.TOOLTIP_OFF, true);
+		Game.Instance.userMenu.AddButton(base.gameObject, button, 0f);
 	}
 
+	// Token: 0x06002FA4 RID: 12196 RVA: 0x001F912C File Offset: 0x001F732C
 	public void CancelDeconstruction()
 	{
-		if (chore != null)
+		if (this.chore != null)
 		{
-			chore.Cancel("Cancelled deconstruction");
-			chore = null;
-			GetComponent<KSelectable>().RemoveStatusItem(Db.Get().BuildingStatusItems.PendingDeconstruction);
-			ShowProgressBar(show: false);
-			isMarkedForDeconstruction = false;
+			this.chore.Cancel("Cancelled deconstruction");
+			this.chore = null;
+			base.GetComponent<KSelectable>().RemoveStatusItem(Db.Get().BuildingStatusItems.PendingDeconstruction, false);
+			base.ShowProgressBar(false);
+			this.isMarkedForDeconstruction = false;
 			Prioritizable.RemoveRef(base.gameObject);
-			Reconstructable component = GetComponent<Reconstructable>();
+			Reconstructable component = base.GetComponent<Reconstructable>();
 			if (component != null)
 			{
 				component.CancelReconstructOrder();
@@ -382,16 +401,68 @@ public class Deconstructable : Workable
 		}
 	}
 
+	// Token: 0x06002FA5 RID: 12197 RVA: 0x000BEF19 File Offset: 0x000BD119
 	private void OnCancel(object data)
 	{
-		CancelDeconstruction();
+		this.CancelDeconstruction();
 	}
 
+	// Token: 0x06002FA6 RID: 12198 RVA: 0x000BEF21 File Offset: 0x000BD121
 	private void OnDeconstruct(object data)
 	{
-		if (allowDeconstruction || DebugHandler.InstantBuildMode)
+		if (this.allowDeconstruction || DebugHandler.InstantBuildMode)
 		{
-			QueueDeconstruction();
+			this.QueueDeconstruction();
 		}
 	}
+
+	// Token: 0x04002023 RID: 8227
+	public Chore chore;
+
+	// Token: 0x04002024 RID: 8228
+	public bool allowDeconstruction = true;
+
+	// Token: 0x04002025 RID: 8229
+	public string audioSize;
+
+	// Token: 0x04002026 RID: 8230
+	public float customWorkTime = -1f;
+
+	// Token: 0x04002027 RID: 8231
+	private Reconstructable reconstructable;
+
+	// Token: 0x04002028 RID: 8232
+	[Serialize]
+	private bool isMarkedForDeconstruction;
+
+	// Token: 0x04002029 RID: 8233
+	[Serialize]
+	public Tag[] constructionElements;
+
+	// Token: 0x0400202A RID: 8234
+	public bool looseEntityDeconstructable;
+
+	// Token: 0x0400202B RID: 8235
+	private static readonly EventSystem.IntraObjectHandler<Deconstructable> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<Deconstructable>(delegate(Deconstructable component, object data)
+	{
+		component.OnRefreshUserMenu(data);
+	});
+
+	// Token: 0x0400202C RID: 8236
+	private static readonly EventSystem.IntraObjectHandler<Deconstructable> OnCancelDelegate = new EventSystem.IntraObjectHandler<Deconstructable>(delegate(Deconstructable component, object data)
+	{
+		component.OnCancel(data);
+	});
+
+	// Token: 0x0400202D RID: 8237
+	private static readonly EventSystem.IntraObjectHandler<Deconstructable> OnDeconstructDelegate = new EventSystem.IntraObjectHandler<Deconstructable>(delegate(Deconstructable component, object data)
+	{
+		component.OnDeconstruct(data);
+	});
+
+	// Token: 0x0400202E RID: 8238
+	private static readonly Vector2 INITIAL_VELOCITY_RANGE = new Vector2(0.5f, 4f);
+
+	// Token: 0x0400202F RID: 8239
+	private bool destroyed;
 }

@@ -1,136 +1,175 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
+// Token: 0x0200107B RID: 4219
 public class CustomClothingOutfits
 {
-	private static CustomClothingOutfits _instance;
-
-	private SerializableOutfitData.Version2 serializableOutfitData = new SerializableOutfitData.Version2();
-
+	// Token: 0x170004F8 RID: 1272
+	// (get) Token: 0x0600563F RID: 22079 RVA: 0x000D8542 File Offset: 0x000D6742
 	public static CustomClothingOutfits Instance
 	{
 		get
 		{
-			if (_instance == null)
+			if (CustomClothingOutfits._instance == null)
 			{
-				_instance = new CustomClothingOutfits();
+				CustomClothingOutfits._instance = new CustomClothingOutfits();
 			}
-			return _instance;
+			return CustomClothingOutfits._instance;
 		}
 	}
 
+	// Token: 0x06005640 RID: 22080 RVA: 0x000D855A File Offset: 0x000D675A
 	public SerializableOutfitData.Version2 Internal_GetOutfitData()
 	{
-		return serializableOutfitData;
+		return this.serializableOutfitData;
 	}
 
+	// Token: 0x06005641 RID: 22081 RVA: 0x000D8562 File Offset: 0x000D6762
 	public void Internal_SetOutfitData(SerializableOutfitData.Version2 data)
 	{
-		serializableOutfitData = data;
+		this.serializableOutfitData = data;
 	}
 
+	// Token: 0x06005642 RID: 22082 RVA: 0x00281C3C File Offset: 0x0027FE3C
 	public void Internal_EditOutfit(ClothingOutfitUtility.OutfitType outfit_type, string outfit_name, string[] outfit_items)
 	{
-		if (!serializableOutfitData.OutfitIdToUserAuthoredTemplateOutfit.TryGetValue(outfit_name, out var value))
+		SerializableOutfitData.Version2.CustomTemplateOutfitEntry customTemplateOutfitEntry;
+		if (!this.serializableOutfitData.OutfitIdToUserAuthoredTemplateOutfit.TryGetValue(outfit_name, out customTemplateOutfitEntry))
 		{
-			value = new SerializableOutfitData.Version2.CustomTemplateOutfitEntry();
-			value.outfitType = Enum.GetName(typeof(ClothingOutfitUtility.OutfitType), outfit_type);
-			value.itemIds = outfit_items;
-			serializableOutfitData.OutfitIdToUserAuthoredTemplateOutfit[outfit_name] = value;
+			customTemplateOutfitEntry = new SerializableOutfitData.Version2.CustomTemplateOutfitEntry();
+			customTemplateOutfitEntry.outfitType = Enum.GetName(typeof(ClothingOutfitUtility.OutfitType), outfit_type);
+			customTemplateOutfitEntry.itemIds = outfit_items;
+			this.serializableOutfitData.OutfitIdToUserAuthoredTemplateOutfit[outfit_name] = customTemplateOutfitEntry;
 		}
 		else
 		{
-			if (!Enum.TryParse<ClothingOutfitUtility.OutfitType>(value.outfitType, ignoreCase: true, out var result))
+			ClothingOutfitUtility.OutfitType outfitType;
+			if (!Enum.TryParse<ClothingOutfitUtility.OutfitType>(customTemplateOutfitEntry.outfitType, true, out outfitType))
 			{
-				throw new NotSupportedException("Cannot edit outfit \"" + outfit_name + "\" of unknown outfit type \"" + value.outfitType + "\"");
+				throw new NotSupportedException(string.Concat(new string[]
+				{
+					"Cannot edit outfit \"",
+					outfit_name,
+					"\" of unknown outfit type \"",
+					customTemplateOutfitEntry.outfitType,
+					"\""
+				}));
 			}
-			if (result != outfit_type)
+			if (outfitType != outfit_type)
 			{
-				throw new NotSupportedException($"Cannot edit outfit \"{outfit_name}\" of outfit type \"{value.outfitType}\" to be an outfit of type \"{outfit_type}\"");
+				throw new NotSupportedException(string.Format("Cannot edit outfit \"{0}\" of outfit type \"{1}\" to be an outfit of type \"{2}\"", outfit_name, customTemplateOutfitEntry.outfitType, outfit_type));
 			}
-			value.itemIds = outfit_items;
+			customTemplateOutfitEntry.itemIds = outfit_items;
 		}
 		ClothingOutfitUtility.SaveClothingOutfitData();
 	}
 
+	// Token: 0x06005643 RID: 22083 RVA: 0x00281D10 File Offset: 0x0027FF10
 	public void Internal_RenameOutfit(ClothingOutfitUtility.OutfitType outfit_type, string old_outfit_name, string new_outfit_name)
 	{
-		if (!serializableOutfitData.OutfitIdToUserAuthoredTemplateOutfit.ContainsKey(old_outfit_name))
+		if (!this.serializableOutfitData.OutfitIdToUserAuthoredTemplateOutfit.ContainsKey(old_outfit_name))
 		{
-			throw new ArgumentException("Can't rename outfit \"" + old_outfit_name + "\" to \"" + new_outfit_name + "\": missing \"" + old_outfit_name + "\" entry");
-		}
-		if (serializableOutfitData.OutfitIdToUserAuthoredTemplateOutfit.ContainsKey(new_outfit_name))
-		{
-			throw new ArgumentException("Can't rename outfit \"" + old_outfit_name + "\" to \"" + new_outfit_name + "\": entry \"" + new_outfit_name + "\" already exists");
-		}
-		serializableOutfitData.OutfitIdToUserAuthoredTemplateOutfit.Add(new_outfit_name, serializableOutfitData.OutfitIdToUserAuthoredTemplateOutfit[old_outfit_name]);
-		foreach (KeyValuePair<string, Dictionary<string, string>> personalityIdToAssignedOutfit in serializableOutfitData.PersonalityIdToAssignedOutfits)
-		{
-			Util.Deconstruct(personalityIdToAssignedOutfit, out var key, out var value);
-			Dictionary<string, string> dictionary = value;
-			if (dictionary == null)
+			throw new ArgumentException(string.Concat(new string[]
 			{
-				continue;
-			}
-			using ListPool<string, CustomClothingOutfits>.PooledList pooledList = PoolsFor<CustomClothingOutfits>.AllocateList<string>();
-			foreach (KeyValuePair<string, string> item2 in dictionary)
+				"Can't rename outfit \"",
+				old_outfit_name,
+				"\" to \"",
+				new_outfit_name,
+				"\": missing \"",
+				old_outfit_name,
+				"\" entry"
+			}));
+		}
+		if (this.serializableOutfitData.OutfitIdToUserAuthoredTemplateOutfit.ContainsKey(new_outfit_name))
+		{
+			throw new ArgumentException(string.Concat(new string[]
 			{
-				Util.Deconstruct(item2, out key, out var value2);
-				string item = key;
-				if (value2 == old_outfit_name)
+				"Can't rename outfit \"",
+				old_outfit_name,
+				"\" to \"",
+				new_outfit_name,
+				"\": entry \"",
+				new_outfit_name,
+				"\" already exists"
+			}));
+		}
+		this.serializableOutfitData.OutfitIdToUserAuthoredTemplateOutfit.Add(new_outfit_name, this.serializableOutfitData.OutfitIdToUserAuthoredTemplateOutfit[old_outfit_name]);
+		foreach (KeyValuePair<string, Dictionary<string, string>> keyValuePair in this.serializableOutfitData.PersonalityIdToAssignedOutfits)
+		{
+			string text;
+			Dictionary<string, string> dictionary;
+			keyValuePair.Deconstruct(out text, out dictionary);
+			Dictionary<string, string> dictionary2 = dictionary;
+			if (dictionary2 != null)
+			{
+				using (ListPool<string, CustomClothingOutfits>.PooledList pooledList = PoolsFor<CustomClothingOutfits>.AllocateList<string>())
 				{
-					pooledList.Add(item);
+					foreach (KeyValuePair<string, string> keyValuePair2 in dictionary2)
+					{
+						string a;
+						keyValuePair2.Deconstruct(out text, out a);
+						string item = text;
+						if (a == old_outfit_name)
+						{
+							pooledList.Add(item);
+						}
+					}
+					foreach (string key in pooledList)
+					{
+						dictionary2[key] = new_outfit_name;
+					}
 				}
 			}
-			foreach (string item3 in pooledList)
-			{
-				dictionary[item3] = new_outfit_name;
-			}
 		}
-		serializableOutfitData.OutfitIdToUserAuthoredTemplateOutfit.Remove(old_outfit_name);
+		this.serializableOutfitData.OutfitIdToUserAuthoredTemplateOutfit.Remove(old_outfit_name);
 		ClothingOutfitUtility.SaveClothingOutfitData();
 	}
 
+	// Token: 0x06005644 RID: 22084 RVA: 0x00281F10 File Offset: 0x00280110
 	public void Internal_RemoveOutfit(ClothingOutfitUtility.OutfitType outfit_type, string outfit_name)
 	{
-		if (!serializableOutfitData.OutfitIdToUserAuthoredTemplateOutfit.Remove(outfit_name))
+		if (this.serializableOutfitData.OutfitIdToUserAuthoredTemplateOutfit.Remove(outfit_name))
 		{
-			return;
-		}
-		foreach (KeyValuePair<string, Dictionary<string, string>> personalityIdToAssignedOutfit in serializableOutfitData.PersonalityIdToAssignedOutfits)
-		{
-			Util.Deconstruct(personalityIdToAssignedOutfit, out var key, out var value);
-			Dictionary<string, string> dictionary = value;
-			if (dictionary == null)
+			foreach (KeyValuePair<string, Dictionary<string, string>> keyValuePair in this.serializableOutfitData.PersonalityIdToAssignedOutfits)
 			{
-				continue;
-			}
-			using ListPool<string, CustomClothingOutfits>.PooledList pooledList = PoolsFor<CustomClothingOutfits>.AllocateList<string>();
-			foreach (KeyValuePair<string, string> item2 in dictionary)
-			{
-				Util.Deconstruct(item2, out key, out var value2);
-				string item = key;
-				if (value2 == outfit_name)
+				string text;
+				Dictionary<string, string> dictionary;
+				keyValuePair.Deconstruct(out text, out dictionary);
+				Dictionary<string, string> dictionary2 = dictionary;
+				if (dictionary2 != null)
 				{
-					pooledList.Add(item);
+					using (ListPool<string, CustomClothingOutfits>.PooledList pooledList = PoolsFor<CustomClothingOutfits>.AllocateList<string>())
+					{
+						foreach (KeyValuePair<string, string> keyValuePair2 in dictionary2)
+						{
+							string a;
+							keyValuePair2.Deconstruct(out text, out a);
+							string item = text;
+							if (a == outfit_name)
+							{
+								pooledList.Add(item);
+							}
+						}
+						foreach (string key in pooledList)
+						{
+							dictionary2.Remove(key);
+						}
+					}
 				}
 			}
-			foreach (string item3 in pooledList)
-			{
-				dictionary.Remove(item3);
-			}
+			ClothingOutfitUtility.SaveClothingOutfitData();
 		}
-		ClothingOutfitUtility.SaveClothingOutfitData();
 	}
 
+	// Token: 0x06005645 RID: 22085 RVA: 0x00282054 File Offset: 0x00280254
 	public bool Internal_TryGetDuplicantPersonalityOutfit(ClothingOutfitUtility.OutfitType outfit_type, string personalityId, out string outfitId)
 	{
-		if (serializableOutfitData.PersonalityIdToAssignedOutfits.ContainsKey(personalityId))
+		if (this.serializableOutfitData.PersonalityIdToAssignedOutfits.ContainsKey(personalityId))
 		{
 			string name = Enum.GetName(typeof(ClothingOutfitUtility.OutfitType), outfit_type);
-			if (serializableOutfitData.PersonalityIdToAssignedOutfits[personalityId].ContainsKey(name))
+			if (this.serializableOutfitData.PersonalityIdToAssignedOutfits[personalityId].ContainsKey(name))
 			{
-				outfitId = serializableOutfitData.PersonalityIdToAssignedOutfits[personalityId][name];
+				outfitId = this.serializableOutfitData.PersonalityIdToAssignedOutfits[personalityId][name];
 				return true;
 			}
 		}
@@ -138,26 +177,33 @@ public class CustomClothingOutfits
 		return false;
 	}
 
+	// Token: 0x06005646 RID: 22086 RVA: 0x002820C4 File Offset: 0x002802C4
 	public void Internal_SetDuplicantPersonalityOutfit(ClothingOutfitUtility.OutfitType outfit_type, string personalityId, Option<string> outfit_id)
 	{
 		string name = Enum.GetName(typeof(ClothingOutfitUtility.OutfitType), outfit_type);
-		Dictionary<string, string> value;
+		Dictionary<string, string> dictionary;
 		if (outfit_id.HasValue)
 		{
-			if (!serializableOutfitData.PersonalityIdToAssignedOutfits.ContainsKey(personalityId))
+			if (!this.serializableOutfitData.PersonalityIdToAssignedOutfits.ContainsKey(personalityId))
 			{
-				serializableOutfitData.PersonalityIdToAssignedOutfits.Add(personalityId, new Dictionary<string, string>());
+				this.serializableOutfitData.PersonalityIdToAssignedOutfits.Add(personalityId, new Dictionary<string, string>());
 			}
-			serializableOutfitData.PersonalityIdToAssignedOutfits[personalityId][name] = outfit_id.Value;
+			this.serializableOutfitData.PersonalityIdToAssignedOutfits[personalityId][name] = outfit_id.Value;
 		}
-		else if (serializableOutfitData.PersonalityIdToAssignedOutfits.TryGetValue(personalityId, out value))
+		else if (this.serializableOutfitData.PersonalityIdToAssignedOutfits.TryGetValue(personalityId, out dictionary))
 		{
-			value.Remove(name);
-			if (value.Count == 0)
+			dictionary.Remove(name);
+			if (dictionary.Count == 0)
 			{
-				serializableOutfitData.PersonalityIdToAssignedOutfits.Remove(personalityId);
+				this.serializableOutfitData.PersonalityIdToAssignedOutfits.Remove(personalityId);
 			}
 		}
 		ClothingOutfitUtility.SaveClothingOutfitData();
 	}
+
+	// Token: 0x04003C85 RID: 15493
+	private static CustomClothingOutfits _instance;
+
+	// Token: 0x04003C86 RID: 15494
+	private SerializableOutfitData.Version2 serializableOutfitData = new SerializableOutfitData.Version2();
 }

@@ -1,79 +1,62 @@
+﻿using System;
 using System.Linq;
 using ImGuiNET;
 using UnityEngine;
 
+// Token: 0x02000BBC RID: 3004
 public class DevToolNavGrid : DevTool
 {
-	private const string INVALID_OVERLAY_MODE_STR = "None";
-
-	private string[] navGridNames;
-
-	private int selectedNavGrid;
-
-	private bool drawLinks;
-
-	public static DevToolNavGrid Instance;
-
-	private int[] linkStats;
-
-	private int highestLinkCell;
-
-	private int highestLinkCount;
-
-	private int selectedCell;
-
-	private bool follow;
-
-	private GameObject lockObject;
-
+	// Token: 0x06003986 RID: 14726 RVA: 0x000C5372 File Offset: 0x000C3572
 	public DevToolNavGrid()
 	{
-		Instance = this;
+		DevToolNavGrid.Instance = this;
 	}
 
+	// Token: 0x06003987 RID: 14727 RVA: 0x00221204 File Offset: 0x0021F404
 	private bool Init()
 	{
 		if (Pathfinding.Instance == null)
 		{
 			return false;
 		}
-		if (navGridNames != null)
+		if (this.navGridNames != null)
 		{
 			return true;
 		}
-		navGridNames = (from x in Pathfinding.Instance.GetNavGrids()
-			select x.id).ToArray();
+		this.navGridNames = (from x in Pathfinding.Instance.GetNavGrids()
+		select x.id).ToArray<string>();
 		return true;
 	}
 
+	// Token: 0x06003988 RID: 14728 RVA: 0x000C5380 File Offset: 0x000C3580
 	protected override void RenderTo(DevPanel panel)
 	{
-		if (Init())
+		if (this.Init())
 		{
-			Contents();
+			this.Contents();
+			return;
 		}
-		else
-		{
-			ImGui.Text("Game not initialized");
-		}
+		ImGui.Text("Game not initialized");
 	}
 
+	// Token: 0x06003989 RID: 14729 RVA: 0x000C539B File Offset: 0x000C359B
 	public void SetCell(int cell)
 	{
-		selectedCell = cell;
+		this.selectedCell = cell;
 	}
 
+	// Token: 0x0600398A RID: 14730 RVA: 0x00221264 File Offset: 0x0021F464
 	private void Contents()
 	{
-		ImGui.Combo("Nav Grid ID", ref selectedNavGrid, navGridNames, navGridNames.Length);
-		NavGrid navGrid = Pathfinding.Instance.GetNavGrid(navGridNames[selectedNavGrid]);
-		ImGui.Text("Max Links per cell: " + navGrid.maxLinksPerCell);
+		ImGui.Combo("Nav Grid ID", ref this.selectedNavGrid, this.navGridNames, this.navGridNames.Length);
+		NavGrid navGrid = Pathfinding.Instance.GetNavGrid(this.navGridNames[this.selectedNavGrid]);
+		ImGui.Text("Max Links per cell: " + navGrid.maxLinksPerCell.ToString());
 		ImGui.Spacing();
 		if (ImGui.Button("Calculate Stats"))
 		{
-			linkStats = new int[navGrid.maxLinksPerCell];
-			highestLinkCell = 0;
-			highestLinkCount = 0;
+			this.linkStats = new int[navGrid.maxLinksPerCell];
+			this.highestLinkCell = 0;
+			this.highestLinkCount = 0;
 			for (int i = 0; i < Grid.CellCount; i++)
 			{
 				int num = 0;
@@ -86,38 +69,38 @@ public class DevToolNavGrid : DevTool
 					}
 					num++;
 				}
-				if (num > highestLinkCount)
+				if (num > this.highestLinkCount)
 				{
-					highestLinkCell = i;
-					highestLinkCount = num;
+					this.highestLinkCell = i;
+					this.highestLinkCount = num;
 				}
-				linkStats[num]++;
+				this.linkStats[num]++;
 			}
 		}
 		ImGui.SameLine();
 		if (ImGui.Button("Clear"))
 		{
-			linkStats = null;
+			this.linkStats = null;
 		}
 		ImGui.SameLine();
 		if (ImGui.Button("Rescan"))
 		{
 			navGrid.InitializeGraph();
 		}
-		if (linkStats != null)
+		if (this.linkStats != null)
 		{
-			ImGui.Text("Highest link count: " + highestLinkCount);
-			ImGui.Text($"Utilized percentage: {(float)highestLinkCount / (float)navGrid.maxLinksPerCell * 100f} %");
+			ImGui.Text("Highest link count: " + this.highestLinkCount.ToString());
+			ImGui.Text(string.Format("Utilized percentage: {0} %", (float)this.highestLinkCount / (float)navGrid.maxLinksPerCell * 100f));
 			ImGui.SameLine();
-			if (ImGui.Button($"Select {highestLinkCell}"))
+			if (ImGui.Button(string.Format("Select {0}", this.highestLinkCell)))
 			{
-				selectedCell = highestLinkCell;
+				this.selectedCell = this.highestLinkCell;
 			}
-			for (int k = 0; k < linkStats.Length; k++)
+			for (int k = 0; k < this.linkStats.Length; k++)
 			{
-				if (linkStats[k] > 0)
+				if (this.linkStats[k] > 0)
 				{
-					ImGui.Text($"\t{k}: {linkStats[k]}");
+					ImGui.Text(string.Format("\t{0}: {1}", k, this.linkStats[k]));
 				}
 			}
 		}
@@ -125,19 +108,19 @@ public class DevToolNavGrid : DevTool
 		if (Camera.main != null && SelectTool.Instance != null)
 		{
 			GameObject gameObject = null;
-			ImGui.Checkbox("Lock", ref follow);
-			if (follow)
+			ImGui.Checkbox("Lock", ref this.follow);
+			if (this.follow)
 			{
-				if (lockObject == null && SelectTool.Instance.selected != null)
+				if (this.lockObject == null && SelectTool.Instance.selected != null)
 				{
-					lockObject = SelectTool.Instance.selected.gameObject;
+					this.lockObject = SelectTool.Instance.selected.gameObject;
 				}
-				gameObject = lockObject;
+				gameObject = this.lockObject;
 			}
 			else if (SelectTool.Instance.selected != null)
 			{
 				gameObject = SelectTool.Instance.selected.gameObject;
-				lockObject = null;
+				this.lockObject = null;
 			}
 			if (gameObject != null)
 			{
@@ -152,37 +135,47 @@ public class DevToolNavGrid : DevTool
 			}
 		}
 		ImGui.Spacing();
-		ImGui.Checkbox("Draw Links", ref drawLinks);
-		if (drawLinks)
+		ImGui.Checkbox("Draw Links", ref this.drawLinks);
+		if (this.drawLinks)
 		{
-			DebugDrawLinks(navGrid);
+			this.DebugDrawLinks(navGrid);
 		}
 		ImGui.Spacing();
-		Grid.CellToXY(selectedCell, out var x, out var y);
-		ImGui.Text($"Selected Cell: {selectedCell} ({x},{y})");
-		if (!Grid.IsValidCell(selectedCell) || navGrid.Links == null || navGrid.Links.Length <= navGrid.maxLinksPerCell * selectedCell)
+		int num3;
+		int num4;
+		Grid.CellToXY(this.selectedCell, out num3, out num4);
+		ImGui.Text(string.Format("Selected Cell: {0} ({1},{2})", this.selectedCell, num3, num4));
+		if (Grid.IsValidCell(this.selectedCell) && navGrid.Links != null && navGrid.Links.Length > navGrid.maxLinksPerCell * this.selectedCell)
 		{
-			return;
-		}
-		for (int l = 0; l < navGrid.maxLinksPerCell; l++)
-		{
-			int num3 = selectedCell * navGrid.maxLinksPerCell + l;
-			NavGrid.Link l2 = navGrid.Links[num3];
-			if (l2.link != Grid.InvalidCell)
+			for (int l = 0; l < navGrid.maxLinksPerCell; l++)
 			{
-				DrawLink(l, l2, navGrid);
-				continue;
+				int num5 = this.selectedCell * navGrid.maxLinksPerCell + l;
+				NavGrid.Link link = navGrid.Links[num5];
+				if (link.link == Grid.InvalidCell)
+				{
+					break;
+				}
+				this.DrawLink(l, link, navGrid);
 			}
-			break;
 		}
 	}
 
+	// Token: 0x0600398B RID: 14731 RVA: 0x00221684 File Offset: 0x0021F884
 	private void DrawLink(int idx, NavGrid.Link l, NavGrid navGrid)
 	{
-		NavGrid.Transition transition = navGrid.transitions[l.transitionId];
-		ImGui.Text($"   {transition.start} -> {transition.end} x:{transition.x} y:{transition.y} anim:{transition.anim} cost:{transition.cost}");
+		NavGrid.Transition transition = navGrid.transitions[(int)l.transitionId];
+		ImGui.Text(string.Format("   {0} -> {1} x:{2} y:{3} anim:{4} cost:{5}", new object[]
+		{
+			transition.start,
+			transition.end,
+			transition.x,
+			transition.y,
+			transition.anim,
+			transition.cost
+		}));
 	}
 
+	// Token: 0x0600398C RID: 14732 RVA: 0x00221708 File Offset: 0x0021F908
 	private void DebugDrawLinks(NavGrid navGrid)
 	{
 		if (Camera.main == null)
@@ -191,24 +184,24 @@ public class DevToolNavGrid : DevTool
 		}
 		Camera main = Camera.main;
 		int pixelHeight = main.pixelHeight;
-		Color color = Color.white;
+		Color white = Color.white;
 		for (int i = 0; i < Grid.CellCount; i++)
 		{
 			int num = i * navGrid.maxLinksPerCell;
 			for (int link = navGrid.Links[num].link; link != NavGrid.InvalidCell; link = navGrid.Links[num].link)
 			{
-				if (DrawNavTypeLink(navGrid, num, ref color))
+				if (this.DrawNavTypeLink(navGrid, num, ref white))
 				{
 					Vector3 navPos = NavTypeHelper.GetNavPos(i, navGrid.Links[num].startNavType);
 					Vector3 navPos2 = NavTypeHelper.GetNavPos(link, navGrid.Links[num].endNavType);
-					if (IsInCameraView(main, navPos) && IsInCameraView(main, navPos2))
+					if (this.IsInCameraView(main, navPos) && this.IsInCameraView(main, navPos2))
 					{
-						Vector2 start = main.WorldToScreenPoint(navPos);
-						Vector2 end = main.WorldToScreenPoint(navPos2);
-						start.y = (float)pixelHeight - start.y;
-						end.y = (float)pixelHeight - end.y;
-						uint colorU = ImGui.GetColorU32(color);
-						DrawArrowLink(start, end, colorU);
+						Vector2 vector = main.WorldToScreenPoint(navPos);
+						Vector2 vector2 = main.WorldToScreenPoint(navPos2);
+						vector.y = (float)pixelHeight - vector.y;
+						vector2.y = (float)pixelHeight - vector2.y;
+						uint colorU = ImGui.GetColorU32(white);
+						this.DrawArrowLink(vector, vector2, colorU);
 					}
 				}
 				num++;
@@ -216,16 +209,14 @@ public class DevToolNavGrid : DevTool
 		}
 	}
 
+	// Token: 0x0600398D RID: 14733 RVA: 0x0022184C File Offset: 0x0021FA4C
 	private bool IsInCameraView(Camera camera, Vector3 pos)
 	{
 		Vector3 vector = camera.WorldToViewportPoint(pos);
-		if (vector.x >= 0f && vector.y >= 0f && vector.x <= 1f)
-		{
-			return vector.y <= 1f;
-		}
-		return false;
+		return vector.x >= 0f && vector.y >= 0f && vector.x <= 1f && vector.y <= 1f;
 	}
 
+	// Token: 0x0600398E RID: 14734 RVA: 0x0022189C File Offset: 0x0021FA9C
 	private bool DrawNavTypeLink(NavGrid navGrid, int end_cell_idx, ref Color color)
 	{
 		for (int i = 0; i < navGrid.ValidNavTypes.Length; i++)
@@ -244,6 +235,7 @@ public class DevToolNavGrid : DevTool
 		return false;
 	}
 
+	// Token: 0x0600398F RID: 14735 RVA: 0x00221934 File Offset: 0x0021FB34
 	private void DrawArrowLink(Vector2 start, Vector2 end, uint color)
 	{
 		ImDrawListPtr backgroundDrawList = ImGui.GetBackgroundDrawList();
@@ -253,9 +245,42 @@ public class DevToolNavGrid : DevTool
 		{
 			vector *= 1f / Mathf.Sqrt(magnitude);
 		}
-		Vector2 p = end - vector * 1f + new Vector2(0f - vector.y, vector.x) * 1f;
-		Vector2 p2 = end - vector * 1f - new Vector2(0f - vector.y, vector.x) * 1f;
+		Vector2 p = end - vector * 1f + new Vector2(-vector.y, vector.x) * 1f;
+		Vector2 p2 = end - vector * 1f - new Vector2(-vector.y, vector.x) * 1f;
 		backgroundDrawList.AddLine(start, end, color);
 		backgroundDrawList.AddTriangleFilled(end, p, p2, color);
 	}
+
+	// Token: 0x0400272F RID: 10031
+	private const string INVALID_OVERLAY_MODE_STR = "None";
+
+	// Token: 0x04002730 RID: 10032
+	private string[] navGridNames;
+
+	// Token: 0x04002731 RID: 10033
+	private int selectedNavGrid;
+
+	// Token: 0x04002732 RID: 10034
+	private bool drawLinks;
+
+	// Token: 0x04002733 RID: 10035
+	public static DevToolNavGrid Instance;
+
+	// Token: 0x04002734 RID: 10036
+	private int[] linkStats;
+
+	// Token: 0x04002735 RID: 10037
+	private int highestLinkCell;
+
+	// Token: 0x04002736 RID: 10038
+	private int highestLinkCount;
+
+	// Token: 0x04002737 RID: 10039
+	private int selectedCell;
+
+	// Token: 0x04002738 RID: 10040
+	private bool follow;
+
+	// Token: 0x04002739 RID: 10041
+	private GameObject lockObject;
 }

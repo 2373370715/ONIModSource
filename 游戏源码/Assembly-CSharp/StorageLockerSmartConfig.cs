@@ -1,27 +1,43 @@
+﻿using System;
 using System.Collections.Generic;
 using STRINGS;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x020005BB RID: 1467
 public class StorageLockerSmartConfig : IBuildingConfig
 {
-	public const string ID = "StorageLockerSmart";
-
+	// Token: 0x06001A48 RID: 6728 RVA: 0x001A672C File Offset: 0x001A492C
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef("StorageLockerSmart", 1, 2, "smartstoragelocker_kanim", 30, 60f, TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER3, MATERIALS.REFINED_METALS, 1600f, BuildLocationRule.OnFloor, noise: NOISE_POLLUTION.NONE, decor: TUNING.BUILDINGS.DECOR.PENALTY.TIER1);
-		obj.Floodable = false;
-		obj.AudioCategory = "Metal";
-		obj.Overheatable = false;
-		obj.ViewMode = OverlayModes.Logic.ID;
-		obj.RequiresPowerInput = true;
-		obj.AddLogicPowerPort = false;
-		obj.EnergyConsumptionWhenActive = 60f;
-		obj.ExhaustKilowattsWhenActive = 0.125f;
-		obj.LogicOutputPorts = new List<LogicPorts.Port> { LogicPorts.Port.OutputPort(FilteredStorage.FULL_PORT_ID, new CellOffset(0, 1), STRINGS.BUILDINGS.PREFABS.STORAGELOCKERSMART.LOGIC_PORT, STRINGS.BUILDINGS.PREFABS.STORAGELOCKERSMART.LOGIC_PORT_ACTIVE, STRINGS.BUILDINGS.PREFABS.STORAGELOCKERSMART.LOGIC_PORT_INACTIVE, show_wire_missing_icon: true) };
-		return obj;
+		string id = "StorageLockerSmart";
+		int width = 1;
+		int height = 2;
+		string anim = "smartstoragelocker_kanim";
+		int hitpoints = 30;
+		float construction_time = 60f;
+		float[] tier = TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER3;
+		string[] refined_METALS = MATERIALS.REFINED_METALS;
+		float melting_point = 1600f;
+		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
+		EffectorValues none = NOISE_POLLUTION.NONE;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, refined_METALS, melting_point, build_location_rule, TUNING.BUILDINGS.DECOR.PENALTY.TIER1, none, 0.2f);
+		buildingDef.Floodable = false;
+		buildingDef.AudioCategory = "Metal";
+		buildingDef.Overheatable = false;
+		buildingDef.ViewMode = OverlayModes.Logic.ID;
+		buildingDef.RequiresPowerInput = true;
+		buildingDef.AddLogicPowerPort = false;
+		buildingDef.EnergyConsumptionWhenActive = 60f;
+		buildingDef.ExhaustKilowattsWhenActive = 0.125f;
+		buildingDef.LogicOutputPorts = new List<LogicPorts.Port>
+		{
+			LogicPorts.Port.OutputPort(FilteredStorage.FULL_PORT_ID, new CellOffset(0, 1), STRINGS.BUILDINGS.PREFABS.STORAGELOCKERSMART.LOGIC_PORT, STRINGS.BUILDINGS.PREFABS.STORAGELOCKERSMART.LOGIC_PORT_ACTIVE, STRINGS.BUILDINGS.PREFABS.STORAGELOCKERSMART.LOGIC_PORT_INACTIVE, true, false)
+		};
+		return buildingDef;
 	}
 
+	// Token: 0x06001A49 RID: 6729 RVA: 0x001A67FC File Offset: 0x001A49FC
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		SoundEventVolumeCache.instance.AddVolume("storagelocker_kanim", "StorageLocker_Hit_metallic_low", NOISE_POLLUTION.NOISY.TIER1);
@@ -41,4 +57,7 @@ public class StorageLockerSmartConfig : IBuildingConfig
 		go.AddOrGetDef<StorageController.Def>();
 		go.AddOrGetDef<RocketUsageRestriction.Def>();
 	}
+
+	// Token: 0x040010B7 RID: 4279
+	public const string ID = "StorageLockerSmart";
 }

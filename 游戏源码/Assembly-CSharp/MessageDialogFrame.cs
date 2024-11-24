@@ -1,79 +1,68 @@
-using System;
+﻿using System;
 using UnityEngine;
 
+// Token: 0x02001DFA RID: 7674
 public class MessageDialogFrame : KScreen
 {
-	[SerializeField]
-	private KButton closeButton;
-
-	[SerializeField]
-	private KToggle nextMessageButton;
-
-	[SerializeField]
-	private GameObject dontShowAgainElement;
-
-	[SerializeField]
-	private MultiToggle dontShowAgainButton;
-
-	[SerializeField]
-	private LocText title;
-
-	[SerializeField]
-	private RectTransform body;
-
-	private System.Action dontShowAgainDelegate;
-
+	// Token: 0x0600A095 RID: 41109 RVA: 0x0010856F File Offset: 0x0010676F
 	public override float GetSortKey()
 	{
 		return 15f;
 	}
 
+	// Token: 0x0600A096 RID: 41110 RVA: 0x003D5BEC File Offset: 0x003D3DEC
 	protected override void OnActivate()
 	{
-		closeButton.onClick += OnClickClose;
-		nextMessageButton.onClick += OnClickNextMessage;
-		MultiToggle multiToggle = dontShowAgainButton;
-		multiToggle.onClick = (System.Action)Delegate.Combine(multiToggle.onClick, new System.Action(OnClickDontShowAgain));
+		this.closeButton.onClick += this.OnClickClose;
+		this.nextMessageButton.onClick += this.OnClickNextMessage;
+		MultiToggle multiToggle = this.dontShowAgainButton;
+		multiToggle.onClick = (System.Action)Delegate.Combine(multiToggle.onClick, new System.Action(this.OnClickDontShowAgain));
 		bool flag = KPlayerPrefs.GetInt("HideTutorial_CheckState", 0) == 1;
-		dontShowAgainButton.ChangeState((!flag) ? 1 : 0);
-		Subscribe(Messenger.Instance.gameObject, -599791736, OnMessagesChanged);
-		OnMessagesChanged(null);
+		this.dontShowAgainButton.ChangeState(flag ? 0 : 1);
+		base.Subscribe(Messenger.Instance.gameObject, -599791736, new Action<object>(this.OnMessagesChanged));
+		this.OnMessagesChanged(null);
 	}
 
+	// Token: 0x0600A097 RID: 41111 RVA: 0x00108576 File Offset: 0x00106776
 	protected override void OnDeactivate()
 	{
-		Unsubscribe(Messenger.Instance.gameObject, -599791736, OnMessagesChanged);
+		base.Unsubscribe(Messenger.Instance.gameObject, -599791736, new Action<object>(this.OnMessagesChanged));
 	}
 
+	// Token: 0x0600A098 RID: 41112 RVA: 0x00108599 File Offset: 0x00106799
 	private void OnClickClose()
 	{
-		TryDontShowAgain();
+		this.TryDontShowAgain();
 		UnityEngine.Object.Destroy(base.gameObject);
 	}
 
+	// Token: 0x0600A099 RID: 41113 RVA: 0x001085AC File Offset: 0x001067AC
 	private void OnClickNextMessage()
 	{
-		TryDontShowAgain();
+		this.TryDontShowAgain();
 		UnityEngine.Object.Destroy(base.gameObject);
 		NotificationScreen.Instance.OnClickNextMessage();
 	}
 
+	// Token: 0x0600A09A RID: 41114 RVA: 0x003D5C98 File Offset: 0x003D3E98
 	private void OnClickDontShowAgain()
 	{
-		dontShowAgainButton.NextState();
-		bool flag = dontShowAgainButton.CurrentState == 0;
+		this.dontShowAgainButton.NextState();
+		bool flag = this.dontShowAgainButton.CurrentState == 0;
 		KPlayerPrefs.SetInt("HideTutorial_CheckState", flag ? 1 : 0);
 	}
 
+	// Token: 0x0600A09B RID: 41115 RVA: 0x001085C9 File Offset: 0x001067C9
 	private void OnMessagesChanged(object data)
 	{
-		nextMessageButton.gameObject.SetActive(Messenger.Instance.Count != 0);
+		this.nextMessageButton.gameObject.SetActive(Messenger.Instance.Count != 0);
 	}
 
+	// Token: 0x0600A09C RID: 41116 RVA: 0x003D5CD0 File Offset: 0x003D3ED0
 	public void SetMessage(MessageDialog dialog, Message message)
 	{
-		title.text = message.GetTitle().ToUpper();
-		dialog.GetComponent<RectTransform>().SetParent(body.GetComponent<RectTransform>());
+		this.title.text = message.GetTitle().ToUpper();
+		dialog.GetComponent<RectTransform>().SetParent(this.body.GetComponent<RectTransform>());
 		RectTransform component = dialog.GetComponent<RectTransform>();
 		component.offsetMin = Vector2.zero;
 		component.offsetMax = Vector2.zero;
@@ -82,21 +71,47 @@ public class MessageDialogFrame : KScreen
 		dialog.OnClickAction();
 		if (dialog.CanDontShowAgain)
 		{
-			dontShowAgainElement.SetActive(value: true);
-			dontShowAgainDelegate = dialog.OnDontShowAgain;
+			this.dontShowAgainElement.SetActive(true);
+			this.dontShowAgainDelegate = new System.Action(dialog.OnDontShowAgain);
+			return;
 		}
-		else
+		this.dontShowAgainElement.SetActive(false);
+		this.dontShowAgainDelegate = null;
+	}
+
+	// Token: 0x0600A09D RID: 41117 RVA: 0x001085E8 File Offset: 0x001067E8
+	private void TryDontShowAgain()
+	{
+		if (this.dontShowAgainDelegate != null && this.dontShowAgainButton.CurrentState == 0)
 		{
-			dontShowAgainElement.SetActive(value: false);
-			dontShowAgainDelegate = null;
+			this.dontShowAgainDelegate();
 		}
 	}
 
-	private void TryDontShowAgain()
-	{
-		if (dontShowAgainDelegate != null && dontShowAgainButton.CurrentState == 0)
-		{
-			dontShowAgainDelegate();
-		}
-	}
+	// Token: 0x04007D7B RID: 32123
+	[SerializeField]
+	private KButton closeButton;
+
+	// Token: 0x04007D7C RID: 32124
+	[SerializeField]
+	private KToggle nextMessageButton;
+
+	// Token: 0x04007D7D RID: 32125
+	[SerializeField]
+	private GameObject dontShowAgainElement;
+
+	// Token: 0x04007D7E RID: 32126
+	[SerializeField]
+	private MultiToggle dontShowAgainButton;
+
+	// Token: 0x04007D7F RID: 32127
+	[SerializeField]
+	private LocText title;
+
+	// Token: 0x04007D80 RID: 32128
+	[SerializeField]
+	private RectTransform body;
+
+	// Token: 0x04007D81 RID: 32129
+	private System.Action dontShowAgainDelegate;
 }

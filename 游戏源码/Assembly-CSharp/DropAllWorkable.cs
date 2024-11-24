@@ -1,177 +1,211 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using KSerialization;
 using STRINGS;
 using UnityEngine;
 
+// Token: 0x0200124C RID: 4684
 [AddComponentMenu("KMonoBehaviour/Workable/DropAllWorkable")]
 public class DropAllWorkable : Workable
 {
-	[Serialize]
-	private bool markedForDrop;
-
-	private Chore _chore;
-
-	private bool showCmd;
-
-	private Storage[] storages;
-
-	public float dropWorkTime = 0.1f;
-
-	public string choreTypeID;
-
-	[MyCmpAdd]
-	private Prioritizable _prioritizable;
-
-	public List<Tag> removeTags;
-
-	private static readonly EventSystem.IntraObjectHandler<DropAllWorkable> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<DropAllWorkable>(delegate(DropAllWorkable component, object data)
-	{
-		component.OnRefreshUserMenu(data);
-	});
-
-	private static readonly EventSystem.IntraObjectHandler<DropAllWorkable> OnStorageChangeDelegate = new EventSystem.IntraObjectHandler<DropAllWorkable>(delegate(DropAllWorkable component, object data)
-	{
-		component.OnStorageChange(data);
-	});
-
-	private Guid statusItem;
-
+	// Token: 0x170005C3 RID: 1475
+	// (get) Token: 0x06005FF4 RID: 24564 RVA: 0x000DE86F File Offset: 0x000DCA6F
+	// (set) Token: 0x06005FF5 RID: 24565 RVA: 0x000DE877 File Offset: 0x000DCA77
 	private Chore Chore
 	{
 		get
 		{
-			return _chore;
+			return this._chore;
 		}
 		set
 		{
-			_chore = value;
-			markedForDrop = _chore != null;
+			this._chore = value;
+			this.markedForDrop = (this._chore != null);
 		}
 	}
 
+	// Token: 0x06005FF6 RID: 24566 RVA: 0x000DE88F File Offset: 0x000DCA8F
 	protected DropAllWorkable()
 	{
-		SetOffsetTable(OffsetGroups.InvertedStandardTable);
+		base.SetOffsetTable(OffsetGroups.InvertedStandardTable);
 	}
 
+	// Token: 0x06005FF7 RID: 24567 RVA: 0x002AC314 File Offset: 0x002AA514
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		Subscribe(493375141, OnRefreshUserMenuDelegate);
-		Subscribe(-1697596308, OnStorageChangeDelegate);
-		workerStatusItem = Db.Get().DuplicantStatusItems.Emptying;
-		synchronizeAnims = false;
-		SetWorkTime(dropWorkTime);
+		base.Subscribe<DropAllWorkable>(493375141, DropAllWorkable.OnRefreshUserMenuDelegate);
+		base.Subscribe<DropAllWorkable>(-1697596308, DropAllWorkable.OnStorageChangeDelegate);
+		this.workerStatusItem = Db.Get().DuplicantStatusItems.Emptying;
+		this.synchronizeAnims = false;
+		base.SetWorkTime(this.dropWorkTime);
 		Prioritizable.AddRef(base.gameObject);
 	}
 
+	// Token: 0x06005FF8 RID: 24568 RVA: 0x000DE8AD File Offset: 0x000DCAAD
 	private Storage[] GetStorages()
 	{
-		if (storages == null)
+		if (this.storages == null)
 		{
-			storages = GetComponents<Storage>();
+			this.storages = base.GetComponents<Storage>();
 		}
-		return storages;
+		return this.storages;
 	}
 
+	// Token: 0x06005FF9 RID: 24569 RVA: 0x000DE8C9 File Offset: 0x000DCAC9
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		showCmd = GetNewShowCmd();
-		if (markedForDrop)
+		this.showCmd = this.GetNewShowCmd();
+		if (this.markedForDrop)
 		{
-			DropAll();
+			this.DropAll();
 		}
 	}
 
+	// Token: 0x06005FFA RID: 24570 RVA: 0x002AC37C File Offset: 0x002AA57C
 	public void DropAll()
 	{
 		if (DebugHandler.InstantBuildMode)
 		{
-			OnCompleteWork(null);
+			this.OnCompleteWork(null);
 		}
-		else if (Chore == null)
+		else if (this.Chore == null)
 		{
-			ChoreType chore_type = ((!string.IsNullOrEmpty(choreTypeID)) ? Db.Get().ChoreTypes.Get(choreTypeID) : Db.Get().ChoreTypes.EmptyStorage);
-			Chore = new WorkChore<DropAllWorkable>(chore_type, this, null, run_until_complete: true, null, null, null, allow_in_red_alert: true, null, ignore_schedule_block: false, only_when_operational: false);
+			ChoreType chore_type = (!string.IsNullOrEmpty(this.choreTypeID)) ? Db.Get().ChoreTypes.Get(this.choreTypeID) : Db.Get().ChoreTypes.EmptyStorage;
+			this.Chore = new WorkChore<DropAllWorkable>(chore_type, this, null, true, null, null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 		}
 		else
 		{
-			Chore.Cancel("Cancelled emptying");
-			Chore = null;
-			GetComponent<KSelectable>().RemoveStatusItem(workerStatusItem);
-			ShowProgressBar(show: false);
+			this.Chore.Cancel("Cancelled emptying");
+			this.Chore = null;
+			base.GetComponent<KSelectable>().RemoveStatusItem(this.workerStatusItem, false);
+			base.ShowProgressBar(false);
 		}
-		RefreshStatusItem();
+		this.RefreshStatusItem();
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+	// Token: 0x06005FFB RID: 24571 RVA: 0x002AC430 File Offset: 0x002AA630
+	protected override void OnCompleteWork(WorkerBase worker)
 	{
-		Storage[] array = GetStorages();
+		Storage[] array = this.GetStorages();
 		for (int i = 0; i < array.Length; i++)
 		{
 			List<GameObject> list = new List<GameObject>(array[i].items);
 			for (int j = 0; j < list.Count; j++)
 			{
-				GameObject gameObject = array[i].Drop(list[j]);
-				if (!(gameObject != null))
+				GameObject gameObject = array[i].Drop(list[j], true);
+				if (gameObject != null)
 				{
-					continue;
+					foreach (Tag tag in this.removeTags)
+					{
+						gameObject.RemoveTag(tag);
+					}
+					gameObject.Trigger(580035959, worker);
+					if (this.resetTargetWorkableOnCompleteWork)
+					{
+						Pickupable component = gameObject.GetComponent<Pickupable>();
+						component.targetWorkable = component;
+						component.SetOffsetTable(OffsetGroups.InvertedStandardTable);
+					}
 				}
-				foreach (Tag removeTag in removeTags)
-				{
-					gameObject.RemoveTag(removeTag);
-				}
-				gameObject.Trigger(580035959, worker);
 			}
 		}
-		Chore = null;
-		RefreshStatusItem();
-		Trigger(-1957399615);
+		this.Chore = null;
+		this.RefreshStatusItem();
+		base.Trigger(-1957399615, null);
 	}
 
+	// Token: 0x06005FFC RID: 24572 RVA: 0x002AC52C File Offset: 0x002AA72C
 	private void OnRefreshUserMenu(object data)
 	{
-		if (showCmd)
+		if (this.showCmd)
 		{
-			KIconButtonMenu.ButtonInfo button = ((Chore == null) ? new KIconButtonMenu.ButtonInfo("action_empty_contents", UI.USERMENUACTIONS.EMPTYSTORAGE.NAME, DropAll, Action.NumActions, null, null, null, UI.USERMENUACTIONS.EMPTYSTORAGE.TOOLTIP) : new KIconButtonMenu.ButtonInfo("action_empty_contents", UI.USERMENUACTIONS.EMPTYSTORAGE.NAME_OFF, DropAll, Action.NumActions, null, null, null, UI.USERMENUACTIONS.EMPTYSTORAGE.TOOLTIP_OFF));
-			Game.Instance.userMenu.AddButton(base.gameObject, button);
+			KIconButtonMenu.ButtonInfo button = (this.Chore == null) ? new KIconButtonMenu.ButtonInfo("action_empty_contents", UI.USERMENUACTIONS.EMPTYSTORAGE.NAME, new System.Action(this.DropAll), global::Action.NumActions, null, null, null, UI.USERMENUACTIONS.EMPTYSTORAGE.TOOLTIP, true) : new KIconButtonMenu.ButtonInfo("action_empty_contents", UI.USERMENUACTIONS.EMPTYSTORAGE.NAME_OFF, new System.Action(this.DropAll), global::Action.NumActions, null, null, null, UI.USERMENUACTIONS.EMPTYSTORAGE.TOOLTIP_OFF, true);
+			Game.Instance.userMenu.AddButton(base.gameObject, button, 1f);
 		}
 	}
 
+	// Token: 0x06005FFD RID: 24573 RVA: 0x002AC5D0 File Offset: 0x002AA7D0
 	private bool GetNewShowCmd()
 	{
 		bool flag = false;
-		Storage[] array = GetStorages();
+		Storage[] array = this.GetStorages();
 		for (int i = 0; i < array.Length; i++)
 		{
-			flag = flag || !array[i].IsEmpty();
+			flag = (flag || !array[i].IsEmpty());
 		}
 		return flag;
 	}
 
+	// Token: 0x06005FFE RID: 24574 RVA: 0x002AC608 File Offset: 0x002AA808
 	private void OnStorageChange(object data)
 	{
-		bool newShowCmd = GetNewShowCmd();
-		if (newShowCmd != showCmd)
+		bool newShowCmd = this.GetNewShowCmd();
+		if (newShowCmd != this.showCmd)
 		{
-			showCmd = newShowCmd;
+			this.showCmd = newShowCmd;
 			Game.Instance.userMenu.Refresh(base.gameObject);
 		}
 	}
 
+	// Token: 0x06005FFF RID: 24575 RVA: 0x002AC644 File Offset: 0x002AA844
 	private void RefreshStatusItem()
 	{
-		if (Chore != null && statusItem == Guid.Empty)
+		if (this.Chore != null && this.statusItem == Guid.Empty)
 		{
-			KSelectable component = GetComponent<KSelectable>();
-			statusItem = component.AddStatusItem(Db.Get().BuildingStatusItems.AwaitingEmptyBuilding);
+			KSelectable component = base.GetComponent<KSelectable>();
+			this.statusItem = component.AddStatusItem(Db.Get().BuildingStatusItems.AwaitingEmptyBuilding, null);
+			return;
 		}
-		else if (Chore == null && statusItem != Guid.Empty)
+		if (this.Chore == null && this.statusItem != Guid.Empty)
 		{
-			KSelectable component2 = GetComponent<KSelectable>();
-			statusItem = component2.RemoveStatusItem(statusItem);
+			KSelectable component2 = base.GetComponent<KSelectable>();
+			this.statusItem = component2.RemoveStatusItem(this.statusItem, false);
 		}
 	}
+
+	// Token: 0x04004413 RID: 17427
+	[Serialize]
+	private bool markedForDrop;
+
+	// Token: 0x04004414 RID: 17428
+	private Chore _chore;
+
+	// Token: 0x04004415 RID: 17429
+	private bool showCmd;
+
+	// Token: 0x04004416 RID: 17430
+	private Storage[] storages;
+
+	// Token: 0x04004417 RID: 17431
+	public float dropWorkTime = 0.1f;
+
+	// Token: 0x04004418 RID: 17432
+	public string choreTypeID;
+
+	// Token: 0x04004419 RID: 17433
+	[MyCmpAdd]
+	private Prioritizable _prioritizable;
+
+	// Token: 0x0400441A RID: 17434
+	public List<Tag> removeTags;
+
+	// Token: 0x0400441B RID: 17435
+	public bool resetTargetWorkableOnCompleteWork;
+
+	// Token: 0x0400441C RID: 17436
+	private static readonly EventSystem.IntraObjectHandler<DropAllWorkable> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<DropAllWorkable>(delegate(DropAllWorkable component, object data)
+	{
+		component.OnRefreshUserMenu(data);
+	});
+
+	// Token: 0x0400441D RID: 17437
+	private static readonly EventSystem.IntraObjectHandler<DropAllWorkable> OnStorageChangeDelegate = new EventSystem.IntraObjectHandler<DropAllWorkable>(delegate(DropAllWorkable component, object data)
+	{
+		component.OnStorageChange(data);
+	});
+
+	// Token: 0x0400441E RID: 17438
+	private Guid statusItem;
 }

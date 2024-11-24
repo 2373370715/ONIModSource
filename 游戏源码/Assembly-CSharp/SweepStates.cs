@@ -1,83 +1,37 @@
-using System;
+﻿using System;
 using Klei.AI;
 using UnityEngine;
 
+// Token: 0x02000552 RID: 1362
 public class SweepStates : GameStateMachine<SweepStates, SweepStates.Instance, IStateMachineTarget, SweepStates.Def>
 {
-	public class Def : BaseDef
+	// Token: 0x06001807 RID: 6151 RVA: 0x0019C8B0 File Offset: 0x0019AAB0
+	public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
-	}
-
-	public new class Instance : GameInstance
-	{
-		public Instance(Chore<Instance> chore, Def def)
-			: base((IStateMachineTarget)chore, def)
+		default_state = this.beginPatrol;
+		this.beginPatrol.Enter(delegate(SweepStates.Instance smi)
 		{
-		}
-
-		public override void StartSM()
-		{
-			base.StartSM();
-			GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Main, Db.Get().RobotStatusItems.Working, base.gameObject);
-		}
-
-		protected override void OnCleanUp()
-		{
-			base.OnCleanUp();
-			GetComponent<KSelectable>().RemoveStatusItem(Db.Get().RobotStatusItems.Working);
-		}
-	}
-
-	public const float TIME_UNTIL_BORED = 30f;
-
-	public const string MOVE_LOOP_SOUND = "SweepBot_mvmt_lp";
-
-	public BoolParameter headingRight;
-
-	private FloatParameter timeUntilBored;
-
-	public BoolParameter bored;
-
-	private State beginPatrol;
-
-	private State moving;
-
-	private State pause;
-
-	private State mopping;
-
-	private State redirected;
-
-	private State emoteRedirected;
-
-	private State sweep;
-
-	public override void InitializeStates(out BaseState default_state)
-	{
-		default_state = beginPatrol;
-		beginPatrol.Enter(delegate(Instance smi)
-		{
-			smi.sm.timeUntilBored.Set(30f, smi);
-			smi.GoTo(moving);
-			Instance instance = smi;
-			instance.OnStop = (Action<string, Status>)Delegate.Combine(instance.OnStop, (Action<string, Status>)delegate
+			smi.sm.timeUntilBored.Set(30f, smi, false);
+			smi.GoTo(this.moving);
+			SweepStates.Instance smi2 = smi;
+			smi2.OnStop = (Action<string, StateMachine.Status>)Delegate.Combine(smi2.OnStop, new Action<string, StateMachine.Status>(delegate(string data, StateMachine.Status status)
 			{
-				StopMoveSound(smi);
-			});
+				this.StopMoveSound(smi);
+			}));
 		});
-		moving.Enter(delegate
+		this.moving.Enter(delegate(SweepStates.Instance smi)
 		{
-		}).MoveTo((Instance smi) => GetNextCell(smi), pause, redirected).Update(delegate(Instance smi, float dt)
+		}).MoveTo((SweepStates.Instance smi) => this.GetNextCell(smi), this.pause, this.redirected, false).Update(delegate(SweepStates.Instance smi, float dt)
 		{
-			smi.sm.timeUntilBored.Set(smi.sm.timeUntilBored.Get(smi) - dt, smi);
+			smi.sm.timeUntilBored.Set(smi.sm.timeUntilBored.Get(smi) - dt, smi, false);
 			if (smi.sm.timeUntilBored.Get(smi) <= 0f)
 			{
-				smi.sm.bored.Set(value: true, smi);
-				smi.sm.timeUntilBored.Set(30f, smi);
+				smi.sm.bored.Set(true, smi, false);
+				smi.sm.timeUntilBored.Set(30f, smi, false);
 				smi.master.gameObject.GetSMI<AnimInterruptMonitor.Instance>().PlayAnim("react_bored");
 			}
-			StorageUnloadMonitor.Instance sMI = smi.master.gameObject.GetSMI<StorageUnloadMonitor.Instance>();
-			Storage storage = sMI.sm.sweepLocker.Get(sMI);
+			StorageUnloadMonitor.Instance smi2 = smi.master.gameObject.GetSMI<StorageUnloadMonitor.Instance>();
+			Storage storage = smi2.sm.sweepLocker.Get(smi2);
 			if (storage != null && smi.sm.headingRight.Get(smi) == smi.master.transform.position.x > storage.transform.position.x)
 			{
 				Navigator component = smi.master.gameObject.GetComponent<Navigator>();
@@ -86,118 +40,116 @@ public class SweepStates : GameStateMachine<SweepStates, SweepStates.Instance, I
 					smi.GoTo(smi.sm.emoteRedirected);
 				}
 			}
-		}, UpdateRate.SIM_1000ms);
-		emoteRedirected.Enter(delegate(Instance smi)
+		}, UpdateRate.SIM_1000ms, false);
+		this.emoteRedirected.Enter(delegate(SweepStates.Instance smi)
 		{
-			StopMoveSound(smi);
+			this.StopMoveSound(smi);
 			int cell = Grid.PosToCell(smi.master.gameObject);
-			if (Grid.IsCellOffsetValid(cell, headingRight.Get(smi) ? 1 : (-1), -1) && !Grid.Solid[Grid.OffsetCell(cell, headingRight.Get(smi) ? 1 : (-1), -1)])
+			if (Grid.IsCellOffsetValid(cell, this.headingRight.Get(smi) ? 1 : -1, -1) && !Grid.Solid[Grid.OffsetCell(cell, this.headingRight.Get(smi) ? 1 : -1, -1)])
 			{
-				smi.Play("gap");
+				smi.Play("gap", KAnim.PlayMode.Once);
 			}
 			else
 			{
-				smi.Play("bump");
+				smi.Play("bump", KAnim.PlayMode.Once);
 			}
-			headingRight.Set(!headingRight.Get(smi), smi);
-		}).OnAnimQueueComplete(pause);
-		redirected.StopMoving().GoTo(emoteRedirected);
-		sweep.PlayAnim("pickup").ToggleEffect("BotSweeping").Enter(delegate(Instance smi)
+			this.headingRight.Set(!this.headingRight.Get(smi), smi, false);
+		}).OnAnimQueueComplete(this.pause);
+		this.redirected.StopMoving().GoTo(this.emoteRedirected);
+		this.sweep.PlayAnim("pickup").ToggleEffect("BotSweeping").Enter(delegate(SweepStates.Instance smi)
 		{
-			StopMoveSound(smi);
-			smi.sm.bored.Set(value: false, smi);
-			smi.sm.timeUntilBored.Set(30f, smi);
-		})
-			.OnAnimQueueComplete(moving);
-		pause.Enter(delegate(Instance smi)
+			this.StopMoveSound(smi);
+			smi.sm.bored.Set(false, smi, false);
+			smi.sm.timeUntilBored.Set(30f, smi, false);
+		}).OnAnimQueueComplete(this.moving);
+		this.pause.Enter(delegate(SweepStates.Instance smi)
 		{
 			if (Grid.IsLiquid(Grid.PosToCell(smi)))
 			{
-				smi.GoTo(mopping);
+				smi.GoTo(this.mopping);
+				return;
 			}
-			else if (TrySweep(smi))
+			if (this.TrySweep(smi))
 			{
-				smi.GoTo(sweep);
+				smi.GoTo(this.sweep);
+				return;
 			}
-			else
-			{
-				smi.GoTo(moving);
-			}
+			smi.GoTo(this.moving);
 		});
-		mopping.PlayAnim("mop_pre", KAnim.PlayMode.Once).QueueAnim("mop_loop", loop: true).ToggleEffect("BotMopping")
-			.Enter(delegate(Instance smi)
+		this.mopping.PlayAnim("mop_pre", KAnim.PlayMode.Once).QueueAnim("mop_loop", true, null).ToggleEffect("BotMopping").Enter(delegate(SweepStates.Instance smi)
+		{
+			smi.sm.timeUntilBored.Set(30f, smi, false);
+			smi.sm.bored.Set(false, smi, false);
+			this.StopMoveSound(smi);
+		}).Update(delegate(SweepStates.Instance smi, float dt)
+		{
+			if (smi.timeinstate > 16f || !Grid.IsLiquid(Grid.PosToCell(smi)))
 			{
-				smi.sm.timeUntilBored.Set(30f, smi);
-				smi.sm.bored.Set(value: false, smi);
-				StopMoveSound(smi);
-			})
-			.Update(delegate(Instance smi, float dt)
-			{
-				if (smi.timeinstate > 16f || !Grid.IsLiquid(Grid.PosToCell(smi)))
-				{
-					smi.GoTo(moving);
-				}
-				else
-				{
-					TryMop(smi, dt);
-				}
-			}, UpdateRate.SIM_1000ms);
+				smi.GoTo(this.moving);
+				return;
+			}
+			this.TryMop(smi, dt);
+		}, UpdateRate.SIM_1000ms, false);
 	}
 
-	public void StopMoveSound(Instance smi)
+	// Token: 0x06001808 RID: 6152 RVA: 0x000B023D File Offset: 0x000AE43D
+	public void StopMoveSound(SweepStates.Instance smi)
 	{
 		LoopingSounds component = smi.gameObject.GetComponent<LoopingSounds>();
-		component.StopSound(GlobalAssets.GetSound("SweepBot_mvmt_lp"));
+		component.StopSound(GlobalAssets.GetSound("SweepBot_mvmt_lp", false));
 		component.StopAllSounds();
 	}
 
-	public void StartMoveSound(Instance smi)
+	// Token: 0x06001809 RID: 6153 RVA: 0x0019CA24 File Offset: 0x0019AC24
+	public void StartMoveSound(SweepStates.Instance smi)
 	{
 		LoopingSounds component = smi.gameObject.GetComponent<LoopingSounds>();
-		if (!component.IsSoundPlaying(GlobalAssets.GetSound("SweepBot_mvmt_lp")))
+		if (!component.IsSoundPlaying(GlobalAssets.GetSound("SweepBot_mvmt_lp", false)))
 		{
-			component.StartSound(GlobalAssets.GetSound("SweepBot_mvmt_lp"));
+			component.StartSound(GlobalAssets.GetSound("SweepBot_mvmt_lp", false));
 		}
 	}
 
-	public void TryMop(Instance smi, float dt)
+	// Token: 0x0600180A RID: 6154 RVA: 0x0019CA64 File Offset: 0x0019AC64
+	public void TryMop(SweepStates.Instance smi, float dt)
 	{
 		int cell = Grid.PosToCell(smi);
-		if (!Grid.IsLiquid(cell))
+		if (Grid.IsLiquid(cell))
 		{
-			return;
-		}
-		Moppable.MopCell(cell, Mathf.Min(Grid.Mass[cell], 10f * dt), delegate(Sim.MassConsumedCallback mass_cb_info, object data)
-		{
-			if (this != null && mass_cb_info.mass > 0f)
+			Moppable.MopCell(cell, Mathf.Min(Grid.Mass[cell], 10f * dt), delegate(Sim.MassConsumedCallback mass_cb_info, object data)
 			{
-				SubstanceChunk substanceChunk = LiquidSourceManager.Instance.CreateChunk(ElementLoader.elements[mass_cb_info.elemIdx], mass_cb_info.mass, mass_cb_info.temperature, mass_cb_info.diseaseIdx, mass_cb_info.diseaseCount, Grid.CellToPosCCC(cell, Grid.SceneLayer.Ore));
-				substanceChunk.transform.SetPosition(substanceChunk.transform.GetPosition() + new Vector3((UnityEngine.Random.value - 0.5f) * 0.5f, 0f, 0f));
-				TryStore(substanceChunk.gameObject, smi);
-			}
-		});
+				if (this == null)
+				{
+					return;
+				}
+				if (mass_cb_info.mass > 0f)
+				{
+					SubstanceChunk substanceChunk = LiquidSourceManager.Instance.CreateChunk(ElementLoader.elements[(int)mass_cb_info.elemIdx], mass_cb_info.mass, mass_cb_info.temperature, mass_cb_info.diseaseIdx, mass_cb_info.diseaseCount, Grid.CellToPosCCC(cell, Grid.SceneLayer.Ore));
+					substanceChunk.transform.SetPosition(substanceChunk.transform.GetPosition() + new Vector3((UnityEngine.Random.value - 0.5f) * 0.5f, 0f, 0f));
+					this.TryStore(substanceChunk.gameObject, smi);
+				}
+			});
+		}
 	}
 
-	public bool TrySweep(Instance smi)
+	// Token: 0x0600180B RID: 6155 RVA: 0x0019CAD8 File Offset: 0x0019ACD8
+	public bool TrySweep(SweepStates.Instance smi)
 	{
 		int cell = Grid.PosToCell(smi);
 		GameObject gameObject = Grid.Objects[cell, 3];
 		if (gameObject != null)
 		{
 			ObjectLayerListItem nextItem = gameObject.GetComponent<Pickupable>().objectLayerListItem.nextItem;
-			if (nextItem != null)
-			{
-				return TryStore(nextItem.gameObject, smi);
-			}
-			return false;
+			return nextItem != null && this.TryStore(nextItem.gameObject, smi);
 		}
 		return false;
 	}
 
-	public bool TryStore(GameObject go, Instance smi)
+	// Token: 0x0600180C RID: 6156 RVA: 0x0019CB28 File Offset: 0x0019AD28
+	public bool TryStore(GameObject go, SweepStates.Instance smi)
 	{
-		Pickupable component = go.GetComponent<Pickupable>();
-		if (component == null)
+		Pickupable pickupable = go.GetComponent<Pickupable>();
+		if (pickupable == null)
 		{
 			return false;
 		}
@@ -206,26 +158,26 @@ public class SweepStates : GameStateMachine<SweepStates, SweepStates.Instance, I
 		{
 			return false;
 		}
-		if (component != null && component.absorbable)
+		if (pickupable != null && pickupable.absorbable)
 		{
-			SingleEntityReceptacle component2 = smi.master.GetComponent<SingleEntityReceptacle>();
-			if (component.gameObject == component2.Occupant)
+			SingleEntityReceptacle component = smi.master.GetComponent<SingleEntityReceptacle>();
+			if (pickupable.gameObject == component.Occupant)
 			{
 				return false;
 			}
-			bool flag = false;
-			if (component.TotalAmount > 10f)
+			bool flag;
+			if (pickupable.TotalAmount > 10f)
 			{
-				component.GetComponent<EntitySplitter>();
-				component = EntitySplitter.Split(component, Mathf.Min(10f, storage.RemainingCapacity()));
+				pickupable.GetComponent<EntitySplitter>();
+				pickupable = EntitySplitter.Split(pickupable, Mathf.Min(10f, storage.RemainingCapacity()), null);
 				smi.gameObject.GetAmounts().GetValue(Db.Get().Amounts.InternalBattery.Id);
-				storage.Store(component.gameObject);
+				storage.Store(pickupable.gameObject, false, false, true, false);
 				flag = true;
 			}
 			else
 			{
 				smi.gameObject.GetAmounts().GetValue(Db.Get().Amounts.InternalBattery.Id);
-				storage.Store(component.gameObject);
+				storage.Store(pickupable.gameObject, false, false, true, false);
 				flag = true;
 			}
 			if (flag)
@@ -236,11 +188,12 @@ public class SweepStates : GameStateMachine<SweepStates, SweepStates.Instance, I
 		return false;
 	}
 
-	public int GetNextCell(Instance smi)
+	// Token: 0x0600180D RID: 6157 RVA: 0x0019CC44 File Offset: 0x0019AE44
+	public int GetNextCell(SweepStates.Instance smi)
 	{
 		int i = 0;
 		int num = Grid.PosToCell(smi);
-		int invalidCell = Grid.InvalidCell;
+		int num2 = Grid.InvalidCell;
 		if (!Grid.Solid[Grid.CellBelow(num)])
 		{
 			return Grid.InvalidCell;
@@ -249,19 +202,84 @@ public class SweepStates : GameStateMachine<SweepStates, SweepStates.Instance, I
 		{
 			return Grid.InvalidCell;
 		}
-		for (; i < 1; i++)
+		while (i < 1)
 		{
-			invalidCell = (smi.sm.headingRight.Get(smi) ? Grid.CellRight(num) : Grid.CellLeft(num));
-			if (!Grid.IsValidCell(invalidCell) || Grid.Solid[invalidCell] || !Grid.IsValidCell(Grid.CellBelow(invalidCell)) || !Grid.Solid[Grid.CellBelow(invalidCell)])
+			num2 = (smi.sm.headingRight.Get(smi) ? Grid.CellRight(num) : Grid.CellLeft(num));
+			if (!Grid.IsValidCell(num2) || Grid.Solid[num2] || !Grid.IsValidCell(Grid.CellBelow(num2)) || !Grid.Solid[Grid.CellBelow(num2)])
 			{
 				break;
 			}
-			num = invalidCell;
+			num = num2;
+			i++;
 		}
 		if (num == Grid.PosToCell(smi))
 		{
 			return Grid.InvalidCell;
 		}
 		return num;
+	}
+
+	// Token: 0x04000F89 RID: 3977
+	public const float TIME_UNTIL_BORED = 30f;
+
+	// Token: 0x04000F8A RID: 3978
+	public const string MOVE_LOOP_SOUND = "SweepBot_mvmt_lp";
+
+	// Token: 0x04000F8B RID: 3979
+	public StateMachine<SweepStates, SweepStates.Instance, IStateMachineTarget, SweepStates.Def>.BoolParameter headingRight;
+
+	// Token: 0x04000F8C RID: 3980
+	private StateMachine<SweepStates, SweepStates.Instance, IStateMachineTarget, SweepStates.Def>.FloatParameter timeUntilBored;
+
+	// Token: 0x04000F8D RID: 3981
+	public StateMachine<SweepStates, SweepStates.Instance, IStateMachineTarget, SweepStates.Def>.BoolParameter bored;
+
+	// Token: 0x04000F8E RID: 3982
+	private GameStateMachine<SweepStates, SweepStates.Instance, IStateMachineTarget, SweepStates.Def>.State beginPatrol;
+
+	// Token: 0x04000F8F RID: 3983
+	private GameStateMachine<SweepStates, SweepStates.Instance, IStateMachineTarget, SweepStates.Def>.State moving;
+
+	// Token: 0x04000F90 RID: 3984
+	private GameStateMachine<SweepStates, SweepStates.Instance, IStateMachineTarget, SweepStates.Def>.State pause;
+
+	// Token: 0x04000F91 RID: 3985
+	private GameStateMachine<SweepStates, SweepStates.Instance, IStateMachineTarget, SweepStates.Def>.State mopping;
+
+	// Token: 0x04000F92 RID: 3986
+	private GameStateMachine<SweepStates, SweepStates.Instance, IStateMachineTarget, SweepStates.Def>.State redirected;
+
+	// Token: 0x04000F93 RID: 3987
+	private GameStateMachine<SweepStates, SweepStates.Instance, IStateMachineTarget, SweepStates.Def>.State emoteRedirected;
+
+	// Token: 0x04000F94 RID: 3988
+	private GameStateMachine<SweepStates, SweepStates.Instance, IStateMachineTarget, SweepStates.Def>.State sweep;
+
+	// Token: 0x02000553 RID: 1363
+	public class Def : StateMachine.BaseDef
+	{
+	}
+
+	// Token: 0x02000554 RID: 1364
+	public new class Instance : GameStateMachine<SweepStates, SweepStates.Instance, IStateMachineTarget, SweepStates.Def>.GameInstance
+	{
+		// Token: 0x06001817 RID: 6167 RVA: 0x000B034A File Offset: 0x000AE54A
+		public Instance(Chore<SweepStates.Instance> chore, SweepStates.Def def) : base(chore, def)
+		{
+		}
+
+		// Token: 0x06001818 RID: 6168 RVA: 0x000B0354 File Offset: 0x000AE554
+		public override void StartSM()
+		{
+			base.StartSM();
+			base.GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Main, Db.Get().RobotStatusItems.Working, base.gameObject);
+		}
+
+		// Token: 0x06001819 RID: 6169 RVA: 0x000B038C File Offset: 0x000AE58C
+		protected override void OnCleanUp()
+		{
+			base.OnCleanUp();
+			base.GetComponent<KSelectable>().RemoveStatusItem(Db.Get().RobotStatusItems.Working, false);
+		}
 	}
 }

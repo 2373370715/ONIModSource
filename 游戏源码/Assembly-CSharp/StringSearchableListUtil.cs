@@ -1,18 +1,23 @@
+﻿using System;
 using System.Linq;
 
+// Token: 0x0200061C RID: 1564
 public static class StringSearchableListUtil
 {
+	// Token: 0x06001C6C RID: 7276 RVA: 0x001AD100 File Offset: 0x001AB300
 	public static bool DoAnyTagsMatchFilter(string[] lowercaseTags, in string filter)
 	{
-		string filter2 = filter.Trim().ToLowerInvariant();
-		string[] source = filter2.Split(' ');
-		foreach (string tag in lowercaseTags)
+		string text = filter.Trim().ToLowerInvariant();
+		string[] source = text.Split(' ', StringSplitOptions.None);
+		for (int i = 0; i < lowercaseTags.Length; i++)
 		{
-			if (DoesTagMatchFilter(tag, in filter2))
+			string tag = lowercaseTags[i];
+			if (StringSearchableListUtil.DoesTagMatchFilter(tag, text))
 			{
 				return true;
 			}
-			if (source.Select((string f) => DoesTagMatchFilter(tag, in f)).All((bool result) => result))
+			if ((from f in source
+			select StringSearchableListUtil.DoesTagMatchFilter(tag, f)).All((bool result) => result))
 			{
 				return true;
 			}
@@ -20,19 +25,13 @@ public static class StringSearchableListUtil
 		return false;
 	}
 
+	// Token: 0x06001C6D RID: 7277 RVA: 0x000B2AD0 File Offset: 0x000B0CD0
 	public static bool DoesTagMatchFilter(string lowercaseTag, in string filter)
 	{
-		if (string.IsNullOrWhiteSpace(filter))
-		{
-			return true;
-		}
-		if (lowercaseTag.Contains(filter))
-		{
-			return true;
-		}
-		return false;
+		return string.IsNullOrWhiteSpace(filter) || lowercaseTag.Contains(filter);
 	}
 
+	// Token: 0x06001C6E RID: 7278 RVA: 0x000B2AEA File Offset: 0x000B0CEA
 	public static bool ShouldUseFilter(string filter)
 	{
 		return !string.IsNullOrWhiteSpace(filter);

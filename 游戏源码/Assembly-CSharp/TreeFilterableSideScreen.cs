@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using STRINGS;
 using TMPro;
@@ -6,140 +6,80 @@ using TUNING;
 using UnityEngine;
 using UnityEngine.UI;
 
+// Token: 0x02001FE9 RID: 8169
 public class TreeFilterableSideScreen : SideScreenContent
 {
-	private struct TagOrderInfo
-	{
-		public Tag tag;
-
-		public string strippedName;
-	}
-
-	[SerializeField]
-	private MultiToggle allCheckBox;
-
-	[SerializeField]
-	private LocText allCheckBoxLabel;
-
-	[SerializeField]
-	private GameObject specialItemsHeader;
-
-	[SerializeField]
-	private MultiToggle onlyAllowTransportItemsCheckBox;
-
-	[SerializeField]
-	private GameObject onlyallowTransportItemsRow;
-
-	[SerializeField]
-	private MultiToggle onlyAllowSpicedItemsCheckBox;
-
-	[SerializeField]
-	private GameObject onlyallowSpicedItemsRow;
-
-	[SerializeField]
-	private TreeFilterableSideScreenRow rowPrefab;
-
-	[SerializeField]
-	private GameObject rowGroup;
-
-	[SerializeField]
-	private TreeFilterableSideScreenElement elementPrefab;
-
-	[SerializeField]
-	private GameObject titlebar;
-
-	[SerializeField]
-	private GameObject contentMask;
-
-	[SerializeField]
-	private KInputTextField inputField;
-
-	[SerializeField]
-	private KButton clearButton;
-
-	[SerializeField]
-	private GameObject configurationRowsContainer;
-
-	private GameObject target;
-
-	private bool visualDirty;
-
-	private bool initialized;
-
-	private KImage onlyAllowTransportItemsImg;
-
-	public UIPool<TreeFilterableSideScreenElement> elementPool;
-
-	private UIPool<TreeFilterableSideScreenRow> rowPool;
-
-	private TreeFilterable targetFilterable;
-
-	private Dictionary<Tag, TreeFilterableSideScreenRow> tagRowMap = new Dictionary<Tag, TreeFilterableSideScreenRow>();
-
-	private Dictionary<Tag, bool> rowExpandedStatusMemory = new Dictionary<Tag, bool>();
-
-	private Storage storage;
-
-	private bool InputFieldEmpty => inputField.text == "";
-
-	public bool IsStorage => storage != null;
-
-	public string CurrentSearchValue
+	// Token: 0x17000B16 RID: 2838
+	// (get) Token: 0x0600AD45 RID: 44357 RVA: 0x00110C13 File Offset: 0x0010EE13
+	private bool InputFieldEmpty
 	{
 		get
 		{
-			if (inputField.text == null)
-			{
-				return "";
-			}
-			return inputField.text;
+			return this.inputField.text == "";
 		}
 	}
 
+	// Token: 0x17000B17 RID: 2839
+	// (get) Token: 0x0600AD46 RID: 44358 RVA: 0x00110C2A File Offset: 0x0010EE2A
+	public bool IsStorage
+	{
+		get
+		{
+			return this.storage != null;
+		}
+	}
+
+	// Token: 0x0600AD47 RID: 44359 RVA: 0x00110C38 File Offset: 0x0010EE38
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		Initialize();
+		this.Initialize();
 	}
 
+	// Token: 0x0600AD48 RID: 44360 RVA: 0x0041160C File Offset: 0x0040F80C
 	private void Initialize()
 	{
-		if (initialized)
+		if (this.initialized)
 		{
 			return;
 		}
-		rowPool = new UIPool<TreeFilterableSideScreenRow>(rowPrefab);
-		elementPool = new UIPool<TreeFilterableSideScreenElement>(elementPrefab);
-		MultiToggle multiToggle = allCheckBox;
-		multiToggle.onClick = (System.Action)Delegate.Combine(multiToggle.onClick, (System.Action)delegate
+		this.rowPool = new UIPool<TreeFilterableSideScreenRow>(this.rowPrefab);
+		this.elementPool = new UIPool<TreeFilterableSideScreenElement>(this.elementPrefab);
+		MultiToggle multiToggle = this.allCheckBox;
+		multiToggle.onClick = (System.Action)Delegate.Combine(multiToggle.onClick, new System.Action(delegate()
 		{
-			switch (GetAllCheckboxState())
+			TreeFilterableSideScreenRow.State allCheckboxState = this.GetAllCheckboxState();
+			if (allCheckboxState > TreeFilterableSideScreenRow.State.Mixed)
 			{
-			case TreeFilterableSideScreenRow.State.On:
-				SetAllCheckboxState(TreeFilterableSideScreenRow.State.Off);
-				break;
-			case TreeFilterableSideScreenRow.State.Off:
-			case TreeFilterableSideScreenRow.State.Mixed:
-				SetAllCheckboxState(TreeFilterableSideScreenRow.State.On);
-				break;
+				if (allCheckboxState == TreeFilterableSideScreenRow.State.On)
+				{
+					this.SetAllCheckboxState(TreeFilterableSideScreenRow.State.Off);
+					return;
+				}
 			}
-		});
-		onlyAllowTransportItemsCheckBox.onClick = OnlyAllowTransportItemsClicked;
-		onlyAllowSpicedItemsCheckBox.onClick = OnlyAllowSpicedItemsClicked;
-		initialized = true;
+			else
+			{
+				this.SetAllCheckboxState(TreeFilterableSideScreenRow.State.On);
+			}
+		}));
+		this.onlyAllowTransportItemsCheckBox.onClick = new System.Action(this.OnlyAllowTransportItemsClicked);
+		this.onlyAllowSpicedItemsCheckBox.onClick = new System.Action(this.OnlyAllowSpicedItemsClicked);
+		this.initialized = true;
 	}
 
+	// Token: 0x0600AD49 RID: 44361 RVA: 0x004116A0 File Offset: 0x0040F8A0
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		allCheckBox.transform.parent.parent.GetComponent<ToolTip>().SetSimpleTooltip(UI.UISIDESCREENS.TREEFILTERABLESIDESCREEN.ALLBUTTONTOOLTIP);
-		onlyAllowTransportItemsCheckBox.transform.parent.GetComponent<ToolTip>().SetSimpleTooltip(UI.UISIDESCREENS.TREEFILTERABLESIDESCREEN.ONLYALLOWTRANSPORTITEMSBUTTONTOOLTIP);
-		onlyAllowSpicedItemsCheckBox.transform.parent.GetComponent<ToolTip>().SetSimpleTooltip(UI.UISIDESCREENS.TREEFILTERABLESIDESCREEN.ONLYALLOWSPICEDITEMSBUTTONTOOLTIP);
-		inputField.ActivateInputField();
-		inputField.placeholder.GetComponent<TextMeshProUGUI>().text = UI.UISIDESCREENS.TREEFILTERABLESIDESCREEN.SEARCH_PLACEHOLDER;
-		InitSearch();
+		this.allCheckBox.transform.parent.parent.GetComponent<ToolTip>().SetSimpleTooltip(UI.UISIDESCREENS.TREEFILTERABLESIDESCREEN.ALLBUTTONTOOLTIP);
+		this.onlyAllowTransportItemsCheckBox.transform.parent.GetComponent<ToolTip>().SetSimpleTooltip(UI.UISIDESCREENS.TREEFILTERABLESIDESCREEN.ONLYALLOWTRANSPORTITEMSBUTTONTOOLTIP);
+		this.onlyAllowSpicedItemsCheckBox.transform.parent.GetComponent<ToolTip>().SetSimpleTooltip(UI.UISIDESCREENS.TREEFILTERABLESIDESCREEN.ONLYALLOWSPICEDITEMSBUTTONTOOLTIP);
+		this.inputField.ActivateInputField();
+		this.inputField.placeholder.GetComponent<TextMeshProUGUI>().text = UI.UISIDESCREENS.TREEFILTERABLESIDESCREEN.SEARCH_PLACEHOLDER;
+		this.InitSearch();
 	}
 
+	// Token: 0x0600AD4A RID: 44362 RVA: 0x001102A3 File Offset: 0x0010E4A3
 	public override float GetSortKey()
 	{
 		if (base.isEditing)
@@ -149,96 +89,113 @@ public class TreeFilterableSideScreen : SideScreenContent
 		return base.GetSortKey();
 	}
 
+	// Token: 0x0600AD4B RID: 44363 RVA: 0x001102B9 File Offset: 0x0010E4B9
 	public override void OnKeyDown(KButtonEvent e)
 	{
-		if (!e.Consumed && base.isEditing)
+		if (e.Consumed)
+		{
+			return;
+		}
+		if (base.isEditing)
 		{
 			e.Consumed = true;
 		}
 	}
 
+	// Token: 0x0600AD4C RID: 44364 RVA: 0x001102B9 File Offset: 0x0010E4B9
 	public override void OnKeyUp(KButtonEvent e)
 	{
-		if (!e.Consumed && base.isEditing)
+		if (e.Consumed)
+		{
+			return;
+		}
+		if (base.isEditing)
 		{
 			e.Consumed = true;
 		}
 	}
 
+	// Token: 0x0600AD4D RID: 44365 RVA: 0x000A65EC File Offset: 0x000A47EC
 	public override int GetSideScreenSortOrder()
 	{
 		return 1;
 	}
 
+	// Token: 0x0600AD4E RID: 44366 RVA: 0x00411754 File Offset: 0x0040F954
 	private void UpdateAllCheckBoxVisualState()
 	{
-		switch (GetAllCheckboxState())
+		switch (this.GetAllCheckboxState())
 		{
 		case TreeFilterableSideScreenRow.State.Off:
-			allCheckBox.ChangeState(0);
-			break;
+			this.allCheckBox.ChangeState(0);
+			return;
 		case TreeFilterableSideScreenRow.State.Mixed:
-			allCheckBox.ChangeState(1);
-			break;
+			this.allCheckBox.ChangeState(1);
+			return;
 		case TreeFilterableSideScreenRow.State.On:
-			allCheckBox.ChangeState(2);
-			break;
+			this.allCheckBox.ChangeState(2);
+			return;
+		default:
+			return;
 		}
 	}
 
+	// Token: 0x0600AD4F RID: 44367 RVA: 0x004117A4 File Offset: 0x0040F9A4
 	public void Update()
 	{
-		foreach (KeyValuePair<Tag, TreeFilterableSideScreenRow> item in tagRowMap)
+		foreach (KeyValuePair<Tag, TreeFilterableSideScreenRow> keyValuePair in this.tagRowMap)
 		{
-			if (item.Value.visualDirty)
+			if (keyValuePair.Value.visualDirty)
 			{
-				visualDirty = true;
+				this.visualDirty = true;
 				break;
 			}
 		}
-		if (!visualDirty)
+		if (this.visualDirty)
 		{
-			return;
+			foreach (KeyValuePair<Tag, TreeFilterableSideScreenRow> keyValuePair2 in this.tagRowMap)
+			{
+				keyValuePair2.Value.RefreshRowElements();
+				keyValuePair2.Value.UpdateCheckBoxVisualState();
+			}
+			this.UpdateAllCheckBoxVisualState();
+			this.visualDirty = false;
 		}
-		foreach (KeyValuePair<Tag, TreeFilterableSideScreenRow> item2 in tagRowMap)
-		{
-			item2.Value.RefreshRowElements();
-			item2.Value.UpdateCheckBoxVisualState();
-		}
-		UpdateAllCheckBoxVisualState();
-		visualDirty = false;
 	}
 
+	// Token: 0x0600AD50 RID: 44368 RVA: 0x00110C46 File Offset: 0x0010EE46
 	private void OnlyAllowTransportItemsClicked()
 	{
-		storage.SetOnlyFetchMarkedItems(!storage.GetOnlyFetchMarkedItems());
+		this.storage.SetOnlyFetchMarkedItems(!this.storage.GetOnlyFetchMarkedItems());
 	}
 
+	// Token: 0x0600AD51 RID: 44369 RVA: 0x00110C61 File Offset: 0x0010EE61
 	private void OnlyAllowSpicedItemsClicked()
 	{
-		FoodStorage component = storage.GetComponent<FoodStorage>();
+		FoodStorage component = this.storage.GetComponent<FoodStorage>();
 		component.SpicedFoodOnly = !component.SpicedFoodOnly;
 	}
 
+	// Token: 0x0600AD52 RID: 44370 RVA: 0x00411870 File Offset: 0x0040FA70
 	private TreeFilterableSideScreenRow.State GetAllCheckboxState()
 	{
 		bool flag = false;
 		bool flag2 = false;
 		bool flag3 = false;
-		foreach (KeyValuePair<Tag, TreeFilterableSideScreenRow> item in tagRowMap)
+		foreach (KeyValuePair<Tag, TreeFilterableSideScreenRow> keyValuePair in this.tagRowMap)
 		{
-			if (item.Value.standardCommodity)
+			if (keyValuePair.Value.standardCommodity)
 			{
-				switch (item.Value.GetState())
+				switch (keyValuePair.Value.GetState())
 				{
+				case TreeFilterableSideScreenRow.State.Off:
+					flag2 = true;
+					break;
 				case TreeFilterableSideScreenRow.State.Mixed:
 					flag3 = true;
 					break;
 				case TreeFilterableSideScreenRow.State.On:
 					flag = true;
-					break;
-				case TreeFilterableSideScreenRow.State.Off:
-					flag2 = true;
 					break;
 				}
 			}
@@ -262,336 +219,474 @@ public class TreeFilterableSideScreen : SideScreenContent
 		return TreeFilterableSideScreenRow.State.Off;
 	}
 
+	// Token: 0x0600AD53 RID: 44371 RVA: 0x00411920 File Offset: 0x0040FB20
 	private void SetAllCheckboxState(TreeFilterableSideScreenRow.State newState)
 	{
 		switch (newState)
 		{
 		case TreeFilterableSideScreenRow.State.Off:
-			foreach (KeyValuePair<Tag, TreeFilterableSideScreenRow> item in tagRowMap)
+			using (Dictionary<Tag, TreeFilterableSideScreenRow>.Enumerator enumerator = this.tagRowMap.GetEnumerator())
 			{
-				if (item.Value.standardCommodity)
+				while (enumerator.MoveNext())
 				{
-					item.Value.ChangeCheckBoxState(TreeFilterableSideScreenRow.State.Off);
+					KeyValuePair<Tag, TreeFilterableSideScreenRow> keyValuePair = enumerator.Current;
+					if (keyValuePair.Value.standardCommodity)
+					{
+						keyValuePair.Value.ChangeCheckBoxState(TreeFilterableSideScreenRow.State.Off);
+					}
 				}
+				goto IL_AB;
 			}
 			break;
+		case TreeFilterableSideScreenRow.State.Mixed:
+			goto IL_AB;
 		case TreeFilterableSideScreenRow.State.On:
-			foreach (KeyValuePair<Tag, TreeFilterableSideScreenRow> item2 in tagRowMap)
-			{
-				if (item2.Value.standardCommodity)
-				{
-					item2.Value.ChangeCheckBoxState(TreeFilterableSideScreenRow.State.On);
-				}
-			}
 			break;
+		default:
+			goto IL_AB;
 		}
-		visualDirty = true;
+		foreach (KeyValuePair<Tag, TreeFilterableSideScreenRow> keyValuePair2 in this.tagRowMap)
+		{
+			if (keyValuePair2.Value.standardCommodity)
+			{
+				keyValuePair2.Value.ChangeCheckBoxState(TreeFilterableSideScreenRow.State.On);
+			}
+		}
+		IL_AB:
+		this.visualDirty = true;
 	}
 
+	// Token: 0x0600AD54 RID: 44372 RVA: 0x00110C7C File Offset: 0x0010EE7C
 	public bool GetElementTagAcceptedState(Tag t)
 	{
-		return targetFilterable.ContainsTag(t);
+		return this.targetFilterable.ContainsTag(t);
 	}
 
+	// Token: 0x0600AD55 RID: 44373 RVA: 0x004119FC File Offset: 0x0040FBFC
 	public override bool IsValidForTarget(GameObject target)
 	{
 		TreeFilterable component = target.GetComponent<TreeFilterable>();
 		Storage component2 = target.GetComponent<Storage>();
-		if (component != null && target.GetComponent<FlatTagFilterable>() == null && component.showUserMenu && (component2 == null || component2.showInUI))
-		{
-			return target.GetSMI<StorageTile.Instance>() == null;
-		}
-		return false;
+		return component != null && target.GetComponent<FlatTagFilterable>() == null && component.showUserMenu && (component2 == null || component2.showInUI) && target.GetSMI<StorageTile.Instance>() == null;
 	}
 
+	// Token: 0x0600AD56 RID: 44374 RVA: 0x00110C8A File Offset: 0x0010EE8A
 	private void ReconfigureForPreviousTarget()
 	{
-		Debug.Assert(target != null, "TreeFilterableSideScreen trying to restore null target.");
-		SetTarget(target);
+		global::Debug.Assert(this.target != null, "TreeFilterableSideScreen trying to restore null target.");
+		this.SetTarget(this.target);
 	}
 
+	// Token: 0x0600AD57 RID: 44375 RVA: 0x00411A54 File Offset: 0x0040FC54
 	public override void SetTarget(GameObject target)
 	{
-		Initialize();
+		this.Initialize();
 		this.target = target;
 		if (target == null)
 		{
-			Debug.LogError("The target object provided was null");
+			global::Debug.LogError("The target object provided was null");
 			return;
 		}
-		targetFilterable = target.GetComponent<TreeFilterable>();
-		if (targetFilterable == null)
+		this.targetFilterable = target.GetComponent<TreeFilterable>();
+		if (this.targetFilterable == null)
 		{
-			Debug.LogError("The target provided does not have a Tree Filterable component");
+			global::Debug.LogError("The target provided does not have a Tree Filterable component");
 			return;
 		}
-		contentMask.GetComponent<LayoutElement>().minHeight = ((targetFilterable.uiHeight == TreeFilterable.UISideScreenHeight.Tall) ? 380 : 256);
-		storage = targetFilterable.GetComponent<Storage>();
-		storage.Subscribe(644822890, OnOnlyFetchMarkedItemsSettingChanged);
-		storage.Subscribe(1163645216, OnOnlySpicedItemsSettingChanged);
-		OnOnlyFetchMarkedItemsSettingChanged(null);
-		OnOnlySpicedItemsSettingChanged(null);
-		allCheckBoxLabel.SetText(targetFilterable.allResourceFilterLabelString);
-		CreateCategories();
-		CreateSpecialItemRows();
-		titlebar.SetActive(value: false);
-		if (storage.showSideScreenTitleBar)
+		this.contentMask.GetComponent<LayoutElement>().minHeight = (float)((this.targetFilterable.uiHeight == TreeFilterable.UISideScreenHeight.Tall) ? 380 : 256);
+		this.storage = this.targetFilterable.GetComponent<Storage>();
+		this.storage.Subscribe(644822890, new Action<object>(this.OnOnlyFetchMarkedItemsSettingChanged));
+		this.storage.Subscribe(1163645216, new Action<object>(this.OnOnlySpicedItemsSettingChanged));
+		this.OnOnlyFetchMarkedItemsSettingChanged(null);
+		this.OnOnlySpicedItemsSettingChanged(null);
+		this.allCheckBoxLabel.SetText(this.targetFilterable.allResourceFilterLabelString);
+		this.CreateCategories();
+		this.CreateSpecialItemRows();
+		this.titlebar.SetActive(false);
+		if (this.storage.showSideScreenTitleBar)
 		{
-			titlebar.SetActive(value: true);
-			titlebar.GetComponentInChildren<LocText>().SetText(storage.GetProperName());
+			this.titlebar.SetActive(true);
+			this.titlebar.GetComponentInChildren<LocText>().SetText(this.storage.GetProperName());
 		}
-		if (!InputFieldEmpty)
+		if (!this.InputFieldEmpty)
 		{
-			ClearSearch();
+			this.ClearSearch();
 		}
-		ToggleSearchConfiguration(!InputFieldEmpty);
+		this.ToggleSearchConfiguration(!this.InputFieldEmpty);
 	}
 
+	// Token: 0x0600AD58 RID: 44376 RVA: 0x00411BAC File Offset: 0x0040FDAC
 	private void OnOnlyFetchMarkedItemsSettingChanged(object data)
 	{
-		onlyAllowTransportItemsCheckBox.ChangeState(storage.GetOnlyFetchMarkedItems() ? 1 : 0);
-		if (storage.allowSettingOnlyFetchMarkedItems)
+		this.onlyAllowTransportItemsCheckBox.ChangeState(this.storage.GetOnlyFetchMarkedItems() ? 1 : 0);
+		if (this.storage.allowSettingOnlyFetchMarkedItems)
 		{
-			onlyallowTransportItemsRow.SetActive(value: true);
+			this.onlyallowTransportItemsRow.SetActive(true);
+			return;
 		}
-		else
-		{
-			onlyallowTransportItemsRow.SetActive(value: false);
-		}
+		this.onlyallowTransportItemsRow.SetActive(false);
 	}
 
+	// Token: 0x0600AD59 RID: 44377 RVA: 0x00411BFC File Offset: 0x0040FDFC
 	private void OnOnlySpicedItemsSettingChanged(object data)
 	{
-		FoodStorage component = storage.GetComponent<FoodStorage>();
+		FoodStorage component = this.storage.GetComponent<FoodStorage>();
 		if (component != null)
 		{
-			onlyallowSpicedItemsRow.SetActive(value: true);
-			onlyAllowSpicedItemsCheckBox.ChangeState(component.SpicedFoodOnly ? 1 : 0);
+			this.onlyallowSpicedItemsRow.SetActive(true);
+			this.onlyAllowSpicedItemsCheckBox.ChangeState(component.SpicedFoodOnly ? 1 : 0);
+			return;
 		}
-		else
-		{
-			onlyallowSpicedItemsRow.SetActive(value: false);
-		}
+		this.onlyallowSpicedItemsRow.SetActive(false);
 	}
 
+	// Token: 0x0600AD5A RID: 44378 RVA: 0x00110CAE File Offset: 0x0010EEAE
 	public bool IsTagAllowed(Tag tag)
 	{
-		return targetFilterable.AcceptedTags.Contains(tag);
+		return this.targetFilterable.AcceptedTags.Contains(tag);
 	}
 
+	// Token: 0x0600AD5B RID: 44379 RVA: 0x00110CC1 File Offset: 0x0010EEC1
 	public void AddTag(Tag tag)
 	{
-		if (!(targetFilterable == null))
+		if (this.targetFilterable == null)
 		{
-			targetFilterable.AddTagToFilter(tag);
+			return;
 		}
+		this.targetFilterable.AddTagToFilter(tag);
 	}
 
+	// Token: 0x0600AD5C RID: 44380 RVA: 0x00110CDE File Offset: 0x0010EEDE
 	public void RemoveTag(Tag tag)
 	{
-		if (!(targetFilterable == null))
+		if (this.targetFilterable == null)
 		{
-			targetFilterable.RemoveTagFromFilter(tag);
+			return;
 		}
+		this.targetFilterable.RemoveTagFromFilter(tag);
 	}
 
-	private List<TagOrderInfo> GetTagsSortedAlphabetically(ICollection<Tag> tags)
+	// Token: 0x0600AD5D RID: 44381 RVA: 0x00411C50 File Offset: 0x0040FE50
+	private List<TreeFilterableSideScreen.TagOrderInfo> GetTagsSortedAlphabetically(ICollection<Tag> tags)
 	{
-		List<TagOrderInfo> list = new List<TagOrderInfo>();
+		List<TreeFilterableSideScreen.TagOrderInfo> list = new List<TreeFilterableSideScreen.TagOrderInfo>();
 		foreach (Tag tag in tags)
 		{
-			list.Add(new TagOrderInfo
+			list.Add(new TreeFilterableSideScreen.TagOrderInfo
 			{
 				tag = tag,
 				strippedName = tag.ProperNameStripLink()
 			});
 		}
-		list.Sort((TagOrderInfo a, TagOrderInfo b) => a.strippedName.CompareTo(b.strippedName));
+		list.Sort((TreeFilterableSideScreen.TagOrderInfo a, TreeFilterableSideScreen.TagOrderInfo b) => a.strippedName.CompareTo(b.strippedName));
 		return list;
 	}
 
+	// Token: 0x0600AD5E RID: 44382 RVA: 0x00411CE4 File Offset: 0x0040FEE4
 	private TreeFilterableSideScreenRow AddRow(Tag rowTag)
 	{
-		if (tagRowMap.ContainsKey(rowTag))
+		if (this.tagRowMap.ContainsKey(rowTag))
 		{
-			return tagRowMap[rowTag];
+			return this.tagRowMap[rowTag];
 		}
-		TreeFilterableSideScreenRow freeElement = rowPool.GetFreeElement(rowGroup, forceActive: true);
+		TreeFilterableSideScreenRow freeElement = this.rowPool.GetFreeElement(this.rowGroup, true);
 		freeElement.Parent = this;
 		freeElement.standardCommodity = !STORAGEFILTERS.SPECIAL_STORAGE.Contains(rowTag);
-		tagRowMap.Add(rowTag, freeElement);
+		this.tagRowMap.Add(rowTag, freeElement);
 		Dictionary<Tag, bool> dictionary = new Dictionary<Tag, bool>();
-		foreach (TagOrderInfo item in GetTagsSortedAlphabetically(DiscoveredResources.Instance.GetDiscoveredResourcesFromTag(rowTag)))
+		foreach (TreeFilterableSideScreen.TagOrderInfo tagOrderInfo in this.GetTagsSortedAlphabetically(DiscoveredResources.Instance.GetDiscoveredResourcesFromTag(rowTag)))
 		{
-			dictionary.Add(item.tag, targetFilterable.ContainsTag(item.tag) || targetFilterable.ContainsTag(rowTag));
+			dictionary.Add(tagOrderInfo.tag, this.targetFilterable.ContainsTag(tagOrderInfo.tag) || this.targetFilterable.ContainsTag(rowTag));
 		}
-		freeElement.SetElement(rowTag, targetFilterable.ContainsTag(rowTag), dictionary);
+		freeElement.SetElement(rowTag, this.targetFilterable.ContainsTag(rowTag), dictionary);
 		freeElement.transform.SetAsLastSibling();
 		return freeElement;
 	}
 
+	// Token: 0x0600AD5F RID: 44383 RVA: 0x00110CFB File Offset: 0x0010EEFB
 	public float GetAmountInStorage(Tag tag)
 	{
-		if (!IsStorage)
+		if (!this.IsStorage)
 		{
 			return 0f;
 		}
-		return storage.GetMassAvailable(tag);
+		return this.storage.GetMassAvailable(tag);
 	}
 
+	// Token: 0x0600AD60 RID: 44384 RVA: 0x00411DE8 File Offset: 0x0040FFE8
 	private void CreateCategories()
 	{
-		if (storage.storageFilters != null && storage.storageFilters.Count >= 1)
+		if (this.storage.storageFilters != null && this.storage.storageFilters.Count >= 1)
 		{
-			bool flag = target.GetComponent<CreatureDeliveryPoint>() != null;
-			foreach (TagOrderInfo item in GetTagsSortedAlphabetically(storage.storageFilters))
+			bool flag = this.target.GetComponent<CreatureDeliveryPoint>() != null;
+			foreach (TreeFilterableSideScreen.TagOrderInfo tagOrderInfo in this.GetTagsSortedAlphabetically(this.storage.storageFilters))
 			{
-				Tag rowTag = item.tag;
-				if (flag || DiscoveredResources.Instance.IsDiscovered(rowTag))
+				Tag tag = tagOrderInfo.tag;
+				if (flag || DiscoveredResources.Instance.IsDiscovered(tag))
 				{
-					AddRow(rowTag);
+					this.AddRow(tag);
 				}
 			}
-			visualDirty = true;
+			this.visualDirty = true;
+			return;
 		}
-		else
-		{
-			Debug.LogError("If you're filtering, your storage filter should have the filters set on it");
-		}
+		global::Debug.LogError("If you're filtering, your storage filter should have the filters set on it");
 	}
 
+	// Token: 0x0600AD61 RID: 44385 RVA: 0x00411EA8 File Offset: 0x004100A8
 	private void CreateSpecialItemRows()
 	{
-		specialItemsHeader.transform.SetAsLastSibling();
-		foreach (KeyValuePair<Tag, TreeFilterableSideScreenRow> item in tagRowMap)
+		this.specialItemsHeader.transform.SetAsLastSibling();
+		foreach (KeyValuePair<Tag, TreeFilterableSideScreenRow> keyValuePair in this.tagRowMap)
 		{
-			if (!item.Value.standardCommodity)
+			if (!keyValuePair.Value.standardCommodity)
 			{
-				item.Value.transform.transform.SetAsLastSibling();
+				keyValuePair.Value.transform.transform.SetAsLastSibling();
 			}
 		}
-		RefreshSpecialItemsHeader();
+		this.RefreshSpecialItemsHeader();
 	}
 
+	// Token: 0x0600AD62 RID: 44386 RVA: 0x00411F30 File Offset: 0x00410130
 	private void RefreshSpecialItemsHeader()
 	{
 		bool active = false;
-		foreach (KeyValuePair<Tag, TreeFilterableSideScreenRow> item in tagRowMap)
+		foreach (KeyValuePair<Tag, TreeFilterableSideScreenRow> keyValuePair in this.tagRowMap)
 		{
-			if (!item.Value.standardCommodity)
+			if (!keyValuePair.Value.standardCommodity)
 			{
 				active = true;
 				break;
 			}
 		}
-		specialItemsHeader.gameObject.SetActive(active);
+		this.specialItemsHeader.gameObject.SetActive(active);
 	}
 
+	// Token: 0x0600AD63 RID: 44387 RVA: 0x00110D17 File Offset: 0x0010EF17
 	protected override void OnCmpEnable()
 	{
 		base.OnCmpEnable();
-		if (target != null && (tagRowMap == null || tagRowMap.Count == 0))
+		if (this.target != null && (this.tagRowMap == null || this.tagRowMap.Count == 0))
 		{
-			ReconfigureForPreviousTarget();
+			this.ReconfigureForPreviousTarget();
 		}
 	}
 
+	// Token: 0x0600AD64 RID: 44388 RVA: 0x00411FA4 File Offset: 0x004101A4
 	protected override void OnCmpDisable()
 	{
 		base.OnCmpDisable();
-		if (storage != null)
+		if (this.storage != null)
 		{
-			storage.Unsubscribe(644822890, OnOnlyFetchMarkedItemsSettingChanged);
-			storage.Unsubscribe(1163645216, OnOnlySpicedItemsSettingChanged);
+			this.storage.Unsubscribe(644822890, new Action<object>(this.OnOnlyFetchMarkedItemsSettingChanged));
+			this.storage.Unsubscribe(1163645216, new Action<object>(this.OnOnlySpicedItemsSettingChanged));
 		}
-		rowPool.ClearAll();
-		elementPool.ClearAll();
-		tagRowMap.Clear();
+		this.rowPool.ClearAll();
+		this.elementPool.ClearAll();
+		this.tagRowMap.Clear();
 	}
 
+	// Token: 0x0600AD65 RID: 44389 RVA: 0x00412020 File Offset: 0x00410220
 	private void RecordRowExpandedStatus()
 	{
-		rowExpandedStatusMemory.Clear();
-		foreach (KeyValuePair<Tag, TreeFilterableSideScreenRow> item in tagRowMap)
+		this.rowExpandedStatusMemory.Clear();
+		foreach (KeyValuePair<Tag, TreeFilterableSideScreenRow> keyValuePair in this.tagRowMap)
 		{
-			rowExpandedStatusMemory.Add(item.Key, item.Value.ArrowExpanded);
+			this.rowExpandedStatusMemory.Add(keyValuePair.Key, keyValuePair.Value.ArrowExpanded);
 		}
 	}
 
+	// Token: 0x0600AD66 RID: 44390 RVA: 0x00412098 File Offset: 0x00410298
 	private void RestoreRowExpandedStatus()
 	{
-		foreach (KeyValuePair<Tag, TreeFilterableSideScreenRow> item in tagRowMap)
+		foreach (KeyValuePair<Tag, TreeFilterableSideScreenRow> keyValuePair in this.tagRowMap)
 		{
-			if (rowExpandedStatusMemory.ContainsKey(item.Key))
+			if (this.rowExpandedStatusMemory.ContainsKey(keyValuePair.Key))
 			{
-				item.Value.SetArrowToggleState(rowExpandedStatusMemory[item.Key]);
+				keyValuePair.Value.SetArrowToggleState(this.rowExpandedStatusMemory[keyValuePair.Key]);
 			}
 		}
 	}
 
+	// Token: 0x0600AD67 RID: 44391 RVA: 0x00412118 File Offset: 0x00410318
 	private void InitSearch()
 	{
-		KInputTextField kInputTextField = inputField;
-		kInputTextField.onFocus = (System.Action)Delegate.Combine(kInputTextField.onFocus, (System.Action)delegate
+		KInputTextField kinputTextField = this.inputField;
+		kinputTextField.onFocus = (System.Action)Delegate.Combine(kinputTextField.onFocus, new System.Action(delegate()
 		{
 			base.isEditing = true;
 			KScreenManager.Instance.RefreshStack();
 			UISounds.PlaySound(UISounds.Sound.ClickHUD);
-			RecordRowExpandedStatus();
-		});
-		inputField.onEndEdit.AddListener(delegate
+			this.RecordRowExpandedStatus();
+		}));
+		this.inputField.onEndEdit.AddListener(delegate(string value)
 		{
 			base.isEditing = false;
 			KScreenManager.Instance.RefreshStack();
 		});
-		inputField.onValueChanged.AddListener(delegate
+		this.inputField.onValueChanged.AddListener(delegate(string value)
 		{
-			if (InputFieldEmpty)
+			if (this.InputFieldEmpty)
 			{
-				RestoreRowExpandedStatus();
+				this.RestoreRowExpandedStatus();
 			}
-			ToggleSearchConfiguration(!InputFieldEmpty);
-			UpdateSearchFilter();
+			this.ToggleSearchConfiguration(!this.InputFieldEmpty);
+			this.UpdateSearchFilter();
 		});
-		inputField.placeholder.GetComponent<TextMeshProUGUI>().text = UI.UISIDESCREENS.TREEFILTERABLESIDESCREEN.SEARCH_PLACEHOLDER;
-		clearButton.onClick += delegate
+		this.inputField.placeholder.GetComponent<TextMeshProUGUI>().text = UI.UISIDESCREENS.TREEFILTERABLESIDESCREEN.SEARCH_PLACEHOLDER;
+		this.clearButton.onClick += delegate()
 		{
-			if (!InputFieldEmpty)
+			if (!this.InputFieldEmpty)
 			{
-				ClearSearch();
+				this.ClearSearch();
 			}
 		};
 	}
 
+	// Token: 0x0600AD68 RID: 44392 RVA: 0x004121BC File Offset: 0x004103BC
 	private void ToggleSearchConfiguration(bool searching)
 	{
-		configurationRowsContainer.gameObject.SetActive(!searching);
-		foreach (KeyValuePair<Tag, TreeFilterableSideScreenRow> item in tagRowMap)
+		this.configurationRowsContainer.gameObject.SetActive(!searching);
+		foreach (KeyValuePair<Tag, TreeFilterableSideScreenRow> keyValuePair in this.tagRowMap)
 		{
-			item.Value.ShowToggleBox(!searching);
+			keyValuePair.Value.ShowToggleBox(!searching);
 		}
 		if (searching)
 		{
-			specialItemsHeader.gameObject.SetActive(value: false);
+			this.specialItemsHeader.gameObject.SetActive(false);
+			return;
 		}
-		else
-		{
-			RefreshSpecialItemsHeader();
-		}
+		this.RefreshSpecialItemsHeader();
 	}
 
+	// Token: 0x0600AD69 RID: 44393 RVA: 0x00110D48 File Offset: 0x0010EF48
 	private void ClearSearch()
 	{
-		inputField.text = "";
-		RestoreRowExpandedStatus();
-		ToggleSearchConfiguration(searching: false);
+		this.inputField.text = "";
+		this.RestoreRowExpandedStatus();
+		this.ToggleSearchConfiguration(false);
 	}
 
+	// Token: 0x17000B18 RID: 2840
+	// (get) Token: 0x0600AD6A RID: 44394 RVA: 0x00110D67 File Offset: 0x0010EF67
+	public string CurrentSearchValue
+	{
+		get
+		{
+			if (this.inputField.text == null)
+			{
+				return "";
+			}
+			return this.inputField.text;
+		}
+	}
+
+	// Token: 0x0600AD6B RID: 44395 RVA: 0x00412248 File Offset: 0x00410448
 	private void UpdateSearchFilter()
 	{
-		foreach (KeyValuePair<Tag, TreeFilterableSideScreenRow> item in tagRowMap)
+		foreach (KeyValuePair<Tag, TreeFilterableSideScreenRow> keyValuePair in this.tagRowMap)
 		{
-			item.Value.FilterAgainstSearch(item.Key, CurrentSearchValue);
+			keyValuePair.Value.FilterAgainstSearch(keyValuePair.Key, this.CurrentSearchValue);
 		}
+	}
+
+	// Token: 0x040087FF RID: 34815
+	[SerializeField]
+	private MultiToggle allCheckBox;
+
+	// Token: 0x04008800 RID: 34816
+	[SerializeField]
+	private LocText allCheckBoxLabel;
+
+	// Token: 0x04008801 RID: 34817
+	[SerializeField]
+	private GameObject specialItemsHeader;
+
+	// Token: 0x04008802 RID: 34818
+	[SerializeField]
+	private MultiToggle onlyAllowTransportItemsCheckBox;
+
+	// Token: 0x04008803 RID: 34819
+	[SerializeField]
+	private GameObject onlyallowTransportItemsRow;
+
+	// Token: 0x04008804 RID: 34820
+	[SerializeField]
+	private MultiToggle onlyAllowSpicedItemsCheckBox;
+
+	// Token: 0x04008805 RID: 34821
+	[SerializeField]
+	private GameObject onlyallowSpicedItemsRow;
+
+	// Token: 0x04008806 RID: 34822
+	[SerializeField]
+	private TreeFilterableSideScreenRow rowPrefab;
+
+	// Token: 0x04008807 RID: 34823
+	[SerializeField]
+	private GameObject rowGroup;
+
+	// Token: 0x04008808 RID: 34824
+	[SerializeField]
+	private TreeFilterableSideScreenElement elementPrefab;
+
+	// Token: 0x04008809 RID: 34825
+	[SerializeField]
+	private GameObject titlebar;
+
+	// Token: 0x0400880A RID: 34826
+	[SerializeField]
+	private GameObject contentMask;
+
+	// Token: 0x0400880B RID: 34827
+	[SerializeField]
+	private KInputTextField inputField;
+
+	// Token: 0x0400880C RID: 34828
+	[SerializeField]
+	private KButton clearButton;
+
+	// Token: 0x0400880D RID: 34829
+	[SerializeField]
+	private GameObject configurationRowsContainer;
+
+	// Token: 0x0400880E RID: 34830
+	private GameObject target;
+
+	// Token: 0x0400880F RID: 34831
+	private bool visualDirty;
+
+	// Token: 0x04008810 RID: 34832
+	private bool initialized;
+
+	// Token: 0x04008811 RID: 34833
+	private KImage onlyAllowTransportItemsImg;
+
+	// Token: 0x04008812 RID: 34834
+	public UIPool<TreeFilterableSideScreenElement> elementPool;
+
+	// Token: 0x04008813 RID: 34835
+	private UIPool<TreeFilterableSideScreenRow> rowPool;
+
+	// Token: 0x04008814 RID: 34836
+	private TreeFilterable targetFilterable;
+
+	// Token: 0x04008815 RID: 34837
+	private Dictionary<Tag, TreeFilterableSideScreenRow> tagRowMap = new Dictionary<Tag, TreeFilterableSideScreenRow>();
+
+	// Token: 0x04008816 RID: 34838
+	private Dictionary<Tag, bool> rowExpandedStatusMemory = new Dictionary<Tag, bool>();
+
+	// Token: 0x04008817 RID: 34839
+	private Storage storage;
+
+	// Token: 0x02001FEA RID: 8170
+	private struct TagOrderInfo
+	{
+		// Token: 0x04008818 RID: 34840
+		public Tag tag;
+
+		// Token: 0x04008819 RID: 34841
+		public string strippedName;
 	}
 }

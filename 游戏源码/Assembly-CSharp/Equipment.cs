@@ -1,54 +1,57 @@
+﻿using System;
 using Klei;
 using Klei.AI;
 using KSerialization;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x020012A9 RID: 4777
 [SerializationConfig(MemberSerialization.OptIn)]
 public class Equipment : Assignables
 {
-	private SchedulerHandle refreshHandle;
-
-	private static readonly EventSystem.IntraObjectHandler<Equipment> SetDestroyedTrueDelegate = new EventSystem.IntraObjectHandler<Equipment>(delegate(Equipment component, object data)
-	{
-		component.destroyed = true;
-	});
-
+	// Token: 0x17000622 RID: 1570
+	// (get) Token: 0x0600623F RID: 25151 RVA: 0x000E015F File Offset: 0x000DE35F
+	// (set) Token: 0x06006240 RID: 25152 RVA: 0x000E0167 File Offset: 0x000DE367
 	public bool destroyed { get; private set; }
 
+	// Token: 0x06006241 RID: 25153 RVA: 0x002B5E10 File Offset: 0x002B4010
 	public GameObject GetTargetGameObject()
 	{
-		MinionAssignablesProxy minionAssignablesProxy = (MinionAssignablesProxy)GetAssignableIdentity();
-		if ((bool)minionAssignablesProxy)
+		MinionAssignablesProxy minionAssignablesProxy = (MinionAssignablesProxy)base.GetAssignableIdentity();
+		if (minionAssignablesProxy)
 		{
 			return minionAssignablesProxy.GetTargetGameObject();
 		}
 		return null;
 	}
 
+	// Token: 0x06006242 RID: 25154 RVA: 0x000E0170 File Offset: 0x000DE370
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		Components.Equipment.Add(this);
 	}
 
+	// Token: 0x06006243 RID: 25155 RVA: 0x000E0183 File Offset: 0x000DE383
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		Subscribe(1502190696, SetDestroyedTrueDelegate);
-		Subscribe(1969584890, SetDestroyedTrueDelegate);
+		base.Subscribe<Equipment>(1502190696, Equipment.SetDestroyedTrueDelegate);
+		base.Subscribe<Equipment>(1969584890, Equipment.SetDestroyedTrueDelegate);
 	}
 
+	// Token: 0x06006244 RID: 25156 RVA: 0x000E01AD File Offset: 0x000DE3AD
 	protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
-		refreshHandle.ClearScheduler();
+		this.refreshHandle.ClearScheduler();
 		Components.Equipment.Remove(this);
 	}
 
+	// Token: 0x06006245 RID: 25157 RVA: 0x002B5E3C File Offset: 0x002B403C
 	public void Equip(Equippable equippable)
 	{
-		GameObject targetGameObject = GetTargetGameObject();
+		GameObject targetGameObject = this.GetTargetGameObject();
 		bool flag = targetGameObject.GetComponent<KBatchedAnimController>() == null;
 		if (!flag)
 		{
@@ -71,17 +74,17 @@ public class Equipment : Assignables
 				component2.AddDisease(invalid.idx, invalid.count, "Equipment.Equip");
 			}
 		}
-		AssignableSlotInstance slot = GetSlot(equippable.slot);
+		AssignableSlotInstance slot = base.GetSlot(equippable.slot);
 		slot.Assign(equippable);
-		Debug.Assert(targetGameObject, "GetTargetGameObject returned null in Equip");
+		global::Debug.Assert(targetGameObject, "GetTargetGameObject returned null in Equip");
 		targetGameObject.Trigger(-448952673, equippable.GetComponent<KPrefabID>());
 		equippable.Trigger(-1617557748, this);
 		Attributes attributes = targetGameObject.GetAttributes();
 		if (attributes != null)
 		{
-			foreach (AttributeModifier attributeModifier in equippable.def.AttributeModifiers)
+			foreach (AttributeModifier modifier in equippable.def.AttributeModifiers)
 			{
-				attributes.Add(attributeModifier);
+				attributes.Add(modifier);
 			}
 		}
 		SnapOn component3 = targetGameObject.GetComponent<SnapOn>();
@@ -93,45 +96,46 @@ public class Equipment : Assignables
 				component3.AttachSnapOnByName(equippable.def.SnapOn1);
 			}
 		}
-		if ((bool)equippable.transform.parent)
+		if (equippable.transform.parent)
 		{
 			Storage component4 = equippable.transform.parent.GetComponent<Storage>();
-			if ((bool)component4)
+			if (component4)
 			{
-				component4.Drop(equippable.gameObject);
+				component4.Drop(equippable.gameObject, true);
 			}
 		}
 		equippable.transform.parent = slot.gameObject.transform;
 		equippable.transform.SetLocalPosition(Vector3.zero);
-		SetEquippableStoredModifiers(equippable, isStoring: true);
+		this.SetEquippableStoredModifiers(equippable, true);
 		equippable.OnEquip(slot);
-		if (refreshHandle.TimeRemaining > 0f)
+		if (this.refreshHandle.TimeRemaining > 0f)
 		{
-			Debug.LogWarning(targetGameObject.GetProperName() + " is already in the process of changing equipment (equip)");
-			refreshHandle.ClearScheduler();
+			global::Debug.LogWarning(targetGameObject.GetProperName() + " is already in the process of changing equipment (equip)");
+			this.refreshHandle.ClearScheduler();
 		}
 		CreatureSimTemperatureTransfer transferer = targetGameObject.GetComponent<CreatureSimTemperatureTransfer>();
 		if (!flag)
 		{
-			refreshHandle = GameScheduler.Instance.Schedule("ChangeEquipment", 2f, delegate
+			this.refreshHandle = GameScheduler.Instance.Schedule("ChangeEquipment", 2f, delegate(object obj)
 			{
 				if (transferer != null)
 				{
 					transferer.RefreshRegistration();
 				}
-			});
+			}, null, null);
 		}
-		Game.Instance.Trigger(-2146166042);
+		Game.Instance.Trigger(-2146166042, null);
 	}
 
+	// Token: 0x06006246 RID: 25158 RVA: 0x002B610C File Offset: 0x002B430C
 	public void Unequip(Equippable equippable)
 	{
-		AssignableSlotInstance slot = GetSlot(equippable.slot);
-		slot.Unassign();
-		GameObject targetGameObject = GetTargetGameObject();
-		MinionResume minionResume = ((targetGameObject != null) ? targetGameObject.GetComponent<MinionResume>() : null);
+		AssignableSlotInstance slot = base.GetSlot(equippable.slot);
+		slot.Unassign(true);
+		GameObject targetGameObject = this.GetTargetGameObject();
+		MinionResume minionResume = (targetGameObject != null) ? targetGameObject.GetComponent<MinionResume>() : null;
 		Durability component = equippable.GetComponent<Durability>();
-		if ((bool)component && (bool)minionResume && !slot.IsUnassigning() && minionResume.HasPerk(Db.Get().SkillPerks.ExosuitDurability.Id))
+		if (component && minionResume && !slot.IsUnassigning() && minionResume.HasPerk(Db.Get().SkillPerks.ExosuitDurability.Id))
 		{
 			float num = (GameClock.Instance.GetTimeInCycles() - component.TimeEquipped) * EQUIPMENT.SUITS.SUIT_DURABILITY_SKILL_BONUS;
 			component.TimeEquipped += num;
@@ -143,14 +147,14 @@ public class Equipment : Assignables
 		}
 		targetGameObject.Trigger(-1285462312, equippable.GetComponent<KPrefabID>());
 		KBatchedAnimController component2 = targetGameObject.GetComponent<KBatchedAnimController>();
-		if (!destroyed)
+		if (!this.destroyed)
 		{
 			Attributes attributes = targetGameObject.GetAttributes();
 			if (attributes != null)
 			{
-				foreach (AttributeModifier attributeModifier in equippable.def.AttributeModifiers)
+				foreach (AttributeModifier modifier in equippable.def.AttributeModifiers)
 				{
-					attributes.Remove(attributeModifier);
+					attributes.Remove(modifier);
 				}
 			}
 			if (!equippable.def.IsBody)
@@ -165,33 +169,33 @@ public class Equipment : Assignables
 					component3.DetachSnapOnByName(equippable.def.SnapOn1);
 				}
 			}
-			if ((bool)equippable.transform.parent)
+			if (equippable.transform.parent)
 			{
 				Storage component4 = equippable.transform.parent.GetComponent<Storage>();
-				if ((bool)component4)
+				if (component4)
 				{
-					component4.Drop(equippable.gameObject);
+					component4.Drop(equippable.gameObject, true);
 				}
 			}
-			SetEquippableStoredModifiers(equippable, isStoring: false);
+			this.SetEquippableStoredModifiers(equippable, false);
 			equippable.transform.parent = null;
 			equippable.transform.SetPosition(targetGameObject.transform.GetPosition() + Vector3.up / 2f);
 			KBatchedAnimController component5 = equippable.GetComponent<KBatchedAnimController>();
-			if ((bool)component5)
+			if (component5)
 			{
 				component5.SetSceneLayer(Grid.SceneLayer.Ore);
 			}
 			if (!(component2 == null))
 			{
-				if (refreshHandle.TimeRemaining > 0f)
+				if (this.refreshHandle.TimeRemaining > 0f)
 				{
-					refreshHandle.ClearScheduler();
+					this.refreshHandle.ClearScheduler();
 				}
 				Equipment instance = this;
-				refreshHandle = GameScheduler.Instance.Schedule("ChangeEquipment", 1f, delegate
+				this.refreshHandle = GameScheduler.Instance.Schedule("ChangeEquipment", 1f, delegate(object obj)
 				{
-					GameObject gameObject = ((instance != null) ? instance.GetTargetGameObject() : null);
-					if ((bool)gameObject)
+					GameObject gameObject = (instance != null) ? instance.GetTargetGameObject() : null;
+					if (gameObject)
 					{
 						CreatureSimTemperatureTransfer component8 = gameObject.GetComponent<CreatureSimTemperatureTransfer>();
 						if (component8 != null)
@@ -199,7 +203,7 @@ public class Equipment : Assignables
 							component8.RefreshRegistration();
 						}
 					}
-				});
+				}, null, null);
 			}
 			if (!slot.IsUnassigning())
 			{
@@ -230,43 +234,48 @@ public class Equipment : Assignables
 				}
 			}
 		}
-		Game.Instance.Trigger(-2146166042);
+		Game.Instance.Trigger(-2146166042, null);
 	}
 
+	// Token: 0x06006247 RID: 25159 RVA: 0x000E01CB File Offset: 0x000DE3CB
 	public bool IsEquipped(Equippable equippable)
 	{
-		if (equippable.assignee is Equipment && (Equipment)equippable.assignee == this)
-		{
-			return equippable.isEquipped;
-		}
-		return false;
+		return equippable.assignee is Equipment && (Equipment)equippable.assignee == this && equippable.isEquipped;
 	}
 
+	// Token: 0x06006248 RID: 25160 RVA: 0x002B64AC File Offset: 0x002B46AC
 	public bool IsSlotOccupied(AssignableSlot slot)
 	{
-		EquipmentSlotInstance equipmentSlotInstance = GetSlot(slot) as EquipmentSlotInstance;
-		if (equipmentSlotInstance.IsAssigned())
-		{
-			return (equipmentSlotInstance.assignable as Equippable).isEquipped;
-		}
-		return false;
+		EquipmentSlotInstance equipmentSlotInstance = base.GetSlot(slot) as EquipmentSlotInstance;
+		return equipmentSlotInstance.IsAssigned() && (equipmentSlotInstance.assignable as Equippable).isEquipped;
 	}
 
+	// Token: 0x06006249 RID: 25161 RVA: 0x002B64E0 File Offset: 0x002B46E0
 	public void UnequipAll()
 	{
-		foreach (AssignableSlotInstance slot in slots)
+		foreach (AssignableSlotInstance assignableSlotInstance in this.slots)
 		{
-			if (slot.assignable != null)
+			if (assignableSlotInstance.assignable != null)
 			{
-				slot.assignable.Unassign();
+				assignableSlotInstance.assignable.Unassign();
 			}
 		}
 	}
 
+	// Token: 0x0600624A RID: 25162 RVA: 0x000E01F5 File Offset: 0x000DE3F5
 	private void SetEquippableStoredModifiers(Equippable equippable, bool isStoring)
 	{
-		GameObject go = equippable.gameObject;
-		Storage.MakeItemTemperatureInsulated(go, isStoring, is_initializing: false);
-		Storage.MakeItemInvisible(go, isStoring, is_initializing: false);
+		GameObject gameObject = equippable.gameObject;
+		Storage.MakeItemTemperatureInsulated(gameObject, isStoring, false);
+		Storage.MakeItemInvisible(gameObject, isStoring, false);
 	}
+
+	// Token: 0x040045EE RID: 17902
+	private SchedulerHandle refreshHandle;
+
+	// Token: 0x040045F0 RID: 17904
+	private static readonly EventSystem.IntraObjectHandler<Equipment> SetDestroyedTrueDelegate = new EventSystem.IntraObjectHandler<Equipment>(delegate(Equipment component, object data)
+	{
+		component.destroyed = true;
+	});
 }

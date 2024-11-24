@@ -1,93 +1,103 @@
+﻿using System;
 using Database;
 using STRINGS;
 
+// Token: 0x0200097C RID: 2428
 public class Blueprints_Default : BlueprintProvider
 {
+	// Token: 0x06002BE8 RID: 11240 RVA: 0x000A6F3E File Offset: 0x000A513E
 	public override string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
+	// Token: 0x06002BE9 RID: 11241 RVA: 0x000BC7B5 File Offset: 0x000BA9B5
 	public override void SetupBlueprints()
 	{
-		SetupBuildingFacades();
-		SetupArtables();
-		SetupClothingItems();
-		SetupClothingOutfits();
-		SetupBalloonArtistFacades();
-		SetupStickerBombFacades();
-		SetupEquippableFacades();
-		SetupMonumentParts();
+		this.SetupBuildingFacades();
+		this.SetupArtables();
+		this.SetupClothingItems();
+		this.SetupClothingOutfits();
+		this.SetupBalloonArtistFacades();
+		this.SetupStickerBombFacades();
+		this.SetupEquippableFacades();
+		this.SetupMonumentParts();
 	}
 
+	// Token: 0x06002BEA RID: 11242 RVA: 0x000A5E40 File Offset: 0x000A4040
 	public void SetupBuildingFacades()
 	{
 	}
 
+	// Token: 0x06002BEB RID: 11243 RVA: 0x001E0618 File Offset: 0x001DE818
 	private void SetupArtables()
 	{
-		blueprintCollection.artables.AddRange(new ArtableInfo[42]
+		this.blueprintCollection.artables.AddRange(new ArtableInfo[]
 		{
-			new ArtableInfo("Canvas_Bad", BUILDINGS.PREFABS.CANVAS.FACADES.ART_A.NAME, BUILDINGS.PREFABS.CANVAS.FACADES.ART_A.DESC, PermitRarity.Universal, "painting_art_a_kanim", "art_a", 5, cheer_on_complete: false, "LookingUgly", "Canvas", "canvas"),
-			new ArtableInfo("Canvas_Average", BUILDINGS.PREFABS.CANVAS.FACADES.ART_B.NAME, BUILDINGS.PREFABS.CANVAS.FACADES.ART_B.DESC, PermitRarity.Universal, "painting_art_b_kanim", "art_b", 10, cheer_on_complete: false, "LookingOkay", "Canvas", "canvas"),
-			new ArtableInfo("Canvas_Good", BUILDINGS.PREFABS.CANVAS.FACADES.ART_C.NAME, BUILDINGS.PREFABS.CANVAS.FACADES.ART_C.DESC, PermitRarity.Universal, "painting_art_c_kanim", "art_c", 15, cheer_on_complete: true, "LookingGreat", "Canvas", "canvas"),
-			new ArtableInfo("Canvas_Good2", BUILDINGS.PREFABS.CANVAS.FACADES.ART_D.NAME, BUILDINGS.PREFABS.CANVAS.FACADES.ART_D.DESC, PermitRarity.Universal, "painting_art_d_kanim", "art_d", 15, cheer_on_complete: true, "LookingGreat", "Canvas", "canvas"),
-			new ArtableInfo("Canvas_Good3", BUILDINGS.PREFABS.CANVAS.FACADES.ART_E.NAME, BUILDINGS.PREFABS.CANVAS.FACADES.ART_E.DESC, PermitRarity.Universal, "painting_art_e_kanim", "art_e", 15, cheer_on_complete: true, "LookingGreat", "Canvas", "canvas"),
-			new ArtableInfo("Canvas_Good4", BUILDINGS.PREFABS.CANVAS.FACADES.ART_F.NAME, BUILDINGS.PREFABS.CANVAS.FACADES.ART_F.DESC, PermitRarity.Universal, "painting_art_f_kanim", "art_f", 15, cheer_on_complete: true, "LookingGreat", "Canvas", "canvas"),
-			new ArtableInfo("Canvas_Good5", BUILDINGS.PREFABS.CANVAS.FACADES.ART_G.NAME, BUILDINGS.PREFABS.CANVAS.FACADES.ART_G.DESC, PermitRarity.Universal, "painting_art_g_kanim", "art_g", 15, cheer_on_complete: true, "LookingGreat", "Canvas", "canvas"),
-			new ArtableInfo("Canvas_Good6", BUILDINGS.PREFABS.CANVAS.FACADES.ART_H.NAME, BUILDINGS.PREFABS.CANVAS.FACADES.ART_H.DESC, PermitRarity.Universal, "painting_art_h_kanim", "art_h", 15, cheer_on_complete: true, "LookingGreat", "Canvas", "canvas"),
-			new ArtableInfo("CanvasTall_Bad", BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_A.NAME, BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_A.DESC, PermitRarity.Universal, "painting_tall_art_a_kanim", "art_a", 5, cheer_on_complete: false, "LookingUgly", "CanvasTall", "canvas"),
-			new ArtableInfo("CanvasTall_Average", BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_B.NAME, BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_B.DESC, PermitRarity.Universal, "painting_tall_art_b_kanim", "art_b", 10, cheer_on_complete: false, "LookingOkay", "CanvasTall", "canvas"),
-			new ArtableInfo("CanvasTall_Good", BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_C.NAME, BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_C.DESC, PermitRarity.Universal, "painting_tall_art_c_kanim", "art_c", 15, cheer_on_complete: true, "LookingGreat", "CanvasTall", "canvas"),
-			new ArtableInfo("CanvasTall_Good2", BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_D.NAME, BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_D.DESC, PermitRarity.Universal, "painting_tall_art_d_kanim", "art_d", 15, cheer_on_complete: true, "LookingGreat", "CanvasTall", "canvas"),
-			new ArtableInfo("CanvasTall_Good3", BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_E.NAME, BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_E.DESC, PermitRarity.Universal, "painting_tall_art_e_kanim", "art_e", 15, cheer_on_complete: true, "LookingGreat", "CanvasTall", "canvas"),
-			new ArtableInfo("CanvasTall_Good4", BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_F.NAME, BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_F.DESC, PermitRarity.Universal, "painting_tall_art_f_kanim", "art_f", 15, cheer_on_complete: true, "LookingGreat", "CanvasTall", "canvas"),
-			new ArtableInfo("CanvasWide_Bad", BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_A.NAME, BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_A.DESC, PermitRarity.Universal, "painting_wide_art_a_kanim", "art_a", 5, cheer_on_complete: false, "LookingUgly", "CanvasWide", "canvas"),
-			new ArtableInfo("CanvasWide_Average", BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_B.NAME, BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_B.DESC, PermitRarity.Universal, "painting_wide_art_b_kanim", "art_b", 10, cheer_on_complete: false, "LookingOkay", "CanvasWide", "canvas"),
-			new ArtableInfo("CanvasWide_Good", BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_C.NAME, BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_C.DESC, PermitRarity.Universal, "painting_wide_art_c_kanim", "art_c", 15, cheer_on_complete: true, "LookingGreat", "CanvasWide", "canvas"),
-			new ArtableInfo("CanvasWide_Good2", BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_D.NAME, BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_D.DESC, PermitRarity.Universal, "painting_wide_art_d_kanim", "art_d", 15, cheer_on_complete: true, "LookingGreat", "CanvasWide", "canvas"),
-			new ArtableInfo("CanvasWide_Good3", BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_E.NAME, BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_E.DESC, PermitRarity.Universal, "painting_wide_art_e_kanim", "art_e", 15, cheer_on_complete: true, "LookingGreat", "CanvasWide", "canvas"),
-			new ArtableInfo("CanvasWide_Good4", BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_F.NAME, BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_F.DESC, PermitRarity.Universal, "painting_wide_art_f_kanim", "art_f", 15, cheer_on_complete: true, "LookingGreat", "CanvasWide", "canvas"),
-			new ArtableInfo("Sculpture_Bad", BUILDINGS.PREFABS.SCULPTURE.FACADES.SCULPTURE_CRAP_1.NAME, BUILDINGS.PREFABS.SCULPTURE.FACADES.SCULPTURE_CRAP_1.DESC, PermitRarity.Universal, "sculpture_crap_1_kanim", "crap_1", 5, cheer_on_complete: false, "LookingUgly", "Sculpture"),
-			new ArtableInfo("Sculpture_Average", BUILDINGS.PREFABS.SCULPTURE.FACADES.SCULPTURE_GOOD_1.NAME, BUILDINGS.PREFABS.SCULPTURE.FACADES.SCULPTURE_GOOD_1.DESC, PermitRarity.Universal, "sculpture_good_1_kanim", "good_1", 10, cheer_on_complete: false, "LookingOkay", "Sculpture"),
-			new ArtableInfo("Sculpture_Good1", BUILDINGS.PREFABS.SCULPTURE.FACADES.SCULPTURE_AMAZING_1.NAME, BUILDINGS.PREFABS.SCULPTURE.FACADES.SCULPTURE_AMAZING_1.DESC, PermitRarity.Universal, "sculpture_amazing_1_kanim", "amazing_1", 15, cheer_on_complete: true, "LookingGreat", "Sculpture"),
-			new ArtableInfo("Sculpture_Good2", BUILDINGS.PREFABS.SCULPTURE.FACADES.SCULPTURE_AMAZING_2.NAME, BUILDINGS.PREFABS.SCULPTURE.FACADES.SCULPTURE_AMAZING_2.DESC, PermitRarity.Universal, "sculpture_amazing_2_kanim", "amazing_2", 15, cheer_on_complete: true, "LookingGreat", "Sculpture"),
-			new ArtableInfo("Sculpture_Good3", BUILDINGS.PREFABS.SCULPTURE.FACADES.SCULPTURE_AMAZING_3.NAME, BUILDINGS.PREFABS.SCULPTURE.FACADES.SCULPTURE_AMAZING_3.DESC, PermitRarity.Universal, "sculpture_amazing_3_kanim", "amazing_3", 15, cheer_on_complete: true, "LookingGreat", "Sculpture"),
-			new ArtableInfo("SmallSculpture_Bad", BUILDINGS.PREFABS.SMALLSCULPTURE.FACADES.SCULPTURE_1x2_CRAP.NAME, BUILDINGS.PREFABS.SMALLSCULPTURE.FACADES.SCULPTURE_1x2_CRAP.DESC, PermitRarity.Universal, "sculpture_1x2_crap_1_kanim", "crap_1", 5, cheer_on_complete: false, "LookingUgly", "SmallSculpture"),
-			new ArtableInfo("SmallSculpture_Average", BUILDINGS.PREFABS.SMALLSCULPTURE.FACADES.SCULPTURE_1x2_GOOD.NAME, BUILDINGS.PREFABS.SMALLSCULPTURE.FACADES.SCULPTURE_1x2_GOOD.DESC, PermitRarity.Universal, "sculpture_1x2_good_1_kanim", "good_1", 10, cheer_on_complete: false, "LookingOkay", "SmallSculpture"),
-			new ArtableInfo("SmallSculpture_Good", BUILDINGS.PREFABS.SMALLSCULPTURE.FACADES.SCULPTURE_1x2_AMAZING_1.NAME, BUILDINGS.PREFABS.SMALLSCULPTURE.FACADES.SCULPTURE_1x2_AMAZING_1.DESC, PermitRarity.Universal, "sculpture_1x2_amazing_1_kanim", "amazing_1", 15, cheer_on_complete: true, "LookingGreat", "SmallSculpture"),
-			new ArtableInfo("SmallSculpture_Good2", BUILDINGS.PREFABS.SMALLSCULPTURE.FACADES.SCULPTURE_1x2_AMAZING_2.NAME, BUILDINGS.PREFABS.SMALLSCULPTURE.FACADES.SCULPTURE_1x2_AMAZING_2.DESC, PermitRarity.Universal, "sculpture_1x2_amazing_2_kanim", "amazing_2", 15, cheer_on_complete: true, "LookingGreat", "SmallSculpture"),
-			new ArtableInfo("SmallSculpture_Good3", BUILDINGS.PREFABS.SMALLSCULPTURE.FACADES.SCULPTURE_1x2_AMAZING_3.NAME, BUILDINGS.PREFABS.SMALLSCULPTURE.FACADES.SCULPTURE_1x2_AMAZING_3.DESC, PermitRarity.Universal, "sculpture_1x2_amazing_3_kanim", "amazing_3", 15, cheer_on_complete: true, "LookingGreat", "SmallSculpture"),
-			new ArtableInfo("IceSculpture_Bad", BUILDINGS.PREFABS.ICESCULPTURE.FACADES.ICESCULPTURE_CRAP.NAME, BUILDINGS.PREFABS.ICESCULPTURE.FACADES.ICESCULPTURE_CRAP.DESC, PermitRarity.Universal, "icesculpture_crap_kanim", "crap", 5, cheer_on_complete: false, "LookingUgly", "IceSculpture"),
-			new ArtableInfo("IceSculpture_Average", BUILDINGS.PREFABS.ICESCULPTURE.FACADES.ICESCULPTURE_AMAZING_1.NAME, BUILDINGS.PREFABS.ICESCULPTURE.FACADES.ICESCULPTURE_AMAZING_1.DESC, PermitRarity.Universal, "icesculpture_idle_kanim", "idle", 10, cheer_on_complete: false, "LookingOkay", "IceSculpture", "good"),
-			new ArtableInfo("MarbleSculpture_Bad", BUILDINGS.PREFABS.MARBLESCULPTURE.FACADES.SCULPTURE_MARBLE_CRAP_1.NAME, BUILDINGS.PREFABS.MARBLESCULPTURE.FACADES.SCULPTURE_MARBLE_CRAP_1.DESC, PermitRarity.Universal, "sculpture_marble_crap_1_kanim", "crap_1", 5, cheer_on_complete: false, "LookingUgly", "MarbleSculpture"),
-			new ArtableInfo("MarbleSculpture_Average", BUILDINGS.PREFABS.MARBLESCULPTURE.FACADES.SCULPTURE_MARBLE_GOOD_1.NAME, BUILDINGS.PREFABS.MARBLESCULPTURE.FACADES.SCULPTURE_MARBLE_GOOD_1.DESC, PermitRarity.Universal, "sculpture_marble_good_1_kanim", "good_1", 10, cheer_on_complete: false, "LookingOkay", "MarbleSculpture"),
-			new ArtableInfo("MarbleSculpture_Good1", BUILDINGS.PREFABS.MARBLESCULPTURE.FACADES.SCULPTURE_MARBLE_AMAZING_1.NAME, BUILDINGS.PREFABS.MARBLESCULPTURE.FACADES.SCULPTURE_MARBLE_AMAZING_1.DESC, PermitRarity.Universal, "sculpture_marble_amazing_1_kanim", "amazing_1", 15, cheer_on_complete: true, "LookingGreat", "MarbleSculpture"),
-			new ArtableInfo("MarbleSculpture_Good2", BUILDINGS.PREFABS.MARBLESCULPTURE.FACADES.SCULPTURE_MARBLE_AMAZING_2.NAME, BUILDINGS.PREFABS.MARBLESCULPTURE.FACADES.SCULPTURE_MARBLE_AMAZING_2.DESC, PermitRarity.Universal, "sculpture_marble_amazing_2_kanim", "amazing_2", 15, cheer_on_complete: true, "LookingGreat", "MarbleSculpture"),
-			new ArtableInfo("MarbleSculpture_Good3", BUILDINGS.PREFABS.MARBLESCULPTURE.FACADES.SCULPTURE_MARBLE_AMAZING_3.NAME, BUILDINGS.PREFABS.MARBLESCULPTURE.FACADES.SCULPTURE_MARBLE_AMAZING_3.DESC, PermitRarity.Universal, "sculpture_marble_amazing_3_kanim", "amazing_3", 15, cheer_on_complete: true, "LookingGreat", "MarbleSculpture"),
-			new ArtableInfo("MetalSculpture_Bad", BUILDINGS.PREFABS.METALSCULPTURE.FACADES.SCULPTURE_METAL_CRAP_1.NAME, BUILDINGS.PREFABS.METALSCULPTURE.FACADES.SCULPTURE_METAL_CRAP_1.DESC, PermitRarity.Universal, "sculpture_metal_crap_1_kanim", "crap_1", 5, cheer_on_complete: false, "LookingUgly", "MetalSculpture"),
-			new ArtableInfo("MetalSculpture_Average", BUILDINGS.PREFABS.METALSCULPTURE.FACADES.SCULPTURE_METAL_GOOD_1.NAME, BUILDINGS.PREFABS.METALSCULPTURE.FACADES.SCULPTURE_METAL_GOOD_1.DESC, PermitRarity.Universal, "sculpture_metal_good_1_kanim", "good_1", 10, cheer_on_complete: false, "LookingOkay", "MetalSculpture"),
-			new ArtableInfo("MetalSculpture_Good1", BUILDINGS.PREFABS.METALSCULPTURE.FACADES.SCULPTURE_METAL_AMAZING_1.NAME, BUILDINGS.PREFABS.METALSCULPTURE.FACADES.SCULPTURE_METAL_AMAZING_1.DESC, PermitRarity.Universal, "sculpture_metal_amazing_1_kanim", "amazing_1", 15, cheer_on_complete: true, "LookingGreat", "MetalSculpture"),
-			new ArtableInfo("MetalSculpture_Good2", BUILDINGS.PREFABS.METALSCULPTURE.FACADES.SCULPTURE_METAL_AMAZING_2.NAME, BUILDINGS.PREFABS.METALSCULPTURE.FACADES.SCULPTURE_METAL_AMAZING_2.DESC, PermitRarity.Universal, "sculpture_metal_amazing_2_kanim", "amazing_2", 15, cheer_on_complete: true, "LookingGreat", "MetalSculpture"),
-			new ArtableInfo("MetalSculpture_Good3", BUILDINGS.PREFABS.METALSCULPTURE.FACADES.SCULPTURE_METAL_AMAZING_3.NAME, BUILDINGS.PREFABS.METALSCULPTURE.FACADES.SCULPTURE_METAL_AMAZING_3.DESC, PermitRarity.Universal, "sculpture_metal_amazing_3_kanim", "amazing_3", 15, cheer_on_complete: true, "LookingGreat", "MetalSculpture")
+			new ArtableInfo("Canvas_Bad", BUILDINGS.PREFABS.CANVAS.FACADES.ART_A.NAME, BUILDINGS.PREFABS.CANVAS.FACADES.ART_A.DESC, PermitRarity.Universal, "painting_art_a_kanim", "art_a", 5, false, "LookingUgly", "Canvas", "canvas"),
+			new ArtableInfo("Canvas_Average", BUILDINGS.PREFABS.CANVAS.FACADES.ART_B.NAME, BUILDINGS.PREFABS.CANVAS.FACADES.ART_B.DESC, PermitRarity.Universal, "painting_art_b_kanim", "art_b", 10, false, "LookingOkay", "Canvas", "canvas"),
+			new ArtableInfo("Canvas_Good", BUILDINGS.PREFABS.CANVAS.FACADES.ART_C.NAME, BUILDINGS.PREFABS.CANVAS.FACADES.ART_C.DESC, PermitRarity.Universal, "painting_art_c_kanim", "art_c", 15, true, "LookingGreat", "Canvas", "canvas"),
+			new ArtableInfo("Canvas_Good2", BUILDINGS.PREFABS.CANVAS.FACADES.ART_D.NAME, BUILDINGS.PREFABS.CANVAS.FACADES.ART_D.DESC, PermitRarity.Universal, "painting_art_d_kanim", "art_d", 15, true, "LookingGreat", "Canvas", "canvas"),
+			new ArtableInfo("Canvas_Good3", BUILDINGS.PREFABS.CANVAS.FACADES.ART_E.NAME, BUILDINGS.PREFABS.CANVAS.FACADES.ART_E.DESC, PermitRarity.Universal, "painting_art_e_kanim", "art_e", 15, true, "LookingGreat", "Canvas", "canvas"),
+			new ArtableInfo("Canvas_Good4", BUILDINGS.PREFABS.CANVAS.FACADES.ART_F.NAME, BUILDINGS.PREFABS.CANVAS.FACADES.ART_F.DESC, PermitRarity.Universal, "painting_art_f_kanim", "art_f", 15, true, "LookingGreat", "Canvas", "canvas"),
+			new ArtableInfo("Canvas_Good5", BUILDINGS.PREFABS.CANVAS.FACADES.ART_G.NAME, BUILDINGS.PREFABS.CANVAS.FACADES.ART_G.DESC, PermitRarity.Universal, "painting_art_g_kanim", "art_g", 15, true, "LookingGreat", "Canvas", "canvas"),
+			new ArtableInfo("Canvas_Good6", BUILDINGS.PREFABS.CANVAS.FACADES.ART_H.NAME, BUILDINGS.PREFABS.CANVAS.FACADES.ART_H.DESC, PermitRarity.Universal, "painting_art_h_kanim", "art_h", 15, true, "LookingGreat", "Canvas", "canvas"),
+			new ArtableInfo("CanvasTall_Bad", BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_A.NAME, BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_A.DESC, PermitRarity.Universal, "painting_tall_art_a_kanim", "art_a", 5, false, "LookingUgly", "CanvasTall", "canvas"),
+			new ArtableInfo("CanvasTall_Average", BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_B.NAME, BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_B.DESC, PermitRarity.Universal, "painting_tall_art_b_kanim", "art_b", 10, false, "LookingOkay", "CanvasTall", "canvas"),
+			new ArtableInfo("CanvasTall_Good", BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_C.NAME, BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_C.DESC, PermitRarity.Universal, "painting_tall_art_c_kanim", "art_c", 15, true, "LookingGreat", "CanvasTall", "canvas"),
+			new ArtableInfo("CanvasTall_Good2", BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_D.NAME, BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_D.DESC, PermitRarity.Universal, "painting_tall_art_d_kanim", "art_d", 15, true, "LookingGreat", "CanvasTall", "canvas"),
+			new ArtableInfo("CanvasTall_Good3", BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_E.NAME, BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_E.DESC, PermitRarity.Universal, "painting_tall_art_e_kanim", "art_e", 15, true, "LookingGreat", "CanvasTall", "canvas"),
+			new ArtableInfo("CanvasTall_Good4", BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_F.NAME, BUILDINGS.PREFABS.CANVASTALL.FACADES.ART_TALL_F.DESC, PermitRarity.Universal, "painting_tall_art_f_kanim", "art_f", 15, true, "LookingGreat", "CanvasTall", "canvas"),
+			new ArtableInfo("CanvasWide_Bad", BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_A.NAME, BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_A.DESC, PermitRarity.Universal, "painting_wide_art_a_kanim", "art_a", 5, false, "LookingUgly", "CanvasWide", "canvas"),
+			new ArtableInfo("CanvasWide_Average", BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_B.NAME, BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_B.DESC, PermitRarity.Universal, "painting_wide_art_b_kanim", "art_b", 10, false, "LookingOkay", "CanvasWide", "canvas"),
+			new ArtableInfo("CanvasWide_Good", BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_C.NAME, BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_C.DESC, PermitRarity.Universal, "painting_wide_art_c_kanim", "art_c", 15, true, "LookingGreat", "CanvasWide", "canvas"),
+			new ArtableInfo("CanvasWide_Good2", BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_D.NAME, BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_D.DESC, PermitRarity.Universal, "painting_wide_art_d_kanim", "art_d", 15, true, "LookingGreat", "CanvasWide", "canvas"),
+			new ArtableInfo("CanvasWide_Good3", BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_E.NAME, BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_E.DESC, PermitRarity.Universal, "painting_wide_art_e_kanim", "art_e", 15, true, "LookingGreat", "CanvasWide", "canvas"),
+			new ArtableInfo("CanvasWide_Good4", BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_F.NAME, BUILDINGS.PREFABS.CANVASWIDE.FACADES.ART_WIDE_F.DESC, PermitRarity.Universal, "painting_wide_art_f_kanim", "art_f", 15, true, "LookingGreat", "CanvasWide", "canvas"),
+			new ArtableInfo("Sculpture_Bad", BUILDINGS.PREFABS.SCULPTURE.FACADES.SCULPTURE_CRAP_1.NAME, BUILDINGS.PREFABS.SCULPTURE.FACADES.SCULPTURE_CRAP_1.DESC, PermitRarity.Universal, "sculpture_crap_1_kanim", "crap_1", 5, false, "LookingUgly", "Sculpture", ""),
+			new ArtableInfo("Sculpture_Average", BUILDINGS.PREFABS.SCULPTURE.FACADES.SCULPTURE_GOOD_1.NAME, BUILDINGS.PREFABS.SCULPTURE.FACADES.SCULPTURE_GOOD_1.DESC, PermitRarity.Universal, "sculpture_good_1_kanim", "good_1", 10, false, "LookingOkay", "Sculpture", ""),
+			new ArtableInfo("Sculpture_Good1", BUILDINGS.PREFABS.SCULPTURE.FACADES.SCULPTURE_AMAZING_1.NAME, BUILDINGS.PREFABS.SCULPTURE.FACADES.SCULPTURE_AMAZING_1.DESC, PermitRarity.Universal, "sculpture_amazing_1_kanim", "amazing_1", 15, true, "LookingGreat", "Sculpture", ""),
+			new ArtableInfo("Sculpture_Good2", BUILDINGS.PREFABS.SCULPTURE.FACADES.SCULPTURE_AMAZING_2.NAME, BUILDINGS.PREFABS.SCULPTURE.FACADES.SCULPTURE_AMAZING_2.DESC, PermitRarity.Universal, "sculpture_amazing_2_kanim", "amazing_2", 15, true, "LookingGreat", "Sculpture", ""),
+			new ArtableInfo("Sculpture_Good3", BUILDINGS.PREFABS.SCULPTURE.FACADES.SCULPTURE_AMAZING_3.NAME, BUILDINGS.PREFABS.SCULPTURE.FACADES.SCULPTURE_AMAZING_3.DESC, PermitRarity.Universal, "sculpture_amazing_3_kanim", "amazing_3", 15, true, "LookingGreat", "Sculpture", ""),
+			new ArtableInfo("SmallSculpture_Bad", BUILDINGS.PREFABS.SMALLSCULPTURE.FACADES.SCULPTURE_1x2_CRAP.NAME, BUILDINGS.PREFABS.SMALLSCULPTURE.FACADES.SCULPTURE_1x2_CRAP.DESC, PermitRarity.Universal, "sculpture_1x2_crap_1_kanim", "crap_1", 5, false, "LookingUgly", "SmallSculpture", ""),
+			new ArtableInfo("SmallSculpture_Average", BUILDINGS.PREFABS.SMALLSCULPTURE.FACADES.SCULPTURE_1x2_GOOD.NAME, BUILDINGS.PREFABS.SMALLSCULPTURE.FACADES.SCULPTURE_1x2_GOOD.DESC, PermitRarity.Universal, "sculpture_1x2_good_1_kanim", "good_1", 10, false, "LookingOkay", "SmallSculpture", ""),
+			new ArtableInfo("SmallSculpture_Good", BUILDINGS.PREFABS.SMALLSCULPTURE.FACADES.SCULPTURE_1x2_AMAZING_1.NAME, BUILDINGS.PREFABS.SMALLSCULPTURE.FACADES.SCULPTURE_1x2_AMAZING_1.DESC, PermitRarity.Universal, "sculpture_1x2_amazing_1_kanim", "amazing_1", 15, true, "LookingGreat", "SmallSculpture", ""),
+			new ArtableInfo("SmallSculpture_Good2", BUILDINGS.PREFABS.SMALLSCULPTURE.FACADES.SCULPTURE_1x2_AMAZING_2.NAME, BUILDINGS.PREFABS.SMALLSCULPTURE.FACADES.SCULPTURE_1x2_AMAZING_2.DESC, PermitRarity.Universal, "sculpture_1x2_amazing_2_kanim", "amazing_2", 15, true, "LookingGreat", "SmallSculpture", ""),
+			new ArtableInfo("SmallSculpture_Good3", BUILDINGS.PREFABS.SMALLSCULPTURE.FACADES.SCULPTURE_1x2_AMAZING_3.NAME, BUILDINGS.PREFABS.SMALLSCULPTURE.FACADES.SCULPTURE_1x2_AMAZING_3.DESC, PermitRarity.Universal, "sculpture_1x2_amazing_3_kanim", "amazing_3", 15, true, "LookingGreat", "SmallSculpture", ""),
+			new ArtableInfo("IceSculpture_Bad", BUILDINGS.PREFABS.ICESCULPTURE.FACADES.ICESCULPTURE_CRAP.NAME, BUILDINGS.PREFABS.ICESCULPTURE.FACADES.ICESCULPTURE_CRAP.DESC, PermitRarity.Universal, "icesculpture_crap_kanim", "crap", 5, false, "LookingUgly", "IceSculpture", ""),
+			new ArtableInfo("IceSculpture_Average", BUILDINGS.PREFABS.ICESCULPTURE.FACADES.ICESCULPTURE_AMAZING_1.NAME, BUILDINGS.PREFABS.ICESCULPTURE.FACADES.ICESCULPTURE_AMAZING_1.DESC, PermitRarity.Universal, "icesculpture_idle_kanim", "idle", 10, false, "LookingOkay", "IceSculpture", "good"),
+			new ArtableInfo("MarbleSculpture_Bad", BUILDINGS.PREFABS.MARBLESCULPTURE.FACADES.SCULPTURE_MARBLE_CRAP_1.NAME, BUILDINGS.PREFABS.MARBLESCULPTURE.FACADES.SCULPTURE_MARBLE_CRAP_1.DESC, PermitRarity.Universal, "sculpture_marble_crap_1_kanim", "crap_1", 5, false, "LookingUgly", "MarbleSculpture", ""),
+			new ArtableInfo("MarbleSculpture_Average", BUILDINGS.PREFABS.MARBLESCULPTURE.FACADES.SCULPTURE_MARBLE_GOOD_1.NAME, BUILDINGS.PREFABS.MARBLESCULPTURE.FACADES.SCULPTURE_MARBLE_GOOD_1.DESC, PermitRarity.Universal, "sculpture_marble_good_1_kanim", "good_1", 10, false, "LookingOkay", "MarbleSculpture", ""),
+			new ArtableInfo("MarbleSculpture_Good1", BUILDINGS.PREFABS.MARBLESCULPTURE.FACADES.SCULPTURE_MARBLE_AMAZING_1.NAME, BUILDINGS.PREFABS.MARBLESCULPTURE.FACADES.SCULPTURE_MARBLE_AMAZING_1.DESC, PermitRarity.Universal, "sculpture_marble_amazing_1_kanim", "amazing_1", 15, true, "LookingGreat", "MarbleSculpture", ""),
+			new ArtableInfo("MarbleSculpture_Good2", BUILDINGS.PREFABS.MARBLESCULPTURE.FACADES.SCULPTURE_MARBLE_AMAZING_2.NAME, BUILDINGS.PREFABS.MARBLESCULPTURE.FACADES.SCULPTURE_MARBLE_AMAZING_2.DESC, PermitRarity.Universal, "sculpture_marble_amazing_2_kanim", "amazing_2", 15, true, "LookingGreat", "MarbleSculpture", ""),
+			new ArtableInfo("MarbleSculpture_Good3", BUILDINGS.PREFABS.MARBLESCULPTURE.FACADES.SCULPTURE_MARBLE_AMAZING_3.NAME, BUILDINGS.PREFABS.MARBLESCULPTURE.FACADES.SCULPTURE_MARBLE_AMAZING_3.DESC, PermitRarity.Universal, "sculpture_marble_amazing_3_kanim", "amazing_3", 15, true, "LookingGreat", "MarbleSculpture", ""),
+			new ArtableInfo("MetalSculpture_Bad", BUILDINGS.PREFABS.METALSCULPTURE.FACADES.SCULPTURE_METAL_CRAP_1.NAME, BUILDINGS.PREFABS.METALSCULPTURE.FACADES.SCULPTURE_METAL_CRAP_1.DESC, PermitRarity.Universal, "sculpture_metal_crap_1_kanim", "crap_1", 5, false, "LookingUgly", "MetalSculpture", ""),
+			new ArtableInfo("MetalSculpture_Average", BUILDINGS.PREFABS.METALSCULPTURE.FACADES.SCULPTURE_METAL_GOOD_1.NAME, BUILDINGS.PREFABS.METALSCULPTURE.FACADES.SCULPTURE_METAL_GOOD_1.DESC, PermitRarity.Universal, "sculpture_metal_good_1_kanim", "good_1", 10, false, "LookingOkay", "MetalSculpture", ""),
+			new ArtableInfo("MetalSculpture_Good1", BUILDINGS.PREFABS.METALSCULPTURE.FACADES.SCULPTURE_METAL_AMAZING_1.NAME, BUILDINGS.PREFABS.METALSCULPTURE.FACADES.SCULPTURE_METAL_AMAZING_1.DESC, PermitRarity.Universal, "sculpture_metal_amazing_1_kanim", "amazing_1", 15, true, "LookingGreat", "MetalSculpture", ""),
+			new ArtableInfo("MetalSculpture_Good2", BUILDINGS.PREFABS.METALSCULPTURE.FACADES.SCULPTURE_METAL_AMAZING_2.NAME, BUILDINGS.PREFABS.METALSCULPTURE.FACADES.SCULPTURE_METAL_AMAZING_2.DESC, PermitRarity.Universal, "sculpture_metal_amazing_2_kanim", "amazing_2", 15, true, "LookingGreat", "MetalSculpture", ""),
+			new ArtableInfo("MetalSculpture_Good3", BUILDINGS.PREFABS.METALSCULPTURE.FACADES.SCULPTURE_METAL_AMAZING_3.NAME, BUILDINGS.PREFABS.METALSCULPTURE.FACADES.SCULPTURE_METAL_AMAZING_3.DESC, PermitRarity.Universal, "sculpture_metal_amazing_3_kanim", "amazing_3", 15, true, "LookingGreat", "MetalSculpture", "")
 		});
 	}
 
+	// Token: 0x06002BEC RID: 11244 RVA: 0x000A5E40 File Offset: 0x000A4040
 	private void SetupClothingItems()
 	{
 	}
 
+	// Token: 0x06002BED RID: 11245 RVA: 0x000A5E40 File Offset: 0x000A4040
 	private void SetupClothingOutfits()
 	{
 	}
 
+	// Token: 0x06002BEE RID: 11246 RVA: 0x000A5E40 File Offset: 0x000A4040
 	private void SetupBalloonArtistFacades()
 	{
 	}
 
+	// Token: 0x06002BEF RID: 11247 RVA: 0x001E1084 File Offset: 0x001DF284
 	private void SetupStickerBombFacades()
 	{
-		blueprintCollection.stickerBombFacades.AddRange(new StickerBombFacadeInfo[20]
+		this.blueprintCollection.stickerBombFacades.AddRange(new StickerBombFacadeInfo[]
 		{
 			new StickerBombFacadeInfo("a", STICKERNAMES.STICKER_A, "TODO:DbStickers", PermitRarity.Unknown, "sticker_a_kanim", "a"),
 			new StickerBombFacadeInfo("b", STICKERNAMES.STICKER_B, "TODO:DbStickers", PermitRarity.Unknown, "sticker_b_kanim", "b"),
@@ -112,9 +122,10 @@ public class Blueprints_Default : BlueprintProvider
 		});
 	}
 
+	// Token: 0x06002BF0 RID: 11248 RVA: 0x001E13C0 File Offset: 0x001DF5C0
 	private void SetupEquippableFacades()
 	{
-		blueprintCollection.equippableFacades.AddRange(new EquippableFacadeInfo[12]
+		this.blueprintCollection.equippableFacades.AddRange(new EquippableFacadeInfo[]
 		{
 			new EquippableFacadeInfo("clubshirt", EQUIPMENT.PREFABS.CUSTOMCLOTHING.FACADES.CLUBSHIRT, "n/a", PermitRarity.Unknown, "CustomClothing", "body_shirt_clubshirt_kanim", "shirt_clubshirt_kanim"),
 			new EquippableFacadeInfo("cummerbund", EQUIPMENT.PREFABS.CUSTOMCLOTHING.FACADES.CUMMERBUND, "n/a", PermitRarity.Unknown, "CustomClothing", "body_shirt_cummerbund_kanim", "shirt_cummerbund_kanim"),
@@ -131,9 +142,10 @@ public class Blueprints_Default : BlueprintProvider
 		});
 	}
 
+	// Token: 0x06002BF1 RID: 11249 RVA: 0x001E15F8 File Offset: 0x001DF7F8
 	private void SetupMonumentParts()
 	{
-		blueprintCollection.monumentParts.AddRange(new MonumentPartInfo[40]
+		this.blueprintCollection.monumentParts.AddRange(new MonumentPartInfo[]
 		{
 			new MonumentPartInfo("bottom_option_a", "TODO:DbMonumentParts", "TODO:DbMonumentParts", PermitRarity.Unknown, "monument_base_a_kanim", "option_a", "straight_legs", MonumentPartResource.Part.Bottom, DlcManager.AVAILABLE_ALL_VERSIONS),
 			new MonumentPartInfo("bottom_option_b", "TODO:DbMonumentParts", "TODO:DbMonumentParts", PermitRarity.Unknown, "monument_base_b_kanim", "option_b", "wide_stance", MonumentPartResource.Part.Bottom, DlcManager.AVAILABLE_ALL_VERSIONS),
@@ -176,7 +188,7 @@ public class Blueprints_Default : BlueprintProvider
 			new MonumentPartInfo("top_option_p", "TODO:DbMonumentParts", "TODO:DbMonumentParts", PermitRarity.Unknown, "monument_upper_p_kanim", "option_p", "slickster", MonumentPartResource.Part.Top, DlcManager.AVAILABLE_ALL_VERSIONS),
 			new MonumentPartInfo("top_option_q", "TODO:DbMonumentParts", "TODO:DbMonumentParts", PermitRarity.Unknown, "monument_upper_q_kanim", "option_q", "pacu", MonumentPartResource.Part.Top, DlcManager.AVAILABLE_ALL_VERSIONS)
 		});
-		blueprintCollection.monumentParts.AddRange(new MonumentPartInfo[21]
+		this.blueprintCollection.monumentParts.AddRange(new MonumentPartInfo[]
 		{
 			new MonumentPartInfo("bottom_option_l", "TODO:DbMonumentParts", "TODO:DbMonumentParts", PermitRarity.Unknown, "monument_base_l_kanim", "option_l", "rocketnosecone", MonumentPartResource.Part.Bottom, DlcManager.AVAILABLE_EXPANSION1_ONLY),
 			new MonumentPartInfo("bottom_option_m", "TODO:DbMonumentParts", "TODO:DbMonumentParts", PermitRarity.Unknown, "monument_base_m_kanim", "option_m", "rocketsugarengine", MonumentPartResource.Part.Bottom, DlcManager.AVAILABLE_EXPANSION1_ONLY),

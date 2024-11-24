@@ -1,3 +1,4 @@
+﻿using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Database;
@@ -5,430 +6,470 @@ using KSerialization;
 using STRINGS;
 using UnityEngine;
 
+// Token: 0x0200179E RID: 6046
 [SerializationConfig(MemberSerialization.OptIn)]
 [AddComponentMenu("KMonoBehaviour/scripts/Research")]
 public class Research : KMonoBehaviour, ISaveLoadable
 {
-	private struct SaveData
-	{
-		public string activeResearchId;
-
-		public string targetResearchId;
-
-		public TechInstance.SaveData[] techs;
-	}
-
-	public static Research Instance;
-
-	[MyCmpAdd]
-	private Notifier notifier;
-
-	private List<TechInstance> techs = new List<TechInstance>();
-
-	private List<TechInstance> queuedTech = new List<TechInstance>();
-
-	private TechInstance activeResearch;
-
-	private Notification NoResearcherRoleNotification;
-
-	private Notification MissingResearchStation = new Notification(RESEARCH.MESSAGING.MISSING_RESEARCH_STATION, NotificationType.Bad, (List<Notification> list, object data) => RESEARCH.MESSAGING.MISSING_RESEARCH_STATION_TOOLTIP.ToString().Replace("{0}", Instance.GetMissingResearchBuildingName()), null, expires: false, 11f);
-
-	private List<IResearchCenter> researchCenterPrefabs = new List<IResearchCenter>();
-
-	protected int skillsUpdateHandle = -1;
-
-	public ResearchTypes researchTypes;
-
-	public bool UseGlobalPointInventory;
-
-	[Serialize]
-	public ResearchPointInventory globalPointInventory;
-
-	[Serialize]
-	private SaveData saveData;
-
+	// Token: 0x06007C79 RID: 31865 RVA: 0x000F1F8D File Offset: 0x000F018D
 	public static void DestroyInstance()
 	{
-		Instance = null;
+		Research.Instance = null;
 	}
 
+	// Token: 0x06007C7A RID: 31866 RVA: 0x003217A4 File Offset: 0x0031F9A4
 	public TechInstance GetTechInstance(string techID)
 	{
-		return techs.Find((TechInstance match) => match.tech.Id == techID);
+		return this.techs.Find((TechInstance match) => match.tech.Id == techID);
 	}
 
+	// Token: 0x06007C7B RID: 31867 RVA: 0x000F1F95 File Offset: 0x000F0195
 	public bool IsBeingResearched(Tech tech)
 	{
-		if (activeResearch == null || tech == null)
-		{
-			return false;
-		}
-		return activeResearch.tech == tech;
+		return this.activeResearch != null && tech != null && this.activeResearch.tech == tech;
 	}
 
+	// Token: 0x06007C7C RID: 31868 RVA: 0x000F1FB2 File Offset: 0x000F01B2
 	protected override void OnPrefabInit()
 	{
-		Instance = this;
-		researchTypes = new ResearchTypes();
+		Research.Instance = this;
+		this.researchTypes = new ResearchTypes();
 	}
 
+	// Token: 0x06007C7D RID: 31869 RVA: 0x003217D8 File Offset: 0x0031F9D8
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		if (globalPointInventory == null)
+		if (this.globalPointInventory == null)
 		{
-			globalPointInventory = new ResearchPointInventory();
+			this.globalPointInventory = new ResearchPointInventory();
 		}
-		skillsUpdateHandle = Game.Instance.Subscribe(-1523247426, OnRolesUpdated);
-		OnRolesUpdated(null);
-		Components.ResearchCenters.OnAdd += CheckResearchBuildings;
-		Components.ResearchCenters.OnRemove += CheckResearchBuildings;
-		foreach (KPrefabID prefab in Assets.Prefabs)
+		this.skillsUpdateHandle = Game.Instance.Subscribe(-1523247426, new Action<object>(this.OnRolesUpdated));
+		this.OnRolesUpdated(null);
+		Components.ResearchCenters.OnAdd += new Action<IResearchCenter>(this.CheckResearchBuildings);
+		Components.ResearchCenters.OnRemove += new Action<IResearchCenter>(this.CheckResearchBuildings);
+		foreach (KPrefabID kprefabID in Assets.Prefabs)
 		{
-			IResearchCenter component = prefab.GetComponent<IResearchCenter>();
+			IResearchCenter component = kprefabID.GetComponent<IResearchCenter>();
 			if (component != null)
 			{
-				researchCenterPrefabs.Add(component);
+				this.researchCenterPrefabs.Add(component);
 			}
 		}
 	}
 
+	// Token: 0x06007C7E RID: 31870 RVA: 0x000F1FC5 File Offset: 0x000F01C5
 	public ResearchType GetResearchType(string id)
 	{
-		return researchTypes.GetResearchType(id);
+		return this.researchTypes.GetResearchType(id);
 	}
 
+	// Token: 0x06007C7F RID: 31871 RVA: 0x000F1FD3 File Offset: 0x000F01D3
 	public TechInstance GetActiveResearch()
 	{
-		return activeResearch;
+		return this.activeResearch;
 	}
 
+	// Token: 0x06007C80 RID: 31872 RVA: 0x000F1FDB File Offset: 0x000F01DB
 	public TechInstance GetTargetResearch()
 	{
-		if (queuedTech != null && queuedTech.Count > 0)
+		if (this.queuedTech != null && this.queuedTech.Count > 0)
 		{
-			return queuedTech[queuedTech.Count - 1];
+			return this.queuedTech[this.queuedTech.Count - 1];
 		}
 		return null;
 	}
 
+	// Token: 0x06007C81 RID: 31873 RVA: 0x003218A4 File Offset: 0x0031FAA4
 	public TechInstance Get(Tech tech)
 	{
-		foreach (TechInstance tech2 in techs)
+		foreach (TechInstance techInstance in this.techs)
 		{
-			if (tech2.tech == tech)
+			if (techInstance.tech == tech)
 			{
-				return tech2;
+				return techInstance;
 			}
 		}
 		return null;
 	}
 
+	// Token: 0x06007C82 RID: 31874 RVA: 0x00321900 File Offset: 0x0031FB00
 	public TechInstance GetOrAdd(Tech tech)
 	{
-		TechInstance techInstance = techs.Find((TechInstance tc) => tc.tech == tech);
+		TechInstance techInstance = this.techs.Find((TechInstance tc) => tc.tech == tech);
 		if (techInstance != null)
 		{
 			return techInstance;
 		}
 		TechInstance techInstance2 = new TechInstance(tech);
-		techs.Add(techInstance2);
+		this.techs.Add(techInstance2);
 		return techInstance2;
 	}
 
+	// Token: 0x06007C83 RID: 31875 RVA: 0x00321950 File Offset: 0x0031FB50
 	public void GetNextTech()
 	{
-		if (queuedTech.Count > 0)
+		if (this.queuedTech.Count > 0)
 		{
-			queuedTech.RemoveAt(0);
+			this.queuedTech.RemoveAt(0);
 		}
-		if (queuedTech.Count > 0)
+		if (this.queuedTech.Count > 0)
 		{
-			SetActiveResearch(queuedTech[queuedTech.Count - 1].tech);
+			this.SetActiveResearch(this.queuedTech[this.queuedTech.Count - 1].tech, false);
+			return;
 		}
-		else
-		{
-			SetActiveResearch(null);
-		}
+		this.SetActiveResearch(null, false);
 	}
 
+	// Token: 0x06007C84 RID: 31876 RVA: 0x003219B4 File Offset: 0x0031FBB4
 	private void AddTechToQueue(Tech tech)
 	{
-		TechInstance orAdd = GetOrAdd(tech);
-		if (!orAdd.IsComplete() && !queuedTech.Contains(orAdd))
+		TechInstance orAdd = this.GetOrAdd(tech);
+		if (!orAdd.IsComplete() && !this.queuedTech.Contains(orAdd))
 		{
-			queuedTech.Add(orAdd);
+			this.queuedTech.Add(orAdd);
 		}
 		orAdd.tech.requiredTech.ForEach(delegate(Tech _tech)
 		{
-			AddTechToQueue(_tech);
+			this.AddTechToQueue(_tech);
 		});
 	}
 
+	// Token: 0x06007C85 RID: 31877 RVA: 0x00321A08 File Offset: 0x0031FC08
 	public void CancelResearch(Tech tech, bool clickedEntry = true)
 	{
-		TechInstance ti = queuedTech.Find((TechInstance qt) => qt.tech == tech);
-		if (ti == null)
+		Research.<>c__DisplayClass26_0 CS$<>8__locals1 = new Research.<>c__DisplayClass26_0();
+		CS$<>8__locals1.tech = tech;
+		CS$<>8__locals1.ti = this.queuedTech.Find((TechInstance qt) => qt.tech == CS$<>8__locals1.tech);
+		if (CS$<>8__locals1.ti == null)
 		{
 			return;
 		}
-		SetActiveResearch(null);
+		this.SetActiveResearch(null, false);
 		int i;
-		for (i = ti.tech.unlockedTech.Count - 1; i >= 0; i--)
+		int j;
+		for (i = CS$<>8__locals1.ti.tech.unlockedTech.Count - 1; i >= 0; i = j - 1)
 		{
-			if (queuedTech.Find((TechInstance qt) => qt.tech == ti.tech.unlockedTech[i]) != null)
+			if (this.queuedTech.Find((TechInstance qt) => qt.tech == CS$<>8__locals1.ti.tech.unlockedTech[i]) != null)
 			{
-				CancelResearch(ti.tech.unlockedTech[i], clickedEntry: false);
+				this.CancelResearch(CS$<>8__locals1.ti.tech.unlockedTech[i], false);
 			}
+			j = i;
 		}
-		queuedTech.Remove(ti);
+		this.queuedTech.Remove(CS$<>8__locals1.ti);
 		if (clickedEntry)
 		{
-			NotifyResearchCenters(GameHashes.ActiveResearchChanged, queuedTech);
+			this.NotifyResearchCenters(GameHashes.ActiveResearchChanged, this.queuedTech);
 		}
 	}
 
+	// Token: 0x06007C86 RID: 31878 RVA: 0x00321B00 File Offset: 0x0031FD00
 	private void NotifyResearchCenters(GameHashes hash, object data)
 	{
-		foreach (KMonoBehaviour researchCenter in Components.ResearchCenters)
+		foreach (object obj in Components.ResearchCenters)
 		{
-			researchCenter.Trigger(-1914338957, data);
+			((KMonoBehaviour)obj).Trigger(-1914338957, data);
 		}
-		Trigger((int)hash, data);
+		base.Trigger((int)hash, data);
 	}
 
+	// Token: 0x06007C87 RID: 31879 RVA: 0x00321B64 File Offset: 0x0031FD64
 	public void SetActiveResearch(Tech tech, bool clearQueue = false)
 	{
 		if (clearQueue)
 		{
-			queuedTech.Clear();
+			this.queuedTech.Clear();
 		}
-		activeResearch = null;
+		this.activeResearch = null;
 		if (tech != null)
 		{
-			if (queuedTech.Count == 0)
+			if (this.queuedTech.Count == 0)
 			{
-				AddTechToQueue(tech);
+				this.AddTechToQueue(tech);
 			}
-			if (queuedTech.Count > 0)
+			if (this.queuedTech.Count > 0)
 			{
-				queuedTech.Sort((TechInstance x, TechInstance y) => x.tech.tier.CompareTo(y.tech.tier));
-				activeResearch = queuedTech[0];
+				this.queuedTech.Sort((TechInstance x, TechInstance y) => x.tech.tier.CompareTo(y.tech.tier));
+				this.activeResearch = this.queuedTech[0];
 			}
 		}
 		else
 		{
-			queuedTech.Clear();
+			this.queuedTech.Clear();
 		}
-		NotifyResearchCenters(GameHashes.ActiveResearchChanged, queuedTech);
-		CheckBuyResearch();
-		CheckResearchBuildings(null);
-		UpdateResearcherRoleNotification();
+		this.NotifyResearchCenters(GameHashes.ActiveResearchChanged, this.queuedTech);
+		this.CheckBuyResearch();
+		this.CheckResearchBuildings(null);
+		this.UpdateResearcherRoleNotification();
 	}
 
+	// Token: 0x06007C88 RID: 31880 RVA: 0x00321C18 File Offset: 0x0031FE18
 	private void UpdateResearcherRoleNotification()
 	{
-		if (NoResearcherRoleNotification != null)
+		if (this.NoResearcherRoleNotification != null)
 		{
-			notifier.Remove(NoResearcherRoleNotification);
-			NoResearcherRoleNotification = null;
+			this.notifier.Remove(this.NoResearcherRoleNotification);
+			this.NoResearcherRoleNotification = null;
 		}
-		if (activeResearch != null)
+		if (this.activeResearch != null)
 		{
 			Skill skill = null;
-			if (activeResearch.tech.costsByResearchTypeID.ContainsKey("advanced") && activeResearch.tech.costsByResearchTypeID["advanced"] > 0f && !MinionResume.AnyMinionHasPerk(Db.Get().SkillPerks.AllowAdvancedResearch.Id))
+			if (this.activeResearch.tech.costsByResearchTypeID.ContainsKey("advanced") && this.activeResearch.tech.costsByResearchTypeID["advanced"] > 0f && !MinionResume.AnyMinionHasPerk(Db.Get().SkillPerks.AllowAdvancedResearch.Id, -1))
 			{
 				skill = Db.Get().Skills.GetSkillsWithPerk(Db.Get().SkillPerks.AllowAdvancedResearch)[0];
 			}
-			else if (activeResearch.tech.costsByResearchTypeID.ContainsKey("space") && activeResearch.tech.costsByResearchTypeID["space"] > 0f && !MinionResume.AnyMinionHasPerk(Db.Get().SkillPerks.AllowInterstellarResearch.Id))
+			else if (this.activeResearch.tech.costsByResearchTypeID.ContainsKey("space") && this.activeResearch.tech.costsByResearchTypeID["space"] > 0f && !MinionResume.AnyMinionHasPerk(Db.Get().SkillPerks.AllowInterstellarResearch.Id, -1))
 			{
 				skill = Db.Get().Skills.GetSkillsWithPerk(Db.Get().SkillPerks.AllowInterstellarResearch)[0];
 			}
-			else if (activeResearch.tech.costsByResearchTypeID.ContainsKey("nuclear") && activeResearch.tech.costsByResearchTypeID["nuclear"] > 0f && !MinionResume.AnyMinionHasPerk(Db.Get().SkillPerks.AllowNuclearResearch.Id))
+			else if (this.activeResearch.tech.costsByResearchTypeID.ContainsKey("nuclear") && this.activeResearch.tech.costsByResearchTypeID["nuclear"] > 0f && !MinionResume.AnyMinionHasPerk(Db.Get().SkillPerks.AllowNuclearResearch.Id, -1))
 			{
 				skill = Db.Get().Skills.GetSkillsWithPerk(Db.Get().SkillPerks.AllowNuclearResearch)[0];
 			}
-			else if (activeResearch.tech.costsByResearchTypeID.ContainsKey("orbital") && activeResearch.tech.costsByResearchTypeID["orbital"] > 0f && !MinionResume.AnyMinionHasPerk(Db.Get().SkillPerks.AllowOrbitalResearch.Id))
+			else if (this.activeResearch.tech.costsByResearchTypeID.ContainsKey("orbital") && this.activeResearch.tech.costsByResearchTypeID["orbital"] > 0f && !MinionResume.AnyMinionHasPerk(Db.Get().SkillPerks.AllowOrbitalResearch.Id, -1))
 			{
 				skill = Db.Get().Skills.GetSkillsWithPerk(Db.Get().SkillPerks.AllowOrbitalResearch)[0];
 			}
 			if (skill != null)
 			{
-				NoResearcherRoleNotification = new Notification(RESEARCH.MESSAGING.NO_RESEARCHER_SKILL, NotificationType.Bad, NoResearcherRoleTooltip, skill, expires: false, 12f);
-				notifier.Add(NoResearcherRoleNotification);
+				this.NoResearcherRoleNotification = new Notification(RESEARCH.MESSAGING.NO_RESEARCHER_SKILL, NotificationType.Bad, new Func<List<Notification>, object, string>(this.NoResearcherRoleTooltip), skill, false, 12f, null, null, null, true, false, false);
+				this.notifier.Add(this.NoResearcherRoleNotification, "");
 			}
 		}
 	}
 
+	// Token: 0x06007C89 RID: 31881 RVA: 0x00321EA0 File Offset: 0x003200A0
 	private string NoResearcherRoleTooltip(List<Notification> list, object data)
 	{
 		Skill skill = (Skill)data;
 		return RESEARCH.MESSAGING.NO_RESEARCHER_SKILL_TOOLTIP.Replace("{ResearchType}", skill.Name);
 	}
 
+	// Token: 0x06007C8A RID: 31882 RVA: 0x00321ECC File Offset: 0x003200CC
 	public void AddResearchPoints(string researchTypeID, float points)
 	{
-		if (!UseGlobalPointInventory && activeResearch == null)
+		if (!this.UseGlobalPointInventory && this.activeResearch == null)
 		{
-			Debug.LogWarning("No active research to add research points to. Global research inventory is disabled.");
+			global::Debug.LogWarning("No active research to add research points to. Global research inventory is disabled.");
 			return;
 		}
-		(UseGlobalPointInventory ? globalPointInventory : activeResearch.progressInventory).AddResearchPoints(researchTypeID, points);
-		CheckBuyResearch();
-		NotifyResearchCenters(GameHashes.ResearchPointsChanged, null);
+		(this.UseGlobalPointInventory ? this.globalPointInventory : this.activeResearch.progressInventory).AddResearchPoints(researchTypeID, points);
+		this.CheckBuyResearch();
+		this.NotifyResearchCenters(GameHashes.ResearchPointsChanged, null);
 	}
 
+	// Token: 0x06007C8B RID: 31883 RVA: 0x00321F28 File Offset: 0x00320128
 	private void CheckBuyResearch()
 	{
-		if (activeResearch == null)
+		if (this.activeResearch != null)
 		{
-			return;
+			ResearchPointInventory researchPointInventory = this.UseGlobalPointInventory ? this.globalPointInventory : this.activeResearch.progressInventory;
+			if (this.activeResearch.tech.CanAfford(researchPointInventory))
+			{
+				foreach (KeyValuePair<string, float> keyValuePair in this.activeResearch.tech.costsByResearchTypeID)
+				{
+					researchPointInventory.RemoveResearchPoints(keyValuePair.Key, keyValuePair.Value);
+				}
+				this.activeResearch.Purchased();
+				Game.Instance.Trigger(-107300940, this.activeResearch.tech);
+				this.GetNextTech();
+			}
 		}
-		ResearchPointInventory researchPointInventory = (UseGlobalPointInventory ? globalPointInventory : activeResearch.progressInventory);
-		if (!activeResearch.tech.CanAfford(researchPointInventory))
-		{
-			return;
-		}
-		foreach (KeyValuePair<string, float> item in activeResearch.tech.costsByResearchTypeID)
-		{
-			researchPointInventory.RemoveResearchPoints(item.Key, item.Value);
-		}
-		activeResearch.Purchased();
-		Game.Instance.Trigger(-107300940, activeResearch.tech);
-		GetNextTech();
 	}
 
+	// Token: 0x06007C8C RID: 31884 RVA: 0x00321FF8 File Offset: 0x003201F8
 	protected override void OnCleanUp()
 	{
-		if (Game.Instance != null && skillsUpdateHandle != -1)
+		if (Game.Instance != null && this.skillsUpdateHandle != -1)
 		{
-			Game.Instance.Unsubscribe(skillsUpdateHandle);
+			Game.Instance.Unsubscribe(this.skillsUpdateHandle);
 		}
-		Components.ResearchCenters.OnAdd -= CheckResearchBuildings;
-		Components.ResearchCenters.OnRemove -= CheckResearchBuildings;
+		Components.ResearchCenters.OnAdd -= new Action<IResearchCenter>(this.CheckResearchBuildings);
+		Components.ResearchCenters.OnRemove -= new Action<IResearchCenter>(this.CheckResearchBuildings);
 		base.OnCleanUp();
 	}
 
+	// Token: 0x06007C8D RID: 31885 RVA: 0x00322060 File Offset: 0x00320260
 	public void CompleteQueue()
 	{
-		while (queuedTech.Count > 0)
+		while (this.queuedTech.Count > 0)
 		{
-			foreach (KeyValuePair<string, float> item in activeResearch.tech.costsByResearchTypeID)
+			foreach (KeyValuePair<string, float> keyValuePair in this.activeResearch.tech.costsByResearchTypeID)
 			{
-				AddResearchPoints(item.Key, item.Value);
+				this.AddResearchPoints(keyValuePair.Key, keyValuePair.Value);
 			}
 		}
 	}
 
+	// Token: 0x06007C8E RID: 31886 RVA: 0x000F200D File Offset: 0x000F020D
 	public List<TechInstance> GetResearchQueue()
 	{
-		return new List<TechInstance>(queuedTech);
+		return new List<TechInstance>(this.queuedTech);
 	}
 
+	// Token: 0x06007C8F RID: 31887 RVA: 0x003220DC File Offset: 0x003202DC
 	[OnSerializing]
 	internal void OnSerializing()
 	{
-		saveData = default(SaveData);
-		if (activeResearch != null)
+		this.saveData = default(Research.SaveData);
+		if (this.activeResearch != null)
 		{
-			saveData.activeResearchId = activeResearch.tech.Id;
+			this.saveData.activeResearchId = this.activeResearch.tech.Id;
 		}
 		else
 		{
-			saveData.activeResearchId = "";
+			this.saveData.activeResearchId = "";
 		}
-		if (queuedTech != null && queuedTech.Count > 0)
+		if (this.queuedTech != null && this.queuedTech.Count > 0)
 		{
-			saveData.targetResearchId = queuedTech[queuedTech.Count - 1].tech.Id;
+			this.saveData.targetResearchId = this.queuedTech[this.queuedTech.Count - 1].tech.Id;
 		}
 		else
 		{
-			saveData.targetResearchId = "";
+			this.saveData.targetResearchId = "";
 		}
-		saveData.techs = new TechInstance.SaveData[techs.Count];
-		for (int i = 0; i < techs.Count; i++)
+		this.saveData.techs = new TechInstance.SaveData[this.techs.Count];
+		for (int i = 0; i < this.techs.Count; i++)
 		{
-			saveData.techs[i] = techs[i].Save();
+			this.saveData.techs[i] = this.techs[i].Save();
 		}
 	}
 
+	// Token: 0x06007C90 RID: 31888 RVA: 0x003221D4 File Offset: 0x003203D4
 	[OnDeserialized]
 	internal void OnDeserialized()
 	{
-		if (saveData.techs != null)
+		if (this.saveData.techs != null)
 		{
-			TechInstance.SaveData[] array = saveData.techs;
-			for (int i = 0; i < array.Length; i++)
+			foreach (TechInstance.SaveData saveData in this.saveData.techs)
 			{
-				TechInstance.SaveData save_data = array[i];
-				Tech tech = Db.Get().Techs.TryGet(save_data.techId);
+				Tech tech = Db.Get().Techs.TryGet(saveData.techId);
 				if (tech != null)
 				{
-					GetOrAdd(tech).Load(save_data);
+					this.GetOrAdd(tech).Load(saveData);
 				}
 			}
 		}
-		foreach (TechInstance tech2 in techs)
+		foreach (TechInstance techInstance in this.techs)
 		{
-			if (saveData.targetResearchId == tech2.tech.Id)
+			if (this.saveData.targetResearchId == techInstance.tech.Id)
 			{
-				SetActiveResearch(tech2.tech);
+				this.SetActiveResearch(techInstance.tech, false);
 				break;
 			}
 		}
 	}
 
+	// Token: 0x06007C91 RID: 31889 RVA: 0x000F201A File Offset: 0x000F021A
 	private void OnRolesUpdated(object data)
 	{
-		UpdateResearcherRoleNotification();
+		this.UpdateResearcherRoleNotification();
 	}
 
+	// Token: 0x06007C92 RID: 31890 RVA: 0x003222A8 File Offset: 0x003204A8
 	public string GetMissingResearchBuildingName()
 	{
-		foreach (KeyValuePair<string, float> item in activeResearch.tech.costsByResearchTypeID)
+		foreach (KeyValuePair<string, float> keyValuePair in this.activeResearch.tech.costsByResearchTypeID)
 		{
 			bool flag = true;
-			if (item.Value > 0f)
+			if (keyValuePair.Value > 0f)
 			{
 				flag = false;
-				foreach (IResearchCenter item2 in Components.ResearchCenters.Items)
+				using (List<IResearchCenter>.Enumerator enumerator2 = Components.ResearchCenters.Items.GetEnumerator())
 				{
-					if (item2.GetResearchType() == item.Key)
+					while (enumerator2.MoveNext())
 					{
-						flag = true;
-						break;
+						if (enumerator2.Current.GetResearchType() == keyValuePair.Key)
+						{
+							flag = true;
+							break;
+						}
 					}
 				}
 			}
-			if (flag)
+			if (!flag)
 			{
-				continue;
-			}
-			foreach (IResearchCenter researchCenterPrefab in researchCenterPrefabs)
-			{
-				if (researchCenterPrefab.GetResearchType() == item.Key)
+				foreach (IResearchCenter researchCenter in this.researchCenterPrefabs)
 				{
-					return ((KMonoBehaviour)researchCenterPrefab).GetProperName();
+					if (researchCenter.GetResearchType() == keyValuePair.Key)
+					{
+						return ((KMonoBehaviour)researchCenter).GetProperName();
+					}
 				}
+				return null;
 			}
-			return null;
 		}
 		return null;
 	}
 
+	// Token: 0x06007C93 RID: 31891 RVA: 0x003223D8 File Offset: 0x003205D8
 	private void CheckResearchBuildings(object data)
 	{
-		if (activeResearch == null)
+		if (this.activeResearch == null)
 		{
-			notifier.Remove(MissingResearchStation);
+			this.notifier.Remove(this.MissingResearchStation);
+			return;
 		}
-		else if (string.IsNullOrEmpty(GetMissingResearchBuildingName()))
+		if (string.IsNullOrEmpty(this.GetMissingResearchBuildingName()))
 		{
-			notifier.Remove(MissingResearchStation);
+			this.notifier.Remove(this.MissingResearchStation);
+			return;
 		}
-		else
-		{
-			notifier.Add(MissingResearchStation);
-		}
+		this.notifier.Add(this.MissingResearchStation, "");
+	}
+
+	// Token: 0x04005E3C RID: 24124
+	public static Research Instance;
+
+	// Token: 0x04005E3D RID: 24125
+	[MyCmpAdd]
+	private Notifier notifier;
+
+	// Token: 0x04005E3E RID: 24126
+	private List<TechInstance> techs = new List<TechInstance>();
+
+	// Token: 0x04005E3F RID: 24127
+	private List<TechInstance> queuedTech = new List<TechInstance>();
+
+	// Token: 0x04005E40 RID: 24128
+	private TechInstance activeResearch;
+
+	// Token: 0x04005E41 RID: 24129
+	private Notification NoResearcherRoleNotification;
+
+	// Token: 0x04005E42 RID: 24130
+	private Notification MissingResearchStation = new Notification(RESEARCH.MESSAGING.MISSING_RESEARCH_STATION, NotificationType.Bad, (List<Notification> list, object data) => RESEARCH.MESSAGING.MISSING_RESEARCH_STATION_TOOLTIP.ToString().Replace("{0}", Research.Instance.GetMissingResearchBuildingName()), null, false, 11f, null, null, null, true, false, false);
+
+	// Token: 0x04005E43 RID: 24131
+	private List<IResearchCenter> researchCenterPrefabs = new List<IResearchCenter>();
+
+	// Token: 0x04005E44 RID: 24132
+	protected int skillsUpdateHandle = -1;
+
+	// Token: 0x04005E45 RID: 24133
+	public ResearchTypes researchTypes;
+
+	// Token: 0x04005E46 RID: 24134
+	public bool UseGlobalPointInventory;
+
+	// Token: 0x04005E47 RID: 24135
+	[Serialize]
+	public ResearchPointInventory globalPointInventory;
+
+	// Token: 0x04005E48 RID: 24136
+	[Serialize]
+	private Research.SaveData saveData;
+
+	// Token: 0x0200179F RID: 6047
+	private struct SaveData
+	{
+		// Token: 0x04005E49 RID: 24137
+		public string activeResearchId;
+
+		// Token: 0x04005E4A RID: 24138
+		public string targetResearchId;
+
+		// Token: 0x04005E4B RID: 24139
+		public TechInstance.SaveData[] techs;
 	}
 }

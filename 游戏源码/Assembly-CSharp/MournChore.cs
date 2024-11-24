@@ -1,119 +1,20 @@
-using System;
+﻿using System;
 using Klei.AI;
 using STRINGS;
 using UnityEngine;
 
+// Token: 0x020006CF RID: 1743
 public class MournChore : Chore<MournChore.StatesInstance>
 {
-	public class StatesInstance : GameStateMachine<States, StatesInstance, MournChore, object>.GameInstance
-	{
-		private int locatorCell = -1;
-
-		public StatesInstance(MournChore master)
-			: base(master)
-		{
-		}
-
-		public void CreateLocator()
-		{
-			int cell = Grid.PosToCell(FindGraveToMournAt().transform.GetPosition());
-			Navigator component = base.master.GetComponent<Navigator>();
-			int standableCell = GetStandableCell(cell, component);
-			if (standableCell < 0)
-			{
-				base.smi.GoTo((StateMachine.BaseState)null);
-				return;
-			}
-			Grid.Reserved[standableCell] = true;
-			Vector3 pos = Grid.CellToPosCBC(standableCell, Grid.SceneLayer.Move);
-			GameObject value = ChoreHelpers.CreateLocator("MournLocator", pos);
-			base.smi.sm.locator.Set(value, base.smi);
-			locatorCell = standableCell;
-			base.smi.GoTo(base.sm.moveto);
-		}
-
-		public void DestroyLocator()
-		{
-			if (locatorCell >= 0)
-			{
-				Grid.Reserved[locatorCell] = false;
-				ChoreHelpers.DestroyLocator(base.sm.locator.Get(this));
-				base.sm.locator.Set(null, this);
-				locatorCell = -1;
-			}
-		}
-	}
-
-	public class States : GameStateMachine<States, StatesInstance, MournChore>
-	{
-		public TargetParameter mourner;
-
-		public TargetParameter locator;
-
-		public State findOffset;
-
-		public ApproachSubState<IApproachable> moveto;
-
-		public State mourn;
-
-		public State completed;
-
-		private static readonly HashedString[] WORK_ANIMS = new HashedString[2] { "working_pre", "working_loop" };
-
-		public override void InitializeStates(out BaseState default_state)
-		{
-			default_state = findOffset;
-			Target(mourner);
-			root.ToggleAnims("anim_react_mourning_kanim").Exit("DestroyLocator", delegate(StatesInstance smi)
-			{
-				smi.DestroyLocator();
-			});
-			findOffset.Enter("CreateLocator", delegate(StatesInstance smi)
-			{
-				smi.CreateLocator();
-			});
-			moveto.InitializeStates(mourner, locator, mourn);
-			mourn.PlayAnims((StatesInstance smi) => WORK_ANIMS, KAnim.PlayMode.Loop).ScheduleGoTo(10f, completed);
-			completed.PlayAnim("working_pst").OnAnimQueueComplete(null).Exit(delegate(StatesInstance smi)
-			{
-				mourner.Get<Effects>(smi).Remove(Db.Get().effects.Get("Mourning"));
-			});
-		}
-	}
-
-	private static readonly CellOffset[] ValidStandingOffsets = new CellOffset[3]
-	{
-		new CellOffset(0, 0),
-		new CellOffset(-1, 0),
-		new CellOffset(1, 0)
-	};
-
-	private static readonly Precondition HasValidMournLocation = new Precondition
-	{
-		id = "HasPlaceToStand",
-		description = DUPLICANTS.CHORES.PRECONDITIONS.HAS_PLACE_TO_STAND,
-		fn = delegate(ref Precondition.Context context, object data)
-		{
-			Navigator component = ((IStateMachineTarget)data).GetComponent<Navigator>();
-			bool result = false;
-			Grave grave = FindGraveToMournAt();
-			if (grave != null && Grid.IsValidCell(GetStandableCell(Grid.PosToCell(grave), component)))
-			{
-				result = true;
-			}
-			return result;
-		}
-	};
-
+	// Token: 0x06001F80 RID: 8064 RVA: 0x001B8A34 File Offset: 0x001B6C34
 	private static int GetStandableCell(int cell, Navigator navigator)
 	{
-		CellOffset[] validStandingOffsets = ValidStandingOffsets;
-		foreach (CellOffset offset in validStandingOffsets)
+		foreach (CellOffset offset in MournChore.ValidStandingOffsets)
 		{
 			if (Grid.IsCellOffsetValid(cell, offset))
 			{
 				int num = Grid.OffsetCell(cell, offset);
-				if (!Grid.Reserved[num] && navigator.NavGrid.NavTable.IsValid(num) && navigator.GetNavigationCost(num) != -1)
+				if (!Grid.Reserved[num] && navigator.NavGrid.NavTable.IsValid(num, NavType.Floor) && navigator.GetNavigationCost(num) != -1)
 				{
 					return num;
 				}
@@ -122,53 +23,175 @@ public class MournChore : Chore<MournChore.StatesInstance>
 		return -1;
 	}
 
-	public MournChore(IStateMachineTarget master)
-		: base(Db.Get().ChoreTypes.Mourn, master, master.GetComponent<ChoreProvider>(), run_until_complete: false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.high, 5, is_preemptable: false, allow_in_context_menu: true, 0, add_to_daily_report: false, ReportManager.ReportType.WorkTime)
+	// Token: 0x06001F81 RID: 8065 RVA: 0x001B8A9C File Offset: 0x001B6C9C
+	public MournChore(IStateMachineTarget master) : base(Db.Get().ChoreTypes.Mourn, master, master.GetComponent<ChoreProvider>(), false, null, null, null, PriorityScreen.PriorityClass.high, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
 	{
-		base.smi = new StatesInstance(this);
-		AddPrecondition(ChorePreconditions.instance.IsNotRedAlert);
-		AddPrecondition(ChorePreconditions.instance.NoDeadBodies);
-		AddPrecondition(HasValidMournLocation, master);
+		base.smi = new MournChore.StatesInstance(this);
+		this.AddPrecondition(ChorePreconditions.instance.IsNotRedAlert, null);
+		this.AddPrecondition(ChorePreconditions.instance.NoDeadBodies, null);
+		this.AddPrecondition(MournChore.HasValidMournLocation, master);
 	}
 
+	// Token: 0x06001F82 RID: 8066 RVA: 0x001B8B0C File Offset: 0x001B6D0C
 	public static Grave FindGraveToMournAt()
 	{
 		Grave result = null;
 		float num = -1f;
-		foreach (Grave grafe in Components.Graves)
+		foreach (object obj in Components.Graves)
 		{
-			if (grafe.burialTime > num)
+			Grave grave = (Grave)obj;
+			if (grave.burialTime > num)
 			{
-				num = grafe.burialTime;
-				result = grafe;
+				num = grave.burialTime;
+				result = grave;
 			}
 		}
 		return result;
 	}
 
-	public override void Begin(Precondition.Context context)
+	// Token: 0x06001F83 RID: 8067 RVA: 0x001B8B7C File Offset: 0x001B6D7C
+	public override void Begin(Chore.Precondition.Context context)
 	{
 		if (context.consumerState.consumer == null)
 		{
-			Debug.LogError("MournChore null context.consumer");
+			global::Debug.LogError("MournChore null context.consumer");
 			return;
 		}
 		if (base.smi == null)
 		{
-			Debug.LogError("MournChore null smi");
+			global::Debug.LogError("MournChore null smi");
 			return;
 		}
 		if (base.smi.sm == null)
 		{
-			Debug.LogError("MournChore null smi.sm");
+			global::Debug.LogError("MournChore null smi.sm");
 			return;
 		}
-		if (FindGraveToMournAt() == null)
+		if (MournChore.FindGraveToMournAt() == null)
 		{
-			Debug.LogError("MournChore no grave");
+			global::Debug.LogError("MournChore no grave");
 			return;
 		}
-		base.smi.sm.mourner.Set(context.consumerState.gameObject, base.smi);
+		base.smi.sm.mourner.Set(context.consumerState.gameObject, base.smi, false);
 		base.Begin(context);
+	}
+
+	// Token: 0x0400146A RID: 5226
+	private static readonly CellOffset[] ValidStandingOffsets = new CellOffset[]
+	{
+		new CellOffset(0, 0),
+		new CellOffset(-1, 0),
+		new CellOffset(1, 0)
+	};
+
+	// Token: 0x0400146B RID: 5227
+	private static readonly Chore.Precondition HasValidMournLocation = new Chore.Precondition
+	{
+		id = "HasPlaceToStand",
+		description = DUPLICANTS.CHORES.PRECONDITIONS.HAS_PLACE_TO_STAND,
+		fn = delegate(ref Chore.Precondition.Context context, object data)
+		{
+			Navigator component = ((IStateMachineTarget)data).GetComponent<Navigator>();
+			bool result = false;
+			Grave grave = MournChore.FindGraveToMournAt();
+			if (grave != null && Grid.IsValidCell(MournChore.GetStandableCell(Grid.PosToCell(grave), component)))
+			{
+				result = true;
+			}
+			return result;
+		}
+	};
+
+	// Token: 0x020006D0 RID: 1744
+	public class StatesInstance : GameStateMachine<MournChore.States, MournChore.StatesInstance, MournChore, object>.GameInstance
+	{
+		// Token: 0x06001F85 RID: 8069 RVA: 0x000B4B5A File Offset: 0x000B2D5A
+		public StatesInstance(MournChore master) : base(master)
+		{
+		}
+
+		// Token: 0x06001F86 RID: 8070 RVA: 0x001B8CA0 File Offset: 0x001B6EA0
+		public void CreateLocator()
+		{
+			int cell = Grid.PosToCell(MournChore.FindGraveToMournAt().transform.GetPosition());
+			Navigator component = base.master.GetComponent<Navigator>();
+			int standableCell = MournChore.GetStandableCell(cell, component);
+			if (standableCell < 0)
+			{
+				base.smi.GoTo(null);
+				return;
+			}
+			Grid.Reserved[standableCell] = true;
+			Vector3 pos = Grid.CellToPosCBC(standableCell, Grid.SceneLayer.Move);
+			GameObject value = ChoreHelpers.CreateLocator("MournLocator", pos);
+			base.smi.sm.locator.Set(value, base.smi, false);
+			this.locatorCell = standableCell;
+			base.smi.GoTo(base.sm.moveto);
+		}
+
+		// Token: 0x06001F87 RID: 8071 RVA: 0x001B8D44 File Offset: 0x001B6F44
+		public void DestroyLocator()
+		{
+			if (this.locatorCell >= 0)
+			{
+				Grid.Reserved[this.locatorCell] = false;
+				ChoreHelpers.DestroyLocator(base.sm.locator.Get(this));
+				base.sm.locator.Set(null, this);
+				this.locatorCell = -1;
+			}
+		}
+
+		// Token: 0x0400146C RID: 5228
+		private int locatorCell = -1;
+	}
+
+	// Token: 0x020006D1 RID: 1745
+	public class States : GameStateMachine<MournChore.States, MournChore.StatesInstance, MournChore>
+	{
+		// Token: 0x06001F88 RID: 8072 RVA: 0x001B8D9C File Offset: 0x001B6F9C
+		public override void InitializeStates(out StateMachine.BaseState default_state)
+		{
+			default_state = this.findOffset;
+			base.Target(this.mourner);
+			this.root.ToggleAnims("anim_react_mourning_kanim", 0f).Exit("DestroyLocator", delegate(MournChore.StatesInstance smi)
+			{
+				smi.DestroyLocator();
+			});
+			this.findOffset.Enter("CreateLocator", delegate(MournChore.StatesInstance smi)
+			{
+				smi.CreateLocator();
+			});
+			this.moveto.InitializeStates(this.mourner, this.locator, this.mourn, null, null, null);
+			this.mourn.PlayAnims((MournChore.StatesInstance smi) => MournChore.States.WORK_ANIMS, KAnim.PlayMode.Loop).ScheduleGoTo(10f, this.completed);
+			this.completed.PlayAnim("working_pst").OnAnimQueueComplete(null).Exit(delegate(MournChore.StatesInstance smi)
+			{
+				this.mourner.Get<Effects>(smi).Remove(Db.Get().effects.Get("Mourning"));
+			});
+		}
+
+		// Token: 0x0400146D RID: 5229
+		public StateMachine<MournChore.States, MournChore.StatesInstance, MournChore, object>.TargetParameter mourner;
+
+		// Token: 0x0400146E RID: 5230
+		public StateMachine<MournChore.States, MournChore.StatesInstance, MournChore, object>.TargetParameter locator;
+
+		// Token: 0x0400146F RID: 5231
+		public GameStateMachine<MournChore.States, MournChore.StatesInstance, MournChore, object>.State findOffset;
+
+		// Token: 0x04001470 RID: 5232
+		public GameStateMachine<MournChore.States, MournChore.StatesInstance, MournChore, object>.ApproachSubState<IApproachable> moveto;
+
+		// Token: 0x04001471 RID: 5233
+		public GameStateMachine<MournChore.States, MournChore.StatesInstance, MournChore, object>.State mourn;
+
+		// Token: 0x04001472 RID: 5234
+		public GameStateMachine<MournChore.States, MournChore.StatesInstance, MournChore, object>.State completed;
+
+		// Token: 0x04001473 RID: 5235
+		private static readonly HashedString[] WORK_ANIMS = new HashedString[]
+		{
+			"working_pre",
+			"working_loop"
+		};
 	}
 }

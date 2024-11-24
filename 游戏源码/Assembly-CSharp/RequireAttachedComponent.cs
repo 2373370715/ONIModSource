@@ -1,69 +1,85 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
 using KSerialization;
 using STRINGS;
 using UnityEngine;
 
+// Token: 0x02001990 RID: 6544
 [SerializationConfig(MemberSerialization.OptIn)]
 public class RequireAttachedComponent : ProcessCondition
 {
-	private string typeNameString;
-
-	private Type requiredType;
-
-	private AttachableBuilding myAttachable;
-
+	// Token: 0x170008FB RID: 2299
+	// (get) Token: 0x0600886B RID: 34923 RVA: 0x000F937B File Offset: 0x000F757B
+	// (set) Token: 0x0600886C RID: 34924 RVA: 0x000F9383 File Offset: 0x000F7583
 	public Type RequiredType
 	{
 		get
 		{
-			return requiredType;
+			return this.requiredType;
 		}
 		set
 		{
-			requiredType = value;
-			typeNameString = requiredType.Name;
+			this.requiredType = value;
+			this.typeNameString = this.requiredType.Name;
 		}
 	}
 
+	// Token: 0x0600886D RID: 34925 RVA: 0x000F939D File Offset: 0x000F759D
 	public RequireAttachedComponent(AttachableBuilding myAttachable, Type required_type, string type_name_string)
 	{
 		this.myAttachable = myAttachable;
-		requiredType = required_type;
-		typeNameString = type_name_string;
+		this.requiredType = required_type;
+		this.typeNameString = type_name_string;
 	}
 
-	public override Status EvaluateCondition()
+	// Token: 0x0600886E RID: 34926 RVA: 0x00353D38 File Offset: 0x00351F38
+	public override ProcessCondition.Status EvaluateCondition()
 	{
-		if (myAttachable != null)
+		if (this.myAttachable != null)
 		{
-			foreach (GameObject item in AttachableBuilding.GetAttachedNetwork(myAttachable))
+			using (List<GameObject>.Enumerator enumerator = AttachableBuilding.GetAttachedNetwork(this.myAttachable).GetEnumerator())
 			{
-				if ((bool)item.GetComponent(requiredType))
+				while (enumerator.MoveNext())
 				{
-					return Status.Ready;
+					if (enumerator.Current.GetComponent(this.requiredType))
+					{
+						return ProcessCondition.Status.Ready;
+					}
 				}
 			}
+			return ProcessCondition.Status.Failure;
 		}
-		return Status.Failure;
+		return ProcessCondition.Status.Failure;
 	}
 
-	public override string GetStatusMessage(Status status)
+	// Token: 0x0600886F RID: 34927 RVA: 0x000F93BA File Offset: 0x000F75BA
+	public override string GetStatusMessage(ProcessCondition.Status status)
 	{
-		_ = 2;
-		return typeNameString;
+		return this.typeNameString;
 	}
 
-	public override string GetStatusTooltip(Status status)
+	// Token: 0x06008870 RID: 34928 RVA: 0x000F93C6 File Offset: 0x000F75C6
+	public override string GetStatusTooltip(ProcessCondition.Status status)
 	{
-		if (status == Status.Ready)
+		if (status == ProcessCondition.Status.Ready)
 		{
-			return string.Format(UI.STARMAP.LAUNCHCHECKLIST.INSTALLED_TOOLTIP, typeNameString.ToLower());
+			return string.Format(UI.STARMAP.LAUNCHCHECKLIST.INSTALLED_TOOLTIP, this.typeNameString.ToLower());
 		}
-		return string.Format(UI.STARMAP.LAUNCHCHECKLIST.MISSING_TOOLTIP, typeNameString.ToLower());
+		return string.Format(UI.STARMAP.LAUNCHCHECKLIST.MISSING_TOOLTIP, this.typeNameString.ToLower());
 	}
 
+	// Token: 0x06008871 RID: 34929 RVA: 0x000A65EC File Offset: 0x000A47EC
 	public override bool ShowInUI()
 	{
 		return true;
 	}
+
+	// Token: 0x040066A7 RID: 26279
+	private string typeNameString;
+
+	// Token: 0x040066A8 RID: 26280
+	private Type requiredType;
+
+	// Token: 0x040066A9 RID: 26281
+	private AttachableBuilding myAttachable;
 }

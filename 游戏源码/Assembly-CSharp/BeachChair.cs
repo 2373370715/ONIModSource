@@ -1,191 +1,221 @@
+﻿using System;
 using System.Collections.Generic;
 using Klei.AI;
 using STRINGS;
 using UnityEngine;
 
+// Token: 0x02000C3B RID: 3131
 public class BeachChair : StateMachineComponent<BeachChair.StatesInstance>, IGameObjectEffectDescriptor
 {
-	public class States : GameStateMachine<States, StatesInstance, BeachChair>
-	{
-		public class LitWorkingStates : State
-		{
-			public State working;
-
-			public State silly;
-
-			public State post;
-		}
-
-		public class WorkingStates : State
-		{
-			public State working;
-
-			public State post;
-		}
-
-		public class ReadyStates : State
-		{
-			public State idle;
-
-			public State working_pre;
-
-			public WorkingStates working_unlit;
-
-			public LitWorkingStates working_lit;
-
-			public State post;
-		}
-
-		public BoolParameter lit;
-
-		public TargetParameter worker;
-
-		private State inoperational;
-
-		private ReadyStates ready;
-
-		private HashedString[] UNLIT_PST_ANIMS = new HashedString[2] { "working_unlit_pst", "working_pst" };
-
-		private HashedString[] LIT_PST_ANIMS = new HashedString[2] { "working_lit_pst", "working_pst" };
-
-		private string[] SILLY_ANIMS = new string[3] { "working_lit_loop1", "working_lit_loop2", "working_lit_loop3" };
-
-		public override void InitializeStates(out BaseState default_state)
-		{
-			default_state = inoperational;
-			inoperational.PlayAnim("off").TagTransition(GameTags.Operational, ready).ToggleMainStatusItem(Db.Get().BuildingStatusItems.MissingRequirements);
-			ready.TagTransition(GameTags.Operational, inoperational, on_remove: true).DefaultState(ready.idle).ToggleChore(CreateChore, inoperational)
-				.ToggleMainStatusItem(Db.Get().BuildingStatusItems.Working);
-			ready.idle.PlayAnim("on", KAnim.PlayMode.Loop).WorkableStartTransition((StatesInstance smi) => smi.master.GetComponent<BeachChairWorkable>(), ready.working_pre);
-			ready.working_pre.PlayAnim("working_pre").QueueAnim("working_loop", loop: true).Target(worker)
-				.PlayAnim("working_pre")
-				.EventHandler(GameHashes.AnimQueueComplete, delegate(StatesInstance smi)
-				{
-					if (lit.Get(smi))
-					{
-						smi.GoTo(ready.working_lit);
-					}
-					else
-					{
-						smi.GoTo(ready.working_unlit);
-					}
-				});
-			ready.working_unlit.DefaultState(ready.working_unlit.working).Enter(delegate(StatesInstance smi)
-			{
-				BeachChairWorkable component2 = smi.master.GetComponent<BeachChairWorkable>();
-				component2.workingPstComplete = (component2.workingPstFailed = UNLIT_PST_ANIMS);
-			}).ToggleStatusItem(Db.Get().BuildingStatusItems.TanningLightInsufficient)
-				.WorkableStopTransition((StatesInstance smi) => smi.master.GetComponent<BeachChairWorkable>(), ready.post)
-				.Target(worker)
-				.PlayAnim("working_unlit_pre");
-			ready.working_unlit.working.ParamTransition(lit, ready.working_unlit.post, GameStateMachine<States, StatesInstance, BeachChair, object>.IsTrue).Target(worker).QueueAnim("working_unlit_loop", loop: true);
-			ready.working_unlit.post.Target(worker).PlayAnim("working_unlit_pst").EventHandler(GameHashes.AnimQueueComplete, delegate(StatesInstance smi)
-			{
-				if (lit.Get(smi))
-				{
-					smi.GoTo(ready.working_lit);
-				}
-				else
-				{
-					smi.GoTo(ready.working_unlit.working);
-				}
-			});
-			ready.working_lit.DefaultState(ready.working_lit.working).Enter(delegate(StatesInstance smi)
-			{
-				BeachChairWorkable component = smi.master.GetComponent<BeachChairWorkable>();
-				component.workingPstComplete = (component.workingPstFailed = LIT_PST_ANIMS);
-			}).ToggleStatusItem(Db.Get().BuildingStatusItems.TanningLightSufficient)
-				.WorkableStopTransition((StatesInstance smi) => smi.master.GetComponent<BeachChairWorkable>(), ready.post)
-				.Target(worker)
-				.PlayAnim("working_lit_pre");
-			ready.working_lit.working.ParamTransition(lit, ready.working_lit.post, GameStateMachine<States, StatesInstance, BeachChair, object>.IsFalse).Target(worker).QueueAnim("working_lit_loop", loop: true)
-				.ScheduleGoTo((StatesInstance smi) => Random.Range(5f, 15f), ready.working_lit.silly);
-			ready.working_lit.silly.ParamTransition(lit, ready.working_lit.post, GameStateMachine<States, StatesInstance, BeachChair, object>.IsFalse).Target(worker).PlayAnim((StatesInstance smi) => SILLY_ANIMS[Random.Range(0, SILLY_ANIMS.Length)])
-				.OnAnimQueueComplete(ready.working_lit.working);
-			ready.working_lit.post.Target(worker).PlayAnim("working_lit_pst").EventHandler(GameHashes.AnimQueueComplete, delegate(StatesInstance smi)
-			{
-				if (!lit.Get(smi))
-				{
-					smi.GoTo(ready.working_unlit);
-				}
-				else
-				{
-					smi.GoTo(ready.working_lit.working);
-				}
-			});
-			ready.post.PlayAnim("working_pst").Exit(delegate(StatesInstance smi)
-			{
-				worker.Set(null, smi);
-			}).OnAnimQueueComplete(ready);
-		}
-
-		private Chore CreateChore(StatesInstance smi)
-		{
-			Workable component = smi.master.GetComponent<BeachChairWorkable>();
-			WorkChore<BeachChairWorkable> workChore = new WorkChore<BeachChairWorkable>(Db.Get().ChoreTypes.Relax, component, null, run_until_complete: true, null, null, null, allow_in_red_alert: false, Db.Get().ScheduleBlockTypes.Recreation, ignore_schedule_block: false, only_when_operational: true, null, is_preemptable: false, allow_in_context_menu: true, allow_prioritization: false, PriorityScreen.PriorityClass.high);
-			workChore.AddPrecondition(ChorePreconditions.instance.CanDoWorkerPrioritizable, component);
-			return workChore;
-		}
-	}
-
-	public class StatesInstance : GameStateMachine<States, StatesInstance, BeachChair, object>.GameInstance
-	{
-		public StatesInstance(BeachChair smi)
-			: base(smi)
-		{
-		}
-	}
-
-	public string specificEffectUnlit;
-
-	public string specificEffectLit;
-
-	public string trackingEffect;
-
-	public const float LIT_RATIO_FOR_POSITIVE_EFFECT = 0.75f;
-
+	// Token: 0x06003C07 RID: 15367 RVA: 0x000C6BBE File Offset: 0x000C4DBE
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.smi.StartSM();
 	}
 
+	// Token: 0x06003C08 RID: 15368 RVA: 0x000C6BD1 File Offset: 0x000C4DD1
 	protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 	}
 
+	// Token: 0x06003C09 RID: 15369 RVA: 0x0022CD68 File Offset: 0x0022AF68
 	public static void AddModifierDescriptions(List<Descriptor> descs, string effect_id, bool high_lux)
 	{
-		Effect effect = Db.Get().effects.Get(effect_id);
-		LocString locString = (high_lux ? BUILDINGS.PREFABS.BEACHCHAIR.LIGHTEFFECT_HIGH : BUILDINGS.PREFABS.BEACHCHAIR.LIGHTEFFECT_LOW);
-		LocString locString2 = (high_lux ? BUILDINGS.PREFABS.BEACHCHAIR.LIGHTEFFECT_HIGH_TOOLTIP : BUILDINGS.PREFABS.BEACHCHAIR.LIGHTEFFECT_LOW_TOOLTIP);
-		foreach (AttributeModifier selfModifier in effect.SelfModifiers)
+		Klei.AI.Modifier modifier = Db.Get().effects.Get(effect_id);
+		LocString locString = high_lux ? BUILDINGS.PREFABS.BEACHCHAIR.LIGHTEFFECT_HIGH : BUILDINGS.PREFABS.BEACHCHAIR.LIGHTEFFECT_LOW;
+		LocString locString2 = high_lux ? BUILDINGS.PREFABS.BEACHCHAIR.LIGHTEFFECT_HIGH_TOOLTIP : BUILDINGS.PREFABS.BEACHCHAIR.LIGHTEFFECT_LOW_TOOLTIP;
+		foreach (AttributeModifier attributeModifier in modifier.SelfModifiers)
 		{
-			Descriptor item = new Descriptor(locString.Replace("{attrib}", Strings.Get("STRINGS.DUPLICANTS.ATTRIBUTES." + selfModifier.AttributeId.ToUpper() + ".NAME")).Replace("{amount}", selfModifier.GetFormattedString()).Replace("{lux}", GameUtil.GetFormattedLux(10000)), locString2.Replace("{attrib}", Strings.Get("STRINGS.DUPLICANTS.ATTRIBUTES." + selfModifier.AttributeId.ToUpper() + ".NAME")).Replace("{amount}", selfModifier.GetFormattedString()).Replace("{lux}", GameUtil.GetFormattedLux(10000)));
+			Descriptor item = new Descriptor(locString.Replace("{attrib}", Strings.Get("STRINGS.DUPLICANTS.ATTRIBUTES." + attributeModifier.AttributeId.ToUpper() + ".NAME")).Replace("{amount}", attributeModifier.GetFormattedString()).Replace("{lux}", GameUtil.GetFormattedLux(BeachChairConfig.TAN_LUX)), locString2.Replace("{attrib}", Strings.Get("STRINGS.DUPLICANTS.ATTRIBUTES." + attributeModifier.AttributeId.ToUpper() + ".NAME")).Replace("{amount}", attributeModifier.GetFormattedString()).Replace("{lux}", GameUtil.GetFormattedLux(BeachChairConfig.TAN_LUX)), Descriptor.DescriptorType.Effect, false);
 			item.IncreaseIndent();
 			descs.Add(item);
 		}
 	}
 
+	// Token: 0x06003C0A RID: 15370 RVA: 0x0022CEA8 File Offset: 0x0022B0A8
 	List<Descriptor> IGameObjectEffectDescriptor.GetDescriptors(GameObject go)
 	{
-		List<Descriptor> obj = new List<Descriptor>
-		{
-			new Descriptor(UI.BUILDINGEFFECTS.RECREATION, UI.BUILDINGEFFECTS.TOOLTIPS.RECREATION)
-		};
-		AddModifierDescriptions(obj, specificEffectLit, high_lux: true);
-		AddModifierDescriptions(obj, specificEffectUnlit, high_lux: false);
-		return obj;
+		List<Descriptor> list = new List<Descriptor>();
+		list.Add(new Descriptor(UI.BUILDINGEFFECTS.RECREATION, UI.BUILDINGEFFECTS.TOOLTIPS.RECREATION, Descriptor.DescriptorType.Effect, false));
+		BeachChair.AddModifierDescriptions(list, this.specificEffectLit, true);
+		BeachChair.AddModifierDescriptions(list, this.specificEffectUnlit, false);
+		return list;
 	}
 
+	// Token: 0x06003C0B RID: 15371 RVA: 0x000C6BD9 File Offset: 0x000C4DD9
 	public void SetLit(bool v)
 	{
-		base.smi.sm.lit.Set(v, base.smi);
+		base.smi.sm.lit.Set(v, base.smi, false);
 	}
 
-	public void SetWorker(Worker worker)
+	// Token: 0x06003C0C RID: 15372 RVA: 0x000C6BF9 File Offset: 0x000C4DF9
+	public void SetWorker(WorkerBase worker)
 	{
 		base.smi.sm.worker.Set(worker, base.smi);
+	}
+
+	// Token: 0x0400290C RID: 10508
+	public string specificEffectUnlit;
+
+	// Token: 0x0400290D RID: 10509
+	public string specificEffectLit;
+
+	// Token: 0x0400290E RID: 10510
+	public string trackingEffect;
+
+	// Token: 0x0400290F RID: 10511
+	public const float LIT_RATIO_FOR_POSITIVE_EFFECT = 0.75f;
+
+	// Token: 0x02000C3C RID: 3132
+	public class States : GameStateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair>
+	{
+		// Token: 0x06003C0E RID: 15374 RVA: 0x0022CEF8 File Offset: 0x0022B0F8
+		public override void InitializeStates(out StateMachine.BaseState default_state)
+		{
+			default_state = this.inoperational;
+			this.inoperational.PlayAnim("off").TagTransition(GameTags.Operational, this.ready, false).ToggleMainStatusItem(Db.Get().BuildingStatusItems.MissingRequirements, null);
+			this.ready.TagTransition(GameTags.Operational, this.inoperational, true).DefaultState(this.ready.idle).ToggleChore(new Func<BeachChair.StatesInstance, Chore>(this.CreateChore), this.inoperational).ToggleMainStatusItem(Db.Get().BuildingStatusItems.Working, null);
+			this.ready.idle.PlayAnim("on", KAnim.PlayMode.Loop).WorkableStartTransition((BeachChair.StatesInstance smi) => smi.master.GetComponent<BeachChairWorkable>(), this.ready.working_pre);
+			this.ready.working_pre.PlayAnim("working_pre").QueueAnim("working_loop", true, null).Target(this.worker).PlayAnim("working_pre").EventHandler(GameHashes.AnimQueueComplete, delegate(BeachChair.StatesInstance smi)
+			{
+				if (this.lit.Get(smi))
+				{
+					smi.GoTo(this.ready.working_lit);
+					return;
+				}
+				smi.GoTo(this.ready.working_unlit);
+			});
+			this.ready.working_unlit.DefaultState(this.ready.working_unlit.working).Enter(delegate(BeachChair.StatesInstance smi)
+			{
+				BeachChairWorkable component = smi.master.GetComponent<BeachChairWorkable>();
+				component.workingPstComplete = (component.workingPstFailed = this.UNLIT_PST_ANIMS);
+			}).ToggleStatusItem(Db.Get().BuildingStatusItems.TanningLightInsufficient, null).WorkableStopTransition((BeachChair.StatesInstance smi) => smi.master.GetComponent<BeachChairWorkable>(), this.ready.post).Target(this.worker).PlayAnim("working_unlit_pre");
+			this.ready.working_unlit.working.ParamTransition<bool>(this.lit, this.ready.working_unlit.post, GameStateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.IsTrue).Target(this.worker).QueueAnim("working_unlit_loop", true, null);
+			this.ready.working_unlit.post.Target(this.worker).PlayAnim("working_unlit_pst").EventHandler(GameHashes.AnimQueueComplete, delegate(BeachChair.StatesInstance smi)
+			{
+				if (this.lit.Get(smi))
+				{
+					smi.GoTo(this.ready.working_lit);
+					return;
+				}
+				smi.GoTo(this.ready.working_unlit.working);
+			});
+			this.ready.working_lit.DefaultState(this.ready.working_lit.working).Enter(delegate(BeachChair.StatesInstance smi)
+			{
+				BeachChairWorkable component = smi.master.GetComponent<BeachChairWorkable>();
+				component.workingPstComplete = (component.workingPstFailed = this.LIT_PST_ANIMS);
+			}).ToggleStatusItem(Db.Get().BuildingStatusItems.TanningLightSufficient, null).WorkableStopTransition((BeachChair.StatesInstance smi) => smi.master.GetComponent<BeachChairWorkable>(), this.ready.post).Target(this.worker).PlayAnim("working_lit_pre");
+			this.ready.working_lit.working.ParamTransition<bool>(this.lit, this.ready.working_lit.post, GameStateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.IsFalse).Target(this.worker).QueueAnim("working_lit_loop", true, null).ScheduleGoTo((BeachChair.StatesInstance smi) => UnityEngine.Random.Range(5f, 15f), this.ready.working_lit.silly);
+			this.ready.working_lit.silly.ParamTransition<bool>(this.lit, this.ready.working_lit.post, GameStateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.IsFalse).Target(this.worker).PlayAnim((BeachChair.StatesInstance smi) => this.SILLY_ANIMS[UnityEngine.Random.Range(0, this.SILLY_ANIMS.Length)], KAnim.PlayMode.Once).OnAnimQueueComplete(this.ready.working_lit.working);
+			this.ready.working_lit.post.Target(this.worker).PlayAnim("working_lit_pst").EventHandler(GameHashes.AnimQueueComplete, delegate(BeachChair.StatesInstance smi)
+			{
+				if (!this.lit.Get(smi))
+				{
+					smi.GoTo(this.ready.working_unlit);
+					return;
+				}
+				smi.GoTo(this.ready.working_lit.working);
+			});
+			this.ready.post.PlayAnim("working_pst").Exit(delegate(BeachChair.StatesInstance smi)
+			{
+				this.worker.Set(null, smi);
+			}).OnAnimQueueComplete(this.ready);
+		}
+
+		// Token: 0x06003C0F RID: 15375 RVA: 0x0022D314 File Offset: 0x0022B514
+		private Chore CreateChore(BeachChair.StatesInstance smi)
+		{
+			Workable component = smi.master.GetComponent<BeachChairWorkable>();
+			WorkChore<BeachChairWorkable> workChore = new WorkChore<BeachChairWorkable>(Db.Get().ChoreTypes.Relax, component, null, true, null, null, null, false, Db.Get().ScheduleBlockTypes.Recreation, false, true, null, false, true, false, PriorityScreen.PriorityClass.high, 5, false, true);
+			workChore.AddPrecondition(ChorePreconditions.instance.CanDoWorkerPrioritizable, component);
+			return workChore;
+		}
+
+		// Token: 0x04002910 RID: 10512
+		public StateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.BoolParameter lit;
+
+		// Token: 0x04002911 RID: 10513
+		public StateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.TargetParameter worker;
+
+		// Token: 0x04002912 RID: 10514
+		private GameStateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.State inoperational;
+
+		// Token: 0x04002913 RID: 10515
+		private BeachChair.States.ReadyStates ready;
+
+		// Token: 0x04002914 RID: 10516
+		private HashedString[] UNLIT_PST_ANIMS = new HashedString[]
+		{
+			"working_unlit_pst",
+			"working_pst"
+		};
+
+		// Token: 0x04002915 RID: 10517
+		private HashedString[] LIT_PST_ANIMS = new HashedString[]
+		{
+			"working_lit_pst",
+			"working_pst"
+		};
+
+		// Token: 0x04002916 RID: 10518
+		private string[] SILLY_ANIMS = new string[]
+		{
+			"working_lit_loop1",
+			"working_lit_loop2",
+			"working_lit_loop3"
+		};
+
+		// Token: 0x02000C3D RID: 3133
+		public class LitWorkingStates : GameStateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.State
+		{
+			// Token: 0x04002917 RID: 10519
+			public GameStateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.State working;
+
+			// Token: 0x04002918 RID: 10520
+			public GameStateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.State silly;
+
+			// Token: 0x04002919 RID: 10521
+			public GameStateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.State post;
+		}
+
+		// Token: 0x02000C3E RID: 3134
+		public class WorkingStates : GameStateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.State
+		{
+			// Token: 0x0400291A RID: 10522
+			public GameStateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.State working;
+
+			// Token: 0x0400291B RID: 10523
+			public GameStateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.State post;
+		}
+
+		// Token: 0x02000C3F RID: 3135
+		public class ReadyStates : GameStateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.State
+		{
+			// Token: 0x0400291C RID: 10524
+			public GameStateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.State idle;
+
+			// Token: 0x0400291D RID: 10525
+			public GameStateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.State working_pre;
+
+			// Token: 0x0400291E RID: 10526
+			public BeachChair.States.WorkingStates working_unlit;
+
+			// Token: 0x0400291F RID: 10527
+			public BeachChair.States.LitWorkingStates working_lit;
+
+			// Token: 0x04002920 RID: 10528
+			public GameStateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.State post;
+		}
+	}
+
+	// Token: 0x02000C41 RID: 3137
+	public class StatesInstance : GameStateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.GameInstance
+	{
+		// Token: 0x06003C21 RID: 15393 RVA: 0x000C6D1A File Offset: 0x000C4F1A
+		public StatesInstance(BeachChair smi) : base(smi)
+		{
+		}
 	}
 }

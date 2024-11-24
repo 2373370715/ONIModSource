@@ -1,121 +1,144 @@
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Klei.AI;
 using KSerialization;
 
+// Token: 0x0200135E RID: 4958
 public class GameplaySeasonManager : GameStateMachine<GameplaySeasonManager, GameplaySeasonManager.Instance, IStateMachineTarget, GameplaySeasonManager.Def>
 {
-	public class Def : BaseDef
+	// Token: 0x060065E1 RID: 26081 RVA: 0x002CD7A8 File Offset: 0x002CB9A8
+	public override void InitializeStates(out StateMachine.BaseState defaultState)
+	{
+		defaultState = this.root;
+		this.root.Enter(delegate(GameplaySeasonManager.Instance smi)
+		{
+			smi.Initialize();
+		}).Update(delegate(GameplaySeasonManager.Instance smi, float dt)
+		{
+			smi.Update(dt);
+		}, UpdateRate.SIM_4000ms, false);
+	}
+
+	// Token: 0x0200135F RID: 4959
+	public class Def : StateMachine.BaseDef
 	{
 	}
 
-	public new class Instance : GameInstance
+	// Token: 0x02001360 RID: 4960
+	public new class Instance : GameStateMachine<GameplaySeasonManager, GameplaySeasonManager.Instance, IStateMachineTarget, GameplaySeasonManager.Def>.GameInstance
 	{
-		[Serialize]
-		public List<GameplaySeasonInstance> activeSeasons;
-
-		[MyCmpGet]
-		private WorldContainer m_worldContainer;
-
-		public Instance(IStateMachineTarget master, Def def)
-			: base(master, def)
+		// Token: 0x060065E4 RID: 26084 RVA: 0x000E2744 File Offset: 0x000E0944
+		public Instance(IStateMachineTarget master, GameplaySeasonManager.Def def) : base(master, def)
 		{
-			activeSeasons = new List<GameplaySeasonInstance>();
+			this.activeSeasons = new List<GameplaySeasonInstance>();
 		}
 
+		// Token: 0x060065E5 RID: 26085 RVA: 0x002CD810 File Offset: 0x002CBA10
 		public void Initialize()
 		{
-			activeSeasons.RemoveAll((GameplaySeasonInstance item) => item.Season == null);
+			this.activeSeasons.RemoveAll((GameplaySeasonInstance item) => item.Season == null);
 			List<GameplaySeason> list = new List<GameplaySeason>();
-			if (m_worldContainer != null)
+			if (this.m_worldContainer != null)
 			{
-				ClusterGridEntity component = GetComponent<ClusterGridEntity>();
-				foreach (string seasonId in m_worldContainer.GetSeasonIds())
+				ClusterGridEntity component = base.GetComponent<ClusterGridEntity>();
+				using (List<string>.Enumerator enumerator = this.m_worldContainer.GetSeasonIds().GetEnumerator())
 				{
-					GameplaySeason gameplaySeason = Db.Get().GameplaySeasons.TryGet(seasonId);
-					if (gameplaySeason == null)
+					while (enumerator.MoveNext())
 					{
-						Debug.LogWarning("world " + component.name + " has invalid season " + seasonId);
-						continue;
+						string text = enumerator.Current;
+						GameplaySeason gameplaySeason = Db.Get().GameplaySeasons.TryGet(text);
+						if (gameplaySeason == null)
+						{
+							Debug.LogWarning("world " + component.name + " has invalid season " + text);
+						}
+						else
+						{
+							if (gameplaySeason.type != GameplaySeason.Type.World)
+							{
+								Debug.LogWarning(string.Concat(new string[]
+								{
+									"world ",
+									component.name,
+									" has specified season ",
+									text,
+									", which is not a world type season"
+								}));
+							}
+							list.Add(gameplaySeason);
+						}
 					}
-					if (gameplaySeason.type != 0)
-					{
-						Debug.LogWarning("world " + component.name + " has specified season " + seasonId + ", which is not a world type season");
-					}
-					list.Add(gameplaySeason);
+					goto IL_146;
 				}
 			}
-			else
+			Debug.Assert(base.GetComponent<SaveGame>() != null);
+			list = (from season in Db.Get().GameplaySeasons.resources
+			where season.type == GameplaySeason.Type.Cluster
+			select season).ToList<GameplaySeason>();
+			IL_146:
+			foreach (GameplaySeason gameplaySeason2 in list)
 			{
-				Debug.Assert(GetComponent<SaveGame>() != null);
-				list = Db.Get().GameplaySeasons.resources.Where((GameplaySeason season) => season.type == GameplaySeason.Type.Cluster).ToList();
-			}
-			foreach (GameplaySeason item in list)
-			{
-				if (SaveLoader.Instance.IsDLCActiveForCurrentSave(item.dlcId) && item.startActive && !SeasonExists(item) && item.events.Count > 0)
+				if (SaveLoader.Instance.IsDLCActiveForCurrentSave(gameplaySeason2.dlcId) && gameplaySeason2.startActive && !this.SeasonExists(gameplaySeason2) && gameplaySeason2.events.Count > 0)
 				{
-					activeSeasons.Add(item.Instantiate(GetWorldId()));
+					this.activeSeasons.Add(gameplaySeason2.Instantiate(this.GetWorldId()));
 				}
 			}
-			foreach (GameplaySeasonInstance item2 in new List<GameplaySeasonInstance>(activeSeasons))
+			foreach (GameplaySeasonInstance gameplaySeasonInstance in new List<GameplaySeasonInstance>(this.activeSeasons))
 			{
-				if (!list.Contains(item2.Season) || !SaveLoader.Instance.IsDLCActiveForCurrentSave(item2.Season.dlcId))
+				if (!list.Contains(gameplaySeasonInstance.Season) || !SaveLoader.Instance.IsDLCActiveForCurrentSave(gameplaySeasonInstance.Season.dlcId))
 				{
-					activeSeasons.Remove(item2);
+					this.activeSeasons.Remove(gameplaySeasonInstance);
 				}
 			}
 		}
 
+		// Token: 0x060065E6 RID: 26086 RVA: 0x000E2759 File Offset: 0x000E0959
 		private int GetWorldId()
 		{
-			if (m_worldContainer != null)
+			if (this.m_worldContainer != null)
 			{
-				return m_worldContainer.id;
+				return this.m_worldContainer.id;
 			}
 			return -1;
 		}
 
+		// Token: 0x060065E7 RID: 26087 RVA: 0x002CDA70 File Offset: 0x002CBC70
 		public void Update(float dt)
 		{
-			foreach (GameplaySeasonInstance activeSeason in activeSeasons)
+			foreach (GameplaySeasonInstance gameplaySeasonInstance in this.activeSeasons)
 			{
-				if (!activeSeason.ShouldGenerateEvents() || !(GameUtil.GetCurrentTimeInCycles() > activeSeason.NextEventTime))
+				if (gameplaySeasonInstance.ShouldGenerateEvents() && GameUtil.GetCurrentTimeInCycles() > gameplaySeasonInstance.NextEventTime)
 				{
-					continue;
-				}
-				for (int i = 0; i < activeSeason.Season.numEventsToStartEachPeriod; i++)
-				{
-					if (!activeSeason.StartEvent())
+					int num = 0;
+					while (num < gameplaySeasonInstance.Season.numEventsToStartEachPeriod && gameplaySeasonInstance.StartEvent(false))
 					{
-						break;
+						num++;
 					}
 				}
 			}
 		}
 
+		// Token: 0x060065E8 RID: 26088 RVA: 0x000E2776 File Offset: 0x000E0976
 		public void StartNewSeason(GameplaySeason seasonType)
 		{
 			if (SaveLoader.Instance.IsDLCActiveForCurrentSave(seasonType.dlcId))
 			{
-				activeSeasons.Add(seasonType.Instantiate(GetWorldId()));
+				this.activeSeasons.Add(seasonType.Instantiate(this.GetWorldId()));
 			}
 		}
 
+		// Token: 0x060065E9 RID: 26089 RVA: 0x002CDAF0 File Offset: 0x002CBCF0
 		public bool SeasonExists(GameplaySeason seasonType)
 		{
-			return activeSeasons.Find((GameplaySeasonInstance e) => e.Season.IdHash == seasonType.IdHash) != null;
+			return this.activeSeasons.Find((GameplaySeasonInstance e) => e.Season.IdHash == seasonType.IdHash) != null;
 		}
-	}
 
-	public override void InitializeStates(out BaseState defaultState)
-	{
-		defaultState = root;
-		root.Enter(delegate(Instance smi)
-		{
-			smi.Initialize();
-		}).Update(delegate(Instance smi, float dt)
-		{
-			smi.Update(dt);
-		}, UpdateRate.SIM_4000ms);
+		// Token: 0x04004C76 RID: 19574
+		[Serialize]
+		public List<GameplaySeasonInstance> activeSeasons;
+
+		// Token: 0x04004C77 RID: 19575
+		[MyCmpGet]
+		private WorldContainer m_worldContainer;
 	}
 }

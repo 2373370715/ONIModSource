@@ -1,46 +1,56 @@
+﻿using System;
 using UnityEngine;
 
+// Token: 0x02002068 RID: 8296
 public class ScreenResolutionMonitor : MonoBehaviour
 {
-	[SerializeField]
-	private Vector2 previousSize;
-
-	private static bool previousGamepadUIMode;
-
-	private const float HIGH_DPI = 130f;
-
+	// Token: 0x0600B086 RID: 45190 RVA: 0x00112CAB File Offset: 0x00110EAB
 	private void Awake()
 	{
-		previousSize = new Vector2(Screen.width, Screen.height);
+		this.previousSize = new Vector2((float)Screen.width, (float)Screen.height);
 	}
 
+	// Token: 0x0600B087 RID: 45191 RVA: 0x004253E0 File Offset: 0x004235E0
 	private void Update()
 	{
-		if ((previousSize.x != (float)Screen.width || previousSize.y != (float)Screen.height) && Game.Instance != null)
+		if ((this.previousSize.x != (float)Screen.width || this.previousSize.y != (float)Screen.height) && Game.Instance != null)
 		{
-			Game.Instance.Trigger(445618876);
-			previousSize.x = Screen.width;
-			previousSize.y = Screen.height;
+			Game.Instance.Trigger(445618876, null);
+			this.previousSize.x = (float)Screen.width;
+			this.previousSize.y = (float)Screen.height;
 		}
-		UpdateShouldUseGamepadUIMode();
+		this.UpdateShouldUseGamepadUIMode();
 	}
 
+	// Token: 0x0600B088 RID: 45192 RVA: 0x00112CC4 File Offset: 0x00110EC4
 	public static bool UsingGamepadUIMode()
 	{
-		return previousGamepadUIMode;
+		return ScreenResolutionMonitor.previousGamepadUIMode;
 	}
 
+	// Token: 0x0600B089 RID: 45193 RVA: 0x00425458 File Offset: 0x00423658
 	private void UpdateShouldUseGamepadUIMode()
 	{
 		bool flag = (Screen.dpi > 130f && Screen.height < 900) || KInputManager.currentControllerIsGamepad;
-		if (flag != previousGamepadUIMode)
+		if (flag != ScreenResolutionMonitor.previousGamepadUIMode)
 		{
-			previousGamepadUIMode = flag;
-			if (!(Game.Instance == null))
+			ScreenResolutionMonitor.previousGamepadUIMode = flag;
+			if (Game.Instance == null)
 			{
-				Game.Instance.Trigger(-442024484);
-				KMonoBehaviour.PlaySound(GlobalAssets.GetSound(flag ? "ControllerType_ToggleOn" : "ControllerType_ToggleOff"));
+				return;
 			}
+			Game.Instance.Trigger(-442024484, null);
+			KMonoBehaviour.PlaySound(GlobalAssets.GetSound(flag ? "ControllerType_ToggleOn" : "ControllerType_ToggleOff", false));
 		}
 	}
+
+	// Token: 0x04008B7F RID: 35711
+	[SerializeField]
+	private Vector2 previousSize;
+
+	// Token: 0x04008B80 RID: 35712
+	private static bool previousGamepadUIMode;
+
+	// Token: 0x04008B81 RID: 35713
+	private const float HIGH_DPI = 130f;
 }

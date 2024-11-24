@@ -1,50 +1,82 @@
+﻿using System;
+using System.Collections.Generic;
 using STRINGS;
 
+// Token: 0x02001983 RID: 6531
 public class ConditionHasNosecone : ProcessCondition
 {
-	private LaunchableRocketCluster launchable;
-
+	// Token: 0x06008829 RID: 34857 RVA: 0x000F902F File Offset: 0x000F722F
 	public ConditionHasNosecone(LaunchableRocketCluster launchable)
 	{
 		this.launchable = launchable;
 	}
 
-	public override Status EvaluateCondition()
+	// Token: 0x0600882A RID: 34858 RVA: 0x003533C0 File Offset: 0x003515C0
+	public override ProcessCondition.Status EvaluateCondition()
 	{
-		foreach (Ref<RocketModuleCluster> part in launchable.parts)
+		using (IEnumerator<Ref<RocketModuleCluster>> enumerator = this.launchable.parts.GetEnumerator())
 		{
-			if (part.Get().HasTag(GameTags.NoseRocketModule))
+			while (enumerator.MoveNext())
 			{
-				return Status.Ready;
+				if (enumerator.Current.Get().HasTag(GameTags.NoseRocketModule))
+				{
+					return ProcessCondition.Status.Ready;
+				}
 			}
 		}
-		return Status.Failure;
+		return ProcessCondition.Status.Failure;
 	}
 
-	public override string GetStatusMessage(Status status)
+	// Token: 0x0600882B RID: 34859 RVA: 0x00353424 File Offset: 0x00351624
+	public override string GetStatusMessage(ProcessCondition.Status status)
 	{
-		string text = "";
-		return status switch
+		string result;
+		if (status != ProcessCondition.Status.Failure)
 		{
-			Status.Ready => UI.STARMAP.LAUNCHCHECKLIST.HAS_NOSECONE.STATUS.READY, 
-			Status.Failure => UI.STARMAP.LAUNCHCHECKLIST.HAS_NOSECONE.STATUS.FAILURE, 
-			_ => UI.STARMAP.LAUNCHCHECKLIST.HAS_NOSECONE.STATUS.WARNING, 
-		};
+			if (status == ProcessCondition.Status.Ready)
+			{
+				result = UI.STARMAP.LAUNCHCHECKLIST.HAS_NOSECONE.STATUS.READY;
+			}
+			else
+			{
+				result = UI.STARMAP.LAUNCHCHECKLIST.HAS_NOSECONE.STATUS.WARNING;
+			}
+		}
+		else
+		{
+			result = UI.STARMAP.LAUNCHCHECKLIST.HAS_NOSECONE.STATUS.FAILURE;
+		}
+		return result;
 	}
 
-	public override string GetStatusTooltip(Status status)
+	// Token: 0x0600882C RID: 34860 RVA: 0x00353464 File Offset: 0x00351664
+	public override string GetStatusTooltip(ProcessCondition.Status status)
 	{
-		string text = "";
-		return status switch
+		string result;
+		if (status != ProcessCondition.Status.Failure)
 		{
-			Status.Ready => UI.STARMAP.LAUNCHCHECKLIST.HAS_NOSECONE.TOOLTIP.READY, 
-			Status.Failure => UI.STARMAP.LAUNCHCHECKLIST.HAS_NOSECONE.TOOLTIP.FAILURE, 
-			_ => UI.STARMAP.LAUNCHCHECKLIST.HAS_NOSECONE.TOOLTIP.WARNING, 
-		};
+			if (status == ProcessCondition.Status.Ready)
+			{
+				result = UI.STARMAP.LAUNCHCHECKLIST.HAS_NOSECONE.TOOLTIP.READY;
+			}
+			else
+			{
+				result = UI.STARMAP.LAUNCHCHECKLIST.HAS_NOSECONE.TOOLTIP.WARNING;
+			}
+		}
+		else
+		{
+			result = UI.STARMAP.LAUNCHCHECKLIST.HAS_NOSECONE.TOOLTIP.FAILURE;
+		}
+		return result;
 	}
 
+	// Token: 0x0600882D RID: 34861 RVA: 0x000A65EC File Offset: 0x000A47EC
 	public override bool ShowInUI()
 	{
 		return true;
 	}
+
+	// Token: 0x04006694 RID: 26260
+	private LaunchableRocketCluster launchable;
 }

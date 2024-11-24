@@ -1,149 +1,84 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using KSerialization;
 using STRINGS;
 using UnityEngine;
 
+// Token: 0x020014B4 RID: 5300
 [SerializationConfig(MemberSerialization.OptIn)]
 [AddComponentMenu("KMonoBehaviour/scripts/LogicPorts")]
 public class LogicPorts : KMonoBehaviour, IGameObjectEffectDescriptor, IRenderEveryTick
 {
-	[Serializable]
-	public struct Port
-	{
-		public HashedString id;
-
-		public CellOffset cellOffset;
-
-		public string description;
-
-		public string activeDescription;
-
-		public string inactiveDescription;
-
-		public bool requiresConnection;
-
-		public LogicPortSpriteType spriteType;
-
-		public bool displayCustomName;
-
-		public Port(HashedString id, CellOffset cell_offset, string description, string activeDescription, string inactiveDescription, bool show_wire_missing_icon, LogicPortSpriteType sprite_type, bool display_custom_name = false)
-		{
-			this.id = id;
-			cellOffset = cell_offset;
-			this.description = description;
-			this.activeDescription = activeDescription;
-			this.inactiveDescription = inactiveDescription;
-			requiresConnection = show_wire_missing_icon;
-			spriteType = sprite_type;
-			displayCustomName = display_custom_name;
-		}
-
-		public static Port InputPort(HashedString id, CellOffset cell_offset, string description, string activeDescription, string inactiveDescription, bool show_wire_missing_icon = false, bool display_custom_name = false)
-		{
-			return new Port(id, cell_offset, description, activeDescription, inactiveDescription, show_wire_missing_icon, LogicPortSpriteType.Input, display_custom_name);
-		}
-
-		public static Port OutputPort(HashedString id, CellOffset cell_offset, string description, string activeDescription, string inactiveDescription, bool show_wire_missing_icon = false, bool display_custom_name = false)
-		{
-			return new Port(id, cell_offset, description, activeDescription, inactiveDescription, show_wire_missing_icon, LogicPortSpriteType.Output, display_custom_name);
-		}
-
-		public static Port RibbonInputPort(HashedString id, CellOffset cell_offset, string description, string activeDescription, string inactiveDescription, bool show_wire_missing_icon = false, bool display_custom_name = false)
-		{
-			return new Port(id, cell_offset, description, activeDescription, inactiveDescription, show_wire_missing_icon, LogicPortSpriteType.RibbonInput, display_custom_name);
-		}
-
-		public static Port RibbonOutputPort(HashedString id, CellOffset cell_offset, string description, string activeDescription, string inactiveDescription, bool show_wire_missing_icon = false, bool display_custom_name = false)
-		{
-			return new Port(id, cell_offset, description, activeDescription, inactiveDescription, show_wire_missing_icon, LogicPortSpriteType.RibbonOutput, display_custom_name);
-		}
-	}
-
-	[SerializeField]
-	public Port[] outputPortInfo;
-
-	[SerializeField]
-	public Port[] inputPortInfo;
-
-	public List<ILogicUIElement> outputPorts;
-
-	public List<ILogicUIElement> inputPorts;
-
-	private int cell = -1;
-
-	private Orientation orientation = Orientation.NumRotations;
-
-	[Serialize]
-	private int[] serializedOutputValues;
-
-	private bool isPhysical;
-
+	// Token: 0x06006E64 RID: 28260 RVA: 0x000C0009 File Offset: 0x000BE209
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		autoRegisterSimRender = false;
+		this.autoRegisterSimRender = false;
 	}
 
+	// Token: 0x06006E65 RID: 28261 RVA: 0x002EEE78 File Offset: 0x002ED078
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		Building component = GetComponent<Building>();
-		isPhysical = component == null || component is BuildingComplete;
-		if (!isPhysical && !(component is BuildingUnderConstruction))
+		Building component = base.GetComponent<Building>();
+		this.isPhysical = (component == null || component is BuildingComplete);
+		if (!this.isPhysical && !(component is BuildingUnderConstruction))
 		{
 			OverlayScreen instance = OverlayScreen.Instance;
-			instance.OnOverlayChanged = (Action<HashedString>)Delegate.Combine(instance.OnOverlayChanged, new Action<HashedString>(OnOverlayChanged));
-			OnOverlayChanged(OverlayScreen.Instance.mode);
-			CreateVisualizers();
-			SimAndRenderScheduler.instance.Add(this);
+			instance.OnOverlayChanged = (Action<HashedString>)Delegate.Combine(instance.OnOverlayChanged, new Action<HashedString>(this.OnOverlayChanged));
+			this.OnOverlayChanged(OverlayScreen.Instance.mode);
+			this.CreateVisualizers();
+			SimAndRenderScheduler.instance.Add(this, false);
+			return;
 		}
-		else if (isPhysical)
+		if (this.isPhysical)
 		{
-			UpdateMissingWireIcon();
-			CreatePhysicalPorts();
+			this.UpdateMissingWireIcon();
+			this.CreatePhysicalPorts(false);
+			return;
 		}
-		else
-		{
-			CreateVisualizers();
-		}
+		this.CreateVisualizers();
 	}
 
+	// Token: 0x06006E66 RID: 28262 RVA: 0x002EEF2C File Offset: 0x002ED12C
 	protected override void OnCleanUp()
 	{
 		OverlayScreen instance = OverlayScreen.Instance;
-		instance.OnOverlayChanged = (Action<HashedString>)Delegate.Remove(instance.OnOverlayChanged, new Action<HashedString>(OnOverlayChanged));
-		DestroyVisualizers();
-		if (isPhysical)
+		instance.OnOverlayChanged = (Action<HashedString>)Delegate.Remove(instance.OnOverlayChanged, new Action<HashedString>(this.OnOverlayChanged));
+		this.DestroyVisualizers();
+		if (this.isPhysical)
 		{
-			DestroyPhysicalPorts();
+			this.DestroyPhysicalPorts();
 		}
 		base.OnCleanUp();
 	}
 
+	// Token: 0x06006E67 RID: 28263 RVA: 0x000E85A2 File Offset: 0x000E67A2
 	public void RenderEveryTick(float dt)
 	{
-		CreateVisualizers();
+		this.CreateVisualizers();
 	}
 
+	// Token: 0x06006E68 RID: 28264 RVA: 0x000E85A2 File Offset: 0x000E67A2
 	public void HackRefreshVisualizers()
 	{
-		CreateVisualizers();
+		this.CreateVisualizers();
 	}
 
+	// Token: 0x06006E69 RID: 28265 RVA: 0x002EEF7C File Offset: 0x002ED17C
 	private void CreateVisualizers()
 	{
 		int num = Grid.PosToCell(base.transform.GetPosition());
-		bool flag = num != cell;
-		cell = num;
+		bool flag = num != this.cell;
+		this.cell = num;
 		if (!flag)
 		{
-			Rotatable component = GetComponent<Rotatable>();
+			Rotatable component = base.GetComponent<Rotatable>();
 			if (component != null)
 			{
 				Orientation orientation = component.GetOrientation();
-				flag = orientation != this.orientation;
+				flag = (orientation != this.orientation);
 				this.orientation = orientation;
 			}
 		}
@@ -151,124 +86,125 @@ public class LogicPorts : KMonoBehaviour, IGameObjectEffectDescriptor, IRenderEv
 		{
 			return;
 		}
-		DestroyVisualizers();
-		if (outputPortInfo != null)
+		this.DestroyVisualizers();
+		if (this.outputPortInfo != null)
 		{
-			outputPorts = new List<ILogicUIElement>();
-			for (int i = 0; i < outputPortInfo.Length; i++)
+			this.outputPorts = new List<ILogicUIElement>();
+			for (int i = 0; i < this.outputPortInfo.Length; i++)
 			{
-				Port port = outputPortInfo[i];
-				LogicPortVisualizer logicPortVisualizer = new LogicPortVisualizer(GetActualCell(port.cellOffset), port.spriteType);
-				outputPorts.Add(logicPortVisualizer);
+				LogicPorts.Port port = this.outputPortInfo[i];
+				LogicPortVisualizer logicPortVisualizer = new LogicPortVisualizer(this.GetActualCell(port.cellOffset), port.spriteType);
+				this.outputPorts.Add(logicPortVisualizer);
 				Game.Instance.logicCircuitManager.AddVisElem(logicPortVisualizer);
 			}
 		}
-		if (inputPortInfo != null)
+		if (this.inputPortInfo != null)
 		{
-			inputPorts = new List<ILogicUIElement>();
-			for (int j = 0; j < inputPortInfo.Length; j++)
+			this.inputPorts = new List<ILogicUIElement>();
+			for (int j = 0; j < this.inputPortInfo.Length; j++)
 			{
-				Port port2 = inputPortInfo[j];
-				LogicPortVisualizer logicPortVisualizer2 = new LogicPortVisualizer(GetActualCell(port2.cellOffset), port2.spriteType);
-				inputPorts.Add(logicPortVisualizer2);
+				LogicPorts.Port port2 = this.inputPortInfo[j];
+				LogicPortVisualizer logicPortVisualizer2 = new LogicPortVisualizer(this.GetActualCell(port2.cellOffset), port2.spriteType);
+				this.inputPorts.Add(logicPortVisualizer2);
 				Game.Instance.logicCircuitManager.AddVisElem(logicPortVisualizer2);
 			}
 		}
 	}
 
+	// Token: 0x06006E6A RID: 28266 RVA: 0x002EF0CC File Offset: 0x002ED2CC
 	private void DestroyVisualizers()
 	{
-		if (outputPorts != null)
+		if (this.outputPorts != null)
 		{
-			foreach (ILogicUIElement outputPort in outputPorts)
+			foreach (ILogicUIElement elem in this.outputPorts)
 			{
-				Game.Instance.logicCircuitManager.RemoveVisElem(outputPort);
+				Game.Instance.logicCircuitManager.RemoveVisElem(elem);
 			}
 		}
-		if (inputPorts == null)
+		if (this.inputPorts != null)
 		{
-			return;
-		}
-		foreach (ILogicUIElement inputPort in inputPorts)
-		{
-			Game.Instance.logicCircuitManager.RemoveVisElem(inputPort);
+			foreach (ILogicUIElement elem2 in this.inputPorts)
+			{
+				Game.Instance.logicCircuitManager.RemoveVisElem(elem2);
+			}
 		}
 	}
 
+	// Token: 0x06006E6B RID: 28267 RVA: 0x002EF184 File Offset: 0x002ED384
 	private void CreatePhysicalPorts(bool forceCreate = false)
 	{
 		int num = Grid.PosToCell(base.transform.GetPosition());
-		if (num == cell && !forceCreate)
+		if (num == this.cell && !forceCreate)
 		{
 			return;
 		}
-		cell = num;
-		DestroyVisualizers();
-		if (outputPortInfo != null)
+		this.cell = num;
+		this.DestroyVisualizers();
+		if (this.outputPortInfo != null)
 		{
-			outputPorts = new List<ILogicUIElement>();
-			for (int i = 0; i < outputPortInfo.Length; i++)
+			this.outputPorts = new List<ILogicUIElement>();
+			for (int i = 0; i < this.outputPortInfo.Length; i++)
 			{
-				Port info = outputPortInfo[i];
-				LogicEventSender logicEventSender = new LogicEventSender(info.id, GetActualCell(info.cellOffset), delegate(int new_value, int prev_value)
+				LogicPorts.Port info = this.outputPortInfo[i];
+				LogicEventSender logicEventSender = new LogicEventSender(info.id, this.GetActualCell(info.cellOffset), delegate(int new_value, int prev_value)
 				{
 					if (this != null)
 					{
-						OnLogicValueChanged(info.id, new_value, prev_value);
+						this.OnLogicValueChanged(info.id, new_value, prev_value);
 					}
-				}, OnLogicNetworkConnectionChanged, info.spriteType);
-				outputPorts.Add(logicEventSender);
+				}, new Action<int, bool>(this.OnLogicNetworkConnectionChanged), info.spriteType);
+				this.outputPorts.Add(logicEventSender);
 				Game.Instance.logicCircuitManager.AddVisElem(logicEventSender);
-				Game.Instance.logicCircuitSystem.AddToNetworks(logicEventSender.GetLogicUICell(), logicEventSender, is_endpoint: true);
+				Game.Instance.logicCircuitSystem.AddToNetworks(logicEventSender.GetLogicUICell(), logicEventSender, true);
 			}
-			if (serializedOutputValues != null && serializedOutputValues.Length == outputPorts.Count)
+			if (this.serializedOutputValues != null && this.serializedOutputValues.Length == this.outputPorts.Count)
 			{
-				for (int j = 0; j < outputPorts.Count; j++)
+				for (int j = 0; j < this.outputPorts.Count; j++)
 				{
-					(outputPorts[j] as LogicEventSender).SetValue(serializedOutputValues[j]);
+					(this.outputPorts[j] as LogicEventSender).SetValue(this.serializedOutputValues[j]);
 				}
 			}
 			else
 			{
-				for (int k = 0; k < outputPorts.Count; k++)
+				for (int k = 0; k < this.outputPorts.Count; k++)
 				{
-					(outputPorts[k] as LogicEventSender).SetValue(0);
+					(this.outputPorts[k] as LogicEventSender).SetValue(0);
 				}
 			}
 		}
-		serializedOutputValues = null;
-		if (inputPortInfo == null)
+		this.serializedOutputValues = null;
+		if (this.inputPortInfo != null)
 		{
-			return;
-		}
-		inputPorts = new List<ILogicUIElement>();
-		for (int l = 0; l < inputPortInfo.Length; l++)
-		{
-			Port info2 = inputPortInfo[l];
-			LogicEventHandler logicEventHandler = new LogicEventHandler(GetActualCell(info2.cellOffset), delegate(int new_value, int prev_value)
+			this.inputPorts = new List<ILogicUIElement>();
+			for (int l = 0; l < this.inputPortInfo.Length; l++)
 			{
-				if (this != null)
+				LogicPorts.Port info = this.inputPortInfo[l];
+				LogicEventHandler logicEventHandler = new LogicEventHandler(this.GetActualCell(info.cellOffset), delegate(int new_value, int prev_value)
 				{
-					OnLogicValueChanged(info2.id, new_value, prev_value);
-				}
-			}, OnLogicNetworkConnectionChanged, info2.spriteType);
-			inputPorts.Add(logicEventHandler);
-			Game.Instance.logicCircuitManager.AddVisElem(logicEventHandler);
-			Game.Instance.logicCircuitSystem.AddToNetworks(logicEventHandler.GetLogicUICell(), logicEventHandler, is_endpoint: true);
+					if (this != null)
+					{
+						this.OnLogicValueChanged(info.id, new_value, prev_value);
+					}
+				}, new Action<int, bool>(this.OnLogicNetworkConnectionChanged), info.spriteType);
+				this.inputPorts.Add(logicEventHandler);
+				Game.Instance.logicCircuitManager.AddVisElem(logicEventHandler);
+				Game.Instance.logicCircuitSystem.AddToNetworks(logicEventHandler.GetLogicUICell(), logicEventHandler, true);
+			}
 		}
 	}
 
+	// Token: 0x06006E6C RID: 28268 RVA: 0x002EF3E0 File Offset: 0x002ED5E0
 	private bool ShowMissingWireIcon()
 	{
 		LogicCircuitManager logicCircuitManager = Game.Instance.logicCircuitManager;
-		if (outputPortInfo != null)
+		if (this.outputPortInfo != null)
 		{
-			for (int i = 0; i < outputPortInfo.Length; i++)
+			for (int i = 0; i < this.outputPortInfo.Length; i++)
 			{
-				Port port = outputPortInfo[i];
+				LogicPorts.Port port = this.outputPortInfo[i];
 				if (port.requiresConnection)
 				{
-					int portCell = GetPortCell(port.id);
+					int portCell = this.GetPortCell(port.id);
 					if (logicCircuitManager.GetNetworkForCell(portCell) == null)
 					{
 						return true;
@@ -276,14 +212,14 @@ public class LogicPorts : KMonoBehaviour, IGameObjectEffectDescriptor, IRenderEv
 				}
 			}
 		}
-		if (inputPortInfo != null)
+		if (this.inputPortInfo != null)
 		{
-			for (int j = 0; j < inputPortInfo.Length; j++)
+			for (int j = 0; j < this.inputPortInfo.Length; j++)
 			{
-				Port port2 = inputPortInfo[j];
+				LogicPorts.Port port2 = this.inputPortInfo[j];
 				if (port2.requiresConnection)
 				{
-					int portCell2 = GetPortCell(port2.id);
+					int portCell2 = this.GetPortCell(port2.id);
 					if (logicCircuitManager.GetNetworkForCell(portCell2) == null)
 					{
 						return true;
@@ -294,44 +230,50 @@ public class LogicPorts : KMonoBehaviour, IGameObjectEffectDescriptor, IRenderEv
 		return false;
 	}
 
+	// Token: 0x06006E6D RID: 28269 RVA: 0x000E85AA File Offset: 0x000E67AA
 	public void OnMove()
 	{
-		DestroyPhysicalPorts();
-		CreatePhysicalPorts();
+		this.DestroyPhysicalPorts();
+		this.CreatePhysicalPorts(false);
 	}
 
+	// Token: 0x06006E6E RID: 28270 RVA: 0x000E85B9 File Offset: 0x000E67B9
 	private void OnLogicNetworkConnectionChanged(int cell, bool connected)
 	{
-		UpdateMissingWireIcon();
+		this.UpdateMissingWireIcon();
 	}
 
+	// Token: 0x06006E6F RID: 28271 RVA: 0x000E85C1 File Offset: 0x000E67C1
 	private void UpdateMissingWireIcon()
 	{
-		LogicCircuitManager.ToggleNoWireConnected(ShowMissingWireIcon(), base.gameObject);
+		LogicCircuitManager.ToggleNoWireConnected(this.ShowMissingWireIcon(), base.gameObject);
 	}
 
+	// Token: 0x06006E70 RID: 28272 RVA: 0x002EF494 File Offset: 0x002ED694
 	private void DestroyPhysicalPorts()
 	{
-		if (outputPorts != null)
+		if (this.outputPorts != null)
 		{
-			foreach (ILogicEventSender outputPort in outputPorts)
+			foreach (ILogicUIElement logicUIElement in this.outputPorts)
 			{
-				Game.Instance.logicCircuitSystem.RemoveFromNetworks(outputPort.GetLogicCell(), outputPort, is_endpoint: true);
+				ILogicEventSender logicEventSender = (ILogicEventSender)logicUIElement;
+				Game.Instance.logicCircuitSystem.RemoveFromNetworks(logicEventSender.GetLogicCell(), logicEventSender, true);
 			}
 		}
-		if (inputPorts == null)
+		if (this.inputPorts != null)
 		{
-			return;
-		}
-		for (int i = 0; i < inputPorts.Count; i++)
-		{
-			if (inputPorts[i] is LogicEventHandler logicEventHandler)
+			for (int i = 0; i < this.inputPorts.Count; i++)
 			{
-				Game.Instance.logicCircuitSystem.RemoveFromNetworks(logicEventHandler.GetLogicCell(), logicEventHandler, is_endpoint: true);
+				LogicEventHandler logicEventHandler = this.inputPorts[i] as LogicEventHandler;
+				if (logicEventHandler != null)
+				{
+					Game.Instance.logicCircuitSystem.RemoveFromNetworks(logicEventHandler.GetLogicCell(), logicEventHandler, true);
+				}
 			}
 		}
 	}
 
+	// Token: 0x06006E71 RID: 28273 RVA: 0x00255770 File Offset: 0x00253970
 	private void OnLogicValueChanged(HashedString port_id, int new_value, int prev_value)
 	{
 		if (base.gameObject != null)
@@ -345,9 +287,10 @@ public class LogicPorts : KMonoBehaviour, IGameObjectEffectDescriptor, IRenderEv
 		}
 	}
 
+	// Token: 0x06006E72 RID: 28274 RVA: 0x00254CCC File Offset: 0x00252ECC
 	private int GetActualCell(CellOffset offset)
 	{
-		Rotatable component = GetComponent<Rotatable>();
+		Rotatable component = base.GetComponent<Rotatable>();
 		if (component != null)
 		{
 			offset = component.GetRotatedCellOffset(offset);
@@ -355,99 +298,100 @@ public class LogicPorts : KMonoBehaviour, IGameObjectEffectDescriptor, IRenderEv
 		return Grid.OffsetCell(Grid.PosToCell(base.transform.GetPosition()), offset);
 	}
 
-	public bool TryGetPortAtCell(int cell, out Port port, out bool isInput)
+	// Token: 0x06006E73 RID: 28275 RVA: 0x002EF550 File Offset: 0x002ED750
+	public bool TryGetPortAtCell(int cell, out LogicPorts.Port port, out bool isInput)
 	{
-		Port[] array = inputPortInfo;
-		for (int i = 0; i < array.Length; i++)
+		foreach (LogicPorts.Port port2 in this.inputPortInfo)
 		{
-			Port port2 = array[i];
-			if (GetActualCell(port2.cellOffset) == cell)
+			if (this.GetActualCell(port2.cellOffset) == cell)
 			{
 				port = port2;
 				isInput = true;
 				return true;
 			}
 		}
-		array = outputPortInfo;
-		for (int i = 0; i < array.Length; i++)
+		foreach (LogicPorts.Port port3 in this.outputPortInfo)
 		{
-			Port port3 = array[i];
-			if (GetActualCell(port3.cellOffset) == cell)
+			if (this.GetActualCell(port3.cellOffset) == cell)
 			{
 				port = port3;
 				isInput = false;
 				return true;
 			}
 		}
-		port = default(Port);
+		port = default(LogicPorts.Port);
 		isInput = false;
 		return false;
 	}
 
+	// Token: 0x06006E74 RID: 28276 RVA: 0x002EF5D8 File Offset: 0x002ED7D8
 	public void SendSignal(HashedString port_id, int new_value)
 	{
-		if (outputPortInfo != null && outputPorts == null)
+		if (this.outputPortInfo != null && this.outputPorts == null)
 		{
-			CreatePhysicalPorts(forceCreate: true);
+			this.CreatePhysicalPorts(true);
 		}
-		foreach (LogicEventSender outputPort in outputPorts)
+		foreach (ILogicUIElement logicUIElement in this.outputPorts)
 		{
-			if (outputPort.ID == port_id)
+			LogicEventSender logicEventSender = (LogicEventSender)logicUIElement;
+			if (logicEventSender.ID == port_id)
 			{
-				outputPort.SetValue(new_value);
+				logicEventSender.SetValue(new_value);
 				break;
 			}
 		}
 	}
 
+	// Token: 0x06006E75 RID: 28277 RVA: 0x002EF658 File Offset: 0x002ED858
 	public int GetPortCell(HashedString port_id)
 	{
-		Port[] array = inputPortInfo;
-		for (int i = 0; i < array.Length; i++)
+		foreach (LogicPorts.Port port in this.inputPortInfo)
 		{
-			Port port = array[i];
 			if (port.id == port_id)
 			{
-				return GetActualCell(port.cellOffset);
+				return this.GetActualCell(port.cellOffset);
 			}
 		}
-		array = outputPortInfo;
-		for (int i = 0; i < array.Length; i++)
+		foreach (LogicPorts.Port port2 in this.outputPortInfo)
 		{
-			Port port2 = array[i];
 			if (port2.id == port_id)
 			{
-				return GetActualCell(port2.cellOffset);
+				return this.GetActualCell(port2.cellOffset);
 			}
 		}
 		return -1;
 	}
 
+	// Token: 0x06006E76 RID: 28278 RVA: 0x002EF6D8 File Offset: 0x002ED8D8
 	public int GetInputValue(HashedString port_id)
 	{
-		for (int i = 0; i < inputPortInfo.Length; i++)
+		int num = 0;
+		while (num < this.inputPortInfo.Length && this.inputPorts != null)
 		{
-			if (inputPorts == null)
+			if (this.inputPortInfo[num].id == port_id)
 			{
-				break;
-			}
-			if (inputPortInfo[i].id == port_id)
-			{
-				if (!(inputPorts[i] is LogicEventHandler logicEventHandler))
+				LogicEventHandler logicEventHandler = this.inputPorts[num] as LogicEventHandler;
+				if (logicEventHandler == null)
 				{
 					return 0;
 				}
 				return logicEventHandler.Value;
 			}
+			else
+			{
+				num++;
+			}
 		}
 		return 0;
 	}
 
+	// Token: 0x06006E77 RID: 28279 RVA: 0x002EF738 File Offset: 0x002ED938
 	public int GetOutputValue(HashedString port_id)
 	{
-		for (int i = 0; i < outputPorts.Count; i++)
+		for (int i = 0; i < this.outputPorts.Count; i++)
 		{
-			if (!(outputPorts[i] is LogicEventSender logicEventSender))
+			LogicEventSender logicEventSender = this.outputPorts[i] as LogicEventSender;
+			if (logicEventSender == null)
 			{
 				return 0;
 			}
@@ -459,30 +403,31 @@ public class LogicPorts : KMonoBehaviour, IGameObjectEffectDescriptor, IRenderEv
 		return 0;
 	}
 
+	// Token: 0x06006E78 RID: 28280 RVA: 0x002EF788 File Offset: 0x002ED988
 	public bool IsPortConnected(HashedString port_id)
 	{
-		int portCell = GetPortCell(port_id);
+		int portCell = this.GetPortCell(port_id);
 		return Game.Instance.logicCircuitManager.GetNetworkForCell(portCell) != null;
 	}
 
+	// Token: 0x06006E79 RID: 28281 RVA: 0x000E85D4 File Offset: 0x000E67D4
 	private void OnOverlayChanged(HashedString mode)
 	{
 		if (mode == OverlayModes.Logic.ID)
 		{
 			base.enabled = true;
-			CreateVisualizers();
+			this.CreateVisualizers();
+			return;
 		}
-		else
-		{
-			base.enabled = false;
-			DestroyVisualizers();
-		}
+		base.enabled = false;
+		this.DestroyVisualizers();
 	}
 
+	// Token: 0x06006E7A RID: 28282 RVA: 0x002EF7B0 File Offset: 0x002ED9B0
 	public LogicWire.BitDepth GetConnectedWireBitDepth(HashedString port_id)
 	{
 		LogicWire.BitDepth result = LogicWire.BitDepth.NumRatings;
-		int portCell = GetPortCell(port_id);
+		int portCell = this.GetPortCell(port_id);
 		GameObject gameObject = Grid.Objects[portCell, 31];
 		if (gameObject != null)
 		{
@@ -495,6 +440,7 @@ public class LogicPorts : KMonoBehaviour, IGameObjectEffectDescriptor, IRenderEv
 		return result;
 	}
 
+	// Token: 0x06006E7B RID: 28283 RVA: 0x002EF7F8 File Offset: 0x002ED9F8
 	public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
@@ -503,28 +449,24 @@ public class LogicPorts : KMonoBehaviour, IGameObjectEffectDescriptor, IRenderEv
 		{
 			if (component.inputPortInfo != null && component.inputPortInfo.Length != 0)
 			{
-				Descriptor item = new Descriptor(UI.LOGIC_PORTS.INPUT_PORTS, UI.LOGIC_PORTS.INPUT_PORTS_TOOLTIP);
+				Descriptor item = new Descriptor(UI.LOGIC_PORTS.INPUT_PORTS, UI.LOGIC_PORTS.INPUT_PORTS_TOOLTIP, Descriptor.DescriptorType.Effect, false);
 				list.Add(item);
-				Port[] array = component.inputPortInfo;
-				for (int i = 0; i < array.Length; i++)
+				foreach (LogicPorts.Port port in component.inputPortInfo)
 				{
-					Port port = array[i];
 					string tooltip = string.Format(UI.LOGIC_PORTS.INPUT_PORT_TOOLTIP, port.activeDescription, port.inactiveDescription);
-					item = new Descriptor(port.description, tooltip);
+					item = new Descriptor(port.description, tooltip, Descriptor.DescriptorType.Effect, false);
 					item.IncreaseIndent();
 					list.Add(item);
 				}
 			}
 			if (component.outputPortInfo != null && component.outputPortInfo.Length != 0)
 			{
-				Descriptor item2 = new Descriptor(UI.LOGIC_PORTS.OUTPUT_PORTS, UI.LOGIC_PORTS.OUTPUT_PORTS_TOOLTIP);
+				Descriptor item2 = new Descriptor(UI.LOGIC_PORTS.OUTPUT_PORTS, UI.LOGIC_PORTS.OUTPUT_PORTS_TOOLTIP, Descriptor.DescriptorType.Effect, false);
 				list.Add(item2);
-				Port[] array = component.outputPortInfo;
-				for (int i = 0; i < array.Length; i++)
+				foreach (LogicPorts.Port port2 in component.outputPortInfo)
 				{
-					Port port2 = array[i];
 					string tooltip2 = string.Format(UI.LOGIC_PORTS.OUTPUT_PORT_TOOLTIP, port2.activeDescription, port2.inactiveDescription);
-					item2 = new Descriptor(port2.description, tooltip2);
+					item2 = new Descriptor(port2.description, tooltip2, Descriptor.DescriptorType.Effect, false);
 					item2.IncreaseIndent();
 					list.Add(item2);
 				}
@@ -533,23 +475,118 @@ public class LogicPorts : KMonoBehaviour, IGameObjectEffectDescriptor, IRenderEv
 		return list;
 	}
 
+	// Token: 0x06006E7C RID: 28284 RVA: 0x002EF960 File Offset: 0x002EDB60
 	[OnSerializing]
 	private void OnSerializing()
 	{
-		if (isPhysical && outputPorts != null)
+		if (this.isPhysical && this.outputPorts != null)
 		{
-			serializedOutputValues = new int[outputPorts.Count];
-			for (int i = 0; i < outputPorts.Count; i++)
+			this.serializedOutputValues = new int[this.outputPorts.Count];
+			for (int i = 0; i < this.outputPorts.Count; i++)
 			{
-				LogicEventSender logicEventSender = outputPorts[i] as LogicEventSender;
-				serializedOutputValues[i] = logicEventSender.GetLogicValue();
+				LogicEventSender logicEventSender = this.outputPorts[i] as LogicEventSender;
+				this.serializedOutputValues[i] = logicEventSender.GetLogicValue();
 			}
 		}
 	}
 
+	// Token: 0x06006E7D RID: 28285 RVA: 0x000E85FE File Offset: 0x000E67FE
 	[OnSerialized]
 	private void OnSerialized()
 	{
-		serializedOutputValues = null;
+		this.serializedOutputValues = null;
+	}
+
+	// Token: 0x04005295 RID: 21141
+	[SerializeField]
+	public LogicPorts.Port[] outputPortInfo;
+
+	// Token: 0x04005296 RID: 21142
+	[SerializeField]
+	public LogicPorts.Port[] inputPortInfo;
+
+	// Token: 0x04005297 RID: 21143
+	public List<ILogicUIElement> outputPorts;
+
+	// Token: 0x04005298 RID: 21144
+	public List<ILogicUIElement> inputPorts;
+
+	// Token: 0x04005299 RID: 21145
+	private int cell = -1;
+
+	// Token: 0x0400529A RID: 21146
+	private Orientation orientation = Orientation.NumRotations;
+
+	// Token: 0x0400529B RID: 21147
+	[Serialize]
+	private int[] serializedOutputValues;
+
+	// Token: 0x0400529C RID: 21148
+	private bool isPhysical;
+
+	// Token: 0x020014B5 RID: 5301
+	[Serializable]
+	public struct Port
+	{
+		// Token: 0x06006E7F RID: 28287 RVA: 0x000E861D File Offset: 0x000E681D
+		public Port(HashedString id, CellOffset cell_offset, string description, string activeDescription, string inactiveDescription, bool show_wire_missing_icon, LogicPortSpriteType sprite_type, bool display_custom_name = false)
+		{
+			this.id = id;
+			this.cellOffset = cell_offset;
+			this.description = description;
+			this.activeDescription = activeDescription;
+			this.inactiveDescription = inactiveDescription;
+			this.requiresConnection = show_wire_missing_icon;
+			this.spriteType = sprite_type;
+			this.displayCustomName = display_custom_name;
+		}
+
+		// Token: 0x06006E80 RID: 28288 RVA: 0x000E865C File Offset: 0x000E685C
+		public static LogicPorts.Port InputPort(HashedString id, CellOffset cell_offset, string description, string activeDescription, string inactiveDescription, bool show_wire_missing_icon = false, bool display_custom_name = false)
+		{
+			return new LogicPorts.Port(id, cell_offset, description, activeDescription, inactiveDescription, show_wire_missing_icon, LogicPortSpriteType.Input, display_custom_name);
+		}
+
+		// Token: 0x06006E81 RID: 28289 RVA: 0x000E866E File Offset: 0x000E686E
+		public static LogicPorts.Port OutputPort(HashedString id, CellOffset cell_offset, string description, string activeDescription, string inactiveDescription, bool show_wire_missing_icon = false, bool display_custom_name = false)
+		{
+			return new LogicPorts.Port(id, cell_offset, description, activeDescription, inactiveDescription, show_wire_missing_icon, LogicPortSpriteType.Output, display_custom_name);
+		}
+
+		// Token: 0x06006E82 RID: 28290 RVA: 0x000E8680 File Offset: 0x000E6880
+		public static LogicPorts.Port RibbonInputPort(HashedString id, CellOffset cell_offset, string description, string activeDescription, string inactiveDescription, bool show_wire_missing_icon = false, bool display_custom_name = false)
+		{
+			return new LogicPorts.Port(id, cell_offset, description, activeDescription, inactiveDescription, show_wire_missing_icon, LogicPortSpriteType.RibbonInput, display_custom_name);
+		}
+
+		// Token: 0x06006E83 RID: 28291 RVA: 0x000E8692 File Offset: 0x000E6892
+		public static LogicPorts.Port RibbonOutputPort(HashedString id, CellOffset cell_offset, string description, string activeDescription, string inactiveDescription, bool show_wire_missing_icon = false, bool display_custom_name = false)
+		{
+			return new LogicPorts.Port(id, cell_offset, description, activeDescription, inactiveDescription, show_wire_missing_icon, LogicPortSpriteType.RibbonOutput, display_custom_name);
+		}
+
+		// Token: 0x0400529D RID: 21149
+		public HashedString id;
+
+		// Token: 0x0400529E RID: 21150
+		public CellOffset cellOffset;
+
+		// Token: 0x0400529F RID: 21151
+		public string description;
+
+		// Token: 0x040052A0 RID: 21152
+		public string activeDescription;
+
+		// Token: 0x040052A1 RID: 21153
+		public string inactiveDescription;
+
+		// Token: 0x040052A2 RID: 21154
+		public bool requiresConnection;
+
+		// Token: 0x040052A3 RID: 21155
+		public LogicPortSpriteType spriteType;
+
+		// Token: 0x040052A4 RID: 21156
+		public bool displayCustomName;
 	}
 }

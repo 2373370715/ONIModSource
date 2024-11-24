@@ -1,32 +1,37 @@
+﻿using System;
 using System.Collections.Generic;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x020005D3 RID: 1491
 public class TravelTubeEntranceConfig : IBuildingConfig
 {
-	public const string ID = "TravelTubeEntrance";
-
-	public const float WAX_PER_LAUNCH = 0.05f;
-
-	public const int STORAGE_WAX_LAUNCHECOUNT_CAPACITY = 200;
-
-	private const float JOULES_PER_LAUNCH = 10000f;
-
-	private const float LAUNCHES_FROM_FULL_CHARGE = 4f;
-
+	// Token: 0x06001ABF RID: 6847 RVA: 0x001A91B8 File Offset: 0x001A73B8
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef("TravelTubeEntrance", 3, 2, "tube_launcher_kanim", 100, 120f, BUILDINGS.CONSTRUCTION_MASS_KG.TIER5, MATERIALS.REFINED_METALS, 1600f, BuildLocationRule.OnFloor, noise: NOISE_POLLUTION.NONE, decor: BUILDINGS.DECOR.PENALTY.TIER1);
-		obj.Overheatable = false;
-		obj.RequiresPowerInput = true;
-		obj.EnergyConsumptionWhenActive = 960f;
-		obj.Entombable = true;
-		obj.AudioCategory = "Metal";
-		obj.PowerInputOffset = new CellOffset(1, 0);
-		obj.LogicInputPorts = LogicOperationalController.CreateSingleInputPortList(new CellOffset(1, 1));
-		return obj;
+		string id = "TravelTubeEntrance";
+		int width = 3;
+		int height = 2;
+		string anim = "tube_launcher_kanim";
+		int hitpoints = 100;
+		float construction_time = 120f;
+		float[] tier = BUILDINGS.CONSTRUCTION_MASS_KG.TIER5;
+		string[] refined_METALS = MATERIALS.REFINED_METALS;
+		float melting_point = 1600f;
+		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
+		EffectorValues none = NOISE_POLLUTION.NONE;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, refined_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.PENALTY.TIER1, none, 0.2f);
+		buildingDef.Overheatable = false;
+		buildingDef.RequiresPowerInput = true;
+		buildingDef.EnergyConsumptionWhenActive = 960f;
+		buildingDef.Entombable = true;
+		buildingDef.AudioCategory = "Metal";
+		buildingDef.PowerInputOffset = new CellOffset(1, 0);
+		buildingDef.LogicInputPorts = LogicOperationalController.CreateSingleInputPortList(new CellOffset(1, 1));
+		return buildingDef;
 	}
 
+	// Token: 0x06001AC0 RID: 6848 RVA: 0x001A9248 File Offset: 0x001A7448
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		TravelTubeEntrance travelTubeEntrance = go.AddOrGet<TravelTubeEntrance>();
@@ -54,8 +59,24 @@ public class TravelTubeEntranceConfig : IBuildingConfig
 		go.AddOrGet<EnergyConsumerSelfSustaining>();
 	}
 
+	// Token: 0x06001AC1 RID: 6849 RVA: 0x000B1616 File Offset: 0x000AF816
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.GetComponent<RequireInputs>().visualizeRequirements = RequireInputs.Requirements.NoWire;
 	}
+
+	// Token: 0x040010F5 RID: 4341
+	public const string ID = "TravelTubeEntrance";
+
+	// Token: 0x040010F6 RID: 4342
+	public const float WAX_PER_LAUNCH = 0.05f;
+
+	// Token: 0x040010F7 RID: 4343
+	public const int STORAGE_WAX_LAUNCHECOUNT_CAPACITY = 200;
+
+	// Token: 0x040010F8 RID: 4344
+	private const float JOULES_PER_LAUNCH = 10000f;
+
+	// Token: 0x040010F9 RID: 4345
+	private const float LAUNCHES_FROM_FULL_CHARGE = 4f;
 }

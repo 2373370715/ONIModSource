@@ -1,13 +1,14 @@
+﻿using System;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x020004E2 RID: 1250
 public class POIFacilityDoorConfig : IBuildingConfig
 {
-	public const string ID = "POIFacilityDoor";
-
+	// Token: 0x0600160E RID: 5646 RVA: 0x001964B4 File Offset: 0x001946B4
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef("POIFacilityDoor", 2, 3, "door_facility_kanim", 30, 60f, BUILDINGS.CONSTRUCTION_MASS_KG.TIER3, MATERIALS.ALL_METALS, 1600f, BuildLocationRule.Anywhere, BUILDINGS.DECOR.PENALTY.TIER2, NOISE_POLLUTION.NONE);
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef("POIFacilityDoor", 2, 3, "door_facility_kanim", 30, 60f, BUILDINGS.CONSTRUCTION_MASS_KG.TIER3, MATERIALS.ALL_METALS, 1600f, BuildLocationRule.Anywhere, BUILDINGS.DECOR.PENALTY.TIER2, NOISE_POLLUTION.NONE, 0.2f);
 		buildingDef.Overheatable = false;
 		buildingDef.Repairable = false;
 		buildingDef.Floodable = false;
@@ -25,6 +26,7 @@ public class POIFacilityDoorConfig : IBuildingConfig
 		return buildingDef;
 	}
 
+	// Token: 0x0600160F RID: 5647 RVA: 0x001962B4 File Offset: 0x001944B4
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		Door door = go.AddOrGet<Door>();
@@ -39,14 +41,18 @@ public class POIFacilityDoorConfig : IBuildingConfig
 		go.AddOrGet<Workable>().workTime = 5f;
 		go.AddOrGet<KBatchedAnimController>().fgLayer = Grid.SceneLayer.BuildingFront;
 		PrimaryElement component = go.GetComponent<PrimaryElement>();
-		component.SetElement(SimHashes.Steel);
+		component.SetElement(SimHashes.Steel, true);
 		component.Temperature = 273f;
 	}
 
+	// Token: 0x06001610 RID: 5648 RVA: 0x000AFC7C File Offset: 0x000ADE7C
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.GetComponent<AccessControl>().controlEnabled = false;
 		go.GetComponent<Deconstructable>().allowDeconstruction = true;
 		go.GetComponent<KBatchedAnimController>().initialAnim = "closed";
 	}
+
+	// Token: 0x04000EE7 RID: 3815
+	public const string ID = "POIFacilityDoor";
 }

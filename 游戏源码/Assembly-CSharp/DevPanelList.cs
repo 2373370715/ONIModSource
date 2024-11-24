@@ -1,101 +1,125 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
+// Token: 0x02000B94 RID: 2964
 public class DevPanelList
 {
-	private List<DevPanel> activePanels = new List<DevPanel>();
-
-	private uint fallbackUniqueIdPostfixNumber = 300u;
-
+	// Token: 0x060038C4 RID: 14532 RVA: 0x000C4B9F File Offset: 0x000C2D9F
 	public DevPanel AddPanelFor<T>() where T : DevTool, new()
 	{
-		return AddPanelFor(new T());
+		return this.AddPanelFor(Activator.CreateInstance<T>());
 	}
 
+	// Token: 0x060038C5 RID: 14533 RVA: 0x0021B79C File Offset: 0x0021999C
 	public DevPanel AddPanelFor(DevTool devTool)
 	{
 		DevPanel devPanel = new DevPanel(devTool, this);
-		activePanels.Add(devPanel);
+		this.activePanels.Add(devPanel);
 		return devPanel;
 	}
 
+	// Token: 0x060038C6 RID: 14534 RVA: 0x0021B7C0 File Offset: 0x002199C0
 	public Option<T> GetDevTool<T>() where T : DevTool
 	{
-		foreach (DevPanel activePanel in activePanels)
+		foreach (DevPanel devPanel in this.activePanels)
 		{
-			if (activePanel.GetCurrentDevTool() is T val)
+			T t = devPanel.GetCurrentDevTool() as T;
+			if (t != null)
 			{
-				return val;
+				return t;
 			}
 		}
 		return Option.None;
 	}
 
+	// Token: 0x060038C7 RID: 14535 RVA: 0x0021B838 File Offset: 0x00219A38
 	public T AddOrGetDevTool<T>() where T : DevTool, new()
 	{
-		var (flag2, val2) = (Option<T>)(ref GetDevTool<T>());
+		bool flag;
+		T t;
+		this.GetDevTool<T>().Deconstruct(out flag, out t);
+		bool flag2 = flag;
+		T t2 = t;
 		if (!flag2)
 		{
-			val2 = new T();
-			AddPanelFor(val2);
+			t2 = Activator.CreateInstance<T>();
+			this.AddPanelFor(t2);
 		}
-		return val2;
+		return t2;
 	}
 
+	// Token: 0x060038C8 RID: 14536 RVA: 0x000C4BB1 File Offset: 0x000C2DB1
 	public void ClosePanel(DevPanel panel)
 	{
-		if (activePanels.Remove(panel))
+		if (this.activePanels.Remove(panel))
 		{
 			panel.Internal_Uninit();
 		}
 	}
 
+	// Token: 0x060038C9 RID: 14537 RVA: 0x0021B870 File Offset: 0x00219A70
 	public void Render()
 	{
-		if (activePanels.Count == 0)
+		if (this.activePanels.Count == 0)
 		{
 			return;
 		}
-		using ListPool<DevPanel, DevPanelList>.PooledList pooledList = ListPool<DevPanel, DevPanelList>.Allocate();
-		for (int i = 0; i < activePanels.Count; i++)
+		using (ListPool<DevPanel, DevPanelList>.PooledList pooledList = ListPool<DevPanel, DevPanelList>.Allocate())
 		{
-			DevPanel devPanel = activePanels[i];
-			devPanel.RenderPanel();
-			if (devPanel.isRequestingToClose)
+			for (int i = 0; i < this.activePanels.Count; i++)
 			{
-				pooledList.Add(devPanel);
+				DevPanel devPanel = this.activePanels[i];
+				devPanel.RenderPanel();
+				if (devPanel.isRequestingToClose)
+				{
+					pooledList.Add(devPanel);
+				}
 			}
-		}
-		foreach (DevPanel item in pooledList)
-		{
-			ClosePanel(item);
+			foreach (DevPanel panel in pooledList)
+			{
+				this.ClosePanel(panel);
+			}
 		}
 	}
 
+	// Token: 0x060038CA RID: 14538 RVA: 0x000C4BC7 File Offset: 0x000C2DC7
 	public void Internal_InitPanelId(Type initialDevToolType, out string panelId, out uint idPostfixNumber)
 	{
-		idPostfixNumber = Internal_GetUniqueIdPostfix(initialDevToolType);
-		panelId = initialDevToolType.Name + idPostfixNumber;
+		idPostfixNumber = this.Internal_GetUniqueIdPostfix(initialDevToolType);
+		panelId = initialDevToolType.Name + idPostfixNumber.ToString();
 	}
 
+	// Token: 0x060038CB RID: 14539 RVA: 0x0021B924 File Offset: 0x00219B24
 	public uint Internal_GetUniqueIdPostfix(Type initialDevToolType)
 	{
-		using HashSetPool<uint, DevPanelList>.PooledHashSet pooledHashSet = HashSetPool<uint, DevPanelList>.Allocate();
-		foreach (DevPanel activePanel in activePanels)
+		uint result;
+		using (HashSetPool<uint, DevPanelList>.PooledHashSet pooledHashSet = HashSetPool<uint, DevPanelList>.Allocate())
 		{
-			if (!(activePanel.initialDevToolType != initialDevToolType))
+			foreach (DevPanel devPanel in this.activePanels)
 			{
-				pooledHashSet.Add(activePanel.idPostfixNumber);
+				if (!(devPanel.initialDevToolType != initialDevToolType))
+				{
+					pooledHashSet.Add(devPanel.idPostfixNumber);
+				}
 			}
-		}
-		for (uint num = 0u; num < 100; num++)
-		{
-			if (!pooledHashSet.Contains(num))
+			for (uint num = 0U; num < 100U; num += 1U)
 			{
-				return num;
+				if (!pooledHashSet.Contains(num))
+				{
+					return num;
+				}
 			}
+			Debug.Assert(false, "Something went wrong, this should only assert if there's over 100 of the same type of debug window");
+			uint num2 = this.fallbackUniqueIdPostfixNumber;
+			this.fallbackUniqueIdPostfixNumber = num2 + 1U;
+			result = num2;
 		}
-		Debug.Assert(condition: false, "Something went wrong, this should only assert if there's over 100 of the same type of debug window");
-		return fallbackUniqueIdPostfixNumber++;
+		return result;
 	}
+
+	// Token: 0x040026B0 RID: 9904
+	private List<DevPanel> activePanels = new List<DevPanel>();
+
+	// Token: 0x040026B1 RID: 9905
+	private uint fallbackUniqueIdPostfixNumber = 300U;
 }

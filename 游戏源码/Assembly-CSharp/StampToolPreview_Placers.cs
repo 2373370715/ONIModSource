@@ -1,64 +1,70 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using TemplateClasses;
 using UnityEngine;
 
+// Token: 0x0200145F RID: 5215
 public class StampToolPreview_Placers : IStampToolPreviewPlugin
 {
-	private List<GameObject> inUse = new List<GameObject>();
-
-	private GameObjectPool pool;
-
-	private Transform poolParent;
-
+	// Token: 0x06006C33 RID: 27699 RVA: 0x002E5924 File Offset: 0x002E3B24
 	public StampToolPreview_Placers(GameObject placerPrefab)
 	{
-		StampToolPreview_Placers stampToolPreview_Placers = this;
-		pool = new GameObjectPool(delegate
+		StampToolPreview_Placers <>4__this = this;
+		this.pool = new GameObjectPool(delegate()
 		{
-			if (stampToolPreview_Placers.poolParent == null)
+			if (<>4__this.poolParent == null)
 			{
-				stampToolPreview_Placers.poolParent = new GameObject("StampToolPreview::PlacerPool").transform;
+				<>4__this.poolParent = new GameObject("StampToolPreview::PlacerPool").transform;
 			}
-			GameObject gameObject = Util.KInstantiate(placerPrefab, stampToolPreview_Placers.poolParent.gameObject);
-			gameObject.SetActive(value: false);
+			GameObject gameObject = Util.KInstantiate(placerPrefab, <>4__this.poolParent.gameObject, null);
+			gameObject.SetActive(false);
 			return gameObject;
-		});
+		}, 0);
 	}
 
+	// Token: 0x06006C34 RID: 27700 RVA: 0x002E5970 File Offset: 0x002E3B70
 	public void Setup(StampToolPreviewContext context)
 	{
 		for (int i = 0; i < context.stampTemplate.cells.Count; i++)
 		{
 			Cell cell = context.stampTemplate.cells[i];
-			GameObject instance = pool.GetInstance();
-			instance.transform.SetParent(context.previewParent.transform, worldPositionStays: false);
-			instance.transform.localPosition = new Vector3(cell.location_x, cell.location_y);
-			instance.SetActive(value: true);
-			inUse.Add(instance);
+			GameObject instance = this.pool.GetInstance();
+			instance.transform.SetParent(context.previewParent.transform, false);
+			instance.transform.localPosition = new Vector3((float)cell.location_x, (float)cell.location_y);
+			instance.SetActive(true);
+			this.inUse.Add(instance);
 		}
-		context.onErrorChangeFn = (Action<string>)Delegate.Combine(context.onErrorChangeFn, (Action<string>)delegate(string error)
+		context.onErrorChangeFn = (Action<string>)Delegate.Combine(context.onErrorChangeFn, new Action<string>(delegate(string error)
 		{
-			foreach (GameObject item in inUse)
+			foreach (GameObject gameObject in this.inUse)
 			{
-				if (!item.IsNullOrDestroyed())
+				if (!gameObject.IsNullOrDestroyed())
 				{
-					item.GetComponentInChildren<MeshRenderer>().sharedMaterial.color = ((error != null) ? StampToolPreviewUtil.COLOR_ERROR : StampToolPreviewUtil.COLOR_OK);
+					gameObject.GetComponentInChildren<MeshRenderer>().sharedMaterial.color = ((error != null) ? StampToolPreviewUtil.COLOR_ERROR : StampToolPreviewUtil.COLOR_OK);
 				}
 			}
-		});
-		context.cleanupFn = (System.Action)Delegate.Combine(context.cleanupFn, (System.Action)delegate
+		}));
+		context.cleanupFn = (System.Action)Delegate.Combine(context.cleanupFn, new System.Action(delegate()
 		{
-			foreach (GameObject item2 in inUse)
+			foreach (GameObject gameObject in this.inUse)
 			{
-				if (!item2.IsNullOrDestroyed())
+				if (!gameObject.IsNullOrDestroyed())
 				{
-					item2.SetActive(value: false);
-					item2.transform.SetParent(poolParent);
-					pool.ReleaseInstance(item2);
+					gameObject.SetActive(false);
+					gameObject.transform.SetParent(this.poolParent);
+					this.pool.ReleaseInstance(gameObject);
 				}
 			}
-			inUse.Clear();
-		});
+			this.inUse.Clear();
+		}));
 	}
+
+	// Token: 0x0400512F RID: 20783
+	private List<GameObject> inUse = new List<GameObject>();
+
+	// Token: 0x04005130 RID: 20784
+	private GameObjectPool pool;
+
+	// Token: 0x04005131 RID: 20785
+	private Transform poolParent;
 }

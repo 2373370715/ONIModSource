@@ -1,29 +1,30 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Token: 0x020004CD RID: 1229
 public class GeneratedOre
 {
+	// Token: 0x060015B3 RID: 5555 RVA: 0x001949B8 File Offset: 0x00192BB8
 	public static void LoadGeneratedOre(List<Type> types)
 	{
 		Type typeFromHandle = typeof(IOreConfig);
 		HashSet<SimHashes> hashSet = new HashSet<SimHashes>();
 		foreach (Type type in types)
 		{
-			if (!typeFromHandle.IsAssignableFrom(type) || type.IsAbstract || type.IsInterface)
+			if (typeFromHandle.IsAssignableFrom(type) && !type.IsAbstract && !type.IsInterface)
 			{
-				continue;
-			}
-			IOreConfig oreConfig = Activator.CreateInstance(type) as IOreConfig;
-			SimHashes elementID = oreConfig.ElementID;
-			Element element = ElementLoader.FindElementByHash(elementID);
-			if (element != null && DlcManager.IsContentSubscribed(element.dlcId))
-			{
-				if (elementID != SimHashes.Void)
+				IOreConfig oreConfig = Activator.CreateInstance(type) as IOreConfig;
+				SimHashes elementID = oreConfig.ElementID;
+				Element element = ElementLoader.FindElementByHash(elementID);
+				if (element != null && DlcManager.IsContentSubscribed(element.dlcId))
 				{
-					hashSet.Add(elementID);
+					if (elementID != SimHashes.Void)
+					{
+						hashSet.Add(elementID);
+					}
+					Assets.AddPrefab(oreConfig.CreatePrefab().GetComponent<KPrefabID>());
 				}
-				Assets.AddPrefab(oreConfig.CreatePrefab().GetComponent<KPrefabID>());
 			}
 		}
 		foreach (Element element2 in ElementLoader.elements)
@@ -33,15 +34,15 @@ public class GeneratedOre
 				GameObject gameObject = null;
 				if (element2.IsSolid)
 				{
-					gameObject = EntityTemplates.CreateSolidOreEntity(element2.id);
+					gameObject = EntityTemplates.CreateSolidOreEntity(element2.id, null);
 				}
 				else if (element2.IsLiquid)
 				{
-					gameObject = EntityTemplates.CreateLiquidOreEntity(element2.id);
+					gameObject = EntityTemplates.CreateLiquidOreEntity(element2.id, null);
 				}
 				else if (element2.IsGas)
 				{
-					gameObject = EntityTemplates.CreateGasOreEntity(element2.id);
+					gameObject = EntityTemplates.CreateGasOreEntity(element2.id, null);
 				}
 				if (gameObject != null)
 				{
@@ -51,25 +52,29 @@ public class GeneratedOre
 		}
 	}
 
+	// Token: 0x060015B4 RID: 5556 RVA: 0x00194B6C File Offset: 0x00192D6C
 	public static SubstanceChunk CreateChunk(Element element, float mass, float temperature, byte diseaseIdx, int diseaseCount, Vector3 position)
 	{
 		if (temperature <= 0f)
 		{
-			DebugUtil.LogWarningArgs("GeneratedOre.CreateChunk tried to create a chunk with a temperature <= 0");
+			DebugUtil.LogWarningArgs(new object[]
+			{
+				"GeneratedOre.CreateChunk tried to create a chunk with a temperature <= 0"
+			});
 		}
 		GameObject prefab = Assets.GetPrefab(element.tag);
 		if (prefab == null)
 		{
-			Debug.LogError("Could not find prefab for element " + element.id);
+			global::Debug.LogError("Could not find prefab for element " + element.id.ToString());
 		}
-		SubstanceChunk component = GameUtil.KInstantiate(prefab, Grid.SceneLayer.Ore).GetComponent<SubstanceChunk>();
+		SubstanceChunk component = GameUtil.KInstantiate(prefab, Grid.SceneLayer.Ore, null, 0).GetComponent<SubstanceChunk>();
 		component.transform.SetPosition(position);
-		component.gameObject.SetActive(value: true);
+		component.gameObject.SetActive(true);
 		PrimaryElement component2 = component.GetComponent<PrimaryElement>();
 		component2.Mass = mass;
 		component2.Temperature = temperature;
 		component2.AddDisease(diseaseIdx, diseaseCount, "GeneratedOre.CreateChunk");
-		component.GetComponent<KPrefabID>().InitializeTags();
+		component.GetComponent<KPrefabID>().InitializeTags(false);
 		return component;
 	}
 }

@@ -1,35 +1,51 @@
+﻿using System;
 using System.Collections.Generic;
 using STRINGS;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x02000385 RID: 901
 public class HeatCompressorConfig : IBuildingConfig
 {
-	public const string ID = "HeatCompressor";
-
+	// Token: 0x06000EC3 RID: 3779 RVA: 0x0017A70C File Offset: 0x0017890C
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef("HeatCompressor", 4, 4, "hqbase_kanim", 250, 30f, TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER7, MATERIALS.ALL_METALS, 1600f, BuildLocationRule.OnFloor, noise: NOISE_POLLUTION.NONE, decor: TUNING.BUILDINGS.DECOR.BONUS.TIER5);
-		obj.Floodable = false;
-		obj.Overheatable = false;
-		obj.AudioCategory = "Metal";
-		obj.BaseTimeUntilRepair = 400f;
-		obj.DefaultAnimState = "idle";
-		obj.RequiresPowerInput = true;
-		obj.PowerInputOffset = new CellOffset(2, 0);
-		obj.EnergyConsumptionWhenActive = 1600f;
-		obj.InputConduitType = ConduitType.Liquid;
-		obj.OutputConduitType = ConduitType.Liquid;
-		obj.UtilityInputOffset = new CellOffset(-1, 0);
-		obj.UtilityOutputOffset = new CellOffset(2, 0);
-		obj.LogicInputPorts = new List<LogicPorts.Port> { LogicPorts.Port.InputPort(LogicOperationalController.PORT_ID, new CellOffset(-1, 1), STRINGS.BUILDINGS.PREFABS.TELEPORTALPAD.LOGIC_PORT, STRINGS.BUILDINGS.PREFABS.TELEPORTALPAD.LOGIC_PORT_ACTIVE, STRINGS.BUILDINGS.PREFABS.TELEPORTALPAD.LOGIC_PORT_INACTIVE) };
+		string id = "HeatCompressor";
+		int width = 4;
+		int height = 4;
+		string anim = "hqbase_kanim";
+		int hitpoints = 250;
+		float construction_time = 30f;
+		float[] tier = TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER7;
+		string[] all_METALS = MATERIALS.ALL_METALS;
+		float melting_point = 1600f;
+		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
+		EffectorValues none = NOISE_POLLUTION.NONE;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, all_METALS, melting_point, build_location_rule, TUNING.BUILDINGS.DECOR.BONUS.TIER5, none, 0.2f);
+		buildingDef.Floodable = false;
+		buildingDef.Overheatable = false;
+		buildingDef.AudioCategory = "Metal";
+		buildingDef.BaseTimeUntilRepair = 400f;
+		buildingDef.DefaultAnimState = "idle";
+		buildingDef.RequiresPowerInput = true;
+		buildingDef.PowerInputOffset = new CellOffset(2, 0);
+		buildingDef.EnergyConsumptionWhenActive = 1600f;
+		buildingDef.InputConduitType = ConduitType.Liquid;
+		buildingDef.OutputConduitType = ConduitType.Liquid;
+		buildingDef.UtilityInputOffset = new CellOffset(-1, 0);
+		buildingDef.UtilityOutputOffset = new CellOffset(2, 0);
+		buildingDef.LogicInputPorts = new List<LogicPorts.Port>
+		{
+			LogicPorts.Port.InputPort(LogicOperationalController.PORT_ID, new CellOffset(-1, 1), STRINGS.BUILDINGS.PREFABS.TELEPORTALPAD.LOGIC_PORT, STRINGS.BUILDINGS.PREFABS.TELEPORTALPAD.LOGIC_PORT_ACTIVE, STRINGS.BUILDINGS.PREFABS.TELEPORTALPAD.LOGIC_PORT_INACTIVE, false, false)
+		};
 		SoundEventVolumeCache.instance.AddVolume("hqbase_kanim", "Portal_LP", NOISE_POLLUTION.NOISY.TIER3);
 		SoundEventVolumeCache.instance.AddVolume("hqbase_kanim", "Portal_open", NOISE_POLLUTION.NOISY.TIER4);
 		SoundEventVolumeCache.instance.AddVolume("hqbase_kanim", "Portal_close", NOISE_POLLUTION.NOISY.TIER4);
-		obj.Deprecated = true;
-		return obj;
+		buildingDef.Deprecated = true;
+		return buildingDef;
 	}
 
+	// Token: 0x06000EC4 RID: 3780 RVA: 0x0017A860 File Offset: 0x00178A60
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		Storage storage = go.AddComponent<Storage>();
@@ -56,8 +72,12 @@ public class HeatCompressorConfig : IBuildingConfig
 		go.AddOrGet<HeatCompressor>().SetStorage(storage, storage2, storage3);
 	}
 
+	// Token: 0x06000EC5 RID: 3781 RVA: 0x000A6D53 File Offset: 0x000A4F53
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicOperationalController>();
 	}
+
+	// Token: 0x04000A9F RID: 2719
+	public const string ID = "HeatCompressor";
 }

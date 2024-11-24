@@ -1,45 +1,30 @@
+﻿using System;
 using Klei.AI;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x02000B53 RID: 2899
 public class BipedTransitionLayer : TransitionDriver.OverrideLayer
 {
-	private bool isWalking;
-
-	private float floorSpeed;
-
-	private float ladderSpeed;
-
-	private float startTime;
-
-	private float jetPackSpeed;
-
-	private const float downPoleSpeed = 15f;
-
-	private const float WATER_SPEED_PENALTY = 0.5f;
-
-	private AttributeConverterInstance movementSpeed;
-
-	private AttributeLevels attributeLevels;
-
-	public BipedTransitionLayer(Navigator navigator, float floor_speed, float ladder_speed)
-		: base(navigator)
+	// Token: 0x060036F5 RID: 14069 RVA: 0x002152C4 File Offset: 0x002134C4
+	public BipedTransitionLayer(Navigator navigator, float floor_speed, float ladder_speed) : base(navigator)
 	{
-		navigator.Subscribe(1773898642, delegate
+		navigator.Subscribe(1773898642, delegate(object data)
 		{
-			isWalking = true;
+			this.isWalking = true;
 		});
-		navigator.Subscribe(1597112836, delegate
+		navigator.Subscribe(1597112836, delegate(object data)
 		{
-			isWalking = false;
+			this.isWalking = false;
 		});
-		floorSpeed = floor_speed;
-		ladderSpeed = ladder_speed;
-		jetPackSpeed = floor_speed;
-		movementSpeed = Db.Get().AttributeConverters.MovementSpeed.Lookup(navigator.gameObject);
-		attributeLevels = navigator.GetComponent<AttributeLevels>();
+		this.floorSpeed = floor_speed;
+		this.ladderSpeed = ladder_speed;
+		this.jetPackSpeed = floor_speed;
+		this.movementSpeed = Db.Get().AttributeConverters.MovementSpeed.Lookup(navigator.gameObject);
+		this.attributeLevels = navigator.GetComponent<AttributeLevels>();
 	}
 
+	// Token: 0x060036F6 RID: 14070 RVA: 0x0021534C File Offset: 0x0021354C
 	public override void BeginTransition(Navigator navigator, Navigator.ActiveTransition transition)
 	{
 		base.BeginTransition(navigator, transition);
@@ -49,18 +34,18 @@ public class BipedTransitionLayer : TransitionDriver.OverrideLayer
 		bool flag3 = transition.start == NavType.Hover || transition.end == NavType.Hover;
 		if (!flag && !flag2 && !flag3)
 		{
-			if (isWalking)
+			if (this.isWalking)
 			{
 				return;
 			}
-			num = GetMovementSpeedMultiplier(navigator);
+			num = this.GetMovementSpeedMultiplier(navigator);
 		}
 		int cell = Grid.PosToCell(navigator);
 		float num2 = 1f;
-		bool flag4 = (navigator.flags & PathFinder.PotentialPath.Flags.HasAtmoSuit) != 0;
-		bool num3 = (navigator.flags & PathFinder.PotentialPath.Flags.HasJetPack) != 0;
-		bool flag5 = (navigator.flags & PathFinder.PotentialPath.Flags.HasLeadSuit) != 0;
-		if (!(num3 || flag4 || flag5) && Grid.IsSubstantialLiquid(cell))
+		bool flag4 = (navigator.flags & PathFinder.PotentialPath.Flags.HasAtmoSuit) > PathFinder.PotentialPath.Flags.None;
+		bool flag5 = (navigator.flags & PathFinder.PotentialPath.Flags.HasJetPack) > PathFinder.PotentialPath.Flags.None;
+		bool flag6 = (navigator.flags & PathFinder.PotentialPath.Flags.HasLeadSuit) > PathFinder.PotentialPath.Flags.None;
+		if (!flag5 && !flag4 && !flag6 && Grid.IsSubstantialLiquid(cell, 0.35f))
 		{
 			num2 = 0.5f;
 		}
@@ -73,44 +58,44 @@ public class BipedTransitionLayer : TransitionDriver.OverrideLayer
 			}
 			else
 			{
-				transition.speed = ladderSpeed * num;
+				transition.speed = this.ladderSpeed * num;
 				GameObject gameObject = Grid.Objects[cell, 1];
 				if (gameObject != null)
 				{
 					Ladder component = gameObject.GetComponent<Ladder>();
 					if (component != null)
 					{
-						float num4 = component.upwardsMovementSpeedMultiplier;
+						float num3 = component.upwardsMovementSpeedMultiplier;
 						if (transition.y < 0)
 						{
-							num4 = component.downwardsMovementSpeedMultiplier;
+							num3 = component.downwardsMovementSpeedMultiplier;
 						}
-						transition.speed *= num4;
-						transition.animSpeed *= num4;
+						transition.speed *= num3;
+						transition.animSpeed *= num3;
 					}
 				}
 			}
 		}
 		else if (flag2)
 		{
-			transition.speed = GetTubeTravellingSpeedMultiplier(navigator);
+			transition.speed = this.GetTubeTravellingSpeedMultiplier(navigator);
 		}
 		else if (flag3)
 		{
-			transition.speed = jetPackSpeed;
+			transition.speed = this.jetPackSpeed;
 		}
 		else
 		{
-			transition.speed = floorSpeed * num;
+			transition.speed = this.floorSpeed * num;
 		}
-		float num5 = num - 1f;
-		transition.animSpeed += transition.animSpeed * num5 / 2f;
+		float num4 = num - 1f;
+		transition.animSpeed += transition.animSpeed * num4 / 2f;
 		if (transition.start == NavType.Floor && transition.end == NavType.Floor)
 		{
-			int num6 = Grid.CellBelow(cell);
-			if (Grid.Foundation[num6])
+			int num5 = Grid.CellBelow(cell);
+			if (Grid.Foundation[num5])
 			{
-				GameObject gameObject2 = Grid.Objects[num6, 1];
+				GameObject gameObject2 = Grid.Objects[num5, 1];
 				if (gameObject2 != null)
 				{
 					SimCellOccupier component2 = gameObject2.GetComponent<SimCellOccupier>();
@@ -122,32 +107,67 @@ public class BipedTransitionLayer : TransitionDriver.OverrideLayer
 				}
 			}
 		}
-		startTime = Time.time;
+		this.startTime = Time.time;
 	}
 
+	// Token: 0x060036F7 RID: 14071 RVA: 0x002155CC File Offset: 0x002137CC
 	public override void EndTransition(Navigator navigator, Navigator.ActiveTransition transition)
 	{
 		base.EndTransition(navigator, transition);
 		bool flag = (transition.start == NavType.Pole || transition.end == NavType.Pole) && transition.y < 0 && transition.x == 0;
 		bool flag2 = transition.start == NavType.Tube || transition.end == NavType.Tube;
-		if (!isWalking && !flag && !flag2 && attributeLevels != null)
+		if (!this.isWalking && !flag && !flag2 && this.attributeLevels != null)
 		{
-			attributeLevels.AddExperience(Db.Get().Attributes.Athletics.Id, Time.time - startTime, DUPLICANTSTATS.ATTRIBUTE_LEVELING.ALL_DAY_EXPERIENCE);
+			this.attributeLevels.AddExperience(Db.Get().Attributes.Athletics.Id, Time.time - this.startTime, DUPLICANTSTATS.ATTRIBUTE_LEVELING.ALL_DAY_EXPERIENCE);
 		}
 	}
 
+	// Token: 0x060036F8 RID: 14072 RVA: 0x0021566C File Offset: 0x0021386C
 	public float GetTubeTravellingSpeedMultiplier(Navigator navigator)
 	{
-		return Db.Get().Attributes.TransitTubeTravelSpeed.Lookup(navigator.gameObject)?.GetTotalValue() ?? 18f;
+		AttributeInstance attributeInstance = Db.Get().Attributes.TransitTubeTravelSpeed.Lookup(navigator.gameObject);
+		if (attributeInstance != null)
+		{
+			return attributeInstance.GetTotalValue();
+		}
+		return DUPLICANTSTATS.STANDARD.BaseStats.TRANSIT_TUBE_TRAVEL_SPEED;
 	}
 
+	// Token: 0x060036F9 RID: 14073 RVA: 0x002156B0 File Offset: 0x002138B0
 	public float GetMovementSpeedMultiplier(Navigator navigator)
 	{
 		float num = 1f;
-		if (movementSpeed != null)
+		if (this.movementSpeed != null)
 		{
-			num += movementSpeed.Evaluate();
+			num += this.movementSpeed.Evaluate();
 		}
 		return Mathf.Max(0.1f, num);
 	}
+
+	// Token: 0x0400253B RID: 9531
+	private bool isWalking;
+
+	// Token: 0x0400253C RID: 9532
+	private float floorSpeed;
+
+	// Token: 0x0400253D RID: 9533
+	private float ladderSpeed;
+
+	// Token: 0x0400253E RID: 9534
+	private float startTime;
+
+	// Token: 0x0400253F RID: 9535
+	private float jetPackSpeed;
+
+	// Token: 0x04002540 RID: 9536
+	private const float downPoleSpeed = 15f;
+
+	// Token: 0x04002541 RID: 9537
+	private const float WATER_SPEED_PENALTY = 0.5f;
+
+	// Token: 0x04002542 RID: 9538
+	private AttributeConverterInstance movementSpeed;
+
+	// Token: 0x04002543 RID: 9539
+	private AttributeLevels attributeLevels;
 }

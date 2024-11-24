@@ -1,57 +1,67 @@
+﻿using System;
+
+// Token: 0x02000807 RID: 2055
 public class SafetyQuery : PathFinderQuery
 {
-	private int targetCell;
-
-	private int targetCost;
-
-	private int targetConditions;
-
-	private int maxCost;
-
-	private SafetyChecker checker;
-
-	private KMonoBehaviour cmp;
-
-	private SafetyChecker.Context context;
-
+	// Token: 0x060024B7 RID: 9399 RVA: 0x000B7E92 File Offset: 0x000B6092
 	public SafetyQuery(SafetyChecker checker, KMonoBehaviour cmp, int max_cost)
 	{
 		this.checker = checker;
 		this.cmp = cmp;
-		maxCost = max_cost;
+		this.maxCost = max_cost;
 	}
 
+	// Token: 0x060024B8 RID: 9400 RVA: 0x000B7EAF File Offset: 0x000B60AF
 	public void Reset()
 	{
-		targetCell = PathFinder.InvalidCell;
-		targetCost = int.MaxValue;
-		targetConditions = 0;
-		context = new SafetyChecker.Context(cmp);
+		this.targetCell = PathFinder.InvalidCell;
+		this.targetCost = int.MaxValue;
+		this.targetConditions = 0;
+		this.context = new SafetyChecker.Context(this.cmp);
 	}
 
+	// Token: 0x060024B9 RID: 9401 RVA: 0x001CA54C File Offset: 0x001C874C
 	public override bool IsMatch(int cell, int parent_cell, int cost)
 	{
-		bool all_conditions_met = false;
-		int safetyConditions = checker.GetSafetyConditions(cell, cost, context, out all_conditions_met);
-		if (safetyConditions != 0 && (safetyConditions > targetConditions || (safetyConditions == targetConditions && cost < targetCost)))
+		bool flag = false;
+		int safetyConditions = this.checker.GetSafetyConditions(cell, cost, this.context, out flag);
+		if (safetyConditions != 0 && (safetyConditions > this.targetConditions || (safetyConditions == this.targetConditions && cost < this.targetCost)))
 		{
-			targetCell = cell;
-			targetConditions = safetyConditions;
-			targetCost = cost;
-			if (all_conditions_met)
+			this.targetCell = cell;
+			this.targetConditions = safetyConditions;
+			this.targetCost = cost;
+			if (flag)
 			{
 				return true;
 			}
 		}
-		if (cost >= maxCost)
-		{
-			return true;
-		}
-		return false;
+		return cost >= this.maxCost;
 	}
 
+	// Token: 0x060024BA RID: 9402 RVA: 0x000B7EDF File Offset: 0x000B60DF
 	public override int GetResultCell()
 	{
-		return targetCell;
+		return this.targetCell;
 	}
+
+	// Token: 0x040018C9 RID: 6345
+	private int targetCell;
+
+	// Token: 0x040018CA RID: 6346
+	private int targetCost;
+
+	// Token: 0x040018CB RID: 6347
+	private int targetConditions;
+
+	// Token: 0x040018CC RID: 6348
+	private int maxCost;
+
+	// Token: 0x040018CD RID: 6349
+	private SafetyChecker checker;
+
+	// Token: 0x040018CE RID: 6350
+	private KMonoBehaviour cmp;
+
+	// Token: 0x040018CF RID: 6351
+	private SafetyChecker.Context context;
 }

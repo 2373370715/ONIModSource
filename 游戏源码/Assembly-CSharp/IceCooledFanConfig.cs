@@ -1,35 +1,34 @@
+﻿using System;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x0200038E RID: 910
 public class IceCooledFanConfig : IBuildingConfig
 {
-	public const string ID = "IceCooledFan";
-
-	private float COOLING_RATE = 32f;
-
-	private float TARGET_TEMPERATURE = 278.15f;
-
-	private float ICE_CAPACITY = 50f;
-
-	private static readonly CellOffset[] overrideOffsets = new CellOffset[4]
-	{
-		new CellOffset(-2, 1),
-		new CellOffset(2, 1),
-		new CellOffset(-1, 0),
-		new CellOffset(1, 0)
-	};
-
+	// Token: 0x06000EED RID: 3821 RVA: 0x0017B43C File Offset: 0x0017963C
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef("IceCooledFan", 2, 2, "fanice_kanim", 30, 30f, BUILDINGS.CONSTRUCTION_MASS_KG.TIER4, MATERIALS.ALL_METALS, 1600f, BuildLocationRule.OnFloor, noise: NOISE_POLLUTION.NOISY.TIER2, decor: BUILDINGS.DECOR.NONE);
-		obj.SelfHeatKilowattsWhenActive = (0f - COOLING_RATE) * 0.25f;
-		obj.ExhaustKilowattsWhenActive = (0f - COOLING_RATE) * 0.75f;
-		obj.Overheatable = false;
-		obj.ViewMode = OverlayModes.Temperature.ID;
-		obj.AudioCategory = "Metal";
-		return obj;
+		string id = "IceCooledFan";
+		int width = 2;
+		int height = 2;
+		string anim = "fanice_kanim";
+		int hitpoints = 30;
+		float construction_time = 30f;
+		float[] tier = BUILDINGS.CONSTRUCTION_MASS_KG.TIER4;
+		string[] all_METALS = MATERIALS.ALL_METALS;
+		float melting_point = 1600f;
+		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
+		EffectorValues tier2 = NOISE_POLLUTION.NOISY.TIER2;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, all_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, tier2, 0.2f);
+		buildingDef.SelfHeatKilowattsWhenActive = -this.COOLING_RATE * 0.25f;
+		buildingDef.ExhaustKilowattsWhenActive = -this.COOLING_RATE * 0.75f;
+		buildingDef.Overheatable = false;
+		buildingDef.ViewMode = OverlayModes.Temperature.ID;
+		buildingDef.AudioCategory = "Metal";
+		return buildingDef;
 	}
 
+	// Token: 0x06000EEE RID: 3822 RVA: 0x0017B4C8 File Offset: 0x001796C8
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		Storage storage = go.AddComponent<Storage>();
@@ -43,8 +42,8 @@ public class IceCooledFanConfig : IBuildingConfig
 		go.AddOrGet<LoopingSounds>();
 		Prioritizable.AddRef(go);
 		IceCooledFan iceCooledFan = go.AddOrGet<IceCooledFan>();
-		iceCooledFan.coolingRate = COOLING_RATE;
-		iceCooledFan.targetTemperature = TARGET_TEMPERATURE;
+		iceCooledFan.coolingRate = this.COOLING_RATE;
+		iceCooledFan.targetTemperature = this.TARGET_TEMPERATURE;
 		iceCooledFan.iceStorage = storage;
 		iceCooledFan.liquidStorage = storage2;
 		iceCooledFan.minCooledTemperature = 278.15f;
@@ -55,22 +54,47 @@ public class IceCooledFanConfig : IBuildingConfig
 		ManualDeliveryKG manualDeliveryKG = go.AddComponent<ManualDeliveryKG>();
 		manualDeliveryKG.SetStorage(storage);
 		manualDeliveryKG.RequestedItemTag = GameTags.IceOre;
-		manualDeliveryKG.capacity = ICE_CAPACITY;
-		manualDeliveryKG.refillMass = ICE_CAPACITY * 0.2f;
+		manualDeliveryKG.capacity = this.ICE_CAPACITY;
+		manualDeliveryKG.refillMass = this.ICE_CAPACITY * 0.2f;
 		manualDeliveryKG.MinimumMass = 10f;
 		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.MachineFetch.IdHash;
-		go.AddOrGet<IceCooledFanWorkable>().overrideAnims = new KAnimFile[1] { Assets.GetAnim("anim_interacts_icefan_kanim") };
+		go.AddOrGet<IceCooledFanWorkable>().overrideAnims = new KAnimFile[]
+		{
+			Assets.GetAnim("anim_interacts_icefan_kanim")
+		};
 	}
 
+	// Token: 0x06000EEF RID: 3823 RVA: 0x000AC940 File Offset: 0x000AAB40
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.GetComponent<KPrefabID>().prefabSpawnFn += delegate(GameObject game_object)
 		{
 			HandleVector<int>.Handle handle = GameComps.StructureTemperatures.GetHandle(game_object);
-			StructureTemperaturePayload new_data = GameComps.StructureTemperatures.GetPayload(handle);
+			StructureTemperaturePayload payload = GameComps.StructureTemperatures.GetPayload(handle);
 			int cell = Grid.PosToCell(game_object);
-			new_data.OverrideExtents(new Extents(cell, overrideOffsets));
-			GameComps.StructureTemperatures.SetPayload(handle, ref new_data);
+			payload.OverrideExtents(new Extents(cell, IceCooledFanConfig.overrideOffsets));
+			GameComps.StructureTemperatures.SetPayload(handle, ref payload);
 		};
 	}
+
+	// Token: 0x04000AB8 RID: 2744
+	public const string ID = "IceCooledFan";
+
+	// Token: 0x04000AB9 RID: 2745
+	private float COOLING_RATE = 32f;
+
+	// Token: 0x04000ABA RID: 2746
+	private float TARGET_TEMPERATURE = 278.15f;
+
+	// Token: 0x04000ABB RID: 2747
+	private float ICE_CAPACITY = 50f;
+
+	// Token: 0x04000ABC RID: 2748
+	private static readonly CellOffset[] overrideOffsets = new CellOffset[]
+	{
+		new CellOffset(-2, 1),
+		new CellOffset(2, 1),
+		new CellOffset(-1, 0),
+		new CellOffset(1, 0)
+	};
 }

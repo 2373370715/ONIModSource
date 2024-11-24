@@ -1,55 +1,56 @@
+﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
 
+// Token: 0x02001F18 RID: 7960
 public class ShadowImage : ShadowRect
 {
-	private Image shadowImage;
-
-	private Image mainImage;
-
+	// Token: 0x0600A7D8 RID: 42968 RVA: 0x003FA71C File Offset: 0x003F891C
 	protected override void MatchRect()
 	{
 		base.MatchRect();
-		if (RectMain == null || RectShadow == null)
+		if (this.RectMain == null || this.RectShadow == null)
 		{
 			return;
 		}
-		if (shadowImage == null)
+		if (this.shadowImage == null)
 		{
-			shadowImage = RectShadow.GetComponent<Image>();
+			this.shadowImage = this.RectShadow.GetComponent<Image>();
 		}
-		if (mainImage == null)
+		if (this.mainImage == null)
 		{
-			mainImage = RectMain.GetComponent<Image>();
+			this.mainImage = this.RectMain.GetComponent<Image>();
 		}
-		if (mainImage == null)
+		if (this.mainImage == null)
 		{
-			if (shadowImage != null)
+			if (this.shadowImage != null)
 			{
-				shadowImage.color = Color.clear;
+				this.shadowImage.color = Color.clear;
 			}
+			return;
 		}
-		else
+		if (this.shadowImage == null)
 		{
-			if (shadowImage == null)
+			return;
+		}
+		if (this.shadowImage.sprite != this.mainImage.sprite)
+		{
+			this.shadowImage.sprite = this.mainImage.sprite;
+		}
+		if (this.shadowImage.color != this.shadowColor)
+		{
+			if (this.shadowImage.sprite != null)
 			{
+				this.shadowImage.color = this.shadowColor;
 				return;
 			}
-			if (shadowImage.sprite != mainImage.sprite)
-			{
-				shadowImage.sprite = mainImage.sprite;
-			}
-			if (shadowImage.color != shadowColor)
-			{
-				if (shadowImage.sprite != null)
-				{
-					shadowImage.color = shadowColor;
-				}
-				else
-				{
-					shadowImage.color = Color.clear;
-				}
-			}
+			this.shadowImage.color = Color.clear;
 		}
 	}
+
+	// Token: 0x040083F9 RID: 33785
+	private Image shadowImage;
+
+	// Token: 0x040083FA RID: 33786
+	private Image mainImage;
 }

@@ -1,37 +1,46 @@
+﻿using System;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x0200003D RID: 61
 public class CO2ScrubberConfig : IBuildingConfig
 {
-	public const string ID = "CO2Scrubber";
-
-	private const float CO2_CONSUMPTION_RATE = 0.3f;
-
-	private const float H2O_CONSUMPTION_RATE = 1f;
-
+	// Token: 0x06000109 RID: 265 RVA: 0x001425F0 File Offset: 0x001407F0
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef("CO2Scrubber", 2, 2, "co2scrubber_kanim", 30, 30f, BUILDINGS.CONSTRUCTION_MASS_KG.TIER2, MATERIALS.RAW_METALS, 800f, BuildLocationRule.OnFloor, noise: NOISE_POLLUTION.NOISY.TIER3, decor: BUILDINGS.DECOR.PENALTY.TIER1);
-		obj.RequiresPowerInput = true;
-		obj.EnergyConsumptionWhenActive = 120f;
-		obj.SelfHeatKilowattsWhenActive = 1f;
-		obj.InputConduitType = ConduitType.Liquid;
-		obj.OutputConduitType = ConduitType.Liquid;
-		obj.ViewMode = OverlayModes.Oxygen.ID;
-		obj.AudioCategory = "Metal";
-		obj.AudioSize = "large";
-		obj.UtilityInputOffset = new CellOffset(0, 0);
-		obj.UtilityOutputOffset = new CellOffset(1, 1);
-		obj.PermittedRotations = PermittedRotations.FlipH;
-		obj.LogicInputPorts = LogicOperationalController.CreateSingleInputPortList(new CellOffset(1, 0));
-		return obj;
+		string id = "CO2Scrubber";
+		int width = 2;
+		int height = 2;
+		string anim = "co2scrubber_kanim";
+		int hitpoints = 30;
+		float construction_time = 30f;
+		float[] tier = BUILDINGS.CONSTRUCTION_MASS_KG.TIER2;
+		string[] raw_METALS = MATERIALS.RAW_METALS;
+		float melting_point = 800f;
+		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
+		EffectorValues tier2 = NOISE_POLLUTION.NOISY.TIER3;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, raw_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.PENALTY.TIER1, tier2, 0.2f);
+		buildingDef.RequiresPowerInput = true;
+		buildingDef.EnergyConsumptionWhenActive = 120f;
+		buildingDef.SelfHeatKilowattsWhenActive = 1f;
+		buildingDef.InputConduitType = ConduitType.Liquid;
+		buildingDef.OutputConduitType = ConduitType.Liquid;
+		buildingDef.ViewMode = OverlayModes.Oxygen.ID;
+		buildingDef.AudioCategory = "Metal";
+		buildingDef.AudioSize = "large";
+		buildingDef.UtilityInputOffset = new CellOffset(0, 0);
+		buildingDef.UtilityOutputOffset = new CellOffset(1, 1);
+		buildingDef.PermittedRotations = PermittedRotations.FlipH;
+		buildingDef.LogicInputPorts = LogicOperationalController.CreateSingleInputPortList(new CellOffset(1, 0));
+		return buildingDef;
 	}
 
+	// Token: 0x0600010A RID: 266 RVA: 0x001426B8 File Offset: 0x001408B8
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<LoopingSounds>();
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery);
-		Storage storage = BuildingTemplates.CreateDefaultStorage(go);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
+		Storage storage = BuildingTemplates.CreateDefaultStorage(go, false);
 		storage.showInUI = true;
 		storage.capacityKg = 30000f;
 		storage.SetDefaultStoredItemModifiers(Storage.StandardSealedStorage);
@@ -48,14 +57,14 @@ public class CO2ScrubberConfig : IBuildingConfig
 		passiveElementConsumer.showDescriptor = false;
 		passiveElementConsumer.ignoreActiveChanged = true;
 		ElementConverter elementConverter = go.AddOrGet<ElementConverter>();
-		elementConverter.consumedElements = new ElementConverter.ConsumedElement[2]
+		elementConverter.consumedElements = new ElementConverter.ConsumedElement[]
 		{
-			new ElementConverter.ConsumedElement(GameTagExtensions.Create(SimHashes.Water), 1f),
-			new ElementConverter.ConsumedElement(GameTagExtensions.Create(SimHashes.CarbonDioxide), 0.3f)
+			new ElementConverter.ConsumedElement(GameTagExtensions.Create(SimHashes.Water), 1f, true),
+			new ElementConverter.ConsumedElement(GameTagExtensions.Create(SimHashes.CarbonDioxide), 0.3f, true)
 		};
-		elementConverter.outputElements = new ElementConverter.OutputElement[1]
+		elementConverter.outputElements = new ElementConverter.OutputElement[]
 		{
-			new ElementConverter.OutputElement(1f, SimHashes.DirtyWater, 0f, useEntityTemperature: false, storeOutput: true)
+			new ElementConverter.OutputElement(1f, SimHashes.DirtyWater, 0f, false, true, 0f, 0.5f, 1f, byte.MaxValue, 0, true)
 		};
 		ConduitConsumer conduitConsumer = go.AddOrGet<ConduitConsumer>();
 		conduitConsumer.conduitType = ConduitType.Liquid;
@@ -67,13 +76,26 @@ public class CO2ScrubberConfig : IBuildingConfig
 		ConduitDispenser conduitDispenser = go.AddOrGet<ConduitDispenser>();
 		conduitDispenser.conduitType = ConduitType.Liquid;
 		conduitDispenser.invertElementFilter = true;
-		conduitDispenser.elementFilter = new SimHashes[1] { SimHashes.Water };
+		conduitDispenser.elementFilter = new SimHashes[]
+		{
+			SimHashes.Water
+		};
 		go.AddOrGet<KBatchedAnimController>().randomiseLoopedOffset = true;
 	}
 
+	// Token: 0x0600010B RID: 267 RVA: 0x000A5FB5 File Offset: 0x000A41B5
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicOperationalController>();
 		go.AddOrGetDef<PoweredActiveController.Def>();
 	}
+
+	// Token: 0x0400009D RID: 157
+	public const string ID = "CO2Scrubber";
+
+	// Token: 0x0400009E RID: 158
+	private const float CO2_CONSUMPTION_RATE = 0.3f;
+
+	// Token: 0x0400009F RID: 159
+	private const float H2O_CONSUMPTION_RATE = 1f;
 }

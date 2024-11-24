@@ -1,44 +1,60 @@
+﻿using System;
 using System.Collections.Generic;
 using STRINGS;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x020003EA RID: 1002
 public class LogicMemoryConfig : IBuildingConfig
 {
-	public static string ID = "LogicMemory";
-
+	// Token: 0x060010CB RID: 4299 RVA: 0x00181924 File Offset: 0x0017FB24
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef(ID, 2, 2, "logic_memory_kanim", 10, 30f, TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER0, MATERIALS.REFINED_METALS, 1600f, BuildLocationRule.Anywhere, noise: NOISE_POLLUTION.NONE, decor: TUNING.BUILDINGS.DECOR.NONE);
-		obj.Deprecated = false;
-		obj.Overheatable = false;
-		obj.Floodable = false;
-		obj.Entombable = false;
-		obj.PermittedRotations = PermittedRotations.R360;
-		obj.InitialOrientation = Orientation.R90;
-		obj.ViewMode = OverlayModes.Logic.ID;
-		obj.AudioCategory = "Metal";
-		obj.SceneLayer = Grid.SceneLayer.LogicGates;
-		obj.ObjectLayer = ObjectLayer.LogicGate;
-		obj.AlwaysOperational = true;
-		obj.LogicInputPorts = new List<LogicPorts.Port>
+		string id = LogicMemoryConfig.ID;
+		int width = 2;
+		int height = 2;
+		string anim = "logic_memory_kanim";
+		int hitpoints = 10;
+		float construction_time = 30f;
+		float[] tier = TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER0;
+		string[] refined_METALS = MATERIALS.REFINED_METALS;
+		float melting_point = 1600f;
+		BuildLocationRule build_location_rule = BuildLocationRule.Anywhere;
+		EffectorValues none = NOISE_POLLUTION.NONE;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, refined_METALS, melting_point, build_location_rule, TUNING.BUILDINGS.DECOR.NONE, none, 0.2f);
+		buildingDef.Deprecated = false;
+		buildingDef.Overheatable = false;
+		buildingDef.Floodable = false;
+		buildingDef.Entombable = false;
+		buildingDef.PermittedRotations = PermittedRotations.R360;
+		buildingDef.InitialOrientation = Orientation.R90;
+		buildingDef.ViewMode = OverlayModes.Logic.ID;
+		buildingDef.AudioCategory = "Metal";
+		buildingDef.SceneLayer = Grid.SceneLayer.LogicGates;
+		buildingDef.ObjectLayer = ObjectLayer.LogicGate;
+		buildingDef.AlwaysOperational = true;
+		buildingDef.LogicInputPorts = new List<LogicPorts.Port>
 		{
-			new LogicPorts.Port(LogicMemory.SET_PORT_ID, new CellOffset(0, 0), STRINGS.BUILDINGS.PREFABS.LOGICMEMORY.SET_PORT, STRINGS.BUILDINGS.PREFABS.LOGICMEMORY.SET_PORT_ACTIVE, STRINGS.BUILDINGS.PREFABS.LOGICMEMORY.SET_PORT_INACTIVE, show_wire_missing_icon: true, LogicPortSpriteType.Input, display_custom_name: true),
-			new LogicPorts.Port(LogicMemory.RESET_PORT_ID, new CellOffset(1, 0), STRINGS.BUILDINGS.PREFABS.LOGICMEMORY.RESET_PORT, STRINGS.BUILDINGS.PREFABS.LOGICMEMORY.RESET_PORT_ACTIVE, STRINGS.BUILDINGS.PREFABS.LOGICMEMORY.RESET_PORT_INACTIVE, show_wire_missing_icon: true, LogicPortSpriteType.ResetUpdate, display_custom_name: true)
+			new LogicPorts.Port(LogicMemory.SET_PORT_ID, new CellOffset(0, 0), STRINGS.BUILDINGS.PREFABS.LOGICMEMORY.SET_PORT, STRINGS.BUILDINGS.PREFABS.LOGICMEMORY.SET_PORT_ACTIVE, STRINGS.BUILDINGS.PREFABS.LOGICMEMORY.SET_PORT_INACTIVE, true, LogicPortSpriteType.Input, true),
+			new LogicPorts.Port(LogicMemory.RESET_PORT_ID, new CellOffset(1, 0), STRINGS.BUILDINGS.PREFABS.LOGICMEMORY.RESET_PORT, STRINGS.BUILDINGS.PREFABS.LOGICMEMORY.RESET_PORT_ACTIVE, STRINGS.BUILDINGS.PREFABS.LOGICMEMORY.RESET_PORT_INACTIVE, true, LogicPortSpriteType.ResetUpdate, true)
 		};
-		obj.LogicOutputPorts = new List<LogicPorts.Port>
+		buildingDef.LogicOutputPorts = new List<LogicPorts.Port>
 		{
-			new LogicPorts.Port(LogicMemory.READ_PORT_ID, new CellOffset(0, 1), STRINGS.BUILDINGS.PREFABS.LOGICMEMORY.READ_PORT, STRINGS.BUILDINGS.PREFABS.LOGICMEMORY.READ_PORT_ACTIVE, STRINGS.BUILDINGS.PREFABS.LOGICMEMORY.READ_PORT_INACTIVE, show_wire_missing_icon: true, LogicPortSpriteType.Output, display_custom_name: true)
+			new LogicPorts.Port(LogicMemory.READ_PORT_ID, new CellOffset(0, 1), STRINGS.BUILDINGS.PREFABS.LOGICMEMORY.READ_PORT, STRINGS.BUILDINGS.PREFABS.LOGICMEMORY.READ_PORT_ACTIVE, STRINGS.BUILDINGS.PREFABS.LOGICMEMORY.READ_PORT_INACTIVE, true, LogicPortSpriteType.Output, true)
 		};
 		SoundEventVolumeCache.instance.AddVolume("logic_memory_kanim", "PowerMemory_on", NOISE_POLLUTION.NOISY.TIER3);
 		SoundEventVolumeCache.instance.AddVolume("logic_memory_kanim", "PowerMemory_off", NOISE_POLLUTION.NOISY.TIER3);
-		GeneratedBuildings.RegisterWithOverlay(OverlayModes.Logic.HighlightItemIDs, ID);
-		return obj;
+		GeneratedBuildings.RegisterWithOverlay(OverlayModes.Logic.HighlightItemIDs, LogicMemoryConfig.ID);
+		return buildingDef;
 	}
 
+	// Token: 0x060010CC RID: 4300 RVA: 0x000AD6EA File Offset: 0x000AB8EA
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicMemory>();
-		go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayBehindConduits);
+		go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayBehindConduits, false);
 	}
+
+	// Token: 0x04000B8D RID: 2957
+	public static string ID = "LogicMemory";
 }

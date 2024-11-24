@@ -1,95 +1,67 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+// Token: 0x02001AA6 RID: 6822
 public class BuildMenuCategoriesScreen : KIconToggleMenu
 {
-	private class UserData
-	{
-		public HashedString category;
-
-		public int depth;
-
-		public PlanScreen.RequirementsState requirementsState;
-
-		public ImageToggleState.State? currentToggleState;
-	}
-
-	public Action<HashedString, int> onCategoryClicked;
-
-	[SerializeField]
-	public bool modalKeyInputBehaviour;
-
-	[SerializeField]
-	private Image focusIndicator;
-
-	[SerializeField]
-	private Color32 focusedColour;
-
-	[SerializeField]
-	private Color32 unfocusedColour;
-
-	private IList<HashedString> subcategories;
-
-	private Dictionary<HashedString, List<BuildingDef>> categorizedBuildingMap;
-
-	private Dictionary<HashedString, List<HashedString>> categorizedCategoryMap;
-
-	private BuildMenuBuildingsScreen buildingsScreen;
-
-	private HashedString category;
-
-	private IList<BuildMenu.BuildingInfo> buildingInfos;
-
-	private HashedString selectedCategory = HashedString.Invalid;
-
-	public HashedString Category => category;
-
+	// Token: 0x06008EA6 RID: 36518 RVA: 0x000FD428 File Offset: 0x000FB628
 	public override float GetSortKey()
 	{
 		return 7f;
 	}
 
+	// Token: 0x17000981 RID: 2433
+	// (get) Token: 0x06008EA7 RID: 36519 RVA: 0x000FD42F File Offset: 0x000FB62F
+	public HashedString Category
+	{
+		get
+		{
+			return this.category;
+		}
+	}
+
+	// Token: 0x06008EA8 RID: 36520 RVA: 0x000FD437 File Offset: 0x000FB637
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		base.onSelect += OnClickCategory;
+		base.onSelect += this.OnClickCategory;
 	}
 
+	// Token: 0x06008EA9 RID: 36521 RVA: 0x00371850 File Offset: 0x0036FA50
 	public void Configure(HashedString category, int depth, object data, Dictionary<HashedString, List<BuildingDef>> categorized_building_map, Dictionary<HashedString, List<HashedString>> categorized_category_map, BuildMenuBuildingsScreen buildings_screen)
 	{
 		this.category = category;
-		categorizedBuildingMap = categorized_building_map;
-		categorizedCategoryMap = categorized_category_map;
-		buildingsScreen = buildings_screen;
-		List<ToggleInfo> list = new List<ToggleInfo>();
+		this.categorizedBuildingMap = categorized_building_map;
+		this.categorizedCategoryMap = categorized_category_map;
+		this.buildingsScreen = buildings_screen;
+		List<KIconToggleMenu.ToggleInfo> list = new List<KIconToggleMenu.ToggleInfo>();
 		if (typeof(IList<BuildMenu.BuildingInfo>).IsAssignableFrom(data.GetType()))
 		{
-			buildingInfos = (IList<BuildMenu.BuildingInfo>)data;
+			this.buildingInfos = (IList<BuildMenu.BuildingInfo>)data;
 		}
 		else if (typeof(IList<BuildMenu.DisplayInfo>).IsAssignableFrom(data.GetType()))
 		{
-			subcategories = new List<HashedString>();
-			foreach (BuildMenu.DisplayInfo item2 in (IList<BuildMenu.DisplayInfo>)data)
+			this.subcategories = new List<HashedString>();
+			foreach (BuildMenu.DisplayInfo displayInfo in ((IList<BuildMenu.DisplayInfo>)data))
 			{
-				string iconName = item2.iconName;
-				string text = HashCache.Get().Get(item2.category).ToUpper();
+				string iconName = displayInfo.iconName;
+				string text = HashCache.Get().Get(displayInfo.category).ToUpper();
 				text = text.Replace(" ", "");
-				ToggleInfo item = new ToggleInfo(Strings.Get("STRINGS.UI.NEWBUILDCATEGORIES." + text + ".NAME"), iconName, new UserData
+				KIconToggleMenu.ToggleInfo item = new KIconToggleMenu.ToggleInfo(Strings.Get("STRINGS.UI.NEWBUILDCATEGORIES." + text + ".NAME"), iconName, new BuildMenuCategoriesScreen.UserData
 				{
-					category = item2.category,
+					category = displayInfo.category,
 					depth = depth,
 					requirementsState = PlanScreen.RequirementsState.Tech
-				}, item2.hotkey, Strings.Get("STRINGS.UI.NEWBUILDCATEGORIES." + text + ".TOOLTIP"));
+				}, displayInfo.hotkey, Strings.Get("STRINGS.UI.NEWBUILDCATEGORIES." + text + ".TOOLTIP"), "");
 				list.Add(item);
-				subcategories.Add(item2.category);
+				this.subcategories.Add(displayInfo.category);
 			}
-			Setup(list);
-			toggles.ForEach(delegate(KToggle to)
+			base.Setup(list);
+			this.toggles.ForEach(delegate(KToggle to)
 			{
-				ImageToggleState[] components = to.GetComponents<ImageToggleState>();
-				foreach (ImageToggleState imageToggleState in components)
+				foreach (ImageToggleState imageToggleState in to.GetComponents<ImageToggleState>())
 				{
 					if (imageToggleState.TargetImage.sprite != null && imageToggleState.TargetImage.name == "FG" && !imageToggleState.useSprites)
 					{
@@ -99,81 +71,81 @@ public class BuildMenuCategoriesScreen : KIconToggleMenu
 				to.GetComponent<KToggle>().soundPlayer.Enabled = false;
 			});
 		}
-		UpdateBuildableStates(skip_flourish: true);
+		this.UpdateBuildableStates(true);
 	}
 
-	private void OnClickCategory(ToggleInfo toggle_info)
+	// Token: 0x06008EAA RID: 36522 RVA: 0x003719F8 File Offset: 0x0036FBF8
+	private void OnClickCategory(KIconToggleMenu.ToggleInfo toggle_info)
 	{
-		UserData userData = (UserData)toggle_info.userData;
+		BuildMenuCategoriesScreen.UserData userData = (BuildMenuCategoriesScreen.UserData)toggle_info.userData;
 		PlanScreen.RequirementsState requirementsState = userData.requirementsState;
-		if ((uint)(requirementsState - 2) <= 1u)
+		if (requirementsState - PlanScreen.RequirementsState.Materials <= 1)
 		{
-			if (selectedCategory != userData.category)
+			if (this.selectedCategory != userData.category)
 			{
-				selectedCategory = userData.category;
-				KMonoBehaviour.PlaySound(GlobalAssets.GetSound("HUD_Click"));
+				this.selectedCategory = userData.category;
+				KMonoBehaviour.PlaySound(GlobalAssets.GetSound("HUD_Click", false));
 			}
 			else
 			{
-				selectedCategory = HashedString.Invalid;
-				ClearSelection();
-				KMonoBehaviour.PlaySound(GlobalAssets.GetSound("HUD_Click_Deselect"));
+				this.selectedCategory = HashedString.Invalid;
+				this.ClearSelection();
+				KMonoBehaviour.PlaySound(GlobalAssets.GetSound("HUD_Click_Deselect", false));
 			}
 		}
 		else
 		{
-			selectedCategory = HashedString.Invalid;
-			ClearSelection();
-			KMonoBehaviour.PlaySound(GlobalAssets.GetSound("Negative"));
+			this.selectedCategory = HashedString.Invalid;
+			this.ClearSelection();
+			KMonoBehaviour.PlaySound(GlobalAssets.GetSound("Negative", false));
 		}
-		toggle_info.toggle.GetComponent<PlanCategoryNotifications>().ToggleAttention(active: false);
-		if (onCategoryClicked != null)
+		toggle_info.toggle.GetComponent<PlanCategoryNotifications>().ToggleAttention(false);
+		if (this.onCategoryClicked != null)
 		{
-			onCategoryClicked(selectedCategory, userData.depth);
+			this.onCategoryClicked(this.selectedCategory, userData.depth);
 		}
 	}
 
+	// Token: 0x06008EAB RID: 36523 RVA: 0x00371AC4 File Offset: 0x0036FCC4
 	private void UpdateButtonStates()
 	{
-		if (toggleInfo == null || toggleInfo.Count <= 0)
+		if (this.toggleInfo != null && this.toggleInfo.Count > 0)
 		{
-			return;
-		}
-		foreach (ToggleInfo item in toggleInfo)
-		{
-			UserData userData = (UserData)item.userData;
-			HashedString hashedString = userData.category;
-			PlanScreen.RequirementsState categoryRequirements = GetCategoryRequirements(hashedString);
-			bool flag = categoryRequirements == PlanScreen.RequirementsState.Tech;
-			item.toggle.gameObject.SetActive(!flag);
-			switch (categoryRequirements)
+			foreach (KIconToggleMenu.ToggleInfo toggleInfo in this.toggleInfo)
 			{
-			case PlanScreen.RequirementsState.Complete:
-			{
-				ImageToggleState.State state2 = ((!selectedCategory.IsValid || hashedString != selectedCategory) ? ImageToggleState.State.Inactive : ImageToggleState.State.Active);
-				if (!userData.currentToggleState.HasValue || userData.currentToggleState.GetValueOrDefault() != state2)
+				BuildMenuCategoriesScreen.UserData userData = (BuildMenuCategoriesScreen.UserData)toggleInfo.userData;
+				HashedString x = userData.category;
+				PlanScreen.RequirementsState categoryRequirements = this.GetCategoryRequirements(x);
+				bool flag = categoryRequirements == PlanScreen.RequirementsState.Tech;
+				toggleInfo.toggle.gameObject.SetActive(!flag);
+				if (categoryRequirements != PlanScreen.RequirementsState.Materials)
 				{
-					userData.currentToggleState = state2;
-					SetImageToggleState(item.toggle.gameObject, state2);
+					if (categoryRequirements == PlanScreen.RequirementsState.Complete)
+					{
+						ImageToggleState.State state = (!this.selectedCategory.IsValid || x != this.selectedCategory) ? ImageToggleState.State.Inactive : ImageToggleState.State.Active;
+						if (userData.currentToggleState == null || userData.currentToggleState.GetValueOrDefault() != state)
+						{
+							userData.currentToggleState = new ImageToggleState.State?(state);
+							this.SetImageToggleState(toggleInfo.toggle.gameObject, state);
+						}
+					}
 				}
-				break;
-			}
-			case PlanScreen.RequirementsState.Materials:
-			{
-				item.toggle.fgImage.SetAlpha(flag ? 0.2509804f : 1f);
-				ImageToggleState.State state = ((selectedCategory.IsValid && hashedString == selectedCategory) ? ImageToggleState.State.DisabledActive : ImageToggleState.State.Disabled);
-				if (!userData.currentToggleState.HasValue || userData.currentToggleState.GetValueOrDefault() != state)
+				else
 				{
-					userData.currentToggleState = state;
-					SetImageToggleState(item.toggle.gameObject, state);
+					toggleInfo.toggle.fgImage.SetAlpha(flag ? 0.2509804f : 1f);
+					ImageToggleState.State state2 = (this.selectedCategory.IsValid && x == this.selectedCategory) ? ImageToggleState.State.DisabledActive : ImageToggleState.State.Disabled;
+					if (userData.currentToggleState == null || userData.currentToggleState.GetValueOrDefault() != state2)
+					{
+						userData.currentToggleState = new ImageToggleState.State?(state2);
+						this.SetImageToggleState(toggleInfo.toggle.gameObject, state2);
+					}
 				}
-				break;
+				toggleInfo.toggle.fgImage.transform.Find("ResearchIcon").gameObject.gameObject.SetActive(flag);
 			}
-			}
-			item.toggle.fgImage.transform.Find("ResearchIcon").gameObject.gameObject.SetActive(flag);
 		}
 	}
 
+	// Token: 0x06008EAC RID: 36524 RVA: 0x00371C88 File Offset: 0x0036FE88
 	private void SetImageToggleState(GameObject target, ImageToggleState.State state)
 	{
 		ImageToggleState[] components = target.GetComponents<ImageToggleState>();
@@ -183,36 +155,57 @@ public class BuildMenuCategoriesScreen : KIconToggleMenu
 		}
 	}
 
+	// Token: 0x06008EAD RID: 36525 RVA: 0x00371CB4 File Offset: 0x0036FEB4
 	private PlanScreen.RequirementsState GetCategoryRequirements(HashedString category)
 	{
 		bool flag = true;
 		bool flag2 = true;
-		List<HashedString> value2;
-		if (categorizedBuildingMap.TryGetValue(category, out var value))
+		List<BuildingDef> list;
+		if (this.categorizedBuildingMap.TryGetValue(category, out list))
 		{
-			if (value.Count > 0)
+			if (list.Count <= 0)
 			{
-				foreach (BuildingDef item in value)
+				goto IL_F3;
+			}
+			using (List<BuildingDef>.Enumerator enumerator = list.GetEnumerator())
+			{
+				while (enumerator.MoveNext())
 				{
-					if (item.ShowInBuildMenu && item.IsAvailable())
+					BuildingDef buildingDef = enumerator.Current;
+					if (buildingDef.ShowInBuildMenu && buildingDef.IsAvailable())
 					{
-						PlanScreen.RequirementsState requirementsState = BuildMenu.Instance.BuildableState(item);
-						flag = flag && requirementsState == PlanScreen.RequirementsState.Tech;
-						flag2 = flag2 && (requirementsState == PlanScreen.RequirementsState.Materials || requirementsState == PlanScreen.RequirementsState.Tech);
+						PlanScreen.RequirementsState requirementsState = BuildMenu.Instance.BuildableState(buildingDef);
+						flag = (flag && requirementsState == PlanScreen.RequirementsState.Tech);
+						flag2 = (flag2 && (requirementsState == PlanScreen.RequirementsState.Materials || requirementsState == PlanScreen.RequirementsState.Tech));
 					}
 				}
+				goto IL_F3;
 			}
 		}
-		else if (categorizedCategoryMap.TryGetValue(category, out value2))
+		List<HashedString> list2;
+		if (this.categorizedCategoryMap.TryGetValue(category, out list2))
 		{
-			foreach (HashedString item2 in value2)
+			foreach (HashedString hashedString in list2)
 			{
-				PlanScreen.RequirementsState categoryRequirements = GetCategoryRequirements(item2);
-				flag = flag && categoryRequirements == PlanScreen.RequirementsState.Tech;
-				flag2 = flag2 && (categoryRequirements == PlanScreen.RequirementsState.Materials || categoryRequirements == PlanScreen.RequirementsState.Tech);
+				PlanScreen.RequirementsState categoryRequirements = this.GetCategoryRequirements(hashedString);
+				flag = (flag && categoryRequirements == PlanScreen.RequirementsState.Tech);
+				flag2 = (flag2 && (categoryRequirements == PlanScreen.RequirementsState.Materials || categoryRequirements == PlanScreen.RequirementsState.Tech));
 			}
 		}
-		PlanScreen.RequirementsState result = (flag ? PlanScreen.RequirementsState.Tech : ((!flag2) ? PlanScreen.RequirementsState.Complete : PlanScreen.RequirementsState.Materials));
+		IL_F3:
+		PlanScreen.RequirementsState result;
+		if (flag)
+		{
+			result = PlanScreen.RequirementsState.Tech;
+		}
+		else if (flag2)
+		{
+			result = PlanScreen.RequirementsState.Materials;
+		}
+		else
+		{
+			result = PlanScreen.RequirementsState.Complete;
+		}
 		if (DebugHandler.InstantBuildMode)
 		{
 			result = PlanScreen.RequirementsState.Complete;
@@ -220,121 +213,129 @@ public class BuildMenuCategoriesScreen : KIconToggleMenu
 		return result;
 	}
 
+	// Token: 0x06008EAE RID: 36526 RVA: 0x00371DEC File Offset: 0x0036FFEC
 	public void UpdateNotifications(ICollection<HashedString> updated_categories)
 	{
-		if (toggleInfo == null)
+		if (this.toggleInfo == null)
 		{
 			return;
 		}
-		UpdateBuildableStates(skip_flourish: false);
-		foreach (ToggleInfo item2 in toggleInfo)
+		this.UpdateBuildableStates(false);
+		foreach (KIconToggleMenu.ToggleInfo toggleInfo in this.toggleInfo)
 		{
-			HashedString item = ((UserData)item2.userData).category;
+			HashedString item = ((BuildMenuCategoriesScreen.UserData)toggleInfo.userData).category;
 			if (updated_categories.Contains(item))
 			{
-				item2.toggle.gameObject.GetComponent<PlanCategoryNotifications>().ToggleAttention(active: true);
+				toggleInfo.toggle.gameObject.GetComponent<PlanCategoryNotifications>().ToggleAttention(true);
 			}
 		}
 	}
 
+	// Token: 0x06008EAF RID: 36527 RVA: 0x000FD451 File Offset: 0x000FB651
 	public override void Close()
 	{
 		base.Close();
-		selectedCategory = HashedString.Invalid;
-		SetHasFocus(has_focus: false);
-		if (buildingInfos != null)
+		this.selectedCategory = HashedString.Invalid;
+		this.SetHasFocus(false);
+		if (this.buildingInfos != null)
 		{
-			buildingsScreen.Close();
+			this.buildingsScreen.Close();
 		}
 	}
 
+	// Token: 0x06008EB0 RID: 36528 RVA: 0x000FD47E File Offset: 0x000FB67E
 	[ContextMenu("ForceUpdateBuildableStates")]
 	private void ForceUpdateBuildableStates()
 	{
-		UpdateBuildableStates(skip_flourish: true);
+		this.UpdateBuildableStates(true);
 	}
 
+	// Token: 0x06008EB1 RID: 36529 RVA: 0x00371E74 File Offset: 0x00370074
 	public void UpdateBuildableStates(bool skip_flourish)
 	{
-		if (subcategories != null && subcategories.Count > 0)
+		if (this.subcategories != null && this.subcategories.Count > 0)
 		{
-			UpdateButtonStates();
+			this.UpdateButtonStates();
+			using (IEnumerator<KIconToggleMenu.ToggleInfo> enumerator = this.toggleInfo.GetEnumerator())
 			{
-				foreach (ToggleInfo item in toggleInfo)
+				while (enumerator.MoveNext())
 				{
-					UserData userData = (UserData)item.userData;
+					KIconToggleMenu.ToggleInfo toggleInfo = enumerator.Current;
+					BuildMenuCategoriesScreen.UserData userData = (BuildMenuCategoriesScreen.UserData)toggleInfo.userData;
 					HashedString hashedString = userData.category;
-					PlanScreen.RequirementsState categoryRequirements = GetCategoryRequirements(hashedString);
-					if (userData.requirementsState == categoryRequirements)
+					PlanScreen.RequirementsState categoryRequirements = this.GetCategoryRequirements(hashedString);
+					if (userData.requirementsState != categoryRequirements)
 					{
-						continue;
-					}
-					userData.requirementsState = categoryRequirements;
-					item.userData = userData;
-					if (!skip_flourish)
-					{
-						item.toggle.ActivateFlourish(state: false);
-						string stateName = "NotificationPing";
-						if (!item.toggle.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsTag(stateName))
+						userData.requirementsState = categoryRequirements;
+						toggleInfo.userData = userData;
+						if (!skip_flourish)
 						{
-							item.toggle.gameObject.GetComponent<Animator>().Play(stateName);
-							BuildMenu.Instance.PlayNewBuildingSounds();
+							toggleInfo.toggle.ActivateFlourish(false);
+							string text = "NotificationPing";
+							if (!toggleInfo.toggle.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsTag(text))
+							{
+								toggleInfo.toggle.gameObject.GetComponent<Animator>().Play(text);
+								BuildMenu.Instance.PlayNewBuildingSounds();
+							}
 						}
 					}
 				}
 				return;
 			}
 		}
-		buildingsScreen.UpdateBuildableStates();
+		this.buildingsScreen.UpdateBuildableStates();
 	}
 
+	// Token: 0x06008EB2 RID: 36530 RVA: 0x00371F78 File Offset: 0x00370178
 	protected override void OnShow(bool show)
 	{
-		if (buildingInfos != null)
+		if (this.buildingInfos != null)
 		{
 			if (show)
 			{
-				buildingsScreen.Configure(category, buildingInfos);
-				buildingsScreen.Show();
+				this.buildingsScreen.Configure(this.category, this.buildingInfos);
+				this.buildingsScreen.Show(true);
 			}
 			else
 			{
-				buildingsScreen.Close();
+				this.buildingsScreen.Close();
 			}
 		}
 		base.OnShow(show);
 	}
 
+	// Token: 0x06008EB3 RID: 36531 RVA: 0x00371FC8 File Offset: 0x003701C8
 	public override void ClearSelection()
 	{
-		selectedCategory = HashedString.Invalid;
+		this.selectedCategory = HashedString.Invalid;
 		base.ClearSelection();
-		foreach (KToggle toggle in toggles)
+		foreach (KToggle ktoggle in this.toggles)
 		{
-			toggle.isOn = false;
+			ktoggle.isOn = false;
 		}
 	}
 
+	// Token: 0x06008EB4 RID: 36532 RVA: 0x0037202C File Offset: 0x0037022C
 	public override void OnKeyDown(KButtonEvent e)
 	{
-		if (modalKeyInputBehaviour)
+		if (this.modalKeyInputBehaviour)
 		{
-			if (!HasFocus)
+			if (this.HasFocus)
 			{
-				return;
-			}
-			if (e.TryConsume(Action.Escape))
-			{
-				Game.Instance.Trigger(288942073);
-				return;
-			}
-			base.OnKeyDown(e);
-			if (!e.Consumed)
-			{
-				Action action = e.GetAction();
-				if (action >= Action.BUILD_MENU_START_INTERCEPT)
+				if (e.TryConsume(global::Action.Escape))
 				{
-					e.TryConsume(action);
+					Game.Instance.Trigger(288942073, null);
+					return;
+				}
+				base.OnKeyDown(e);
+				if (!e.Consumed)
+				{
+					global::Action action = e.GetAction();
+					if (action >= global::Action.BUILD_MENU_START_INTERCEPT)
+					{
+						e.TryConsume(action);
+						return;
+					}
 				}
 			}
 		}
@@ -343,31 +344,32 @@ public class BuildMenuCategoriesScreen : KIconToggleMenu
 			base.OnKeyDown(e);
 			if (e.Consumed)
 			{
-				UpdateButtonStates();
+				this.UpdateButtonStates();
 			}
 		}
 	}
 
+	// Token: 0x06008EB5 RID: 36533 RVA: 0x0037209C File Offset: 0x0037029C
 	public override void OnKeyUp(KButtonEvent e)
 	{
-		if (modalKeyInputBehaviour)
+		if (this.modalKeyInputBehaviour)
 		{
-			if (!HasFocus)
+			if (this.HasFocus)
 			{
-				return;
-			}
-			if (e.TryConsume(Action.Escape))
-			{
-				Game.Instance.Trigger(288942073);
-				return;
-			}
-			base.OnKeyUp(e);
-			if (!e.Consumed)
-			{
-				Action action = e.GetAction();
-				if (action >= Action.BUILD_MENU_START_INTERCEPT)
+				if (e.TryConsume(global::Action.Escape))
 				{
-					e.TryConsume(action);
+					Game.Instance.Trigger(288942073, null);
+					return;
+				}
+				base.OnKeyUp(e);
+				if (!e.Consumed)
+				{
+					global::Action action = e.GetAction();
+					if (action >= global::Action.BUILD_MENU_START_INTERCEPT)
+					{
+						e.TryConsume(action);
+						return;
+					}
 				}
 			}
 		}
@@ -377,12 +379,69 @@ public class BuildMenuCategoriesScreen : KIconToggleMenu
 		}
 	}
 
+	// Token: 0x06008EB6 RID: 36534 RVA: 0x000FD487 File Offset: 0x000FB687
 	public override void SetHasFocus(bool has_focus)
 	{
 		base.SetHasFocus(has_focus);
-		if (focusIndicator != null)
+		if (this.focusIndicator != null)
 		{
-			focusIndicator.color = (has_focus ? focusedColour : unfocusedColour);
+			this.focusIndicator.color = (has_focus ? this.focusedColour : this.unfocusedColour);
 		}
+	}
+
+	// Token: 0x04006B86 RID: 27526
+	public Action<HashedString, int> onCategoryClicked;
+
+	// Token: 0x04006B87 RID: 27527
+	[SerializeField]
+	public bool modalKeyInputBehaviour;
+
+	// Token: 0x04006B88 RID: 27528
+	[SerializeField]
+	private Image focusIndicator;
+
+	// Token: 0x04006B89 RID: 27529
+	[SerializeField]
+	private Color32 focusedColour;
+
+	// Token: 0x04006B8A RID: 27530
+	[SerializeField]
+	private Color32 unfocusedColour;
+
+	// Token: 0x04006B8B RID: 27531
+	private IList<HashedString> subcategories;
+
+	// Token: 0x04006B8C RID: 27532
+	private Dictionary<HashedString, List<BuildingDef>> categorizedBuildingMap;
+
+	// Token: 0x04006B8D RID: 27533
+	private Dictionary<HashedString, List<HashedString>> categorizedCategoryMap;
+
+	// Token: 0x04006B8E RID: 27534
+	private BuildMenuBuildingsScreen buildingsScreen;
+
+	// Token: 0x04006B8F RID: 27535
+	private HashedString category;
+
+	// Token: 0x04006B90 RID: 27536
+	private IList<BuildMenu.BuildingInfo> buildingInfos;
+
+	// Token: 0x04006B91 RID: 27537
+	private HashedString selectedCategory = HashedString.Invalid;
+
+	// Token: 0x02001AA7 RID: 6823
+	private class UserData
+	{
+		// Token: 0x04006B92 RID: 27538
+		public HashedString category;
+
+		// Token: 0x04006B93 RID: 27539
+		public int depth;
+
+		// Token: 0x04006B94 RID: 27540
+		public PlanScreen.RequirementsState requirementsState;
+
+		// Token: 0x04006B95 RID: 27541
+		public ImageToggleState.State? currentToggleState;
 	}
 }

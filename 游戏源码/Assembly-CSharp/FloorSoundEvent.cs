@@ -1,52 +1,54 @@
+﻿using System;
 using System.Diagnostics;
 using FMOD.Studio;
 using UnityEngine;
 
+// Token: 0x02000912 RID: 2322
 [DebuggerDisplay("{Name}")]
 public class FloorSoundEvent : SoundEvent
 {
-	public static float IDLE_WALKING_VOLUME_REDUCTION = 0.55f;
-
-	public FloorSoundEvent(string file_name, string sound_name, int frame)
-		: base(file_name, sound_name, frame, do_load: false, is_looping: false, SoundEvent.IGNORE_INTERVAL, is_dynamic: true)
+	// Token: 0x06002940 RID: 10560 RVA: 0x000BAD08 File Offset: 0x000B8F08
+	public FloorSoundEvent(string file_name, string sound_name, int frame) : base(file_name, sound_name, frame, false, false, (float)SoundEvent.IGNORE_INTERVAL, true)
 	{
 		base.noiseValues = SoundEventVolumeCache.instance.GetVolume("FloorSoundEvent", sound_name);
 	}
 
+	// Token: 0x06002941 RID: 10561 RVA: 0x001D54F8 File Offset: 0x001D36F8
 	public override void PlaySound(AnimEventManager.EventPlayerData behaviour)
 	{
-		Vector3 pos = behaviour.GetComponent<Transform>().GetPosition();
-		KBatchedAnimController component = behaviour.GetComponent<KBatchedAnimController>();
-		if (component != null)
+		Vector3 vector = behaviour.position;
+		KBatchedAnimController controller = behaviour.controller;
+		if (controller != null)
 		{
-			pos = component.GetPivotSymbolPosition();
+			vector = controller.GetPivotSymbolPosition();
 		}
-		int num = Grid.PosToCell(pos);
+		int num = Grid.PosToCell(vector);
 		int cell = Grid.CellBelow(num);
 		if (!Grid.IsValidCell(cell))
 		{
 			return;
 		}
-		string text = GlobalAssets.GetSound(StringFormatter.Combine(GetAudioCategory(cell), "_", base.name), force_no_warning: true);
-		if (text == null)
+		string sound = GlobalAssets.GetSound(StringFormatter.Combine(FloorSoundEvent.GetAudioCategory(cell), "_", base.name), true);
+		if (sound == null)
 		{
-			text = GlobalAssets.GetSound(StringFormatter.Combine("Rock_", base.name), force_no_warning: true);
-			if (text == null)
+			sound = GlobalAssets.GetSound(StringFormatter.Combine("Rock_", base.name), true);
+			if (sound == null)
 			{
-				text = GlobalAssets.GetSound(base.name, force_no_warning: true);
+				sound = GlobalAssets.GetSound(base.name, true);
 			}
 		}
 		GameObject gameObject = behaviour.controller.gameObject;
+		MinionIdentity component = gameObject.GetComponent<MinionIdentity>();
 		base.objectIsSelectedAndVisible = SoundEvent.ObjectIsSelectedAndVisible(gameObject);
-		if (SoundEvent.IsLowPrioritySound(text) && !base.objectIsSelectedAndVisible)
+		if (SoundEvent.IsLowPrioritySound(sound) && !base.objectIsSelectedAndVisible)
 		{
 			return;
 		}
-		pos = SoundEvent.GetCameraScaledPosition(pos);
-		pos.z = 0f;
+		vector = SoundEvent.GetCameraScaledPosition(vector, false);
+		vector.z = 0f;
 		if (base.objectIsSelectedAndVisible)
 		{
-			pos = SoundEvent.AudioHighlightListenerPosition(pos);
+			vector = SoundEvent.AudioHighlightListenerPosition(vector);
 		}
 		if (Grid.Element == null)
 		{
@@ -57,36 +59,44 @@ public class FloorSoundEvent : SoundEvent
 		if (isLiquid)
 		{
 			num2 = SoundUtil.GetLiquidDepth(num);
-			string text2 = GlobalAssets.GetSound("Liquid_footstep", force_no_warning: true);
-			if (text2 != null && (base.objectIsSelectedAndVisible || SoundEvent.ShouldPlaySound(behaviour.controller, text2, base.looping, isDynamic)))
+			string sound2 = GlobalAssets.GetSound("Liquid_footstep", true);
+			if (sound2 != null && (base.objectIsSelectedAndVisible || SoundEvent.ShouldPlaySound(behaviour.controller, sound2, base.looping, this.isDynamic)))
 			{
-				FMOD.Studio.EventInstance instance = SoundEvent.BeginOneShot(text2, pos, SoundEvent.GetVolume(base.objectIsSelectedAndVisible));
+				FMOD.Studio.EventInstance instance = SoundEvent.BeginOneShot(sound2, vector, SoundEvent.GetVolume(base.objectIsSelectedAndVisible), false);
 				if (num2 > 0f)
 				{
-					instance.setParameterByName("liquidDepth", num2);
+					instance.setParameterByName("liquidDepth", num2, false);
 				}
 				SoundEvent.EndOneShot(instance);
 			}
 		}
-		if (text == null || (!base.objectIsSelectedAndVisible && !SoundEvent.ShouldPlaySound(behaviour.controller, text, base.looping, isDynamic)))
+		if (component != null && component.model == BionicMinionConfig.MODEL)
 		{
-			return;
+			string sound3 = GlobalAssets.GetSound("Bionic_move", true);
+			if (sound3 != null && (base.objectIsSelectedAndVisible || SoundEvent.ShouldPlaySound(behaviour.controller, sound3, base.looping, this.isDynamic)))
+			{
+				SoundEvent.EndOneShot(SoundEvent.BeginOneShot(sound3, vector, SoundEvent.GetVolume(base.objectIsSelectedAndVisible), false));
+			}
 		}
-		FMOD.Studio.EventInstance instance2 = SoundEvent.BeginOneShot(text, pos);
-		if (instance2.isValid())
+		if (sound != null && (base.objectIsSelectedAndVisible || SoundEvent.ShouldPlaySound(behaviour.controller, sound, base.looping, this.isDynamic)))
 		{
-			if (num2 > 0f)
+			FMOD.Studio.EventInstance instance2 = SoundEvent.BeginOneShot(sound, vector, 1f, false);
+			if (instance2.isValid())
 			{
-				instance2.setParameterByName("liquidDepth", num2);
+				if (num2 > 0f)
+				{
+					instance2.setParameterByName("liquidDepth", num2, false);
+				}
+				if (behaviour.controller.HasAnimationFile("anim_loco_walk_kanim"))
+				{
+					instance2.setVolume(FloorSoundEvent.IDLE_WALKING_VOLUME_REDUCTION);
+				}
+				SoundEvent.EndOneShot(instance2);
 			}
-			if (behaviour.controller.HasAnimationFile("anim_loco_walk_kanim"))
-			{
-				instance2.setVolume(IDLE_WALKING_VOLUME_REDUCTION);
-			}
-			SoundEvent.EndOneShot(instance2);
 		}
 	}
 
+	// Token: 0x06002942 RID: 10562 RVA: 0x001D5768 File Offset: 0x001D3968
 	private static string GetAudioCategory(int cell)
 	{
 		if (!Grid.IsValidCell(cell))
@@ -109,17 +119,39 @@ public class FloorSoundEvent : SoundEvent
 			string result = "";
 			if (buildingDef != null)
 			{
-				result = buildingDef.PrefabID switch
+				string prefabID = buildingDef.PrefabID;
+				if (prefabID == "PlasticTile")
 				{
-					"PlasticTile" => "TilePlastic", 
-					"GlassTile" => "TileGlass", 
-					"BunkerTile" => "TileBunker", 
-					"MetalTile" => "TileMetal", 
-					"CarpetTile" => "Carpet", 
-					"SnowTile" => "TileSnow", 
-					"WoodTile" => "TileWood", 
-					_ => "Tile", 
-				};
+					result = "TilePlastic";
+				}
+				else if (prefabID == "GlassTile")
+				{
+					result = "TileGlass";
+				}
+				else if (prefabID == "BunkerTile")
+				{
+					result = "TileBunker";
+				}
+				else if (prefabID == "MetalTile")
+				{
+					result = "TileMetal";
+				}
+				else if (prefabID == "CarpetTile")
+				{
+					result = "Carpet";
+				}
+				else if (prefabID == "SnowTile")
+				{
+					result = "TileSnow";
+				}
+				else if (prefabID == "WoodTile")
+				{
+					result = "TileWood";
+				}
+				else
+				{
+					result = "Tile";
+				}
 			}
 			return result;
 		}
@@ -138,4 +170,7 @@ public class FloorSoundEvent : SoundEvent
 		}
 		return "Rock";
 	}
+
+	// Token: 0x04001B88 RID: 7048
+	public static float IDLE_WALKING_VOLUME_REDUCTION = 0.55f;
 }

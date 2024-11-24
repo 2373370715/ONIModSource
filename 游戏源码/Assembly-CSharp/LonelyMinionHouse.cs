@@ -1,124 +1,228 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Klei.AI;
 using STRINGS;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x02000E75 RID: 3701
 public class LonelyMinionHouse : StoryTraitStateMachine<LonelyMinionHouse, LonelyMinionHouse.Instance, LonelyMinionHouse.Def>
 {
-	public class Def : TraitDef
+	// Token: 0x06004A62 RID: 19042 RVA: 0x0025A15C File Offset: 0x0025835C
+	private bool ValidateOperationalTransition(LonelyMinionHouse.Instance smi)
+	{
+		Operational component = smi.GetComponent<Operational>();
+		bool flag = smi.IsInsideState(smi.sm.Active);
+		return component != null && flag != component.IsOperational;
+	}
+
+	// Token: 0x06004A63 RID: 19043 RVA: 0x000D01EB File Offset: 0x000CE3EB
+	private static bool AllQuestsComplete(LonelyMinionHouse.Instance smi)
+	{
+		return 1f - smi.sm.QuestProgress.Get(smi) <= Mathf.Epsilon;
+	}
+
+	// Token: 0x06004A64 RID: 19044 RVA: 0x0025A19C File Offset: 0x0025839C
+	public static void EvaluateLights(LonelyMinionHouse.Instance smi, float dt)
+	{
+		bool flag = smi.IsInsideState(smi.sm.Active);
+		QuestInstance instance = QuestManager.GetInstance(smi.QuestOwnerId, Db.Get().Quests.LonelyMinionPowerQuest);
+		if (!flag || !smi.Light.enabled || instance.IsComplete)
+		{
+			return;
+		}
+		bool flag2;
+		bool flag3;
+		instance.TrackProgress(new Quest.ItemData
+		{
+			CriteriaId = LonelyMinionConfig.PowerCriteriaId,
+			CurrentValue = instance.GetCurrentValue(LonelyMinionConfig.PowerCriteriaId, 0) + dt
+		}, out flag2, out flag3);
+	}
+
+	// Token: 0x06004A65 RID: 19045 RVA: 0x0025A224 File Offset: 0x00258424
+	public override void InitializeStates(out StateMachine.BaseState default_state)
+	{
+		default_state = this.Inactive;
+		base.serializable = StateMachine.SerializeType.ParamsOnly;
+		this.root.Update(new Action<LonelyMinionHouse.Instance, float>(LonelyMinionHouse.EvaluateLights), UpdateRate.SIM_1000ms, false);
+		this.Inactive.EventTransition(GameHashes.OperationalChanged, this.Active, new StateMachine<LonelyMinionHouse, LonelyMinionHouse.Instance, StateMachineController, LonelyMinionHouse.Def>.Transition.ConditionCallback(this.ValidateOperationalTransition));
+		this.Active.Enter(delegate(LonelyMinionHouse.Instance smi)
+		{
+			smi.OnPoweredStateChanged(smi.GetComponent<NonEssentialEnergyConsumer>().IsPowered);
+		}).Exit(delegate(LonelyMinionHouse.Instance smi)
+		{
+			smi.OnPoweredStateChanged(smi.GetComponent<NonEssentialEnergyConsumer>().IsPowered);
+		}).OnSignal(this.CompleteStory, this.Active.StoryComplete, new Func<LonelyMinionHouse.Instance, bool>(LonelyMinionHouse.AllQuestsComplete)).EventTransition(GameHashes.OperationalChanged, this.Inactive, new StateMachine<LonelyMinionHouse, LonelyMinionHouse.Instance, StateMachineController, LonelyMinionHouse.Def>.Transition.ConditionCallback(this.ValidateOperationalTransition));
+		this.Active.StoryComplete.Enter(new StateMachine<LonelyMinionHouse, LonelyMinionHouse.Instance, StateMachineController, LonelyMinionHouse.Def>.State.Callback(LonelyMinionHouse.ActiveStates.OnEnterStoryComplete));
+	}
+
+	// Token: 0x06004A66 RID: 19046 RVA: 0x0025A328 File Offset: 0x00258528
+	public static float CalculateAverageDecor(Extents area)
+	{
+		float num = 0f;
+		int cell = Grid.XYToCell(area.x, area.y);
+		for (int i = 0; i < area.width * area.height; i++)
+		{
+			int num2 = Grid.OffsetCell(cell, i % area.width, i / area.width);
+			num += Grid.Decor[num2];
+		}
+		return num / (float)(area.width * area.height);
+	}
+
+	// Token: 0x04003391 RID: 13201
+	public GameStateMachine<LonelyMinionHouse, LonelyMinionHouse.Instance, StateMachineController, LonelyMinionHouse.Def>.State Inactive;
+
+	// Token: 0x04003392 RID: 13202
+	public LonelyMinionHouse.ActiveStates Active;
+
+	// Token: 0x04003393 RID: 13203
+	public StateMachine<LonelyMinionHouse, LonelyMinionHouse.Instance, StateMachineController, LonelyMinionHouse.Def>.Signal MailDelivered;
+
+	// Token: 0x04003394 RID: 13204
+	public StateMachine<LonelyMinionHouse, LonelyMinionHouse.Instance, StateMachineController, LonelyMinionHouse.Def>.Signal CompleteStory;
+
+	// Token: 0x04003395 RID: 13205
+	public StateMachine<LonelyMinionHouse, LonelyMinionHouse.Instance, StateMachineController, LonelyMinionHouse.Def>.FloatParameter QuestProgress;
+
+	// Token: 0x02000E76 RID: 3702
+	public class Def : StoryTraitStateMachine<LonelyMinionHouse, LonelyMinionHouse.Instance, LonelyMinionHouse.Def>.TraitDef
 	{
 	}
 
-	public new class Instance : TraitInstance, ICheckboxListGroupControl
+	// Token: 0x02000E77 RID: 3703
+	public new class Instance : StoryTraitStateMachine<LonelyMinionHouse, LonelyMinionHouse.Instance, LonelyMinionHouse.Def>.TraitInstance, ICheckboxListGroupControl
 	{
-		private KAnimLink lightsLink;
+		// Token: 0x17000406 RID: 1030
+		// (get) Token: 0x06004A69 RID: 19049 RVA: 0x000D021E File Offset: 0x000CE41E
+		public HashedString QuestOwnerId
+		{
+			get
+			{
+				return this.questOwnerId;
+			}
+		}
 
-		private HashedString questOwnerId;
+		// Token: 0x17000407 RID: 1031
+		// (get) Token: 0x06004A6A RID: 19050 RVA: 0x000D0226 File Offset: 0x000CE426
+		public KBatchedAnimController AnimController
+		{
+			get
+			{
+				return this.animControllers[0];
+			}
+		}
 
-		private LonelyMinion.Instance lonelyMinion;
+		// Token: 0x17000408 RID: 1032
+		// (get) Token: 0x06004A6B RID: 19051 RVA: 0x000D0230 File Offset: 0x000CE430
+		public KBatchedAnimController LightsController
+		{
+			get
+			{
+				return this.animControllers[1];
+			}
+		}
 
-		private KBatchedAnimController[] animControllers;
+		// Token: 0x17000409 RID: 1033
+		// (get) Token: 0x06004A6C RID: 19052 RVA: 0x000D023A File Offset: 0x000CE43A
+		public KBatchedAnimController BlindsController
+		{
+			get
+			{
+				return this.blinds.meterController;
+			}
+		}
 
-		private Light2D light;
+		// Token: 0x1700040A RID: 1034
+		// (get) Token: 0x06004A6D RID: 19053 RVA: 0x000D0247 File Offset: 0x000CE447
+		public Light2D Light
+		{
+			get
+			{
+				return this.light;
+			}
+		}
 
-		private FilteredStorage storageFilter;
-
-		private MeterController meter;
-
-		private MeterController blinds;
-
-		private Workable.WorkableEvent currentWorkState = Workable.WorkableEvent.WorkStopped;
-
-		private Notification knockNotification;
-
-		private KBatchedAnimController knocker;
-
-		public HashedString QuestOwnerId => questOwnerId;
-
-		public KBatchedAnimController AnimController => animControllers[0];
-
-		public KBatchedAnimController LightsController => animControllers[1];
-
-		public KBatchedAnimController BlindsController => blinds.meterController;
-
-		public Light2D Light => light;
-
-		public string Title => CODEX.STORY_TRAITS.LONELYMINION.NAME;
-
-		public string Description => CODEX.STORY_TRAITS.LONELYMINION.DESCRIPTION_BUILDINGMENU;
-
-		public Instance(StateMachineController master, Def def)
-			: base(master, def)
+		// Token: 0x06004A6E RID: 19054 RVA: 0x000D024F File Offset: 0x000CE44F
+		public Instance(StateMachineController master, LonelyMinionHouse.Def def) : base(master, def)
 		{
 		}
 
+		// Token: 0x06004A6F RID: 19055 RVA: 0x0025A398 File Offset: 0x00258598
 		public override void StartSM()
 		{
-			animControllers = base.gameObject.GetComponentsInChildren<KBatchedAnimController>(includeInactive: true);
-			light = LightsController.GetComponent<Light2D>();
-			light.transform.position += Vector3.forward * Grid.GetLayerZ(Grid.SceneLayer.TransferArm);
-			light.gameObject.SetActive(value: true);
-			lightsLink = new KAnimLink(AnimController, LightsController);
-			Activatable component = GetComponent<Activatable>();
-			component.SetOffsets(new CellOffset[1]
+			this.animControllers = base.gameObject.GetComponentsInChildren<KBatchedAnimController>(true);
+			this.light = this.LightsController.GetComponent<Light2D>();
+			this.light.transform.position += Vector3.forward * Grid.GetLayerZ(Grid.SceneLayer.TransferArm);
+			this.light.gameObject.SetActive(true);
+			this.lightsLink = new KAnimLink(this.AnimController, this.LightsController);
+			Activatable component = base.GetComponent<Activatable>();
+			component.SetOffsets(new CellOffset[]
 			{
 				new CellOffset(-3, 0)
 			});
 			if (!component.IsActivated)
 			{
-				component.OnWorkableEventCB = (Action<Workable, Workable.WorkableEvent>)Delegate.Combine(component.OnWorkableEventCB, new Action<Workable, Workable.WorkableEvent>(OnWorkStateChanged));
-				component.onActivate = (System.Action)Delegate.Combine(component.onActivate, new System.Action(StartStoryTrait));
+				Activatable activatable = component;
+				activatable.OnWorkableEventCB = (Action<Workable, Workable.WorkableEvent>)Delegate.Combine(activatable.OnWorkableEventCB, new Action<Workable, Workable.WorkableEvent>(this.OnWorkStateChanged));
+				Activatable activatable2 = component;
+				activatable2.onActivate = (System.Action)Delegate.Combine(activatable2.onActivate, new System.Action(this.StartStoryTrait));
 			}
-			meter = new MeterController(AnimController, "meter_storage_target", "meter", Meter.Offset.UserSpecified, Grid.SceneLayer.TransferArm, LonelyMinionHouseConfig.METER_SYMBOLS);
-			blinds = new MeterController(AnimController, "blinds_target", string.Format("{0}_{1}", "meter_blinds", 0), Meter.Offset.UserSpecified, Grid.SceneLayer.TransferArm, LonelyMinionHouseConfig.BLINDS_SYMBOLS);
-			KPrefabID component2 = GetComponent<KPrefabID>();
-			questOwnerId = new HashedString(component2.PrefabTag.GetHash());
-			SpawnMinion();
-			if (lonelyMinion != null && !TryFindMailbox())
+			this.meter = new MeterController(this.AnimController, "meter_storage_target", "meter", Meter.Offset.UserSpecified, Grid.SceneLayer.TransferArm, LonelyMinionHouseConfig.METER_SYMBOLS);
+			this.blinds = new MeterController(this.AnimController, "blinds_target", string.Format("{0}_{1}", "meter_blinds", 0), Meter.Offset.UserSpecified, Grid.SceneLayer.TransferArm, LonelyMinionHouseConfig.BLINDS_SYMBOLS);
+			KPrefabID component2 = base.GetComponent<KPrefabID>();
+			this.questOwnerId = new HashedString(component2.PrefabTag.GetHash());
+			this.SpawnMinion();
+			if (this.lonelyMinion != null && !this.TryFindMailbox())
 			{
-				GameScenePartitioner.Instance.AddGlobalLayerListener(GameScenePartitioner.Instance.objectLayers[1], OnBuildingLayerChanged);
+				GameScenePartitioner.Instance.AddGlobalLayerListener(GameScenePartitioner.Instance.objectLayers[1], new Action<int, object>(this.OnBuildingLayerChanged));
 			}
-			QuestManager.InitializeQuest(questOwnerId, Db.Get().Quests.LonelyMinionGreetingQuest);
-			QuestInstance questInstance = QuestManager.InitializeQuest(questOwnerId, Db.Get().Quests.LonelyMinionFoodQuest);
-			QuestInstance questInstance2 = QuestManager.InitializeQuest(questOwnerId, Db.Get().Quests.LonelyMinionDecorQuest);
-			QuestInstance questInstance3 = QuestManager.InitializeQuest(questOwnerId, Db.Get().Quests.LonelyMinionPowerQuest);
-			NonEssentialEnergyConsumer component3 = GetComponent<NonEssentialEnergyConsumer>();
-			component3.PoweredStateChanged = (Action<bool>)Delegate.Combine(component3.PoweredStateChanged, new Action<bool>(OnPoweredStateChanged));
-			OnPoweredStateChanged(component3.IsPowered);
-			if (lonelyMinion == null)
+			QuestManager.InitializeQuest(this.questOwnerId, Db.Get().Quests.LonelyMinionGreetingQuest);
+			QuestInstance questInstance = QuestManager.InitializeQuest(this.questOwnerId, Db.Get().Quests.LonelyMinionFoodQuest);
+			QuestInstance questInstance2 = QuestManager.InitializeQuest(this.questOwnerId, Db.Get().Quests.LonelyMinionDecorQuest);
+			QuestInstance questInstance3 = QuestManager.InitializeQuest(this.questOwnerId, Db.Get().Quests.LonelyMinionPowerQuest);
+			NonEssentialEnergyConsumer component3 = base.GetComponent<NonEssentialEnergyConsumer>();
+			NonEssentialEnergyConsumer nonEssentialEnergyConsumer = component3;
+			nonEssentialEnergyConsumer.PoweredStateChanged = (Action<bool>)Delegate.Combine(nonEssentialEnergyConsumer.PoweredStateChanged, new Action<bool>(this.OnPoweredStateChanged));
+			this.OnPoweredStateChanged(component3.IsPowered);
+			if (this.lonelyMinion == null)
 			{
 				base.StartSM();
 				return;
 			}
-			Subscribe(-592767678, OnBuildingActivated);
+			base.Subscribe(-592767678, new Action<object>(this.OnBuildingActivated));
 			base.StartSM();
-			questInstance.QuestProgressChanged = (Action<QuestInstance, Quest.State, float>)Delegate.Combine(questInstance.QuestProgressChanged, new Action<QuestInstance, Quest.State, float>(OnQuestProgressChanged));
-			questInstance2.QuestProgressChanged = (Action<QuestInstance, Quest.State, float>)Delegate.Combine(questInstance2.QuestProgressChanged, new Action<QuestInstance, Quest.State, float>(OnQuestProgressChanged));
-			questInstance3.QuestProgressChanged = (Action<QuestInstance, Quest.State, float>)Delegate.Combine(questInstance3.QuestProgressChanged, new Action<QuestInstance, Quest.State, float>(OnQuestProgressChanged));
+			QuestInstance questInstance4 = questInstance;
+			questInstance4.QuestProgressChanged = (Action<QuestInstance, Quest.State, float>)Delegate.Combine(questInstance4.QuestProgressChanged, new Action<QuestInstance, Quest.State, float>(this.OnQuestProgressChanged));
+			QuestInstance questInstance5 = questInstance2;
+			questInstance5.QuestProgressChanged = (Action<QuestInstance, Quest.State, float>)Delegate.Combine(questInstance5.QuestProgressChanged, new Action<QuestInstance, Quest.State, float>(this.OnQuestProgressChanged));
+			QuestInstance questInstance6 = questInstance3;
+			questInstance6.QuestProgressChanged = (Action<QuestInstance, Quest.State, float>)Delegate.Combine(questInstance6.QuestProgressChanged, new Action<QuestInstance, Quest.State, float>(this.OnQuestProgressChanged));
 			float num = base.sm.QuestProgress.Get(this) * 3f;
-			int num2 = (Mathf.Approximately(num, Mathf.Ceil(num)) ? Mathf.CeilToInt(num) : Mathf.FloorToInt(num));
-			if (num2 != 0)
+			int num2 = Mathf.Approximately(num, Mathf.Ceil(num)) ? Mathf.CeilToInt(num) : Mathf.FloorToInt(num);
+			if (num2 == 0)
 			{
-				HashedString[] array = new HashedString[num2];
-				for (int i = 0; i < array.Length; i++)
-				{
-					array[i] = string.Format("{0}_{1}", "meter_blinds", i);
-				}
-				blinds.meterController.Play(array);
+				return;
 			}
+			HashedString[] array = new HashedString[num2];
+			for (int i = 0; i < array.Length; i++)
+			{
+				array[i] = string.Format("{0}_{1}", "meter_blinds", i);
+			}
+			this.blinds.meterController.Play(array, KAnim.PlayMode.Once);
 		}
 
+		// Token: 0x06004A70 RID: 19056 RVA: 0x0025A704 File Offset: 0x00258904
 		public override void StopSM(string reason)
 		{
 			base.StopSM(reason);
-			Activatable component = GetComponent<Activatable>();
-			component.OnWorkableEventCB = (Action<Workable, Workable.WorkableEvent>)Delegate.Remove(component.OnWorkableEventCB, new Action<Workable, Workable.WorkableEvent>(OnWorkStateChanged));
-			component.onActivate = (System.Action)Delegate.Remove(component.onActivate, new System.Action(StartStoryTrait));
-			Unsubscribe(-592767678, OnBuildingActivated);
+			Activatable component = base.GetComponent<Activatable>();
+			component.OnWorkableEventCB = (Action<Workable, Workable.WorkableEvent>)Delegate.Remove(component.OnWorkableEventCB, new Action<Workable, Workable.WorkableEvent>(this.OnWorkStateChanged));
+			component.onActivate = (System.Action)Delegate.Remove(component.onActivate, new System.Action(this.StartStoryTrait));
+			base.Unsubscribe(-592767678, new Action<object>(this.OnBuildingActivated));
 		}
 
+		// Token: 0x06004A71 RID: 19057 RVA: 0x0025A77C File Offset: 0x0025897C
 		private void OnQuestProgressChanged(QuestInstance quest, Quest.State prevState, float delta)
 		{
 			float num = base.sm.QuestProgress.Get(this);
@@ -127,129 +231,136 @@ public class LonelyMinionHouse : StoryTraitStateMachine<LonelyMinionHouse, Lonel
 			{
 				num = 1f;
 			}
-			base.sm.QuestProgress.Set(Mathf.Clamp01(num), this, silenceEvents: true);
-			lonelyMinion.UnlockQuestIdle(quest, prevState, delta);
-			lonelyMinion.ShowQuestCompleteNotification(quest, prevState);
-			base.gameObject.Trigger(1980521255);
-			if (quest.IsComplete)
+			base.sm.QuestProgress.Set(Mathf.Clamp01(num), this, true);
+			this.lonelyMinion.UnlockQuestIdle(quest, prevState, delta);
+			this.lonelyMinion.ShowQuestCompleteNotification(quest, prevState, 0f);
+			base.gameObject.Trigger(1980521255, null);
+			if (!quest.IsComplete)
 			{
-				if (num == 1f)
-				{
-					base.sm.CompleteStory.Trigger(this);
-				}
-				float num2 = num * 3f;
-				int num3 = (Mathf.Approximately(num2, Mathf.Ceil(num2)) ? Mathf.CeilToInt(num2) : Mathf.FloorToInt(num2));
-				blinds.meterController.Queue(string.Format("{0}_{1}", "meter_blinds", num3 - 1));
+				return;
 			}
+			if (num == 1f)
+			{
+				base.sm.CompleteStory.Trigger(this);
+			}
+			float num2 = num * 3f;
+			int num3 = Mathf.Approximately(num2, Mathf.Ceil(num2)) ? Mathf.CeilToInt(num2) : Mathf.FloorToInt(num2);
+			this.blinds.meterController.Queue(string.Format("{0}_{1}", "meter_blinds", num3 - 1), KAnim.PlayMode.Once, 1f, 0f);
 		}
 
+		// Token: 0x06004A72 RID: 19058 RVA: 0x000D0260 File Offset: 0x000CE460
 		public void MailboxContentChanged(GameObject item)
 		{
-			lonelyMinion.sm.Mail.Set(item, lonelyMinion);
+			this.lonelyMinion.sm.Mail.Set(item, this.lonelyMinion, false);
 		}
 
+		// Token: 0x06004A73 RID: 19059 RVA: 0x0025A884 File Offset: 0x00258A84
 		public override void CompleteEvent()
 		{
-			if (lonelyMinion == null)
+			if (this.lonelyMinion == null)
 			{
-				base.smi.AnimController.Play(LonelyMinionHouseConfig.STORAGE, KAnim.PlayMode.Loop);
+				base.smi.AnimController.Play(LonelyMinionHouseConfig.STORAGE, KAnim.PlayMode.Loop, 1f, 0f);
 				base.gameObject.AddOrGet<TreeFilterable>();
 				base.gameObject.AddOrGet<BuildingEnabledButton>();
 				base.gameObject.GetComponent<Deconstructable>().allowDeconstruction = true;
 				base.gameObject.GetComponent<RequireInputs>().visualizeRequirements = RequireInputs.Requirements.None;
 				base.gameObject.GetComponent<Prioritizable>().SetMasterPriority(new PrioritySetting(PriorityScreen.PriorityClass.basic, 5));
-				Storage component = GetComponent<Storage>();
+				Storage component = base.GetComponent<Storage>();
 				component.allowItemRemoval = true;
 				component.showInUI = true;
 				component.showDescriptor = true;
-				component.OnWorkableEventCB = (Action<Workable, Workable.WorkableEvent>)Delegate.Combine(component.OnWorkableEventCB, new Action<Workable, Workable.WorkableEvent>(OnWorkStateChanged));
-				storageFilter = new FilteredStorage(base.smi.GetComponent<KPrefabID>(), null, null, use_logic_meter: false, Db.Get().ChoreTypes.StorageFetch);
-				storageFilter.SetMeter(meter);
-				meter = null;
+				component.OnWorkableEventCB = (Action<Workable, Workable.WorkableEvent>)Delegate.Combine(component.OnWorkableEventCB, new Action<Workable, Workable.WorkableEvent>(this.OnWorkStateChanged));
+				this.storageFilter = new FilteredStorage(base.smi.GetComponent<KPrefabID>(), null, null, false, Db.Get().ChoreTypes.StorageFetch);
+				this.storageFilter.SetMeter(this.meter);
+				this.meter = null;
 				RootMenu.Instance.Refresh();
 				component.RenotifyAll();
 				return;
 			}
 			List<MinionIdentity> list = new List<MinionIdentity>(Components.LiveMinionIdentities.Items);
-			list.Shuffle();
+			list.Shuffle<MinionIdentity>();
 			int num = 3;
 			base.def.EventCompleteInfo.Minions = new GameObject[1 + Mathf.Min(num, list.Count)];
-			base.def.EventCompleteInfo.Minions[0] = lonelyMinion.gameObject;
-			for (int i = 0; i < list.Count; i++)
+			base.def.EventCompleteInfo.Minions[0] = this.lonelyMinion.gameObject;
+			int num2 = 0;
+			while (num2 < list.Count && num > 0)
 			{
-				if (num <= 0)
-				{
-					break;
-				}
-				base.def.EventCompleteInfo.Minions[i + 1] = list[i].gameObject;
+				base.def.EventCompleteInfo.Minions[num2 + 1] = list[num2].gameObject;
 				num--;
+				num2++;
 			}
 			base.CompleteEvent();
 		}
 
+		// Token: 0x06004A74 RID: 19060 RVA: 0x0025AA34 File Offset: 0x00258C34
 		public override void OnCompleteStorySequence()
 		{
-			SpawnMinion();
-			Unsubscribe(-592767678, OnBuildingActivated);
+			this.SpawnMinion();
+			base.Unsubscribe(-592767678, new Action<object>(this.OnBuildingActivated));
 			base.OnCompleteStorySequence();
-			QuestInstance instance = QuestManager.GetInstance(questOwnerId, Db.Get().Quests.LonelyMinionFoodQuest);
-			instance.QuestProgressChanged = (Action<QuestInstance, Quest.State, float>)Delegate.Remove(instance.QuestProgressChanged, new Action<QuestInstance, Quest.State, float>(OnQuestProgressChanged));
-			QuestInstance instance2 = QuestManager.GetInstance(questOwnerId, Db.Get().Quests.LonelyMinionPowerQuest);
-			instance2.QuestProgressChanged = (Action<QuestInstance, Quest.State, float>)Delegate.Remove(instance2.QuestProgressChanged, new Action<QuestInstance, Quest.State, float>(OnQuestProgressChanged));
-			QuestInstance instance3 = QuestManager.GetInstance(questOwnerId, Db.Get().Quests.LonelyMinionDecorQuest);
-			instance3.QuestProgressChanged = (Action<QuestInstance, Quest.State, float>)Delegate.Remove(instance3.QuestProgressChanged, new Action<QuestInstance, Quest.State, float>(OnQuestProgressChanged));
-			blinds.meterController.Play(blinds.meterController.initialAnim, blinds.meterController.initialMode);
-			base.smi.AnimController.Play(LonelyMinionHouseConfig.STORAGE, KAnim.PlayMode.Loop);
+			QuestInstance instance = QuestManager.GetInstance(this.questOwnerId, Db.Get().Quests.LonelyMinionFoodQuest);
+			instance.QuestProgressChanged = (Action<QuestInstance, Quest.State, float>)Delegate.Remove(instance.QuestProgressChanged, new Action<QuestInstance, Quest.State, float>(this.OnQuestProgressChanged));
+			QuestInstance instance2 = QuestManager.GetInstance(this.questOwnerId, Db.Get().Quests.LonelyMinionPowerQuest);
+			instance2.QuestProgressChanged = (Action<QuestInstance, Quest.State, float>)Delegate.Remove(instance2.QuestProgressChanged, new Action<QuestInstance, Quest.State, float>(this.OnQuestProgressChanged));
+			QuestInstance instance3 = QuestManager.GetInstance(this.questOwnerId, Db.Get().Quests.LonelyMinionDecorQuest);
+			instance3.QuestProgressChanged = (Action<QuestInstance, Quest.State, float>)Delegate.Remove(instance3.QuestProgressChanged, new Action<QuestInstance, Quest.State, float>(this.OnQuestProgressChanged));
+			this.blinds.meterController.Play(this.blinds.meterController.initialAnim, this.blinds.meterController.initialMode, 1f, 0f);
+			base.smi.AnimController.Play(LonelyMinionHouseConfig.STORAGE, KAnim.PlayMode.Loop, 1f, 0f);
 			base.gameObject.AddOrGet<TreeFilterable>();
 			base.gameObject.AddOrGet<BuildingEnabledButton>();
 			base.gameObject.GetComponent<Deconstructable>().allowDeconstruction = true;
 			base.gameObject.GetComponent<RequireInputs>().visualizeRequirements = RequireInputs.Requirements.None;
 			base.gameObject.GetComponent<Prioritizable>().SetMasterPriority(new PrioritySetting(PriorityScreen.PriorityClass.basic, 5));
-			Storage component = GetComponent<Storage>();
+			Storage component = base.GetComponent<Storage>();
 			component.allowItemRemoval = true;
 			component.showInUI = true;
 			component.showDescriptor = true;
-			component.OnWorkableEventCB = (Action<Workable, Workable.WorkableEvent>)Delegate.Combine(component.OnWorkableEventCB, new Action<Workable, Workable.WorkableEvent>(OnWorkStateChanged));
-			storageFilter = new FilteredStorage(base.smi.GetComponent<KPrefabID>(), null, null, use_logic_meter: false, Db.Get().ChoreTypes.StorageFetch);
-			storageFilter.SetMeter(meter);
-			meter = null;
+			component.OnWorkableEventCB = (Action<Workable, Workable.WorkableEvent>)Delegate.Combine(component.OnWorkableEventCB, new Action<Workable, Workable.WorkableEvent>(this.OnWorkStateChanged));
+			this.storageFilter = new FilteredStorage(base.smi.GetComponent<KPrefabID>(), null, null, false, Db.Get().ChoreTypes.StorageFetch);
+			this.storageFilter.SetMeter(this.meter);
+			this.meter = null;
 			RootMenu.Instance.Refresh();
 		}
 
+		// Token: 0x06004A75 RID: 19061 RVA: 0x0025AC4C File Offset: 0x00258E4C
 		private void SpawnMinion()
 		{
 			if (StoryManager.Instance.IsStoryComplete(Db.Get().Stories.LonelyMinion))
 			{
 				return;
 			}
-			if (lonelyMinion == null)
+			if (this.lonelyMinion == null)
 			{
-				GameObject gameObject = Util.KInstantiate(Assets.GetPrefab(LonelyMinionConfig.ID), base.gameObject);
-				Debug.Assert(gameObject != null);
+				GameObject gameObject = Util.KInstantiate(Assets.GetPrefab(LonelyMinionConfig.ID), base.gameObject, null);
+				global::Debug.Assert(gameObject != null);
 				gameObject.transform.localPosition = new Vector3(0.54f, 0f, -0.01f);
-				gameObject.SetActive(value: true);
+				gameObject.SetActive(true);
 				Vector2I vector2I = Grid.CellToXY(Grid.PosToCell(base.gameObject));
-				BuildingDef buildingDef = GetComponent<Building>().Def;
-				lonelyMinion = gameObject.GetSMI<LonelyMinion.Instance>();
-				lonelyMinion.def.QuestOwnerId = questOwnerId;
-				lonelyMinion.def.DecorInspectionArea = new Extents(vector2I.x - Mathf.CeilToInt((float)buildingDef.WidthInCells / 2f) + 1, vector2I.y, buildingDef.WidthInCells, buildingDef.HeightInCells);
+				BuildingDef def = base.GetComponent<Building>().Def;
+				this.lonelyMinion = gameObject.GetSMI<LonelyMinion.Instance>();
+				this.lonelyMinion.def.QuestOwnerId = this.questOwnerId;
+				this.lonelyMinion.def.DecorInspectionArea = new Extents(vector2I.x - Mathf.CeilToInt((float)def.WidthInCells / 2f) + 1, vector2I.y, def.WidthInCells, def.HeightInCells);
 				return;
 			}
-			MinionStartingStats minionStartingStats = new MinionStartingStats(lonelyMinion.def.Personality, null, "AncientKnowledge");
+			MinionStartingStats minionStartingStats = new MinionStartingStats(this.lonelyMinion.def.Personality, null, "AncientKnowledge", false);
 			minionStartingStats.Traits.Add(Db.Get().traits.TryGet("Chatty"));
 			minionStartingStats.voiceIdx = -2;
-			string[] aLL_ATTRIBUTES = DUPLICANTSTATS.ALL_ATTRIBUTES;
-			for (int i = 0; i < aLL_ATTRIBUTES.Length; i++)
+			string[] all_ATTRIBUTES = DUPLICANTSTATS.ALL_ATTRIBUTES;
+			for (int i = 0; i < all_ATTRIBUTES.Length; i++)
 			{
-				minionStartingStats.StartingLevels[aLL_ATTRIBUTES[i]] += 7;
+				Dictionary<string, int> startingLevels = minionStartingStats.StartingLevels;
+				string key = all_ATTRIBUTES[i];
+				startingLevels[key] += 7;
 			}
-			UnityEngine.Object.Destroy(lonelyMinion.gameObject);
-			lonelyMinion = null;
-			MinionIdentity minionIdentity = Util.KInstantiate<MinionIdentity>(Assets.GetPrefab(MinionConfig.ID));
+			UnityEngine.Object.Destroy(this.lonelyMinion.gameObject);
+			this.lonelyMinion = null;
+			GameObject prefab = Assets.GetPrefab(BaseMinionConfig.GetMinionIDForModel(minionStartingStats.personality.model));
+			MinionIdentity minionIdentity = Util.KInstantiate<MinionIdentity>(prefab, null, null);
+			minionIdentity.name = prefab.name;
 			Immigration.Instance.ApplyDefaultPersonalPriorities(minionIdentity.gameObject);
-			minionIdentity.gameObject.SetActive(value: true);
+			minionIdentity.gameObject.SetActive(true);
 			minionStartingStats.Apply(minionIdentity.gameObject);
-			minionIdentity.arrivalTime += UnityEngine.Random.Range(2190, 3102);
+			minionIdentity.arrivalTime += (float)UnityEngine.Random.Range(2190, 3102);
 			minionIdentity.arrivalTime *= -1f;
 			MinionResume component = minionIdentity.GetComponent<MinionResume>();
 			for (int j = 0; j < 3; j++)
@@ -261,6 +372,7 @@ public class LonelyMinionHouse : StoryTraitStateMachine<LonelyMinionHouse, Lonel
 			minionIdentity.transform.SetPosition(position);
 		}
 
+		// Token: 0x06004A76 RID: 19062 RVA: 0x0025AEE0 File Offset: 0x002590E0
 		private bool TryFindMailbox()
 		{
 			if (base.sm.QuestProgress.Get(this) == 1f)
@@ -276,7 +388,7 @@ public class LonelyMinionHouse : StoryTraitStateMachine<LonelyMinionHouse, Lonel
 			{
 				if ((pooledList[num].obj as GameObject).GetComponent<KPrefabID>().PrefabTag.GetHash() == LonelyMinionMailboxConfig.IdHash.HashValue)
 				{
-					OnBuildingLayerChanged(0, pooledList[num].obj);
+					this.OnBuildingLayerChanged(0, pooledList[num].obj);
 					flag = true;
 				}
 				num++;
@@ -285,74 +397,82 @@ public class LonelyMinionHouse : StoryTraitStateMachine<LonelyMinionHouse, Lonel
 			return flag;
 		}
 
+		// Token: 0x06004A77 RID: 19063 RVA: 0x0025AF9C File Offset: 0x0025919C
 		private void OnBuildingLayerChanged(int cell, object data)
 		{
 			GameObject gameObject = data as GameObject;
-			if (!(gameObject == null))
+			if (gameObject == null)
 			{
-				KPrefabID component = gameObject.GetComponent<KPrefabID>();
-				if (component.PrefabTag.GetHash() == LonelyMinionMailboxConfig.IdHash.HashValue)
-				{
-					component.GetComponent<LonelyMinionMailbox>().Initialize(this);
-					GameScenePartitioner.Instance.RemoveGlobalLayerListener(GameScenePartitioner.Instance.objectLayers[1], OnBuildingLayerChanged);
-				}
+				return;
+			}
+			KPrefabID component = gameObject.GetComponent<KPrefabID>();
+			if (component.PrefabTag.GetHash() == LonelyMinionMailboxConfig.IdHash.HashValue)
+			{
+				component.GetComponent<LonelyMinionMailbox>().Initialize(this);
+				GameScenePartitioner.Instance.RemoveGlobalLayerListener(GameScenePartitioner.Instance.objectLayers[1], new Action<int, object>(this.OnBuildingLayerChanged));
 			}
 		}
 
+		// Token: 0x06004A78 RID: 19064 RVA: 0x0025B00C File Offset: 0x0025920C
 		public void OnPoweredStateChanged(bool isPowered)
 		{
-			light.enabled = isPowered && GetComponent<Operational>().IsOperational;
-			LightsController.Play(light.enabled ? LonelyMinionHouseConfig.LIGHTS_ON : LonelyMinionHouseConfig.LIGHTS_OFF, KAnim.PlayMode.Loop);
+			this.light.enabled = (isPowered && base.GetComponent<Operational>().IsOperational);
+			this.LightsController.Play(this.light.enabled ? LonelyMinionHouseConfig.LIGHTS_ON : LonelyMinionHouseConfig.LIGHTS_OFF, KAnim.PlayMode.Loop, 1f, 0f);
 		}
 
+		// Token: 0x06004A79 RID: 19065 RVA: 0x000D0280 File Offset: 0x000CE480
 		private void StartStoryTrait()
 		{
-			TriggerStoryEvent(StoryInstance.State.IN_PROGRESS);
+			base.TriggerStoryEvent(StoryInstance.State.IN_PROGRESS);
 		}
 
+		// Token: 0x06004A7A RID: 19066 RVA: 0x0025B064 File Offset: 0x00259264
 		protected override void OnBuildingActivated(object data)
 		{
-			if (IsIntroSequenceComplete())
+			if (!this.IsIntroSequenceComplete())
 			{
-				bool isActivated = GetComponent<Activatable>().IsActivated;
-				if (lonelyMinion != null)
-				{
-					lonelyMinion.sm.Active.Set(isActivated && GetComponent<Operational>().IsOperational, lonelyMinion);
-				}
-				if (isActivated && base.sm.QuestProgress.Get(this) < 1f)
-				{
-					GetComponent<RequireInputs>().visualizeRequirements = RequireInputs.Requirements.AllPower;
-				}
+				return;
+			}
+			bool isActivated = base.GetComponent<Activatable>().IsActivated;
+			if (this.lonelyMinion != null)
+			{
+				this.lonelyMinion.sm.Active.Set(isActivated && base.GetComponent<Operational>().IsOperational, this.lonelyMinion, false);
+			}
+			if (isActivated && base.sm.QuestProgress.Get(this) < 1f)
+			{
+				base.GetComponent<RequireInputs>().visualizeRequirements = RequireInputs.Requirements.AllPower;
 			}
 		}
 
+		// Token: 0x06004A7B RID: 19067 RVA: 0x0025B0E4 File Offset: 0x002592E4
 		protected override void OnObjectSelect(object clicked)
 		{
 			if (!(bool)clicked)
 			{
 				return;
 			}
-			if (knockNotification != null)
+			if (this.knockNotification != null)
 			{
-				knocker.gameObject.Unsubscribe(-1503271301, OnObjectSelect);
-				knockNotification.Clear();
-				knockNotification = null;
-				PlayIntroSequence();
+				this.knocker.gameObject.Unsubscribe(-1503271301, new Action<object>(this.OnObjectSelect));
+				this.knockNotification.Clear();
+				this.knockNotification = null;
+				this.PlayIntroSequence(null);
 				return;
 			}
 			if (!StoryManager.Instance.HasDisplayedPopup(Db.Get().Stories.LonelyMinion, EventInfoDataHelper.PopupType.BEGIN))
 			{
 				int count = Components.LiveMinionIdentities.Count;
 				int idx = UnityEngine.Random.Range(0, count);
-				base.def.EventIntroInfo.Minions = new GameObject[2]
+				base.def.EventIntroInfo.Minions = new GameObject[]
 				{
-					lonelyMinion.gameObject,
+					this.lonelyMinion.gameObject,
 					(count == 0) ? null : Components.LiveMinionIdentities[idx].gameObject
 				};
 			}
 			base.OnObjectSelect(clicked);
 		}
 
+		// Token: 0x06004A7C RID: 19068 RVA: 0x0025B1B4 File Offset: 0x002593B4
 		private void OnWorkStateChanged(Workable w, Workable.WorkableEvent state)
 		{
 			Activatable activatable = w as Activatable;
@@ -360,65 +480,68 @@ public class LonelyMinionHouse : StoryTraitStateMachine<LonelyMinionHouse, Lonel
 			{
 				if (state == Workable.WorkableEvent.WorkStarted)
 				{
-					knocker = w.worker.GetComponent<KBatchedAnimController>();
-					knocker.gameObject.Subscribe(-1503271301, OnObjectSelect);
-					knockNotification = new Notification(CODEX.STORY_TRAITS.LONELYMINION.KNOCK_KNOCK.TEXT, NotificationType.Event, null, null, expires: false, 0f, PlayIntroSequence, null, null, volume_attenuation: true, clear_on_click: true);
-					base.gameObject.AddOrGet<Notifier>().Add(knockNotification);
-					GetComponent<KSelectable>().AddStatusItem(Db.Get().MiscStatusItems.AttentionRequired, base.smi);
+					this.knocker = w.worker.GetComponent<KBatchedAnimController>();
+					this.knocker.gameObject.Subscribe(-1503271301, new Action<object>(this.OnObjectSelect));
+					this.knockNotification = new Notification(CODEX.STORY_TRAITS.LONELYMINION.KNOCK_KNOCK.TEXT, NotificationType.Event, null, null, false, 0f, new Notification.ClickCallback(this.PlayIntroSequence), null, null, true, true, false);
+					base.gameObject.AddOrGet<Notifier>().Add(this.knockNotification, "");
+					base.GetComponent<KSelectable>().AddStatusItem(Db.Get().MiscStatusItems.AttentionRequired, base.smi);
 				}
 				if (state == Workable.WorkableEvent.WorkStopped)
 				{
-					if (currentWorkState == Workable.WorkableEvent.WorkStarted)
+					if (this.currentWorkState == Workable.WorkableEvent.WorkStarted)
 					{
-						if (knockNotification != null)
+						if (this.knockNotification != null)
 						{
-							GetComponent<KSelectable>().RemoveStatusItem(Db.Get().MiscStatusItems.AttentionRequired);
-							knockNotification.Clear();
-							knockNotification = null;
+							base.GetComponent<KSelectable>().RemoveStatusItem(Db.Get().MiscStatusItems.AttentionRequired, false);
+							this.knockNotification.Clear();
+							this.knockNotification = null;
 						}
 						FocusTargetSequence.Cancel(base.master);
-						knocker.gameObject.Unsubscribe(-1503271301, OnObjectSelect);
-						knocker = null;
+						this.knocker.gameObject.Unsubscribe(-1503271301, new Action<object>(this.OnObjectSelect));
+						this.knocker = null;
 					}
-					if (currentWorkState == Workable.WorkableEvent.WorkCompleted)
+					if (this.currentWorkState == Workable.WorkableEvent.WorkCompleted)
 					{
-						activatable.OnWorkableEventCB = (Action<Workable, Workable.WorkableEvent>)Delegate.Remove(activatable.OnWorkableEventCB, new Action<Workable, Workable.WorkableEvent>(OnWorkStateChanged));
-						activatable.onActivate = (System.Action)Delegate.Remove(activatable.onActivate, new System.Action(StartStoryTrait));
+						Activatable activatable2 = activatable;
+						activatable2.OnWorkableEventCB = (Action<Workable, Workable.WorkableEvent>)Delegate.Remove(activatable2.OnWorkableEventCB, new Action<Workable, Workable.WorkableEvent>(this.OnWorkStateChanged));
+						Activatable activatable3 = activatable;
+						activatable3.onActivate = (System.Action)Delegate.Remove(activatable3.onActivate, new System.Action(this.StartStoryTrait));
 					}
 				}
-				currentWorkState = state;
+				this.currentWorkState = state;
+				return;
 			}
-			else if (state == Workable.WorkableEvent.WorkStopped)
+			if (state == Workable.WorkableEvent.WorkStopped)
 			{
-				AnimController.Play(LonelyMinionHouseConfig.STORAGE_WORK_PST);
-				AnimController.Queue(LonelyMinionHouseConfig.STORAGE);
+				this.AnimController.Play(LonelyMinionHouseConfig.STORAGE_WORK_PST, KAnim.PlayMode.Once, 1f, 0f);
+				this.AnimController.Queue(LonelyMinionHouseConfig.STORAGE, KAnim.PlayMode.Once, 1f, 0f);
+				return;
 			}
-			else
+			bool flag = this.AnimController.currentAnim == LonelyMinionHouseConfig.STORAGE_WORKING[0] || this.AnimController.currentAnim == LonelyMinionHouseConfig.STORAGE_WORKING[1];
+			if (state == Workable.WorkableEvent.WorkStarted && !flag)
 			{
-				bool flag = AnimController.currentAnim == LonelyMinionHouseConfig.STORAGE_WORKING[0] || AnimController.currentAnim == LonelyMinionHouseConfig.STORAGE_WORKING[1];
-				if (state == Workable.WorkableEvent.WorkStarted && !flag)
-				{
-					AnimController.Play(LonelyMinionHouseConfig.STORAGE_WORKING, KAnim.PlayMode.Loop);
-				}
+				this.AnimController.Play(LonelyMinionHouseConfig.STORAGE_WORKING, KAnim.PlayMode.Loop);
 			}
 		}
 
+		// Token: 0x06004A7D RID: 19069 RVA: 0x0025B3D8 File Offset: 0x002595D8
 		private void ReleaseKnocker(object _)
 		{
-			Navigator component = knocker.GetComponent<Navigator>();
+			Navigator component = this.knocker.GetComponent<Navigator>();
 			NavGrid.NavTypeData navTypeData = component.NavGrid.GetNavTypeData(component.CurrentNavType);
-			knocker.RemoveAnimOverrides(GetComponent<Activatable>().overrideAnims[0]);
-			knocker.Play(navTypeData.idleAnim);
-			blinds.meterController.Play(blinds.meterController.initialAnim, blinds.meterController.initialMode);
-			lonelyMinion.AnimController.Play(lonelyMinion.AnimController.defaultAnim, lonelyMinion.AnimController.initialMode);
-			knocker.gameObject.Unsubscribe(-1061186183, ReleaseKnocker);
-			knocker.GetComponent<Brain>().Reset("knock sequence");
-			knocker = null;
+			this.knocker.RemoveAnimOverrides(base.GetComponent<Activatable>().overrideAnims[0]);
+			this.knocker.Play(navTypeData.idleAnim, KAnim.PlayMode.Once, 1f, 0f);
+			this.blinds.meterController.Play(this.blinds.meterController.initialAnim, this.blinds.meterController.initialMode, 1f, 0f);
+			this.lonelyMinion.AnimController.Play(this.lonelyMinion.AnimController.defaultAnim, this.lonelyMinion.AnimController.initialMode, 1f, 0f);
+			this.knocker.gameObject.Unsubscribe(-1061186183, new Action<object>(this.ReleaseKnocker));
+			this.knocker.GetComponent<Brain>().Reset("knock sequence");
+			this.knocker = null;
 		}
 
+		// Token: 0x06004A7E RID: 19070 RVA: 0x0025B4F4 File Offset: 0x002596F4
 		private void PlayIntroSequence(object _ = null)
 		{
-			GetComponent<KSelectable>().RemoveStatusItem(Db.Get().MiscStatusItems.AttentionRequired);
+			base.GetComponent<KSelectable>().RemoveStatusItem(Db.Get().MiscStatusItems.AttentionRequired, false);
 			Vector3 target = Grid.CellToPosCCC(Grid.OffsetCell(Grid.PosToCell(base.gameObject), base.def.CompletionData.CameraTargetOffset), Grid.SceneLayer.Ore);
 			FocusTargetSequence.Start(base.master, new FocusTargetSequence.Data
 			{
@@ -427,44 +550,45 @@ public class LonelyMinionHouse : StoryTraitStateMachine<LonelyMinionHouse, Lonel
 				TargetSize = 6f,
 				Target = target,
 				PopupData = null,
-				CompleteCB = OnIntroSequenceComplete,
-				CanCompleteCB = IsIntroSequenceComplete
+				CompleteCB = new System.Action(this.OnIntroSequenceComplete),
+				CanCompleteCB = new Func<bool>(this.IsIntroSequenceComplete)
 			});
-			GetComponent<KnockKnock>().AnswerDoor();
-			knockNotification = null;
+			base.GetComponent<KnockKnock>().AnswerDoor();
+			this.knockNotification = null;
 		}
 
+		// Token: 0x06004A7F RID: 19071 RVA: 0x0025B5CC File Offset: 0x002597CC
 		private void OnIntroSequenceComplete()
 		{
-			OnBuildingActivated(null);
-			QuestManager.GetInstance(questOwnerId, Db.Get().Quests.LonelyMinionGreetingQuest).TrackProgress(new Quest.ItemData
+			this.OnBuildingActivated(null);
+			bool flag;
+			bool flag2;
+			QuestManager.GetInstance(this.questOwnerId, Db.Get().Quests.LonelyMinionGreetingQuest).TrackProgress(new Quest.ItemData
 			{
 				CriteriaId = LonelyMinionConfig.GreetingCriteraId
-			}, out var _, out var _);
+			}, out flag, out flag2);
 		}
 
+		// Token: 0x06004A80 RID: 19072 RVA: 0x0025B61C File Offset: 0x0025981C
 		private bool IsIntroSequenceComplete()
 		{
-			if (currentWorkState == Workable.WorkableEvent.WorkStarted)
+			if (this.currentWorkState == Workable.WorkableEvent.WorkStarted)
 			{
 				return false;
 			}
-			if (currentWorkState == Workable.WorkableEvent.WorkStopped && knocker != null && knocker.currentAnim != LonelyMinionHouseConfig.ANSWER)
+			if (this.currentWorkState == Workable.WorkableEvent.WorkStopped && this.knocker != null && this.knocker.currentAnim != LonelyMinionHouseConfig.ANSWER)
 			{
-				knocker.GetComponent<Brain>().Stop("knock sequence");
-				knocker.gameObject.Subscribe(-1061186183, ReleaseKnocker);
-				knocker.AddAnimOverrides(GetComponent<Activatable>().overrideAnims[0]);
-				knocker.Play(LonelyMinionHouseConfig.ANSWER);
-				lonelyMinion.AnimController.Play(LonelyMinionHouseConfig.ANSWER);
-				blinds.meterController.Play(LonelyMinionHouseConfig.ANSWER);
+				this.knocker.GetComponent<Brain>().Stop("knock sequence");
+				this.knocker.gameObject.Subscribe(-1061186183, new Action<object>(this.ReleaseKnocker));
+				this.knocker.AddAnimOverrides(base.GetComponent<Activatable>().overrideAnims[0], 0f);
+				this.knocker.Play(LonelyMinionHouseConfig.ANSWER, KAnim.PlayMode.Once, 1f, 0f);
+				this.lonelyMinion.AnimController.Play(LonelyMinionHouseConfig.ANSWER, KAnim.PlayMode.Once, 1f, 0f);
+				this.blinds.meterController.Play(LonelyMinionHouseConfig.ANSWER, KAnim.PlayMode.Once, 1f, 0f);
 			}
-			if (currentWorkState == Workable.WorkableEvent.WorkStopped)
-			{
-				return knocker == null;
-			}
-			return false;
+			return this.currentWorkState == Workable.WorkableEvent.WorkStopped && this.knocker == null;
 		}
 
+		// Token: 0x06004A81 RID: 19073 RVA: 0x0025B730 File Offset: 0x00259930
 		public Vector3 GetParcelPosition()
 		{
 			int index = -1;
@@ -477,17 +601,18 @@ public class LonelyMinionHouse : StoryTraitStateMachine<LonelyMinionHouse, Lonel
 					break;
 				}
 			}
-			List<KAnim.Anim.FrameElement> frameElements = lonelyMinion.AnimController.GetBatch().group.data.frameElements;
-			lonelyMinion.AnimController.GetBatch().group.data.TryGetFrame(index, out var frame);
+			List<KAnim.Anim.FrameElement> frameElements = this.lonelyMinion.AnimController.GetBatch().group.data.frameElements;
+			KAnim.Anim.Frame frame;
+			this.lonelyMinion.AnimController.GetBatch().group.data.TryGetFrame(index, out frame);
 			bool flag = false;
-			Matrix2x3 matrix2x = default(Matrix2x3);
+			Matrix2x3 m = default(Matrix2x3);
 			int num = 0;
 			while (!flag && num < frame.numElements)
 			{
 				if (frameElements[frame.firstElementIdx + num].symbol == LonelyMinionConfig.PARCEL_SNAPTO)
 				{
 					flag = true;
-					matrix2x = frameElements[frame.firstElementIdx + num].transform;
+					m = frameElements[frame.firstElementIdx + num].transform;
 					break;
 				}
 				num++;
@@ -495,45 +620,68 @@ public class LonelyMinionHouse : StoryTraitStateMachine<LonelyMinionHouse, Lonel
 			Vector3 result = Vector3.zero;
 			if (flag)
 			{
-				Matrix4x4 matrix4x = lonelyMinion.AnimController.GetTransformMatrix();
-				result = (matrix4x * matrix2x).GetColumn(3);
+				Matrix4x4 lhs = this.lonelyMinion.AnimController.GetTransformMatrix();
+				result = (lhs * m).GetColumn(3);
 			}
 			return result;
 		}
 
+		// Token: 0x1700040B RID: 1035
+		// (get) Token: 0x06004A82 RID: 19074 RVA: 0x000D0289 File Offset: 0x000CE489
+		public string Title
+		{
+			get
+			{
+				return CODEX.STORY_TRAITS.LONELYMINION.NAME;
+			}
+		}
+
+		// Token: 0x1700040C RID: 1036
+		// (get) Token: 0x06004A83 RID: 19075 RVA: 0x000D0295 File Offset: 0x000CE495
+		public string Description
+		{
+			get
+			{
+				return CODEX.STORY_TRAITS.LONELYMINION.DESCRIPTION_BUILDINGMENU;
+			}
+		}
+
+		// Token: 0x06004A84 RID: 19076 RVA: 0x0025B878 File Offset: 0x00259A78
 		public ICheckboxListGroupControl.ListGroup[] GetData()
 		{
-			QuestInstance greetingQuest = QuestManager.GetInstance(questOwnerId, Db.Get().Quests.LonelyMinionGreetingQuest);
-			if (greetingQuest.IsComplete)
+			QuestInstance greetingQuest = QuestManager.GetInstance(this.questOwnerId, Db.Get().Quests.LonelyMinionGreetingQuest);
+			if (!greetingQuest.IsComplete)
 			{
-				QuestInstance foodQuest = QuestManager.GetInstance(questOwnerId, Db.Get().Quests.LonelyMinionFoodQuest);
-				QuestInstance decorQuest = QuestManager.GetInstance(questOwnerId, Db.Get().Quests.LonelyMinionDecorQuest);
-				QuestInstance powerQuest = QuestManager.GetInstance(questOwnerId, Db.Get().Quests.LonelyMinionPowerQuest);
-				return new ICheckboxListGroupControl.ListGroup[4]
+				return new ICheckboxListGroupControl.ListGroup[]
 				{
-					new ICheckboxListGroupControl.ListGroup(Db.Get().Quests.LonelyMinionGreetingQuest.Title, greetingQuest.GetCheckBoxData(), (string title) => ResolveQuestTitle(title, greetingQuest)),
-					new ICheckboxListGroupControl.ListGroup(Db.Get().Quests.LonelyMinionFoodQuest.Title, foodQuest.GetCheckBoxData(ResolveQuestToolTips), (string title) => ResolveQuestTitle(title, foodQuest)),
-					new ICheckboxListGroupControl.ListGroup(Db.Get().Quests.LonelyMinionDecorQuest.Title, decorQuest.GetCheckBoxData(ResolveQuestToolTips), (string title) => ResolveQuestTitle(title, decorQuest)),
-					new ICheckboxListGroupControl.ListGroup(Db.Get().Quests.LonelyMinionPowerQuest.Title, powerQuest.GetCheckBoxData(ResolveQuestToolTips), (string title) => ResolveQuestTitle(title, powerQuest))
+					new ICheckboxListGroupControl.ListGroup(Db.Get().Quests.LonelyMinionGreetingQuest.Title, greetingQuest.GetCheckBoxData(null), (string title) => this.ResolveQuestTitle(title, greetingQuest), null)
 				};
 			}
-			return new ICheckboxListGroupControl.ListGroup[1]
+			QuestInstance foodQuest = QuestManager.GetInstance(this.questOwnerId, Db.Get().Quests.LonelyMinionFoodQuest);
+			QuestInstance decorQuest = QuestManager.GetInstance(this.questOwnerId, Db.Get().Quests.LonelyMinionDecorQuest);
+			QuestInstance powerQuest = QuestManager.GetInstance(this.questOwnerId, Db.Get().Quests.LonelyMinionPowerQuest);
+			return new ICheckboxListGroupControl.ListGroup[]
 			{
-				new ICheckboxListGroupControl.ListGroup(Db.Get().Quests.LonelyMinionGreetingQuest.Title, greetingQuest.GetCheckBoxData(), (string title) => ResolveQuestTitle(title, greetingQuest))
+				new ICheckboxListGroupControl.ListGroup(Db.Get().Quests.LonelyMinionGreetingQuest.Title, greetingQuest.GetCheckBoxData(null), (string title) => this.ResolveQuestTitle(title, greetingQuest), null),
+				new ICheckboxListGroupControl.ListGroup(Db.Get().Quests.LonelyMinionFoodQuest.Title, foodQuest.GetCheckBoxData(new Func<int, string, QuestInstance, string>(this.ResolveQuestToolTips)), (string title) => this.ResolveQuestTitle(title, foodQuest), null),
+				new ICheckboxListGroupControl.ListGroup(Db.Get().Quests.LonelyMinionDecorQuest.Title, decorQuest.GetCheckBoxData(new Func<int, string, QuestInstance, string>(this.ResolveQuestToolTips)), (string title) => this.ResolveQuestTitle(title, decorQuest), null),
+				new ICheckboxListGroupControl.ListGroup(Db.Get().Quests.LonelyMinionPowerQuest.Title, powerQuest.GetCheckBoxData(new Func<int, string, QuestInstance, string>(this.ResolveQuestToolTips)), (string title) => this.ResolveQuestTitle(title, powerQuest), null)
 			};
 		}
 
+		// Token: 0x06004A85 RID: 19077 RVA: 0x0025BA6C File Offset: 0x00259C6C
 		private string ResolveQuestTitle(string title, QuestInstance quest)
 		{
-			string text = GameUtil.FloatToString(quest.CurrentProgress * 100f, "##0") + UI.UNITSUFFIXES.PERCENT;
-			return title + " - " + text;
+			string str = GameUtil.FloatToString(quest.CurrentProgress * 100f, "##0") + UI.UNITSUFFIXES.PERCENT;
+			return title + " - " + str;
 		}
 
+		// Token: 0x06004A86 RID: 19078 RVA: 0x0025BAAC File Offset: 0x00259CAC
 		private string ResolveQuestToolTips(int criteriaId, string toolTip, QuestInstance quest)
 		{
 			if (criteriaId == LonelyMinionConfig.FoodCriteriaId.HashValue)
 			{
-				int quality = (int)quest.GetTargetValue(LonelyMinionConfig.FoodCriteriaId);
+				int quality = (int)quest.GetTargetValue(LonelyMinionConfig.FoodCriteriaId, 0);
 				int targetCount = quest.GetTargetCount(LonelyMinionConfig.FoodCriteriaId);
 				string text = string.Empty;
 				for (int i = 0; i < targetCount; i++)
@@ -543,7 +691,7 @@ public class LonelyMinionHouse : StoryTraitStateMachine<LonelyMinionHouse, Lonel
 					{
 						break;
 					}
-					text = text + "    • " + TagManager.GetProperName(satisfyingItem);
+					text = text + "    • " + TagManager.GetProperName(satisfyingItem, false);
 					if (targetCount - i != 1)
 					{
 						text += "\n";
@@ -557,105 +705,70 @@ public class LonelyMinionHouse : StoryTraitStateMachine<LonelyMinionHouse, Lonel
 			}
 			if (criteriaId == LonelyMinionConfig.DecorCriteriaId.HashValue)
 			{
-				int num = (int)quest.GetTargetValue(LonelyMinionConfig.DecorCriteriaId);
-				float num2 = CalculateAverageDecor(lonelyMinion.def.DecorInspectionArea);
+				int num = (int)quest.GetTargetValue(LonelyMinionConfig.DecorCriteriaId, 0);
+				float num2 = LonelyMinionHouse.CalculateAverageDecor(this.lonelyMinion.def.DecorInspectionArea);
 				return string.Format(toolTip, num, num2);
 			}
-			float f = quest.GetTargetValue(LonelyMinionConfig.PowerCriteriaId) - quest.GetCurrentValue(LonelyMinionConfig.PowerCriteriaId);
+			float f = quest.GetTargetValue(LonelyMinionConfig.PowerCriteriaId, 0) - quest.GetCurrentValue(LonelyMinionConfig.PowerCriteriaId, 0);
 			return string.Format(toolTip, Mathf.CeilToInt(f));
 		}
 
+		// Token: 0x06004A87 RID: 19079 RVA: 0x000D02A1 File Offset: 0x000CE4A1
 		public bool SidescreenEnabled()
 		{
-			if (StoryManager.Instance.HasDisplayedPopup(Db.Get().Stories.LonelyMinion, EventInfoDataHelper.PopupType.BEGIN))
-			{
-				return !StoryManager.Instance.CheckState(StoryInstance.State.COMPLETE, Db.Get().Stories.LonelyMinion);
-			}
-			return false;
+			return StoryManager.Instance.HasDisplayedPopup(Db.Get().Stories.LonelyMinion, EventInfoDataHelper.PopupType.BEGIN) && !StoryManager.Instance.CheckState(StoryInstance.State.COMPLETE, Db.Get().Stories.LonelyMinion);
 		}
 
+		// Token: 0x06004A88 RID: 19080 RVA: 0x000ABCBD File Offset: 0x000A9EBD
 		public int CheckboxSideScreenSortOrder()
 		{
 			return 20;
 		}
+
+		// Token: 0x04003396 RID: 13206
+		private KAnimLink lightsLink;
+
+		// Token: 0x04003397 RID: 13207
+		private HashedString questOwnerId;
+
+		// Token: 0x04003398 RID: 13208
+		private LonelyMinion.Instance lonelyMinion;
+
+		// Token: 0x04003399 RID: 13209
+		private KBatchedAnimController[] animControllers;
+
+		// Token: 0x0400339A RID: 13210
+		private Light2D light;
+
+		// Token: 0x0400339B RID: 13211
+		private FilteredStorage storageFilter;
+
+		// Token: 0x0400339C RID: 13212
+		private MeterController meter;
+
+		// Token: 0x0400339D RID: 13213
+		private MeterController blinds;
+
+		// Token: 0x0400339E RID: 13214
+		private Workable.WorkableEvent currentWorkState = Workable.WorkableEvent.WorkStopped;
+
+		// Token: 0x0400339F RID: 13215
+		private Notification knockNotification;
+
+		// Token: 0x040033A0 RID: 13216
+		private KBatchedAnimController knocker;
 	}
 
-	public class ActiveStates : State
+	// Token: 0x02000E79 RID: 3705
+	public class ActiveStates : GameStateMachine<LonelyMinionHouse, LonelyMinionHouse.Instance, StateMachineController, LonelyMinionHouse.Def>.State
 	{
-		public State StoryComplete;
-
-		public static void OnEnterStoryComplete(Instance smi)
+		// Token: 0x06004A8F RID: 19087 RVA: 0x000D032E File Offset: 0x000CE52E
+		public static void OnEnterStoryComplete(LonelyMinionHouse.Instance smi)
 		{
 			smi.CompleteEvent();
 		}
-	}
 
-	public State Inactive;
-
-	public ActiveStates Active;
-
-	public Signal MailDelivered;
-
-	public Signal CompleteStory;
-
-	public FloatParameter QuestProgress;
-
-	private bool ValidateOperationalTransition(Instance smi)
-	{
-		Operational component = smi.GetComponent<Operational>();
-		bool flag = smi.IsInsideState(smi.sm.Active);
-		if (component != null)
-		{
-			return flag != component.IsOperational;
-		}
-		return false;
-	}
-
-	private static bool AllQuestsComplete(Instance smi)
-	{
-		return 1f - smi.sm.QuestProgress.Get(smi) <= Mathf.Epsilon;
-	}
-
-	public static void EvaluateLights(Instance smi, float dt)
-	{
-		bool num = smi.IsInsideState(smi.sm.Active);
-		QuestInstance instance = QuestManager.GetInstance(smi.QuestOwnerId, Db.Get().Quests.LonelyMinionPowerQuest);
-		if (num && smi.Light.enabled && !instance.IsComplete)
-		{
-			instance.TrackProgress(new Quest.ItemData
-			{
-				CriteriaId = LonelyMinionConfig.PowerCriteriaId,
-				CurrentValue = instance.GetCurrentValue(LonelyMinionConfig.PowerCriteriaId) + dt
-			}, out var _, out var _);
-		}
-	}
-
-	public override void InitializeStates(out BaseState default_state)
-	{
-		default_state = Inactive;
-		base.serializable = SerializeType.ParamsOnly;
-		root.Update(EvaluateLights, UpdateRate.SIM_1000ms);
-		Inactive.EventTransition(GameHashes.OperationalChanged, Active, ValidateOperationalTransition);
-		Active.Enter(delegate(Instance smi)
-		{
-			smi.OnPoweredStateChanged(smi.GetComponent<NonEssentialEnergyConsumer>().IsPowered);
-		}).Exit(delegate(Instance smi)
-		{
-			smi.OnPoweredStateChanged(smi.GetComponent<NonEssentialEnergyConsumer>().IsPowered);
-		}).OnSignal(CompleteStory, Active.StoryComplete, AllQuestsComplete)
-			.EventTransition(GameHashes.OperationalChanged, Inactive, ValidateOperationalTransition);
-		Active.StoryComplete.Enter(ActiveStates.OnEnterStoryComplete);
-	}
-
-	public static float CalculateAverageDecor(Extents area)
-	{
-		float num = 0f;
-		int cell = Grid.XYToCell(area.x, area.y);
-		for (int i = 0; i < area.width * area.height; i++)
-		{
-			int num2 = Grid.OffsetCell(cell, i % area.width, i / area.width);
-			num += Grid.Decor[num2];
-		}
-		return num / (float)(area.width * area.height);
+		// Token: 0x040033A6 RID: 13222
+		public GameStateMachine<LonelyMinionHouse, LonelyMinionHouse.Instance, StateMachineController, LonelyMinionHouse.Def>.State StoryComplete;
 	}
 }

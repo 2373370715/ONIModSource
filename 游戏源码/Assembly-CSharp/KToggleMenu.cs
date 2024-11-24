@@ -1,123 +1,151 @@
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+// Token: 0x02001D33 RID: 7475
 public class KToggleMenu : KScreen
 {
-	public delegate void OnSelect(ToggleInfo toggleInfo);
+	// Token: 0x1400002E RID: 46
+	// (add) Token: 0x06009C0A RID: 39946 RVA: 0x003C1E04 File Offset: 0x003C0004
+	// (remove) Token: 0x06009C0B RID: 39947 RVA: 0x003C1E3C File Offset: 0x003C003C
+	public event KToggleMenu.OnSelect onSelect;
 
-	public class ToggleInfo
-	{
-		public string text;
-
-		public object userData;
-
-		public KToggle toggle;
-
-		public Action hotKey;
-
-		public ToggleInfo(string text, object user_data = null, Action hotKey = Action.NumActions)
-		{
-			this.text = text;
-			userData = user_data;
-			this.hotKey = hotKey;
-		}
-	}
-
-	[SerializeField]
-	private Transform toggleParent;
-
-	[SerializeField]
-	private KToggle prefab;
-
-	[SerializeField]
-	private ToggleGroup group;
-
-	protected IList<ToggleInfo> toggleInfo;
-
-	protected List<KToggle> toggles = new List<KToggle>();
-
-	private static int selected = -1;
-
-	public event OnSelect onSelect;
-
-	public void Setup(IList<ToggleInfo> toggleInfo)
+	// Token: 0x06009C0C RID: 39948 RVA: 0x001057CD File Offset: 0x001039CD
+	public void Setup(IList<KToggleMenu.ToggleInfo> toggleInfo)
 	{
 		this.toggleInfo = toggleInfo;
-		RefreshButtons();
+		this.RefreshButtons();
 	}
 
+	// Token: 0x06009C0D RID: 39949 RVA: 0x001057DC File Offset: 0x001039DC
 	protected void Setup()
 	{
-		RefreshButtons();
+		this.RefreshButtons();
 	}
 
+	// Token: 0x06009C0E RID: 39950 RVA: 0x003C1E74 File Offset: 0x003C0074
 	private void RefreshButtons()
 	{
-		foreach (KToggle toggle in toggles)
+		foreach (KToggle ktoggle in this.toggles)
 		{
-			if (toggle != null)
+			if (ktoggle != null)
 			{
-				Object.Destroy(toggle.gameObject);
+				UnityEngine.Object.Destroy(ktoggle.gameObject);
 			}
 		}
-		toggles.Clear();
+		this.toggles.Clear();
 		if (this.toggleInfo == null)
 		{
 			return;
 		}
-		Transform parent = ((toggleParent != null) ? toggleParent : base.transform);
+		Transform parent = (this.toggleParent != null) ? this.toggleParent : base.transform;
 		for (int i = 0; i < this.toggleInfo.Count; i++)
 		{
 			int idx = i;
-			ToggleInfo toggleInfo = this.toggleInfo[i];
+			KToggleMenu.ToggleInfo toggleInfo = this.toggleInfo[i];
 			if (toggleInfo == null)
 			{
-				toggles.Add(null);
-				continue;
+				this.toggles.Add(null);
 			}
-			KToggle kToggle = Object.Instantiate(prefab, Vector3.zero, Quaternion.identity);
-			kToggle.gameObject.name = "Toggle:" + toggleInfo.text;
-			kToggle.transform.SetParent(parent, worldPositionStays: false);
-			kToggle.group = group;
-			kToggle.onClick += delegate
+			else
 			{
-				OnClick(idx);
-			};
-			kToggle.GetComponentsInChildren<Text>(includeInactive: true)[0].text = toggleInfo.text;
-			toggleInfo.toggle = kToggle;
-			toggles.Add(kToggle);
+				KToggle ktoggle2 = UnityEngine.Object.Instantiate<KToggle>(this.prefab, Vector3.zero, Quaternion.identity);
+				ktoggle2.gameObject.name = "Toggle:" + toggleInfo.text;
+				ktoggle2.transform.SetParent(parent, false);
+				ktoggle2.group = this.group;
+				ktoggle2.onClick += delegate()
+				{
+					this.OnClick(idx);
+				};
+				ktoggle2.GetComponentsInChildren<Text>(true)[0].text = toggleInfo.text;
+				toggleInfo.toggle = ktoggle2;
+				this.toggles.Add(ktoggle2);
+			}
 		}
 	}
 
+	// Token: 0x06009C0F RID: 39951 RVA: 0x001057E4 File Offset: 0x001039E4
 	public int GetSelected()
 	{
-		return selected;
+		return KToggleMenu.selected;
 	}
 
+	// Token: 0x06009C10 RID: 39952 RVA: 0x001057EB File Offset: 0x001039EB
 	private void OnClick(int i)
 	{
 		UISounds.PlaySound(UISounds.Sound.ClickObject);
-		if (this.onSelect != null)
-		{
-			this.onSelect(toggleInfo[i]);
-		}
-	}
-
-	public override void OnKeyDown(KButtonEvent e)
-	{
-		if (toggles == null)
+		if (this.onSelect == null)
 		{
 			return;
 		}
-		for (int i = 0; i < toggleInfo.Count; i++)
+		this.onSelect(this.toggleInfo[i]);
+	}
+
+	// Token: 0x06009C11 RID: 39953 RVA: 0x003C1FEC File Offset: 0x003C01EC
+	public override void OnKeyDown(KButtonEvent e)
+	{
+		if (this.toggles == null)
 		{
-			Action hotKey = toggleInfo[i].hotKey;
-			if (hotKey != Action.NumActions && e.TryConsume(hotKey))
+			return;
+		}
+		for (int i = 0; i < this.toggleInfo.Count; i++)
+		{
+			global::Action hotKey = this.toggleInfo[i].hotKey;
+			if (hotKey != global::Action.NumActions && e.TryConsume(hotKey))
 			{
-				toggles[i].Click();
-				break;
+				this.toggles[i].Click();
+				return;
 			}
 		}
+	}
+
+	// Token: 0x04007A47 RID: 31303
+	[SerializeField]
+	private Transform toggleParent;
+
+	// Token: 0x04007A48 RID: 31304
+	[SerializeField]
+	private KToggle prefab;
+
+	// Token: 0x04007A49 RID: 31305
+	[SerializeField]
+	private ToggleGroup group;
+
+	// Token: 0x04007A4B RID: 31307
+	protected IList<KToggleMenu.ToggleInfo> toggleInfo;
+
+	// Token: 0x04007A4C RID: 31308
+	protected List<KToggle> toggles = new List<KToggle>();
+
+	// Token: 0x04007A4D RID: 31309
+	private static int selected = -1;
+
+	// Token: 0x02001D34 RID: 7476
+	// (Invoke) Token: 0x06009C15 RID: 39957
+	public delegate void OnSelect(KToggleMenu.ToggleInfo toggleInfo);
+
+	// Token: 0x02001D35 RID: 7477
+	public class ToggleInfo
+	{
+		// Token: 0x06009C18 RID: 39960 RVA: 0x0010582E File Offset: 0x00103A2E
+		public ToggleInfo(string text, object user_data = null, global::Action hotKey = global::Action.NumActions)
+		{
+			this.text = text;
+			this.userData = user_data;
+			this.hotKey = hotKey;
+		}
+
+		// Token: 0x04007A4E RID: 31310
+		public string text;
+
+		// Token: 0x04007A4F RID: 31311
+		public object userData;
+
+		// Token: 0x04007A50 RID: 31312
+		public KToggle toggle;
+
+		// Token: 0x04007A51 RID: 31313
+		public global::Action hotKey;
 	}
 }

@@ -1,156 +1,111 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using STRINGS;
 using UnityEngine;
 using UnityEngine.UI;
 
+// Token: 0x02001C0F RID: 7183
 public class BuildingChoresPanel : TargetPanel
 {
-	public class DupeEntryData : IComparable<DupeEntryData>
-	{
-		public ChoreConsumer consumer;
-
-		public Chore.Precondition.Context context;
-
-		public int personalPriority;
-
-		public int rank;
-
-		public int CompareTo(DupeEntryData other)
-		{
-			if (personalPriority != other.personalPriority)
-			{
-				return other.personalPriority.CompareTo(personalPriority);
-			}
-			if (rank != other.rank)
-			{
-				return rank.CompareTo(other.rank);
-			}
-			if (consumer.GetProperName() != other.consumer.GetProperName())
-			{
-				return consumer.GetProperName().CompareTo(other.consumer.GetProperName());
-			}
-			return consumer.GetInstanceID().CompareTo(other.consumer.GetInstanceID());
-		}
-	}
-
-	public GameObject choreGroupPrefab;
-
-	public GameObject chorePrefab;
-
-	public BuildingChoresPanelDupeRow dupePrefab;
-
-	private GameObject detailsPanel;
-
-	private DetailsPanelDrawer drawer;
-
-	private HierarchyReferences choreGroup;
-
-	private List<HierarchyReferences> choreEntries = new List<HierarchyReferences>();
-
-	private int activeChoreEntries;
-
-	private List<BuildingChoresPanelDupeRow> dupeEntries = new List<BuildingChoresPanelDupeRow>();
-
-	private int activeDupeEntries;
-
-	private List<DupeEntryData> DupeEntryDatas = new List<DupeEntryData>();
-
+	// Token: 0x0600954E RID: 38222 RVA: 0x0039B92C File Offset: 0x00399B2C
 	public override bool IsValidForTarget(GameObject target)
 	{
 		KPrefabID component = target.GetComponent<KPrefabID>();
-		if (component != null && component.HasTag(GameTags.HasChores))
-		{
-			return !component.IsPrefabID(GameTags.Minion);
-		}
-		return false;
+		return component != null && component.HasTag(GameTags.HasChores) && !component.HasTag(GameTags.BaseMinion);
 	}
 
+	// Token: 0x0600954F RID: 38223 RVA: 0x00101399 File Offset: 0x000FF599
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		choreGroup = Util.KInstantiateUI<HierarchyReferences>(choreGroupPrefab, base.gameObject);
-		choreGroup.gameObject.SetActive(value: true);
+		this.choreGroup = Util.KInstantiateUI<HierarchyReferences>(this.choreGroupPrefab, base.gameObject, false);
+		this.choreGroup.gameObject.SetActive(true);
 	}
 
+	// Token: 0x06009550 RID: 38224 RVA: 0x001013CA File Offset: 0x000FF5CA
 	private void Update()
 	{
-		Refresh();
+		this.Refresh();
 	}
 
+	// Token: 0x06009551 RID: 38225 RVA: 0x001013D2 File Offset: 0x000FF5D2
 	protected override void OnSelectTarget(GameObject target)
 	{
 		base.OnSelectTarget(target);
-		Refresh();
+		this.Refresh();
 	}
 
+	// Token: 0x06009552 RID: 38226 RVA: 0x001013E1 File Offset: 0x000FF5E1
 	public override void OnDeselectTarget(GameObject target)
 	{
 		base.OnDeselectTarget(target);
 	}
 
+	// Token: 0x06009553 RID: 38227 RVA: 0x001013EA File Offset: 0x000FF5EA
 	private void Refresh()
 	{
-		RefreshDetails();
+		this.RefreshDetails();
 	}
 
+	// Token: 0x06009554 RID: 38228 RVA: 0x0039B968 File Offset: 0x00399B68
 	private void RefreshDetails()
 	{
-		int myParentWorldId = selectedTarget.GetMyParentWorldId();
-		List<Chore> value = null;
-		GlobalChoreProvider.Instance.choreWorldMap.TryGetValue(myParentWorldId, out value);
+		int myParentWorldId = this.selectedTarget.GetMyParentWorldId();
+		List<Chore> list = null;
+		GlobalChoreProvider.Instance.choreWorldMap.TryGetValue(myParentWorldId, out list);
 		int num = 0;
-		while (value != null && num < value.Count)
+		while (list != null && num < list.Count)
 		{
-			Chore chore = value[num];
-			if (!chore.isNull && chore.gameObject == selectedTarget)
+			Chore chore = list[num];
+			if (!chore.isNull && chore.gameObject == this.selectedTarget)
 			{
-				AddChoreEntry(chore);
+				this.AddChoreEntry(chore);
 			}
 			num++;
 		}
-		List<FetchChore> value2 = null;
-		GlobalChoreProvider.Instance.fetchMap.TryGetValue(myParentWorldId, out value2);
+		List<FetchChore> list2 = null;
+		GlobalChoreProvider.Instance.fetchMap.TryGetValue(myParentWorldId, out list2);
 		int num2 = 0;
-		while (value2 != null && num2 < value2.Count)
+		while (list2 != null && num2 < list2.Count)
 		{
-			FetchChore fetchChore = value2[num2];
-			if (!fetchChore.isNull && fetchChore.gameObject == selectedTarget)
+			FetchChore fetchChore = list2[num2];
+			if (!fetchChore.isNull && fetchChore.gameObject == this.selectedTarget)
 			{
-				AddChoreEntry(fetchChore);
+				this.AddChoreEntry(fetchChore);
 			}
 			num2++;
 		}
-		for (int i = activeDupeEntries; i < dupeEntries.Count; i++)
+		for (int i = this.activeDupeEntries; i < this.dupeEntries.Count; i++)
 		{
-			dupeEntries[i].gameObject.SetActive(value: false);
+			this.dupeEntries[i].gameObject.SetActive(false);
 		}
-		activeDupeEntries = 0;
-		for (int j = activeChoreEntries; j < choreEntries.Count; j++)
+		this.activeDupeEntries = 0;
+		for (int j = this.activeChoreEntries; j < this.choreEntries.Count; j++)
 		{
-			choreEntries[j].gameObject.SetActive(value: false);
+			this.choreEntries[j].gameObject.SetActive(false);
 		}
-		activeChoreEntries = 0;
+		this.activeChoreEntries = 0;
 	}
 
+	// Token: 0x06009555 RID: 38229 RVA: 0x0039BAB0 File Offset: 0x00399CB0
 	private void AddChoreEntry(Chore chore)
 	{
-		HierarchyReferences choreEntry = GetChoreEntry(GameUtil.GetChoreName(chore, null), chore.choreType, choreGroup.GetReference<RectTransform>("EntriesContainer"));
+		HierarchyReferences choreEntry = this.GetChoreEntry(GameUtil.GetChoreName(chore, null), chore.choreType, this.choreGroup.GetReference<RectTransform>("EntriesContainer"));
 		FetchChore fetchChore = chore as FetchChore;
 		ListPool<Chore.Precondition.Context, BuildingChoresPanel>.PooledList pooledList = ListPool<Chore.Precondition.Context, BuildingChoresPanel>.Allocate();
 		List<GameObject> list = new List<GameObject>();
-		foreach (MinionIdentity item in Components.LiveMinionIdentities.Items)
+		foreach (MinionIdentity minionIdentity in Components.LiveMinionIdentities.Items)
 		{
-			list.Add(item.gameObject);
+			list.Add(minionIdentity.gameObject);
 		}
-		foreach (RobotAi.Instance item2 in Components.LiveRobotsIdentities.Items)
+		foreach (RobotAi.Instance instance in Components.LiveRobotsIdentities.Items)
 		{
-			list.Add(item2.gameObject);
+			list.Add(instance.gameObject);
 		}
-		foreach (GameObject item3 in list)
+		foreach (GameObject gameObject in list)
 		{
 			pooledList.Clear();
-			ChoreConsumer component = item3.GetComponent<ChoreConsumer>();
+			ChoreConsumer component = gameObject.GetComponent<ChoreConsumer>();
 			Chore.Precondition.Context context = default(Chore.Precondition.Context);
 			ChoreConsumer.PreconditionSnapshot lastPreconditionSnapshot = component.GetLastPreconditionSnapshot();
 			if (lastPreconditionSnapshot.doFailedContextsNeedSorting)
@@ -162,27 +117,27 @@ public class BuildingChoresPanel : TargetPanel
 			pooledList.AddRange(lastPreconditionSnapshot.succeededContexts);
 			int num = -1;
 			int num2 = 0;
-			for (int num3 = pooledList.Count - 1; num3 >= 0; num3--)
+			for (int i = pooledList.Count - 1; i >= 0; i--)
 			{
-				if (!(pooledList[num3].chore.driver != null) || !(pooledList[num3].chore.driver != component.choreDriver))
+				if (!(pooledList[i].chore.driver != null) || !(pooledList[i].chore.driver != component.choreDriver))
 				{
-					bool flag = pooledList[num3].IsPotentialSuccess();
+					bool flag = pooledList[i].IsPotentialSuccess();
 					if (flag)
 					{
 						num2++;
 					}
-					FetchAreaChore fetchAreaChore = pooledList[num3].chore as FetchAreaChore;
-					if (pooledList[num3].chore == chore || (fetchChore != null && fetchAreaChore != null && fetchAreaChore.smi.SameDestination(fetchChore)))
+					FetchAreaChore fetchAreaChore = pooledList[i].chore as FetchAreaChore;
+					if (pooledList[i].chore == chore || (fetchChore != null && fetchAreaChore != null && fetchAreaChore.smi.SameDestination(fetchChore)))
 					{
 						num = (flag ? num2 : int.MaxValue);
-						context = pooledList[num3];
+						context = pooledList[i];
 						break;
 					}
 				}
 			}
 			if (num >= 0)
 			{
-				DupeEntryDatas.Add(new DupeEntryData
+				this.DupeEntryDatas.Add(new BuildingChoresPanel.DupeEntryData
 				{
 					consumer = component,
 					context = context,
@@ -192,29 +147,30 @@ public class BuildingChoresPanel : TargetPanel
 			}
 		}
 		pooledList.Recycle();
-		DupeEntryDatas.Sort();
-		foreach (DupeEntryData dupeEntryData in DupeEntryDatas)
+		this.DupeEntryDatas.Sort();
+		foreach (BuildingChoresPanel.DupeEntryData data in this.DupeEntryDatas)
 		{
-			GetDupeEntry(dupeEntryData, choreEntry.GetReference<RectTransform>("DupeContainer"));
+			this.GetDupeEntry(data, choreEntry.GetReference<RectTransform>("DupeContainer"));
 		}
-		DupeEntryDatas.Clear();
+		this.DupeEntryDatas.Clear();
 	}
 
+	// Token: 0x06009556 RID: 38230 RVA: 0x0039BDD4 File Offset: 0x00399FD4
 	private HierarchyReferences GetChoreEntry(string label, ChoreType choreType, RectTransform parent)
 	{
 		HierarchyReferences hierarchyReferences;
-		if (activeChoreEntries >= choreEntries.Count)
+		if (this.activeChoreEntries >= this.choreEntries.Count)
 		{
-			hierarchyReferences = Util.KInstantiateUI<HierarchyReferences>(chorePrefab, parent.gameObject);
-			choreEntries.Add(hierarchyReferences);
+			hierarchyReferences = Util.KInstantiateUI<HierarchyReferences>(this.chorePrefab, parent.gameObject, false);
+			this.choreEntries.Add(hierarchyReferences);
 		}
 		else
 		{
-			hierarchyReferences = choreEntries[activeChoreEntries];
+			hierarchyReferences = this.choreEntries[this.activeChoreEntries];
 			hierarchyReferences.transform.SetParent(parent);
 			hierarchyReferences.transform.SetAsLastSibling();
 		}
-		activeChoreEntries++;
+		this.activeChoreEntries++;
 		hierarchyReferences.GetReference<LocText>("ChoreLabel").text = label;
 		hierarchyReferences.GetReference<LocText>("ChoreSubLabel").text = GameUtil.ChoreGroupsForChoreType(choreType);
 		Image reference = hierarchyReferences.GetReference<Image>("Icon");
@@ -222,46 +178,114 @@ public class BuildingChoresPanel : TargetPanel
 		{
 			Sprite sprite = Assets.GetSprite(choreType.groups[0].sprite);
 			reference.sprite = sprite;
-			reference.gameObject.SetActive(value: true);
+			reference.gameObject.SetActive(true);
 			reference.GetComponent<ToolTip>().toolTip = string.Format(UI.DETAILTABS.BUILDING_CHORES.CHORE_TYPE_TOOLTIP, choreType.groups[0].Name);
 		}
 		else
 		{
-			reference.gameObject.SetActive(value: false);
+			reference.gameObject.SetActive(false);
 		}
 		Image reference2 = hierarchyReferences.GetReference<Image>("Icon2");
 		if (choreType.groups.Length > 1)
 		{
 			Sprite sprite2 = Assets.GetSprite(choreType.groups[1].sprite);
 			reference2.sprite = sprite2;
-			reference2.gameObject.SetActive(value: true);
+			reference2.gameObject.SetActive(true);
 			reference2.GetComponent<ToolTip>().toolTip = string.Format(UI.DETAILTABS.BUILDING_CHORES.CHORE_TYPE_TOOLTIP, choreType.groups[1].Name);
 		}
 		else
 		{
-			reference2.gameObject.SetActive(value: false);
+			reference2.gameObject.SetActive(false);
 		}
-		hierarchyReferences.gameObject.SetActive(value: true);
+		hierarchyReferences.gameObject.SetActive(true);
 		return hierarchyReferences;
 	}
 
-	private BuildingChoresPanelDupeRow GetDupeEntry(DupeEntryData data, RectTransform parent)
+	// Token: 0x06009557 RID: 38231 RVA: 0x0039BF70 File Offset: 0x0039A170
+	private BuildingChoresPanelDupeRow GetDupeEntry(BuildingChoresPanel.DupeEntryData data, RectTransform parent)
 	{
 		BuildingChoresPanelDupeRow buildingChoresPanelDupeRow;
-		if (activeDupeEntries >= dupeEntries.Count)
+		if (this.activeDupeEntries >= this.dupeEntries.Count)
 		{
-			buildingChoresPanelDupeRow = Util.KInstantiateUI<BuildingChoresPanelDupeRow>(dupePrefab.gameObject, parent.gameObject);
-			dupeEntries.Add(buildingChoresPanelDupeRow);
+			buildingChoresPanelDupeRow = Util.KInstantiateUI<BuildingChoresPanelDupeRow>(this.dupePrefab.gameObject, parent.gameObject, false);
+			this.dupeEntries.Add(buildingChoresPanelDupeRow);
 		}
 		else
 		{
-			buildingChoresPanelDupeRow = dupeEntries[activeDupeEntries];
+			buildingChoresPanelDupeRow = this.dupeEntries[this.activeDupeEntries];
 			buildingChoresPanelDupeRow.transform.SetParent(parent);
 			buildingChoresPanelDupeRow.transform.SetAsLastSibling();
 		}
-		activeDupeEntries++;
+		this.activeDupeEntries++;
 		buildingChoresPanelDupeRow.Init(data);
-		buildingChoresPanelDupeRow.gameObject.SetActive(value: true);
+		buildingChoresPanelDupeRow.gameObject.SetActive(true);
 		return buildingChoresPanelDupeRow;
+	}
+
+	// Token: 0x040073EA RID: 29674
+	public GameObject choreGroupPrefab;
+
+	// Token: 0x040073EB RID: 29675
+	public GameObject chorePrefab;
+
+	// Token: 0x040073EC RID: 29676
+	public BuildingChoresPanelDupeRow dupePrefab;
+
+	// Token: 0x040073ED RID: 29677
+	private GameObject detailsPanel;
+
+	// Token: 0x040073EE RID: 29678
+	private DetailsPanelDrawer drawer;
+
+	// Token: 0x040073EF RID: 29679
+	private HierarchyReferences choreGroup;
+
+	// Token: 0x040073F0 RID: 29680
+	private List<HierarchyReferences> choreEntries = new List<HierarchyReferences>();
+
+	// Token: 0x040073F1 RID: 29681
+	private int activeChoreEntries;
+
+	// Token: 0x040073F2 RID: 29682
+	private List<BuildingChoresPanelDupeRow> dupeEntries = new List<BuildingChoresPanelDupeRow>();
+
+	// Token: 0x040073F3 RID: 29683
+	private int activeDupeEntries;
+
+	// Token: 0x040073F4 RID: 29684
+	private List<BuildingChoresPanel.DupeEntryData> DupeEntryDatas = new List<BuildingChoresPanel.DupeEntryData>();
+
+	// Token: 0x02001C10 RID: 7184
+	public class DupeEntryData : IComparable<BuildingChoresPanel.DupeEntryData>
+	{
+		// Token: 0x06009559 RID: 38233 RVA: 0x0039C004 File Offset: 0x0039A204
+		public int CompareTo(BuildingChoresPanel.DupeEntryData other)
+		{
+			if (this.personalPriority != other.personalPriority)
+			{
+				return other.personalPriority.CompareTo(this.personalPriority);
+			}
+			if (this.rank != other.rank)
+			{
+				return this.rank.CompareTo(other.rank);
+			}
+			if (this.consumer.GetProperName() != other.consumer.GetProperName())
+			{
+				return this.consumer.GetProperName().CompareTo(other.consumer.GetProperName());
+			}
+			return this.consumer.GetInstanceID().CompareTo(other.consumer.GetInstanceID());
+		}
+
+		// Token: 0x040073F5 RID: 29685
+		public ChoreConsumer consumer;
+
+		// Token: 0x040073F6 RID: 29686
+		public Chore.Precondition.Context context;
+
+		// Token: 0x040073F7 RID: 29687
+		public int personalPriority;
+
+		// Token: 0x040073F8 RID: 29688
+		public int rank;
 	}
 }

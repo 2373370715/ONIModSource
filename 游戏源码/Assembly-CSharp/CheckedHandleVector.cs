@@ -1,55 +1,70 @@
+﻿using System;
 using System.Collections.Generic;
 
+// Token: 0x0200106A RID: 4202
 public class CheckedHandleVector<T> where T : new()
 {
-	private HandleVector<T> handleVector;
-
-	private List<string> debugInfo = new List<string>();
-
-	private List<bool> isFree;
-
+	// Token: 0x060055B7 RID: 21943 RVA: 0x0027F830 File Offset: 0x0027DA30
 	public CheckedHandleVector(int initial_size)
 	{
-		handleVector = new HandleVector<T>(initial_size);
-		isFree = new List<bool>(initial_size);
+		this.handleVector = new HandleVector<T>(initial_size);
+		this.isFree = new List<bool>(initial_size);
 		for (int i = 0; i < initial_size; i++)
 		{
-			isFree.Add(item: true);
+			this.isFree.Add(true);
 		}
 	}
 
+	// Token: 0x060055B8 RID: 21944 RVA: 0x0027F880 File Offset: 0x0027DA80
 	public HandleVector<T>.Handle Add(T item, string debug_info)
 	{
-		HandleVector<T>.Handle result = handleVector.Add(item);
-		if (result.index >= isFree.Count)
+		HandleVector<T>.Handle result = this.handleVector.Add(item);
+		if (result.index >= this.isFree.Count)
 		{
-			isFree.Add(item: false);
+			this.isFree.Add(false);
 		}
 		else
 		{
-			isFree[result.index] = false;
+			this.isFree[result.index] = false;
 		}
-		int count = handleVector.Items.Count;
-		while (count > debugInfo.Count)
+		int i = this.handleVector.Items.Count;
+		while (i > this.debugInfo.Count)
 		{
-			debugInfo.Add(null);
+			this.debugInfo.Add(null);
 		}
-		debugInfo[result.index] = debug_info;
+		this.debugInfo[result.index] = debug_info;
 		return result;
 	}
 
+	// Token: 0x060055B9 RID: 21945 RVA: 0x0027F910 File Offset: 0x0027DB10
 	public T Release(HandleVector<T>.Handle handle)
 	{
-		if (isFree[handle.index])
+		if (this.isFree[handle.index])
 		{
-			DebugUtil.LogErrorArgs("Tried to double free checked handle ", handle.index, "- Debug info:", debugInfo[handle.index]);
+			DebugUtil.LogErrorArgs(new object[]
+			{
+				"Tried to double free checked handle ",
+				handle.index,
+				"- Debug info:",
+				this.debugInfo[handle.index]
+			});
 		}
-		isFree[handle.index] = true;
-		return handleVector.Release(handle);
+		this.isFree[handle.index] = true;
+		return this.handleVector.Release(handle);
 	}
 
+	// Token: 0x060055BA RID: 21946 RVA: 0x000D7EB5 File Offset: 0x000D60B5
 	public T Get(HandleVector<T>.Handle handle)
 	{
-		return handleVector.GetItem(handle);
+		return this.handleVector.GetItem(handle);
 	}
+
+	// Token: 0x04003C2E RID: 15406
+	private HandleVector<T> handleVector;
+
+	// Token: 0x04003C2F RID: 15407
+	private List<string> debugInfo = new List<string>();
+
+	// Token: 0x04003C30 RID: 15408
+	private List<bool> isFree;
 }

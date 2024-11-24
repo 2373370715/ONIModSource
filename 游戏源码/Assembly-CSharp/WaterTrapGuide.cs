@@ -1,45 +1,41 @@
+﻿using System;
 using UnityEngine;
 
+// Token: 0x02001A42 RID: 6722
 public class WaterTrapGuide : KMonoBehaviour, IRenderEveryTick
 {
-	private int previousDepthAvailable = -1;
-
-	public GameObject parent;
-
-	public bool occupyTiles;
-
-	private KBatchedAnimController parentController;
-
-	private KBatchedAnimController guideController;
-
+	// Token: 0x06008C2D RID: 35885 RVA: 0x000FB98E File Offset: 0x000F9B8E
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		parentController = parent.GetComponent<KBatchedAnimController>();
-		guideController = GetComponent<KBatchedAnimController>();
-		RefreshTint();
-		RefreshDepthAvailable();
+		this.parentController = this.parent.GetComponent<KBatchedAnimController>();
+		this.guideController = base.GetComponent<KBatchedAnimController>();
+		this.RefreshTint();
+		this.RefreshDepthAvailable();
 	}
 
+	// Token: 0x06008C2E RID: 35886 RVA: 0x000FB9BF File Offset: 0x000F9BBF
 	private void RefreshTint()
 	{
-		guideController.TintColour = parentController.TintColour;
+		this.guideController.TintColour = this.parentController.TintColour;
 	}
 
+	// Token: 0x06008C2F RID: 35887 RVA: 0x000FB9D7 File Offset: 0x000F9BD7
 	public void RefreshPosition()
 	{
-		if (guideController != null && guideController.IsMoving)
+		if (this.guideController != null && this.guideController.IsMoving)
 		{
-			guideController.SetDirty();
+			this.guideController.SetDirty();
 		}
 	}
 
+	// Token: 0x06008C30 RID: 35888 RVA: 0x00362510 File Offset: 0x00360710
 	private void RefreshDepthAvailable()
 	{
-		int depthAvailable = GetDepthAvailable(Grid.PosToCell(this), parent);
-		if (depthAvailable != previousDepthAvailable)
+		int depthAvailable = WaterTrapGuide.GetDepthAvailable(Grid.PosToCell(this), this.parent);
+		if (depthAvailable != this.previousDepthAvailable)
 		{
-			KBatchedAnimController component = GetComponent<KBatchedAnimController>();
+			KBatchedAnimController component = base.GetComponent<KBatchedAnimController>();
 			if (depthAvailable == 0)
 			{
 				component.enabled = false;
@@ -47,23 +43,25 @@ public class WaterTrapGuide : KMonoBehaviour, IRenderEveryTick
 			else
 			{
 				component.enabled = true;
-				component.Play(new HashedString("place_pipe" + depthAvailable));
+				component.Play(new HashedString("place_pipe" + depthAvailable.ToString()), KAnim.PlayMode.Once, 1f, 0f);
 			}
-			if (occupyTiles)
+			if (this.occupyTiles)
 			{
-				OccupyArea(parent, depthAvailable);
+				WaterTrapGuide.OccupyArea(this.parent, depthAvailable);
 			}
-			previousDepthAvailable = depthAvailable;
+			this.previousDepthAvailable = depthAvailable;
 		}
 	}
 
+	// Token: 0x06008C31 RID: 35889 RVA: 0x000FB9FF File Offset: 0x000F9BFF
 	public void RenderEveryTick(float dt)
 	{
-		RefreshPosition();
-		RefreshTint();
-		RefreshDepthAvailable();
+		this.RefreshPosition();
+		this.RefreshTint();
+		this.RefreshDepthAvailable();
 	}
 
+	// Token: 0x06008C32 RID: 35890 RVA: 0x00362594 File Offset: 0x00360794
 	public static void OccupyArea(GameObject go, int depth_available)
 	{
 		int cell = Grid.PosToCell(go.transform.GetPosition());
@@ -81,6 +79,7 @@ public class WaterTrapGuide : KMonoBehaviour, IRenderEveryTick
 		}
 	}
 
+	// Token: 0x06008C33 RID: 35891 RVA: 0x00362614 File Offset: 0x00360814
 	public static int GetDepthAvailable(int root_cell, GameObject pump)
 	{
 		int num = 4;
@@ -96,4 +95,19 @@ public class WaterTrapGuide : KMonoBehaviour, IRenderEveryTick
 		}
 		return result;
 	}
+
+	// Token: 0x0400698B RID: 27019
+	private int previousDepthAvailable = -1;
+
+	// Token: 0x0400698C RID: 27020
+	public GameObject parent;
+
+	// Token: 0x0400698D RID: 27021
+	public bool occupyTiles;
+
+	// Token: 0x0400698E RID: 27022
+	private KBatchedAnimController parentController;
+
+	// Token: 0x0400698F RID: 27023
+	private KBatchedAnimController guideController;
 }

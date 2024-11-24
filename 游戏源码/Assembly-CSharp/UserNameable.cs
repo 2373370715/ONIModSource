@@ -1,28 +1,27 @@
+﻿using System;
 using KSerialization;
 using UnityEngine;
 
+// Token: 0x02001A0A RID: 6666
 [AddComponentMenu("KMonoBehaviour/scripts/UserNameable")]
 public class UserNameable : KMonoBehaviour
 {
-	[Serialize]
-	public string savedName = "";
-
+	// Token: 0x06008AE3 RID: 35555 RVA: 0x000FAE53 File Offset: 0x000F9053
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		if (string.IsNullOrEmpty(savedName))
+		if (string.IsNullOrEmpty(this.savedName))
 		{
-			SetName(base.gameObject.GetProperName());
+			this.SetName(base.gameObject.GetProperName());
+			return;
 		}
-		else
-		{
-			SetName(savedName);
-		}
+		this.SetName(this.savedName);
 	}
 
+	// Token: 0x06008AE4 RID: 35556 RVA: 0x0035DA68 File Offset: 0x0035BC68
 	public void SetName(string name)
 	{
-		KSelectable component = GetComponent<KSelectable>();
+		KSelectable component = base.GetComponent<KSelectable>();
 		base.name = name;
 		if (component != null)
 		{
@@ -30,15 +29,19 @@ public class UserNameable : KMonoBehaviour
 		}
 		base.gameObject.name = name;
 		NameDisplayScreen.Instance.UpdateName(base.gameObject);
-		if (GetComponent<CommandModule>() != null)
+		if (base.GetComponent<CommandModule>() != null)
 		{
-			SpacecraftManager.instance.GetSpacecraftFromLaunchConditionManager(GetComponent<LaunchConditionManager>()).SetRocketName(name);
+			SpacecraftManager.instance.GetSpacecraftFromLaunchConditionManager(base.GetComponent<LaunchConditionManager>()).SetRocketName(name);
 		}
-		else if (GetComponent<Clustercraft>() != null)
+		else if (base.GetComponent<Clustercraft>() != null)
 		{
-			ClusterNameDisplayScreen.Instance.UpdateName(GetComponent<Clustercraft>());
+			ClusterNameDisplayScreen.Instance.UpdateName(base.GetComponent<Clustercraft>());
 		}
-		savedName = name;
-		Trigger(1102426921, name);
+		this.savedName = name;
+		base.Trigger(1102426921, name);
 	}
+
+	// Token: 0x04006894 RID: 26772
+	[Serialize]
+	public string savedName = "";
 }

@@ -1,10 +1,11 @@
+﻿using System;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x02000407 RID: 1031
 public class ManualPressureDoorConfig : IBuildingConfig
 {
-	public const string ID = "ManualPressureDoor";
-
+	// Token: 0x06001172 RID: 4466 RVA: 0x00183D34 File Offset: 0x00181F34
 	public override BuildingDef CreateBuildingDef()
 	{
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef("ManualPressureDoor", 1, 2, "door_manual_kanim", 30, 60f, BUILDINGS.CONSTRUCTION_MASS_KG.TIER3, MATERIALS.ALL_METALS, 1600f, BuildLocationRule.Tile, BUILDINGS.DECOR.PENALTY.TIER2, NOISE_POLLUTION.NONE, 1f);
@@ -23,6 +24,7 @@ public class ManualPressureDoorConfig : IBuildingConfig
 		return buildingDef;
 	}
 
+	// Token: 0x06001173 RID: 4467 RVA: 0x00183E0C File Offset: 0x0018200C
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		Door door = go.AddOrGet<Door>();
@@ -35,12 +37,16 @@ public class ManualPressureDoorConfig : IBuildingConfig
 		Prioritizable.AddRef(go);
 		go.AddOrGet<CopyBuildingSettings>().copyGroupTag = GameTags.Door;
 		go.AddOrGet<Workable>().workTime = 5f;
-		Object.DestroyImmediate(go.GetComponent<BuildingEnabledButton>());
+		UnityEngine.Object.DestroyImmediate(go.GetComponent<BuildingEnabledButton>());
 	}
 
+	// Token: 0x06001174 RID: 4468 RVA: 0x000ADDF9 File Offset: 0x000ABFF9
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.GetComponent<AccessControl>().controlEnabled = true;
 		go.GetComponent<KBatchedAnimController>().initialAnim = "closed";
 	}
+
+	// Token: 0x04000BE4 RID: 3044
+	public const string ID = "ManualPressureDoor";
 }

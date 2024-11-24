@@ -1,6 +1,11 @@
-namespace EventSystem2Syntax;
+﻿using System;
 
-internal enum GameHashes
+namespace EventSystem2Syntax
 {
-	ObjectDestroyed
+	// Token: 0x020020DC RID: 8412
+	internal enum GameHashes
+	{
+		// Token: 0x04008D8F RID: 36239
+		ObjectDestroyed
+	}
 }

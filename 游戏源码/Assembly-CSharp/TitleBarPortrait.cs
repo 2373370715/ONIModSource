@@ -1,118 +1,130 @@
+﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
 
+// Token: 0x0200202D RID: 8237
 [AddComponentMenu("KMonoBehaviour/scripts/TitleBarPortrait")]
 public class TitleBarPortrait : KMonoBehaviour
 {
-	public GameObject FaceObject;
-
-	public GameObject ImageObject;
-
-	public GameObject PortraitShadow;
-
-	public GameObject AnimControllerObject;
-
-	public Material DefaultMaterial;
-
-	public Material DesatMaterial;
-
+	// Token: 0x0600AF5E RID: 44894 RVA: 0x00111FD2 File Offset: 0x001101D2
 	public void SetSaturation(bool saturated)
 	{
-		ImageObject.GetComponent<Image>().material = (saturated ? DefaultMaterial : DesatMaterial);
+		this.ImageObject.GetComponent<Image>().material = (saturated ? this.DefaultMaterial : this.DesatMaterial);
 	}
 
+	// Token: 0x0600AF5F RID: 44895 RVA: 0x004202F0 File Offset: 0x0041E4F0
 	public void SetPortrait(GameObject selectedTarget)
 	{
 		MinionIdentity component = selectedTarget.GetComponent<MinionIdentity>();
 		if (component != null)
 		{
-			SetPortrait(component);
+			this.SetPortrait(component);
 			return;
 		}
 		Building component2 = selectedTarget.GetComponent<Building>();
 		if (component2 != null)
 		{
-			SetPortrait(component2.Def.GetUISprite());
+			this.SetPortrait(component2.Def.GetUISprite("ui", false));
 			return;
 		}
 		MeshRenderer componentInChildren = selectedTarget.GetComponentInChildren<MeshRenderer>();
-		if ((bool)componentInChildren)
+		if (componentInChildren)
 		{
-			SetPortrait(Sprite.Create((Texture2D)componentInChildren.material.mainTexture, new Rect(0f, 0f, componentInChildren.material.mainTexture.width, componentInChildren.material.mainTexture.height), new Vector2(0.5f, 0.5f)));
+			this.SetPortrait(Sprite.Create((Texture2D)componentInChildren.material.mainTexture, new Rect(0f, 0f, (float)componentInChildren.material.mainTexture.width, (float)componentInChildren.material.mainTexture.height), new Vector2(0.5f, 0.5f)));
 		}
 	}
 
+	// Token: 0x0600AF60 RID: 44896 RVA: 0x004203A8 File Offset: 0x0041E5A8
 	public void SetPortrait(Sprite image)
 	{
-		if ((bool)PortraitShadow)
+		if (this.PortraitShadow)
 		{
-			PortraitShadow.SetActive(value: true);
+			this.PortraitShadow.SetActive(true);
 		}
-		if ((bool)FaceObject)
+		if (this.FaceObject)
 		{
-			FaceObject.SetActive(value: false);
+			this.FaceObject.SetActive(false);
 		}
-		if ((bool)ImageObject)
+		if (this.ImageObject)
 		{
-			ImageObject.SetActive(value: true);
+			this.ImageObject.SetActive(true);
 		}
-		if ((bool)AnimControllerObject)
+		if (this.AnimControllerObject)
 		{
-			AnimControllerObject.SetActive(value: false);
+			this.AnimControllerObject.SetActive(false);
 		}
 		if (image == null)
 		{
-			ClearPortrait();
+			this.ClearPortrait();
+			return;
 		}
-		else
-		{
-			ImageObject.GetComponent<Image>().sprite = image;
-		}
+		this.ImageObject.GetComponent<Image>().sprite = image;
 	}
 
+	// Token: 0x0600AF61 RID: 44897 RVA: 0x0042043C File Offset: 0x0041E63C
 	private void SetPortrait(MinionIdentity identity)
 	{
-		if ((bool)PortraitShadow)
+		if (this.PortraitShadow)
 		{
-			PortraitShadow.SetActive(value: true);
+			this.PortraitShadow.SetActive(true);
 		}
-		if ((bool)FaceObject)
+		if (this.FaceObject)
 		{
-			FaceObject.SetActive(value: false);
+			this.FaceObject.SetActive(false);
 		}
-		if ((bool)ImageObject)
+		if (this.ImageObject)
 		{
-			ImageObject.SetActive(value: false);
+			this.ImageObject.SetActive(false);
 		}
-		CrewPortrait component = GetComponent<CrewPortrait>();
+		CrewPortrait component = base.GetComponent<CrewPortrait>();
 		if (component != null)
 		{
-			component.SetIdentityObject(identity);
+			component.SetIdentityObject(identity, true);
+			return;
 		}
-		else if ((bool)AnimControllerObject)
+		if (this.AnimControllerObject)
 		{
-			AnimControllerObject.SetActive(value: true);
-			CrewPortrait.SetPortraitData(identity, AnimControllerObject.GetComponent<KBatchedAnimController>());
+			this.AnimControllerObject.SetActive(true);
+			CrewPortrait.SetPortraitData(identity, this.AnimControllerObject.GetComponent<KBatchedAnimController>(), true);
 		}
 	}
 
+	// Token: 0x0600AF62 RID: 44898 RVA: 0x004204D8 File Offset: 0x0041E6D8
 	public void ClearPortrait()
 	{
-		if ((bool)PortraitShadow)
+		if (this.PortraitShadow)
 		{
-			PortraitShadow.SetActive(value: false);
+			this.PortraitShadow.SetActive(false);
 		}
-		if ((bool)FaceObject)
+		if (this.FaceObject)
 		{
-			FaceObject.SetActive(value: false);
+			this.FaceObject.SetActive(false);
 		}
-		if ((bool)ImageObject)
+		if (this.ImageObject)
 		{
-			ImageObject.SetActive(value: false);
+			this.ImageObject.SetActive(false);
 		}
-		if ((bool)AnimControllerObject)
+		if (this.AnimControllerObject)
 		{
-			AnimControllerObject.SetActive(value: false);
+			this.AnimControllerObject.SetActive(false);
 		}
 	}
+
+	// Token: 0x04008A16 RID: 35350
+	public GameObject FaceObject;
+
+	// Token: 0x04008A17 RID: 35351
+	public GameObject ImageObject;
+
+	// Token: 0x04008A18 RID: 35352
+	public GameObject PortraitShadow;
+
+	// Token: 0x04008A19 RID: 35353
+	public GameObject AnimControllerObject;
+
+	// Token: 0x04008A1A RID: 35354
+	public Material DefaultMaterial;
+
+	// Token: 0x04008A1B RID: 35355
+	public Material DesatMaterial;
 }

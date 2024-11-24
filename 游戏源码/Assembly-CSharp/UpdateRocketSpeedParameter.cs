@@ -1,64 +1,74 @@
+﻿using System;
 using System.Collections.Generic;
 using FMOD.Studio;
 
+// Token: 0x02001905 RID: 6405
 internal class UpdateRocketSpeedParameter : LoopingSoundParameterUpdater
 {
-	private struct Entry
-	{
-		public RocketModule rocketModule;
-
-		public EventInstance ev;
-
-		public PARAMETER_ID parameterId;
-	}
-
-	private List<Entry> entries = new List<Entry>();
-
-	public UpdateRocketSpeedParameter()
-		: base("rocketSpeed")
+	// Token: 0x06008555 RID: 34133 RVA: 0x000F773D File Offset: 0x000F593D
+	public UpdateRocketSpeedParameter() : base("rocketSpeed")
 	{
 	}
 
-	public override void Add(Sound sound)
+	// Token: 0x06008556 RID: 34134 RVA: 0x00347D90 File Offset: 0x00345F90
+	public override void Add(LoopingSoundParameterUpdater.Sound sound)
 	{
-		Entry entry = default(Entry);
-		entry.rocketModule = sound.transform.GetComponent<RocketModule>();
-		entry.ev = sound.ev;
-		entry.parameterId = sound.description.GetParameterId(base.parameter);
-		Entry item = entry;
-		entries.Add(item);
+		UpdateRocketSpeedParameter.Entry item = new UpdateRocketSpeedParameter.Entry
+		{
+			rocketModule = sound.transform.GetComponent<RocketModule>(),
+			ev = sound.ev,
+			parameterId = sound.description.GetParameterId(base.parameter)
+		};
+		this.entries.Add(item);
 	}
 
+	// Token: 0x06008557 RID: 34135 RVA: 0x00347DEC File Offset: 0x00345FEC
 	public override void Update(float dt)
 	{
-		foreach (Entry entry in entries)
+		foreach (UpdateRocketSpeedParameter.Entry entry in this.entries)
 		{
-			if (entry.rocketModule == null)
+			if (!(entry.rocketModule == null))
 			{
-				continue;
-			}
-			LaunchConditionManager conditionManager = entry.rocketModule.conditionManager;
-			if (!(conditionManager == null))
-			{
-				ILaunchableRocket component = conditionManager.GetComponent<ILaunchableRocket>();
-				if (component != null)
+				LaunchConditionManager conditionManager = entry.rocketModule.conditionManager;
+				if (!(conditionManager == null))
 				{
-					EventInstance ev = entry.ev;
-					ev.setParameterByID(entry.parameterId, component.rocketSpeed);
+					ILaunchableRocket component = conditionManager.GetComponent<ILaunchableRocket>();
+					if (component != null)
+					{
+						EventInstance ev = entry.ev;
+						ev.setParameterByID(entry.parameterId, component.rocketSpeed, false);
+					}
 				}
 			}
 		}
 	}
 
-	public override void Remove(Sound sound)
+	// Token: 0x06008558 RID: 34136 RVA: 0x00347E84 File Offset: 0x00346084
+	public override void Remove(LoopingSoundParameterUpdater.Sound sound)
 	{
-		for (int i = 0; i < entries.Count; i++)
+		for (int i = 0; i < this.entries.Count; i++)
 		{
-			if (entries[i].ev.handle == sound.ev.handle)
+			if (this.entries[i].ev.handle == sound.ev.handle)
 			{
-				entries.RemoveAt(i);
-				break;
+				this.entries.RemoveAt(i);
+				return;
 			}
 		}
+	}
+
+	// Token: 0x040064BC RID: 25788
+	private List<UpdateRocketSpeedParameter.Entry> entries = new List<UpdateRocketSpeedParameter.Entry>();
+
+	// Token: 0x02001906 RID: 6406
+	private struct Entry
+	{
+		// Token: 0x040064BD RID: 25789
+		public RocketModule rocketModule;
+
+		// Token: 0x040064BE RID: 25790
+		public EventInstance ev;
+
+		// Token: 0x040064BF RID: 25791
+		public PARAMETER_ID parameterId;
 	}
 }

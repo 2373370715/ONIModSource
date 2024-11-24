@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,136 +6,132 @@ using STRINGS;
 using UnityEngine;
 using UnityEngine.UI;
 
+// Token: 0x0200206B RID: 8299
 public class WorldSelector : KScreen, ISim4000ms
 {
-	public static WorldSelector Instance;
-
-	public Dictionary<int, MultiToggle> worldRows;
-
-	public TextStyleSetting titleTextSetting;
-
-	public TextStyleSetting bodyTextSetting;
-
-	public GameObject worldRowPrefab;
-
-	public GameObject worldRowContainer;
-
-	private Dictionary<int, ColonyDiagnostic.DiagnosticResult.Opinion> previousWorldDiagnosticStatus = new Dictionary<int, ColonyDiagnostic.DiagnosticResult.Opinion>();
-
-	private Dictionary<int, List<GameObject>> worldStatusIcons = new Dictionary<int, List<GameObject>>();
-
+	// Token: 0x0600B094 RID: 45204 RVA: 0x00112D10 File Offset: 0x00110F10
 	public static void DestroyInstance()
 	{
-		Instance = null;
+		WorldSelector.Instance = null;
 	}
 
+	// Token: 0x0600B095 RID: 45205 RVA: 0x00112D18 File Offset: 0x00110F18
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		Instance = this;
+		WorldSelector.Instance = this;
 	}
 
+	// Token: 0x0600B096 RID: 45206 RVA: 0x004256A0 File Offset: 0x004238A0
 	protected override void OnSpawn()
 	{
 		if (!DlcManager.FeatureClusterSpaceEnabled())
 		{
-			Deactivate();
+			this.Deactivate();
 			return;
 		}
 		base.OnSpawn();
-		worldRows = new Dictionary<int, MultiToggle>();
-		SpawnToggles();
-		RefreshToggles();
-		Game.Instance.Subscribe(1983128072, delegate
+		this.worldRows = new Dictionary<int, MultiToggle>();
+		this.SpawnToggles();
+		this.RefreshToggles();
+		Game.Instance.Subscribe(1983128072, delegate(object data)
 		{
-			RefreshToggles();
+			this.RefreshToggles();
 		});
-		Game.Instance.Subscribe(-521212405, delegate
+		Game.Instance.Subscribe(-521212405, delegate(object data)
 		{
-			RefreshToggles();
+			this.RefreshToggles();
 		});
-		Game.Instance.Subscribe(880851192, delegate
+		Game.Instance.Subscribe(880851192, delegate(object data)
 		{
-			SortRows();
+			this.SortRows();
 		});
 		ClusterManager.Instance.Subscribe(-1280433810, delegate(object data)
 		{
-			AddWorld(data);
+			this.AddWorld(data);
 		});
 		ClusterManager.Instance.Subscribe(-1078710002, delegate(object data)
 		{
-			RemoveWorld(data);
+			this.RemoveWorld(data);
 		});
-		ClusterManager.Instance.Subscribe(1943181844, delegate
+		ClusterManager.Instance.Subscribe(1943181844, delegate(object data)
 		{
-			RefreshToggles();
+			this.RefreshToggles();
 		});
 	}
 
+	// Token: 0x0600B097 RID: 45207 RVA: 0x00425780 File Offset: 0x00423980
 	private void SpawnToggles()
 	{
-		foreach (KeyValuePair<int, MultiToggle> worldRow in worldRows)
+		foreach (KeyValuePair<int, MultiToggle> keyValuePair in this.worldRows)
 		{
-			Util.KDestroyGameObject(worldRow.Value);
+			Util.KDestroyGameObject(keyValuePair.Value);
 		}
-		worldRows.Clear();
-		foreach (int item in ClusterManager.Instance.GetWorldIDsSorted())
+		this.worldRows.Clear();
+		foreach (int num in ClusterManager.Instance.GetWorldIDsSorted())
 		{
-			MultiToggle component = Util.KInstantiateUI(worldRowPrefab, worldRowContainer).GetComponent<MultiToggle>();
-			worldRows.Add(item, component);
-			previousWorldDiagnosticStatus.Add(item, ColonyDiagnostic.DiagnosticResult.Opinion.Normal);
-			int id = item;
-			component.onClick = (System.Action)Delegate.Combine(component.onClick, (System.Action)delegate
+			MultiToggle component = Util.KInstantiateUI(this.worldRowPrefab, this.worldRowContainer, false).GetComponent<MultiToggle>();
+			this.worldRows.Add(num, component);
+			this.previousWorldDiagnosticStatus.Add(num, ColonyDiagnostic.DiagnosticResult.Opinion.Normal);
+			int id = num;
+			MultiToggle multiToggle = component;
+			multiToggle.onClick = (System.Action)Delegate.Combine(multiToggle.onClick, new System.Action(delegate()
 			{
-				OnWorldRowClicked(id);
-			});
-			component.GetComponentInChildren<AlertVignette>().worldID = item;
+				this.OnWorldRowClicked(id);
+			}));
+			component.GetComponentInChildren<AlertVignette>().worldID = num;
 		}
 	}
 
+	// Token: 0x0600B098 RID: 45208 RVA: 0x004258A4 File Offset: 0x00423AA4
 	private void AddWorld(object data)
 	{
 		int num = (int)data;
-		MultiToggle component = Util.KInstantiateUI(worldRowPrefab, worldRowContainer).GetComponent<MultiToggle>();
-		worldRows.Add(num, component);
-		previousWorldDiagnosticStatus.Add(num, ColonyDiagnostic.DiagnosticResult.Opinion.Normal);
+		MultiToggle component = Util.KInstantiateUI(this.worldRowPrefab, this.worldRowContainer, false).GetComponent<MultiToggle>();
+		this.worldRows.Add(num, component);
+		this.previousWorldDiagnosticStatus.Add(num, ColonyDiagnostic.DiagnosticResult.Opinion.Normal);
 		int id = num;
-		component.onClick = (System.Action)Delegate.Combine(component.onClick, (System.Action)delegate
+		MultiToggle multiToggle = component;
+		multiToggle.onClick = (System.Action)Delegate.Combine(multiToggle.onClick, new System.Action(delegate()
 		{
-			OnWorldRowClicked(id);
-		});
+			this.OnWorldRowClicked(id);
+		}));
 		component.GetComponentInChildren<AlertVignette>().worldID = num;
-		RefreshToggles();
+		this.RefreshToggles();
 	}
 
+	// Token: 0x0600B099 RID: 45209 RVA: 0x00425934 File Offset: 0x00423B34
 	private void RemoveWorld(object data)
 	{
 		int key = (int)data;
-		if (worldRows.TryGetValue(key, out var value))
+		MultiToggle cmp;
+		if (this.worldRows.TryGetValue(key, out cmp))
 		{
-			value.DeleteObject();
+			cmp.DeleteObject();
 		}
-		worldRows.Remove(key);
-		previousWorldDiagnosticStatus.Remove(key);
-		RefreshToggles();
+		this.worldRows.Remove(key);
+		this.previousWorldDiagnosticStatus.Remove(key);
+		this.RefreshToggles();
 	}
 
+	// Token: 0x0600B09A RID: 45210 RVA: 0x00425980 File Offset: 0x00423B80
 	public void OnWorldRowClicked(int id)
 	{
 		WorldContainer world = ClusterManager.Instance.GetWorld(id);
 		if (world != null && world.IsDiscovered)
 		{
-			CameraController.Instance.ActiveWorldStarWipe(id);
+			CameraController.Instance.ActiveWorldStarWipe(id, null);
 		}
 	}
 
+	// Token: 0x0600B09B RID: 45211 RVA: 0x004259B8 File Offset: 0x00423BB8
 	private void RefreshToggles()
 	{
-		foreach (KeyValuePair<int, MultiToggle> worldRow in worldRows)
+		foreach (KeyValuePair<int, MultiToggle> keyValuePair in this.worldRows)
 		{
-			WorldContainer world = ClusterManager.Instance.GetWorld(worldRow.Key);
+			WorldContainer world = ClusterManager.Instance.GetWorld(keyValuePair.Key);
 			ClusterGridEntity component = world.GetComponent<ClusterGridEntity>();
-			HierarchyReferences component2 = worldRow.Value.GetComponent<HierarchyReferences>();
+			HierarchyReferences component2 = keyValuePair.Value.GetComponent<HierarchyReferences>();
 			if (world != null)
 			{
 				component2.GetReference<Image>("Icon").sprite = component.GetUISprite();
@@ -145,208 +141,251 @@ public class WorldSelector : KScreen, ISim4000ms
 			{
 				component2.GetReference<Image>("Icon").sprite = Assets.GetSprite("unknown_far");
 			}
-			if (worldRow.Key == CameraController.Instance.cameraActiveCluster)
+			if (keyValuePair.Key == CameraController.Instance.cameraActiveCluster)
 			{
-				worldRow.Value.ChangeState(1);
-				worldRow.Value.gameObject.SetActive(value: true);
+				keyValuePair.Value.ChangeState(1);
+				keyValuePair.Value.gameObject.SetActive(true);
 			}
 			else if (world != null && world.IsDiscovered)
 			{
-				worldRow.Value.ChangeState(0);
-				worldRow.Value.gameObject.SetActive(value: true);
+				keyValuePair.Value.ChangeState(0);
+				keyValuePair.Value.gameObject.SetActive(true);
 			}
 			else
 			{
-				worldRow.Value.ChangeState(0);
-				worldRow.Value.gameObject.SetActive(value: false);
+				keyValuePair.Value.ChangeState(0);
+				keyValuePair.Value.gameObject.SetActive(false);
 			}
-			RefreshToggleTooltips();
-			worldRow.Value.GetComponentInChildren<AlertVignette>().worldID = worldRow.Key;
+			this.RefreshToggleTooltips();
+			keyValuePair.Value.GetComponentInChildren<AlertVignette>().worldID = keyValuePair.Key;
 		}
-		RefreshWorldStatus();
-		SortRows();
+		this.RefreshWorldStatus();
+		this.SortRows();
 	}
 
+	// Token: 0x0600B09C RID: 45212 RVA: 0x00425B4C File Offset: 0x00423D4C
 	private void RefreshWorldStatus()
 	{
-		foreach (KeyValuePair<int, MultiToggle> worldRow in worldRows)
+		foreach (KeyValuePair<int, MultiToggle> keyValuePair in this.worldRows)
 		{
-			if (!worldStatusIcons.ContainsKey(worldRow.Key))
+			if (!this.worldStatusIcons.ContainsKey(keyValuePair.Key))
 			{
-				worldStatusIcons.Add(worldRow.Key, new List<GameObject>());
+				this.worldStatusIcons.Add(keyValuePair.Key, new List<GameObject>());
 			}
-			foreach (GameObject item in worldStatusIcons[worldRow.Key])
+			foreach (GameObject original in this.worldStatusIcons[keyValuePair.Key])
 			{
-				Util.KDestroyGameObject(item);
+				Util.KDestroyGameObject(original);
 			}
-			LocText reference = worldRow.Value.GetComponent<HierarchyReferences>().GetReference<LocText>("StatusLabel");
-			reference.SetText(ClusterManager.Instance.GetWorld(worldRow.Key).GetStatus());
-			reference.color = ColonyDiagnosticScreen.GetDiagnosticIndicationColor(ColonyDiagnosticUtility.Instance.GetWorldDiagnosticResult(worldRow.Key));
+			LocText reference = keyValuePair.Value.GetComponent<HierarchyReferences>().GetReference<LocText>("StatusLabel");
+			reference.SetText(ClusterManager.Instance.GetWorld(keyValuePair.Key).GetStatus());
+			reference.color = ColonyDiagnosticScreen.GetDiagnosticIndicationColor(ColonyDiagnosticUtility.Instance.GetWorldDiagnosticResult(keyValuePair.Key));
 		}
 	}
 
+	// Token: 0x0600B09D RID: 45213 RVA: 0x00425C64 File Offset: 0x00423E64
 	private void RefreshToggleTooltips()
 	{
 		int num = 0;
 		List<int> discoveredAsteroidIDsSorted = ClusterManager.Instance.GetDiscoveredAsteroidIDsSorted();
-		foreach (KeyValuePair<int, MultiToggle> worldRow in worldRows)
+		foreach (KeyValuePair<int, MultiToggle> keyValuePair in this.worldRows)
 		{
-			ClusterGridEntity component = ClusterManager.Instance.GetWorld(worldRow.Key).GetComponent<ClusterGridEntity>();
-			ToolTip component2 = worldRow.Value.GetComponent<ToolTip>();
+			ClusterGridEntity component = ClusterManager.Instance.GetWorld(keyValuePair.Key).GetComponent<ClusterGridEntity>();
+			ToolTip component2 = keyValuePair.Value.GetComponent<ToolTip>();
 			component2.ClearMultiStringTooltip();
-			WorldContainer world = ClusterManager.Instance.GetWorld(worldRow.Key);
+			WorldContainer world = ClusterManager.Instance.GetWorld(keyValuePair.Key);
 			if (world != null)
 			{
-				component2.AddMultiStringTooltip(component.Name, titleTextSetting);
+				component2.AddMultiStringTooltip(component.Name, this.titleTextSetting);
 				if (!world.IsModuleInterior)
 				{
 					int num2 = discoveredAsteroidIDsSorted.IndexOf(world.id);
 					if (num2 != -1 && num2 <= 9)
 					{
-						component2.AddMultiStringTooltip(" ", bodyTextSetting);
+						component2.AddMultiStringTooltip(" ", this.bodyTextSetting);
 						if (KInputManager.currentControllerIsGamepad)
 						{
-							component2.AddMultiStringTooltip(UI.FormatAsHotkey(GameUtil.GetActionString(IdxToHotkeyAction(num2))), bodyTextSetting);
+							component2.AddMultiStringTooltip(UI.FormatAsHotkey(GameUtil.GetActionString(this.IdxToHotkeyAction(num2))), this.bodyTextSetting);
 						}
 						else
 						{
-							component2.AddMultiStringTooltip(UI.FormatAsHotkey("[" + GameUtil.GetActionString(IdxToHotkeyAction(num2)) + "]"), bodyTextSetting);
+							component2.AddMultiStringTooltip(UI.FormatAsHotkey("[" + GameUtil.GetActionString(this.IdxToHotkeyAction(num2)) + "]"), this.bodyTextSetting);
 						}
 					}
 				}
 			}
 			else
 			{
-				component2.AddMultiStringTooltip(UI.CLUSTERMAP.UNKNOWN_DESTINATION, titleTextSetting);
+				component2.AddMultiStringTooltip(UI.CLUSTERMAP.UNKNOWN_DESTINATION, this.titleTextSetting);
 			}
 			if (ColonyDiagnosticUtility.Instance.GetWorldDiagnosticResult(world.id) < ColonyDiagnostic.DiagnosticResult.Opinion.Normal)
 			{
-				component2.AddMultiStringTooltip(ColonyDiagnosticUtility.Instance.GetWorldDiagnosticResultTooltip(world.id), bodyTextSetting);
+				component2.AddMultiStringTooltip(ColonyDiagnosticUtility.Instance.GetWorldDiagnosticResultTooltip(world.id), this.bodyTextSetting);
 			}
 			num++;
 		}
 	}
 
+	// Token: 0x0600B09E RID: 45214 RVA: 0x00425E14 File Offset: 0x00424014
 	private void SortRows()
 	{
-		List<KeyValuePair<int, MultiToggle>> list = worldRows.ToList();
+		List<KeyValuePair<int, MultiToggle>> list = this.worldRows.ToList<KeyValuePair<int, MultiToggle>>();
 		list.Sort(delegate(KeyValuePair<int, MultiToggle> x, KeyValuePair<int, MultiToggle> y)
 		{
-			float num2 = (ClusterManager.Instance.GetWorld(x.Key).IsModuleInterior ? float.PositiveInfinity : ClusterManager.Instance.GetWorld(x.Key).DiscoveryTimestamp);
-			float value = (ClusterManager.Instance.GetWorld(y.Key).IsModuleInterior ? float.PositiveInfinity : ClusterManager.Instance.GetWorld(y.Key).DiscoveryTimestamp);
-			return num2.CompareTo(value);
+			float num = ClusterManager.Instance.GetWorld(x.Key).IsModuleInterior ? float.PositiveInfinity : ClusterManager.Instance.GetWorld(x.Key).DiscoveryTimestamp;
+			float value = ClusterManager.Instance.GetWorld(y.Key).IsModuleInterior ? float.PositiveInfinity : ClusterManager.Instance.GetWorld(y.Key).DiscoveryTimestamp;
+			return num.CompareTo(value);
 		});
 		for (int i = 0; i < list.Count; i++)
 		{
 			list[i].Value.transform.SetSiblingIndex(i);
 		}
-		foreach (KeyValuePair<int, MultiToggle> item in list)
+		foreach (KeyValuePair<int, MultiToggle> keyValuePair in list)
 		{
-			item.Value.GetComponent<HierarchyReferences>().GetReference<RectTransform>("Indent").anchoredPosition = Vector2.zero;
-			item.Value.GetComponent<HierarchyReferences>().GetReference<RectTransform>("Status").anchoredPosition = Vector2.right * 24f;
-			WorldContainer world = ClusterManager.Instance.GetWorld(item.Key);
-			if (world.ParentWorldId == world.id || world.ParentWorldId == 255)
+			keyValuePair.Value.GetComponent<HierarchyReferences>().GetReference<RectTransform>("Indent").anchoredPosition = Vector2.zero;
+			keyValuePair.Value.GetComponent<HierarchyReferences>().GetReference<RectTransform>("Status").anchoredPosition = Vector2.right * 24f;
+			WorldContainer world = ClusterManager.Instance.GetWorld(keyValuePair.Key);
+			if (world.ParentWorldId != world.id && world.ParentWorldId != 255)
 			{
-				continue;
-			}
-			int num = -1;
-			foreach (KeyValuePair<int, MultiToggle> item2 in list)
-			{
-				if (item2.Key == world.ParentWorldId)
+				foreach (KeyValuePair<int, MultiToggle> keyValuePair2 in list)
 				{
-					num = item2.Value.gameObject.transform.GetSiblingIndex();
-					item.Value.gameObject.transform.SetSiblingIndex(num + 1);
-					item.Value.GetComponent<HierarchyReferences>().GetReference<RectTransform>("Indent").anchoredPosition = Vector2.right * 32f;
-					item.Value.GetComponent<HierarchyReferences>().GetReference<RectTransform>("Status").anchoredPosition = Vector2.right * -8f;
-					break;
+					if (keyValuePair2.Key == world.ParentWorldId)
+					{
+						int siblingIndex = keyValuePair2.Value.gameObject.transform.GetSiblingIndex();
+						keyValuePair.Value.gameObject.transform.SetSiblingIndex(siblingIndex + 1);
+						keyValuePair.Value.GetComponent<HierarchyReferences>().GetReference<RectTransform>("Indent").anchoredPosition = Vector2.right * 32f;
+						keyValuePair.Value.GetComponent<HierarchyReferences>().GetReference<RectTransform>("Status").anchoredPosition = Vector2.right * -8f;
+						break;
+					}
 				}
 			}
 		}
 	}
 
-	private Action IdxToHotkeyAction(int idx)
+	// Token: 0x0600B09F RID: 45215 RVA: 0x00426034 File Offset: 0x00424234
+	private global::Action IdxToHotkeyAction(int idx)
 	{
+		global::Action result;
 		switch (idx)
 		{
 		case 0:
-			return Action.SwitchActiveWorld1;
+			result = global::Action.SwitchActiveWorld1;
+			break;
 		case 1:
-			return Action.SwitchActiveWorld2;
+			result = global::Action.SwitchActiveWorld2;
+			break;
 		case 2:
-			return Action.SwitchActiveWorld3;
+			result = global::Action.SwitchActiveWorld3;
+			break;
 		case 3:
-			return Action.SwitchActiveWorld4;
+			result = global::Action.SwitchActiveWorld4;
+			break;
 		case 4:
-			return Action.SwitchActiveWorld5;
+			result = global::Action.SwitchActiveWorld5;
+			break;
 		case 5:
-			return Action.SwitchActiveWorld6;
+			result = global::Action.SwitchActiveWorld6;
+			break;
 		case 6:
-			return Action.SwitchActiveWorld7;
+			result = global::Action.SwitchActiveWorld7;
+			break;
 		case 7:
-			return Action.SwitchActiveWorld8;
+			result = global::Action.SwitchActiveWorld8;
+			break;
 		case 8:
-			return Action.SwitchActiveWorld9;
+			result = global::Action.SwitchActiveWorld9;
+			break;
 		case 9:
-			return Action.SwitchActiveWorld10;
+			result = global::Action.SwitchActiveWorld10;
+			break;
 		default:
-			Debug.LogError("Action must be a SwitchActiveWorld Action");
-			return Action.SwitchActiveWorld1;
+			global::Debug.LogError("Action must be a SwitchActiveWorld Action");
+			result = global::Action.SwitchActiveWorld1;
+			break;
 		}
+		return result;
 	}
 
+	// Token: 0x0600B0A0 RID: 45216 RVA: 0x004260D4 File Offset: 0x004242D4
 	public void Sim4000ms(float dt)
 	{
-		foreach (KeyValuePair<int, MultiToggle> worldRow in worldRows)
+		foreach (KeyValuePair<int, MultiToggle> keyValuePair in this.worldRows)
 		{
-			ColonyDiagnostic.DiagnosticResult.Opinion worldDiagnosticResult = ColonyDiagnosticUtility.Instance.GetWorldDiagnosticResult(worldRow.Key);
-			ColonyDiagnosticScreen.SetIndication(worldDiagnosticResult, worldRow.Value.GetComponent<HierarchyReferences>().GetReference("Indicator").gameObject);
-			if (previousWorldDiagnosticStatus[worldRow.Key] > worldDiagnosticResult && ClusterManager.Instance.activeWorldId != worldRow.Key)
+			ColonyDiagnostic.DiagnosticResult.Opinion worldDiagnosticResult = ColonyDiagnosticUtility.Instance.GetWorldDiagnosticResult(keyValuePair.Key);
+			ColonyDiagnosticScreen.SetIndication(worldDiagnosticResult, keyValuePair.Value.GetComponent<HierarchyReferences>().GetReference("Indicator").gameObject);
+			if (this.previousWorldDiagnosticStatus[keyValuePair.Key] > worldDiagnosticResult && ClusterManager.Instance.activeWorldId != keyValuePair.Key)
 			{
-				TriggerVisualNotification(worldRow.Key, worldDiagnosticResult);
+				this.TriggerVisualNotification(keyValuePair.Key, worldDiagnosticResult);
 			}
-			previousWorldDiagnosticStatus[worldRow.Key] = worldDiagnosticResult;
+			this.previousWorldDiagnosticStatus[keyValuePair.Key] = worldDiagnosticResult;
 		}
-		RefreshWorldStatus();
-		RefreshToggleTooltips();
+		this.RefreshWorldStatus();
+		this.RefreshToggleTooltips();
 	}
 
+	// Token: 0x0600B0A1 RID: 45217 RVA: 0x004261B0 File Offset: 0x004243B0
 	public void TriggerVisualNotification(int worldID, ColonyDiagnostic.DiagnosticResult.Opinion result)
 	{
-		foreach (KeyValuePair<int, MultiToggle> worldRow in worldRows)
+		foreach (KeyValuePair<int, MultiToggle> keyValuePair in this.worldRows)
 		{
-			if (worldRow.Key == worldID)
+			if (keyValuePair.Key == worldID)
 			{
-				KFMOD.PlayUISound(GlobalAssets.GetSound(ColonyDiagnosticScreen.notificationSoundsInactive[result]));
-				if (worldRow.Value.gameObject.activeInHierarchy)
+				KFMOD.PlayUISound(GlobalAssets.GetSound(ColonyDiagnosticScreen.notificationSoundsInactive[result], false));
+				if (keyValuePair.Value.gameObject.activeInHierarchy)
 				{
-					worldRow.Value.StartCoroutine(VisualNotificationRoutine(worldRow.Value.GetComponent<HierarchyReferences>().GetReference<RectTransform>("Content").gameObject, worldRow.Value.GetComponent<HierarchyReferences>().GetReference<RectTransform>("Indicator"), worldRow.Value.GetComponent<HierarchyReferences>().GetReference<RectTransform>("Spacer").gameObject));
+					keyValuePair.Value.StartCoroutine(this.VisualNotificationRoutine(keyValuePair.Value.GetComponent<HierarchyReferences>().GetReference<RectTransform>("Content").gameObject, keyValuePair.Value.GetComponent<HierarchyReferences>().GetReference<RectTransform>("Indicator"), keyValuePair.Value.GetComponent<HierarchyReferences>().GetReference<RectTransform>("Spacer").gameObject));
 				}
 			}
 		}
 	}
 
+	// Token: 0x0600B0A2 RID: 45218 RVA: 0x00112D26 File Offset: 0x00110F26
 	private IEnumerator VisualNotificationRoutine(GameObject contentGameObject, RectTransform indicator, GameObject spacer)
 	{
-		spacer.GetComponent<NotificationAnimator>().Begin(startOffset: false);
-		Vector2 defaultIndicatorSize2 = new Vector2(8f, 8f);
+		spacer.GetComponent<NotificationAnimator>().Begin(false);
+		Vector2 defaultIndicatorSize = new Vector2(8f, 8f);
 		float bounceDuration = 1.5f;
-		for (float k = 0f; k < bounceDuration; k += Time.unscaledDeltaTime)
+		for (float i = 0f; i < bounceDuration; i += Time.unscaledDeltaTime)
 		{
-			indicator.sizeDelta = defaultIndicatorSize2 + Vector2.one * Mathf.RoundToInt(Mathf.Sin(6f * ((float)Math.PI * (k / bounceDuration))));
+			indicator.sizeDelta = defaultIndicatorSize + Vector2.one * (float)Mathf.RoundToInt(Mathf.Sin(6f * (3.1415927f * (i / bounceDuration))));
 			yield return 0;
 		}
-		for (float k = 0f; k < bounceDuration; k += Time.unscaledDeltaTime)
+		for (float i = 0f; i < bounceDuration; i += Time.unscaledDeltaTime)
 		{
-			indicator.sizeDelta = defaultIndicatorSize2 + Vector2.one * Mathf.RoundToInt(Mathf.Sin(6f * ((float)Math.PI * (k / bounceDuration))));
+			indicator.sizeDelta = defaultIndicatorSize + Vector2.one * (float)Mathf.RoundToInt(Mathf.Sin(6f * (3.1415927f * (i / bounceDuration))));
 			yield return 0;
 		}
-		for (float k = 0f; k < bounceDuration; k += Time.unscaledDeltaTime)
+		for (float i = 0f; i < bounceDuration; i += Time.unscaledDeltaTime)
 		{
-			indicator.sizeDelta = defaultIndicatorSize2 + Vector2.one * Mathf.RoundToInt(Mathf.Sin(6f * ((float)Math.PI * (k / bounceDuration))));
+			indicator.sizeDelta = defaultIndicatorSize + Vector2.one * (float)Mathf.RoundToInt(Mathf.Sin(6f * (3.1415927f * (i / bounceDuration))));
 			yield return 0;
 		}
-		defaultIndicatorSize2 = new Vector2(8f, 8f);
-		indicator.sizeDelta = defaultIndicatorSize2;
+		defaultIndicatorSize = new Vector2(8f, 8f);
+		indicator.sizeDelta = defaultIndicatorSize;
 		contentGameObject.rectTransform().localPosition = Vector2.zero;
+		yield break;
 	}
+
+	// Token: 0x04008B88 RID: 35720
+	public static WorldSelector Instance;
+
+	// Token: 0x04008B89 RID: 35721
+	public Dictionary<int, MultiToggle> worldRows;
+
+	// Token: 0x04008B8A RID: 35722
+	public TextStyleSetting titleTextSetting;
+
+	// Token: 0x04008B8B RID: 35723
+	public TextStyleSetting bodyTextSetting;
+
+	// Token: 0x04008B8C RID: 35724
+	public GameObject worldRowPrefab;
+
+	// Token: 0x04008B8D RID: 35725
+	public GameObject worldRowContainer;
+
+	// Token: 0x04008B8E RID: 35726
+	private Dictionary<int, ColonyDiagnostic.DiagnosticResult.Opinion> previousWorldDiagnosticStatus = new Dictionary<int, ColonyDiagnostic.DiagnosticResult.Opinion>();
+
+	// Token: 0x04008B8F RID: 35727
+	private Dictionary<int, List<GameObject>> worldStatusIcons = new Dictionary<int, List<GameObject>>();
 }

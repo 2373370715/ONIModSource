@@ -1,46 +1,35 @@
+﻿using System;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x02000391 RID: 913
 public class IceMachineConfig : IBuildingConfig
 {
-	public const string ID = "IceMachine";
-
-	private const float WATER_STORAGE = 60f;
-
-	private const float ICE_STORAGE = 300f;
-
-	private const float WATER_INPUT_RATE = 0.5f;
-
-	private const float ICE_OUTPUT_RATE = 0.5f;
-
-	private const float ICE_PER_LOAD = 30f;
-
-	private const float TARGET_ICE_TEMP = 253.15f;
-
-	private const float KDTU_TRANSFER_RATE = 80f;
-
-	private const float THERMAL_CONSERVATION = 0.2f;
-
-	private float energyConsumption = 240f;
-
-	public static Tag[] ELEMENT_OPTIONS = new Tag[2]
-	{
-		SimHashes.Ice.CreateTag(),
-		SimHashes.Snow.CreateTag()
-	};
-
+	// Token: 0x06000EFB RID: 3835 RVA: 0x0017B934 File Offset: 0x00179B34
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef("IceMachine", 2, 3, "freezerator_kanim", 30, 30f, BUILDINGS.CONSTRUCTION_MASS_KG.TIER4, MATERIALS.ALL_METALS, 1600f, BuildLocationRule.OnFloor, noise: NOISE_POLLUTION.NOISY.TIER2, decor: BUILDINGS.DECOR.NONE);
-		obj.RequiresPowerInput = true;
-		obj.EnergyConsumptionWhenActive = energyConsumption;
-		obj.ExhaustKilowattsWhenActive = 4f;
-		obj.SelfHeatKilowattsWhenActive = 12f;
-		obj.ViewMode = OverlayModes.Temperature.ID;
-		obj.AudioCategory = "Metal";
-		return obj;
+		string id = "IceMachine";
+		int width = 2;
+		int height = 3;
+		string anim = "freezerator_kanim";
+		int hitpoints = 30;
+		float construction_time = 30f;
+		float[] tier = BUILDINGS.CONSTRUCTION_MASS_KG.TIER4;
+		string[] all_METALS = MATERIALS.ALL_METALS;
+		float melting_point = 1600f;
+		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
+		EffectorValues tier2 = NOISE_POLLUTION.NOISY.TIER2;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, all_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, tier2, 0.2f);
+		buildingDef.RequiresPowerInput = true;
+		buildingDef.EnergyConsumptionWhenActive = this.energyConsumption;
+		buildingDef.ExhaustKilowattsWhenActive = 4f;
+		buildingDef.SelfHeatKilowattsWhenActive = 12f;
+		buildingDef.ViewMode = OverlayModes.Temperature.ID;
+		buildingDef.AudioCategory = "Metal";
+		return buildingDef;
 	}
 
+	// Token: 0x06000EFC RID: 3836 RVA: 0x0017B9BC File Offset: 0x00179BBC
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		Storage storage = go.AddOrGet<Storage>();
@@ -69,7 +58,45 @@ public class IceMachineConfig : IBuildingConfig
 		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.MachineFetch.IdHash;
 	}
 
+	// Token: 0x06000EFD RID: 3837 RVA: 0x000A5E40 File Offset: 0x000A4040
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
+
+	// Token: 0x04000ACE RID: 2766
+	public const string ID = "IceMachine";
+
+	// Token: 0x04000ACF RID: 2767
+	private const float WATER_STORAGE = 60f;
+
+	// Token: 0x04000AD0 RID: 2768
+	private const float ICE_STORAGE = 300f;
+
+	// Token: 0x04000AD1 RID: 2769
+	private const float WATER_INPUT_RATE = 0.5f;
+
+	// Token: 0x04000AD2 RID: 2770
+	private const float ICE_OUTPUT_RATE = 0.5f;
+
+	// Token: 0x04000AD3 RID: 2771
+	private const float ICE_PER_LOAD = 30f;
+
+	// Token: 0x04000AD4 RID: 2772
+	private const float TARGET_ICE_TEMP = 253.15f;
+
+	// Token: 0x04000AD5 RID: 2773
+	private const float KDTU_TRANSFER_RATE = 80f;
+
+	// Token: 0x04000AD6 RID: 2774
+	private const float THERMAL_CONSERVATION = 0.2f;
+
+	// Token: 0x04000AD7 RID: 2775
+	private float energyConsumption = 240f;
+
+	// Token: 0x04000AD8 RID: 2776
+	public static Tag[] ELEMENT_OPTIONS = new Tag[]
+	{
+		SimHashes.Ice.CreateTag(),
+		SimHashes.Snow.CreateTag()
+	};
 }

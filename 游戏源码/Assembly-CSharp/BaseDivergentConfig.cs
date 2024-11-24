@@ -1,29 +1,27 @@
+﻿using System;
 using System.Collections.Generic;
 using Klei.AI;
 using STRINGS;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x020000E1 RID: 225
 public static class BaseDivergentConfig
 {
-	public const float CROP_TENDED_MULTIPLIER_DURATION = 600f;
-
-	public const float CROP_TENDED_MULTIPLIER_EFFECT = 0.05f;
-
-	public static string[] ignoreEffectGroup = new string[2] { "DivergentCropTended", "DivergentCropTendedWorm" };
-
+	// Token: 0x060003A2 RID: 930 RVA: 0x00150328 File Offset: 0x0014E528
 	public static GameObject BaseDivergent(string id, string name, string desc, float mass, string anim_file, string traitId, bool is_baby, float num_tended_per_cycle = 8f, string symbolOverridePrefix = null, string cropTendingEffect = "DivergentCropTended", int meatAmount = 1, bool is_pacifist = true)
 	{
-		GameObject gameObject = EntityTemplates.CreatePlacedEntity(id, name, desc, mass, decor: DECOR.BONUS.TIER0, anim: Assets.GetAnim(anim_file), initialAnim: "idle_loop", sceneLayer: Grid.SceneLayer.Creatures, width: 1, height: 1);
+		EffectorValues tier = DECOR.BONUS.TIER0;
+		GameObject gameObject = EntityTemplates.CreatePlacedEntity(id, name, desc, mass, Assets.GetAnim(anim_file), "idle_loop", Grid.SceneLayer.Creatures, 1, 1, tier, default(EffectorValues), SimHashes.Creature, null, 293f);
 		string navGridName = "WalkerNavGrid1x1";
 		if (is_baby)
 		{
 			navGridName = "WalkerBabyNavGrid";
 		}
-		EntityTemplates.ExtendEntityToBasicCreature(gameObject, FactionManager.FactionID.Pest, traitId, navGridName, NavType.Floor, 32, 2f, "Meat", meatAmount, drownVulnerable: true, entombVulnerable: false, 283.15f, 313.15f, 243.15f, 373.15f);
+		EntityTemplates.ExtendEntityToBasicCreature(gameObject, FactionManager.FactionID.Pest, traitId, navGridName, NavType.Floor, 32, 2f, "Meat", meatAmount, true, false, 283.15f, 313.15f, 243.15f, 373.15f);
 		if (symbolOverridePrefix != null)
 		{
-			gameObject.AddOrGet<SymbolOverrideController>().ApplySymbolOverridesByAffix(Assets.GetAnim(anim_file), symbolOverridePrefix);
+			gameObject.AddOrGet<SymbolOverrideController>().ApplySymbolOverridesByAffix(Assets.GetAnim(anim_file), symbolOverridePrefix, null, 0);
 		}
 		Pickupable pickupable = gameObject.AddOrGet<Pickupable>();
 		int sortOrder = TUNING.CREATURES.SORTING.CRITTER_ORDER["DivergentBeetle"];
@@ -34,9 +32,9 @@ public static class BaseDivergentConfig
 		gameObject.AddOrGetDef<BurrowMonitor.Def>();
 		gameObject.AddOrGetDef<CropTendingMonitor.Def>().numCropsTendedPerCycle = num_tended_per_cycle;
 		gameObject.AddOrGetDef<ThreatMonitor.Def>().fleethresholdState = Health.HealthState.Dead;
-		EntityTemplates.CreateAndRegisterBaggedCreature(gameObject, must_stand_on_top_for_pickup: true, allow_mark_for_capture: true);
+		EntityTemplates.CreateAndRegisterBaggedCreature(gameObject, true, true, false);
 		KPrefabID component = gameObject.GetComponent<KPrefabID>();
-		component.AddTag(GameTags.Creatures.Walker);
+		component.AddTag(GameTags.Creatures.Walker, false);
 		component.prefabInitFn += delegate(GameObject inst)
 		{
 			inst.GetAttributes().Add(Db.Get().Attributes.MaxUnderwaterTravelCost);
@@ -49,46 +47,30 @@ public static class BaseDivergentConfig
 			crop_tending_pre = "wormwood_tending_pre",
 			crop_tending = "wormwood_tending",
 			crop_tending_pst = "wormwood_tending_pst",
-			hide_symbols_after_pre = new string[2] { "flower", "flower_wilted" }
+			hide_symbols_after_pre = new string[]
+			{
+				"flower",
+				"flower_wilted"
+			}
 		});
-		def.ignoreEffectGroup = ignoreEffectGroup;
-		ChoreTable.Builder chore_table = new ChoreTable.Builder().Add(new DeathStates.Def()).Add(new AnimInterruptStates.Def()).Add(new GrowUpStates.Def(), is_baby)
-			.Add(new TrappedStates.Def())
-			.Add(new IncubatingStates.Def(), is_baby)
-			.Add(new BaggedStates.Def())
-			.Add(new FallStates.Def())
-			.Add(new StunnedStates.Def())
-			.Add(new DrowningStates.Def())
-			.Add(new DebugGoToStates.Def())
-			.Add(new FleeStates.Def())
-			.Add(new AttackStates.Def(), !is_baby && !is_pacifist)
-			.PushInterruptGroup()
-			.Add(new CreatureSleepStates.Def())
-			.Add(new FixedCaptureStates.Def())
-			.Add(new RanchedStates.Def(), !is_baby)
-			.Add(new LayEggStates.Def(), !is_baby)
-			.Add(new EatStates.Def())
-			.Add(new DrinkMilkStates.Def())
-			.Add(new PlayAnimsStates.Def(GameTags.Creatures.Poop, loop: false, "poop", STRINGS.CREATURES.STATUSITEMS.EXPELLING_SOLID.NAME, STRINGS.CREATURES.STATUSITEMS.EXPELLING_SOLID.TOOLTIP))
-			.Add(new CallAdultStates.Def(), is_baby)
-			.Add(def, !is_baby)
-			.Add(new CritterCondoStates.Def(), !is_baby)
-			.PopInterruptGroup()
-			.Add(new IdleStates.Def());
+		def.ignoreEffectGroup = BaseDivergentConfig.ignoreEffectGroup;
+		ChoreTable.Builder chore_table = new ChoreTable.Builder().Add(new DeathStates.Def(), true, -1).Add(new AnimInterruptStates.Def(), true, -1).Add(new GrowUpStates.Def(), is_baby, -1).Add(new TrappedStates.Def(), true, -1).Add(new IncubatingStates.Def(), is_baby, -1).Add(new BaggedStates.Def(), true, -1).Add(new FallStates.Def(), true, -1).Add(new StunnedStates.Def(), true, -1).Add(new DrowningStates.Def(), true, -1).Add(new DebugGoToStates.Def(), true, -1).Add(new FleeStates.Def(), true, -1).Add(new AttackStates.Def("eat_pre", "eat_pst", null), !is_baby && !is_pacifist, -1).PushInterruptGroup().Add(new CreatureSleepStates.Def(), true, -1).Add(new FixedCaptureStates.Def(), true, -1).Add(new RanchedStates.Def(), !is_baby, -1).Add(new LayEggStates.Def(), !is_baby, -1).Add(new EatStates.Def(), true, -1).Add(new DrinkMilkStates.Def(), true, -1).Add(new PlayAnimsStates.Def(GameTags.Creatures.Poop, false, "poop", STRINGS.CREATURES.STATUSITEMS.EXPELLING_SOLID.NAME, STRINGS.CREATURES.STATUSITEMS.EXPELLING_SOLID.TOOLTIP), true, -1).Add(new CallAdultStates.Def(), is_baby, -1).Add(def, !is_baby, -1).Add(new CritterCondoStates.Def(), !is_baby, -1).PopInterruptGroup().Add(new IdleStates.Def(), true, -1);
 		EntityTemplates.AddCreatureBrain(gameObject, chore_table, GameTags.Creatures.Species.DivergentSpecies, symbolOverridePrefix);
 		return gameObject;
 	}
 
+	// Token: 0x060003A3 RID: 931 RVA: 0x0015066C File Offset: 0x0014E86C
 	public static List<Diet.Info> BasicSulfurDiet(Tag poopTag, float caloriesPerKg, float producedConversionRate, string diseaseId, float diseasePerKgProduced)
 	{
 		HashSet<Tag> hashSet = new HashSet<Tag>();
 		hashSet.Add(SimHashes.Sulfur.CreateTag());
 		return new List<Diet.Info>
 		{
-			new Diet.Info(hashSet, poopTag, caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced)
+			new Diet.Info(hashSet, poopTag, caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false, Diet.Info.FoodType.EatSolid, false, null)
 		};
 	}
 
+	// Token: 0x060003A4 RID: 932 RVA: 0x0014F6AC File Offset: 0x0014D8AC
 	public static GameObject SetupDiet(GameObject prefab, List<Diet.Info> diet_infos, float referenceCaloriesPerKg, float minPoopSizeInKg)
 	{
 		Diet diet = new Diet(diet_infos.ToArray());
@@ -98,4 +80,17 @@ public static class BaseDivergentConfig
 		prefab.AddOrGetDef<SolidConsumerMonitor.Def>().diet = diet;
 		return prefab;
 	}
+
+	// Token: 0x0400025B RID: 603
+	public const float CROP_TENDED_MULTIPLIER_DURATION = 600f;
+
+	// Token: 0x0400025C RID: 604
+	public const float CROP_TENDED_MULTIPLIER_EFFECT = 0.05f;
+
+	// Token: 0x0400025D RID: 605
+	public static string[] ignoreEffectGroup = new string[]
+	{
+		"DivergentCropTended",
+		"DivergentCropTendedWorm"
+	};
 }

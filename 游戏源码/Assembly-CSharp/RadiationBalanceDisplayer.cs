@@ -1,28 +1,24 @@
+﻿using System;
 using Klei.AI;
 using STRINGS;
 using UnityEngine;
 
+// Token: 0x02001BE3 RID: 7139
 public class RadiationBalanceDisplayer : StandardAmountDisplayer
 {
-	public class RadiationAttributeFormatter : StandardAttributeFormatter
+	// Token: 0x0600947A RID: 38010 RVA: 0x00100BCE File Offset: 0x000FEDCE
+	public RadiationBalanceDisplayer() : base(GameUtil.UnitClass.SimpleFloat, GameUtil.TimeSlice.PerCycle, null, GameUtil.IdentityDescriptorTense.Normal)
 	{
-		public RadiationAttributeFormatter()
-			: base(GameUtil.UnitClass.SimpleFloat, GameUtil.TimeSlice.PerCycle)
-		{
-		}
+		this.formatter = new RadiationBalanceDisplayer.RadiationAttributeFormatter();
 	}
 
-	public RadiationBalanceDisplayer()
-		: base(GameUtil.UnitClass.SimpleFloat, GameUtil.TimeSlice.PerCycle)
-	{
-		formatter = new RadiationAttributeFormatter();
-	}
-
+	// Token: 0x0600947B RID: 38011 RVA: 0x00100BE5 File Offset: 0x000FEDE5
 	public override string GetValueString(Amount master, AmountInstance instance)
 	{
 		return base.GetValueString(master, instance) + UI.UNITSUFFIXES.RADIATION.RADS;
 	}
 
+	// Token: 0x0600947C RID: 38012 RVA: 0x00395B68 File Offset: 0x00393D68
 	public override string GetTooltip(Amount master, AmountInstance instance)
 	{
 		string text = "";
@@ -40,5 +36,14 @@ public class RadiationBalanceDisplayer : StandardAmountDisplayer
 			text += string.Format(DUPLICANTS.STATS.RADIATIONBALANCE.CURRENT_REJUVENATION, Mathf.RoundToInt(Db.Get().Attributes.RadiationRecovery.Lookup(instance.gameObject).GetTotalValue() * 600f));
 		}
 		return text;
+	}
+
+	// Token: 0x02001BE4 RID: 7140
+	public class RadiationAttributeFormatter : StandardAttributeFormatter
+	{
+		// Token: 0x0600947D RID: 38013 RVA: 0x00100BFE File Offset: 0x000FEDFE
+		public RadiationAttributeFormatter() : base(GameUtil.UnitClass.SimpleFloat, GameUtil.TimeSlice.PerCycle)
+		{
+		}
 	}
 }

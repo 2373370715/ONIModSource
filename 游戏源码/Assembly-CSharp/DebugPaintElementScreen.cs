@@ -1,154 +1,66 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Klei.AI;
 using STRINGS;
 using UnityEngine;
 using UnityEngine.UI;
 
+// Token: 0x02001C98 RID: 7320
 public class DebugPaintElementScreen : KScreen
 {
-	private struct ElemDisplayInfo
-	{
-		public SimHashes id;
-
-		public string displayStr;
-	}
-
-	[Header("Current State")]
-	public SimHashes element;
-
-	[NonSerialized]
-	public float mass = 1000f;
-
-	[NonSerialized]
-	public float temperature = -1f;
-
-	[NonSerialized]
-	public bool set_prevent_fow_reveal;
-
-	[NonSerialized]
-	public bool set_allow_fow_reveal;
-
-	[NonSerialized]
-	public int diseaseCount;
-
-	public byte diseaseIdx;
-
-	[Header("Popup Buttons")]
-	[SerializeField]
-	private KButton elementButton;
-
-	[SerializeField]
-	private KButton diseaseButton;
-
-	[Header("Popup Menus")]
-	[SerializeField]
-	private KPopupMenu elementPopup;
-
-	[SerializeField]
-	private KPopupMenu diseasePopup;
-
-	[Header("Value Inputs")]
-	[SerializeField]
-	private KInputTextField massPressureInput;
-
-	[SerializeField]
-	private KInputTextField temperatureInput;
-
-	[SerializeField]
-	private KInputTextField diseaseCountInput;
-
-	[SerializeField]
-	private KInputTextField filterInput;
-
-	[Header("Tool Buttons")]
-	[SerializeField]
-	private KButton paintButton;
-
-	[SerializeField]
-	private KButton fillButton;
-
-	[SerializeField]
-	private KButton sampleButton;
-
-	[SerializeField]
-	private KButton spawnButton;
-
-	[SerializeField]
-	private KButton storeButton;
-
-	[Header("Parameter Toggles")]
-	public Toggle paintElement;
-
-	public Toggle paintMass;
-
-	public Toggle paintTemperature;
-
-	public Toggle paintDisease;
-
-	public Toggle paintDiseaseCount;
-
-	public Toggle affectBuildings;
-
-	public Toggle affectCells;
-
-	public Toggle paintPreventFOWReveal;
-
-	public Toggle paintAllowFOWReveal;
-
-	private List<KInputTextField> inputFields = new List<KInputTextField>();
-
-	private List<string> options_list = new List<string>();
-
-	private string filter;
-
+	// Token: 0x17000A16 RID: 2582
+	// (get) Token: 0x060098A9 RID: 39081 RVA: 0x00103551 File Offset: 0x00101751
+	// (set) Token: 0x060098AA RID: 39082 RVA: 0x00103558 File Offset: 0x00101758
 	public static DebugPaintElementScreen Instance { get; private set; }
 
+	// Token: 0x060098AB RID: 39083 RVA: 0x00103560 File Offset: 0x00101760
 	public static void DestroyInstance()
 	{
-		Instance = null;
+		DebugPaintElementScreen.Instance = null;
 	}
 
+	// Token: 0x060098AC RID: 39084 RVA: 0x003B0FBC File Offset: 0x003AF1BC
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		Instance = this;
-		SetupLocText();
-		inputFields.Add(massPressureInput);
-		inputFields.Add(temperatureInput);
-		inputFields.Add(diseaseCountInput);
-		inputFields.Add(filterInput);
-		foreach (KInputTextField inputField in inputFields)
+		DebugPaintElementScreen.Instance = this;
+		this.SetupLocText();
+		this.inputFields.Add(this.massPressureInput);
+		this.inputFields.Add(this.temperatureInput);
+		this.inputFields.Add(this.diseaseCountInput);
+		this.inputFields.Add(this.filterInput);
+		foreach (KInputTextField kinputTextField in this.inputFields)
 		{
-			inputField.onFocus = (System.Action)Delegate.Combine(inputField.onFocus, (System.Action)delegate
+			kinputTextField.onFocus = (System.Action)Delegate.Combine(kinputTextField.onFocus, new System.Action(delegate()
 			{
 				base.isEditing = true;
-			});
-			inputField.onEndEdit.AddListener(delegate
+			}));
+			kinputTextField.onEndEdit.AddListener(delegate(string value)
 			{
 				base.isEditing = false;
 			});
 		}
-		temperatureInput.onEndEdit.AddListener(delegate
+		this.temperatureInput.onEndEdit.AddListener(delegate(string value)
 		{
-			OnChangeTemperature();
+			this.OnChangeTemperature();
 		});
-		massPressureInput.onEndEdit.AddListener(delegate
+		this.massPressureInput.onEndEdit.AddListener(delegate(string value)
 		{
-			OnChangeMassPressure();
+			this.OnChangeMassPressure();
 		});
-		diseaseCountInput.onEndEdit.AddListener(delegate
+		this.diseaseCountInput.onEndEdit.AddListener(delegate(string value)
 		{
-			OnDiseaseCountChange();
+			this.OnDiseaseCountChange();
 		});
-		base.gameObject.SetActive(value: false);
-		activateOnSpawn = true;
+		base.gameObject.SetActive(false);
+		this.activateOnSpawn = true;
 		base.ConsumeMouseScroll = true;
 	}
 
+	// Token: 0x060098AD RID: 39085 RVA: 0x003B1104 File Offset: 0x003AF304
 	private void SetupLocText()
 	{
-		HierarchyReferences component = GetComponent<HierarchyReferences>();
+		HierarchyReferences component = base.GetComponent<HierarchyReferences>();
 		component.GetReference<LocText>("Title").text = UI.DEBUG_TOOLS.PAINT_ELEMENTS_SCREEN.TITLE;
 		component.GetReference<LocText>("ElementLabel").text = UI.DEBUG_TOOLS.PAINT_ELEMENTS_SCREEN.ELEMENT;
 		component.GetReference<LocText>("MassLabel").text = UI.DEBUG_TOOLS.PAINT_ELEMENTS_SCREEN.MASS_KG;
@@ -157,86 +69,89 @@ public class DebugPaintElementScreen : KScreen
 		component.GetReference<LocText>("DiseaseCountLabel").text = UI.DEBUG_TOOLS.PAINT_ELEMENTS_SCREEN.DISEASE_COUNT;
 		component.GetReference<LocText>("AddFoWMaskLabel").text = UI.DEBUG_TOOLS.PAINT_ELEMENTS_SCREEN.ADD_FOW_MASK;
 		component.GetReference<LocText>("RemoveFoWMaskLabel").text = UI.DEBUG_TOOLS.PAINT_ELEMENTS_SCREEN.REMOVE_FOW_MASK;
-		elementButton.GetComponentsInChildren<LocText>()[0].text = UI.DEBUG_TOOLS.PAINT_ELEMENTS_SCREEN.ELEMENT;
-		diseaseButton.GetComponentsInChildren<LocText>()[0].text = UI.DEBUG_TOOLS.PAINT_ELEMENTS_SCREEN.DISEASE;
-		paintButton.GetComponentsInChildren<LocText>()[0].text = UI.DEBUG_TOOLS.PAINT_ELEMENTS_SCREEN.PAINT;
-		fillButton.GetComponentsInChildren<LocText>()[0].text = UI.DEBUG_TOOLS.PAINT_ELEMENTS_SCREEN.FILL;
-		spawnButton.GetComponentsInChildren<LocText>()[0].text = UI.DEBUG_TOOLS.PAINT_ELEMENTS_SCREEN.SPAWN_ALL;
-		sampleButton.GetComponentsInChildren<LocText>()[0].text = UI.DEBUG_TOOLS.PAINT_ELEMENTS_SCREEN.SAMPLE;
-		storeButton.GetComponentsInChildren<LocText>()[0].text = UI.DEBUG_TOOLS.PAINT_ELEMENTS_SCREEN.STORE;
-		affectBuildings.transform.parent.GetComponentsInChildren<LocText>()[0].text = UI.DEBUG_TOOLS.PAINT_ELEMENTS_SCREEN.BUILDINGS;
-		affectCells.transform.parent.GetComponentsInChildren<LocText>()[0].text = UI.DEBUG_TOOLS.PAINT_ELEMENTS_SCREEN.CELLS;
+		this.elementButton.GetComponentsInChildren<LocText>()[0].text = UI.DEBUG_TOOLS.PAINT_ELEMENTS_SCREEN.ELEMENT;
+		this.diseaseButton.GetComponentsInChildren<LocText>()[0].text = UI.DEBUG_TOOLS.PAINT_ELEMENTS_SCREEN.DISEASE;
+		this.paintButton.GetComponentsInChildren<LocText>()[0].text = UI.DEBUG_TOOLS.PAINT_ELEMENTS_SCREEN.PAINT;
+		this.fillButton.GetComponentsInChildren<LocText>()[0].text = UI.DEBUG_TOOLS.PAINT_ELEMENTS_SCREEN.FILL;
+		this.spawnButton.GetComponentsInChildren<LocText>()[0].text = UI.DEBUG_TOOLS.PAINT_ELEMENTS_SCREEN.SPAWN_ALL;
+		this.sampleButton.GetComponentsInChildren<LocText>()[0].text = UI.DEBUG_TOOLS.PAINT_ELEMENTS_SCREEN.SAMPLE;
+		this.storeButton.GetComponentsInChildren<LocText>()[0].text = UI.DEBUG_TOOLS.PAINT_ELEMENTS_SCREEN.STORE;
+		this.affectBuildings.transform.parent.GetComponentsInChildren<LocText>()[0].text = UI.DEBUG_TOOLS.PAINT_ELEMENTS_SCREEN.BUILDINGS;
+		this.affectCells.transform.parent.GetComponentsInChildren<LocText>()[0].text = UI.DEBUG_TOOLS.PAINT_ELEMENTS_SCREEN.CELLS;
 	}
 
+	// Token: 0x060098AE RID: 39086 RVA: 0x003B12F8 File Offset: 0x003AF4F8
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		element = SimHashes.Ice;
-		diseaseIdx = byte.MaxValue;
-		ConfigureElements();
+		this.element = SimHashes.Ice;
+		this.diseaseIdx = byte.MaxValue;
+		this.ConfigureElements();
 		List<string> list = new List<string>();
 		list.Insert(0, "None");
-		foreach (Disease resource in Db.Get().Diseases.resources)
+		foreach (Disease disease in Db.Get().Diseases.resources)
 		{
-			list.Add(resource.Name);
+			list.Add(disease.Name);
 		}
-		diseasePopup.SetOptions(list.ToArray());
-		KPopupMenu kPopupMenu = diseasePopup;
-		kPopupMenu.OnSelect = (Action<string, int>)Delegate.Combine(kPopupMenu.OnSelect, new Action<string, int>(OnSelectDisease));
-		SelectDiseaseOption(diseaseIdx);
-		paintButton.onClick += OnClickPaint;
-		fillButton.onClick += OnClickFill;
-		sampleButton.onClick += OnClickSample;
-		storeButton.onClick += OnClickStore;
+		this.diseasePopup.SetOptions(list.ToArray());
+		KPopupMenu kpopupMenu = this.diseasePopup;
+		kpopupMenu.OnSelect = (Action<string, int>)Delegate.Combine(kpopupMenu.OnSelect, new Action<string, int>(this.OnSelectDisease));
+		this.SelectDiseaseOption((int)this.diseaseIdx);
+		this.paintButton.onClick += this.OnClickPaint;
+		this.fillButton.onClick += this.OnClickFill;
+		this.sampleButton.onClick += this.OnClickSample;
+		this.storeButton.onClick += this.OnClickStore;
 		if (SaveGame.Instance.worldGenSpawner.SpawnsRemain())
 		{
-			spawnButton.onClick += OnClickSpawn;
+			this.spawnButton.onClick += this.OnClickSpawn;
 		}
-		KPopupMenu kPopupMenu2 = elementPopup;
-		kPopupMenu2.OnSelect = (Action<string, int>)Delegate.Combine(kPopupMenu2.OnSelect, new Action<string, int>(OnSelectElement));
-		elementButton.onClick += elementPopup.OnClick;
-		diseaseButton.onClick += diseasePopup.OnClick;
+		KPopupMenu kpopupMenu2 = this.elementPopup;
+		kpopupMenu2.OnSelect = (Action<string, int>)Delegate.Combine(kpopupMenu2.OnSelect, new Action<string, int>(this.OnSelectElement));
+		this.elementButton.onClick += this.elementPopup.OnClick;
+		this.diseaseButton.onClick += this.diseasePopup.OnClick;
 	}
 
+	// Token: 0x060098AF RID: 39087 RVA: 0x003B14B4 File Offset: 0x003AF6B4
 	private void FilterElements(string filterValue)
 	{
 		if (string.IsNullOrEmpty(filterValue))
 		{
-			foreach (KButtonMenu.ButtonInfo button in elementPopup.GetButtons())
+			foreach (KButtonMenu.ButtonInfo buttonInfo in this.elementPopup.GetButtons())
 			{
-				button.uibutton.gameObject.SetActive(value: true);
+				buttonInfo.uibutton.gameObject.SetActive(true);
 			}
 			return;
 		}
-		filterValue = filter.ToLower();
-		foreach (KButtonMenu.ButtonInfo button2 in elementPopup.GetButtons())
+		filterValue = this.filter.ToLower();
+		foreach (KButtonMenu.ButtonInfo buttonInfo2 in this.elementPopup.GetButtons())
 		{
-			button2.uibutton.gameObject.SetActive(button2.text.ToLower().Contains(filterValue));
+			buttonInfo2.uibutton.gameObject.SetActive(buttonInfo2.text.ToLower().Contains(filterValue));
 		}
 	}
 
+	// Token: 0x060098B0 RID: 39088 RVA: 0x003B1580 File Offset: 0x003AF780
 	private void ConfigureElements()
 	{
-		if (filter != null)
+		if (this.filter != null)
 		{
-			filter = filter.ToLower();
+			this.filter = this.filter.ToLower();
 		}
-		List<ElemDisplayInfo> list = new List<ElemDisplayInfo>();
-		foreach (Element element2 in ElementLoader.elements)
+		List<DebugPaintElementScreen.ElemDisplayInfo> list = new List<DebugPaintElementScreen.ElemDisplayInfo>();
+		foreach (Element element in ElementLoader.elements)
 		{
-			if (element2.name != "Element Not Loaded" && element2.substance != null && element2.substance.showInEditor && (string.IsNullOrEmpty(filter) || element2.name.ToLower().Contains(filter)))
+			if (element.name != "Element Not Loaded" && element.substance != null && element.substance.showInEditor && (string.IsNullOrEmpty(this.filter) || element.name.ToLower().Contains(this.filter)))
 			{
-				list.Add(new ElemDisplayInfo
+				list.Add(new DebugPaintElementScreen.ElemDisplayInfo
 				{
-					id = element2.id,
-					displayStr = element2.name + " (" + element2.GetStateString() + ")"
+					id = element.id,
+					displayStr = element.name + " (" + element.GetStateString() + ")"
 				});
 			}
 		}
-		list.Sort((ElemDisplayInfo a, ElemDisplayInfo b) => a.displayStr.CompareTo(b.displayStr));
-		if (string.IsNullOrEmpty(filter))
+		list.Sort((DebugPaintElementScreen.ElemDisplayInfo a, DebugPaintElementScreen.ElemDisplayInfo b) => a.displayStr.CompareTo(b.displayStr));
+		if (string.IsNullOrEmpty(this.filter))
 		{
-			SimHashes[] array = new SimHashes[6]
+			SimHashes[] array = new SimHashes[]
 			{
 				SimHashes.SlimeMold,
 				SimHashes.Vacuum,
@@ -247,133 +162,144 @@ public class DebugPaintElementScreen : KScreen
 			};
 			for (int i = 0; i < array.Length; i++)
 			{
-				Element element = ElementLoader.FindElementByHash(array[i]);
-				list.Insert(0, new ElemDisplayInfo
+				Element element2 = ElementLoader.FindElementByHash(array[i]);
+				list.Insert(0, new DebugPaintElementScreen.ElemDisplayInfo
 				{
-					id = element.id,
-					displayStr = element.name + " (" + element.GetStateString() + ")"
+					id = element2.id,
+					displayStr = element2.name + " (" + element2.GetStateString() + ")"
 				});
 			}
 		}
-		options_list = new List<string>();
+		this.options_list = new List<string>();
 		List<string> list2 = new List<string>();
-		foreach (ElemDisplayInfo item in list)
+		foreach (DebugPaintElementScreen.ElemDisplayInfo elemDisplayInfo in list)
 		{
-			list2.Add(item.displayStr);
-			options_list.Add(item.id.ToString());
+			list2.Add(elemDisplayInfo.displayStr);
+			this.options_list.Add(elemDisplayInfo.id.ToString());
 		}
-		elementPopup.SetOptions(list2);
+		this.elementPopup.SetOptions(list2);
 		for (int j = 0; j < list.Count; j++)
 		{
 			if (list[j].id == this.element)
 			{
-				elementPopup.SelectOption(list2[j], j);
+				this.elementPopup.SelectOption(list2[j], j);
 			}
 		}
-		elementPopup.GetComponent<ScrollRect>().normalizedPosition = new Vector2(0f, 1f);
+		this.elementPopup.GetComponent<ScrollRect>().normalizedPosition = new Vector2(0f, 1f);
 	}
 
+	// Token: 0x060098B1 RID: 39089 RVA: 0x003B1800 File Offset: 0x003AFA00
 	private void OnClickSpawn()
 	{
 		foreach (WorldContainer worldContainer in ClusterManager.Instance.WorldContainers)
 		{
-			worldContainer.SetDiscovered(reveal_surface: true);
+			worldContainer.SetDiscovered(true);
 		}
 		SaveGame.Instance.worldGenSpawner.SpawnEverything();
-		spawnButton.GetComponent<KButton>().isInteractable = false;
+		this.spawnButton.GetComponent<KButton>().isInteractable = false;
 	}
 
+	// Token: 0x060098B2 RID: 39090 RVA: 0x00103568 File Offset: 0x00101768
 	private void OnClickPaint()
 	{
-		OnChangeMassPressure();
-		OnChangeTemperature();
-		OnDiseaseCountChange();
-		OnChangeFOWReveal();
+		this.OnChangeMassPressure();
+		this.OnChangeTemperature();
+		this.OnDiseaseCountChange();
+		this.OnChangeFOWReveal();
 		DebugTool.Instance.Activate(DebugTool.Type.ReplaceSubstance);
 	}
 
+	// Token: 0x060098B3 RID: 39091 RVA: 0x0010358D File Offset: 0x0010178D
 	private void OnClickStore()
 	{
-		OnChangeMassPressure();
-		OnChangeTemperature();
-		OnDiseaseCountChange();
-		OnChangeFOWReveal();
+		this.OnChangeMassPressure();
+		this.OnChangeTemperature();
+		this.OnDiseaseCountChange();
+		this.OnChangeFOWReveal();
 		DebugTool.Instance.Activate(DebugTool.Type.StoreSubstance);
 	}
 
+	// Token: 0x060098B4 RID: 39092 RVA: 0x001035B2 File Offset: 0x001017B2
 	private void OnClickSample()
 	{
-		OnChangeMassPressure();
-		OnChangeTemperature();
-		OnDiseaseCountChange();
-		OnChangeFOWReveal();
+		this.OnChangeMassPressure();
+		this.OnChangeTemperature();
+		this.OnDiseaseCountChange();
+		this.OnChangeFOWReveal();
 		DebugTool.Instance.Activate(DebugTool.Type.Sample);
 	}
 
+	// Token: 0x060098B5 RID: 39093 RVA: 0x001035D7 File Offset: 0x001017D7
 	private void OnClickFill()
 	{
-		OnChangeMassPressure();
-		OnChangeTemperature();
-		OnDiseaseCountChange();
+		this.OnChangeMassPressure();
+		this.OnChangeTemperature();
+		this.OnDiseaseCountChange();
 		DebugTool.Instance.Activate(DebugTool.Type.FillReplaceSubstance);
 	}
 
+	// Token: 0x060098B6 RID: 39094 RVA: 0x001035F6 File Offset: 0x001017F6
 	private void OnSelectElement(string str, int index)
 	{
-		element = (SimHashes)Enum.Parse(typeof(SimHashes), options_list[index]);
-		elementButton.GetComponentInChildren<LocText>().text = str;
+		this.element = (SimHashes)Enum.Parse(typeof(SimHashes), this.options_list[index]);
+		this.elementButton.GetComponentInChildren<LocText>().text = str;
 	}
 
+	// Token: 0x060098B7 RID: 39095 RVA: 0x0010362F File Offset: 0x0010182F
 	private void OnSelectElement(SimHashes element)
 	{
 		this.element = element;
-		elementButton.GetComponentInChildren<LocText>().text = ElementLoader.FindElementByHash(element).name;
+		this.elementButton.GetComponentInChildren<LocText>().text = ElementLoader.FindElementByHash(element).name;
 	}
 
+	// Token: 0x060098B8 RID: 39096 RVA: 0x003B1870 File Offset: 0x003AFA70
 	private void OnSelectDisease(string str, int index)
 	{
-		diseaseIdx = byte.MaxValue;
+		this.diseaseIdx = byte.MaxValue;
 		for (int i = 0; i < Db.Get().Diseases.Count; i++)
 		{
 			if (Db.Get().Diseases[i].Name == str)
 			{
-				diseaseIdx = (byte)i;
+				this.diseaseIdx = (byte)i;
 			}
 		}
-		SelectDiseaseOption(diseaseIdx);
+		this.SelectDiseaseOption((int)this.diseaseIdx);
 	}
 
+	// Token: 0x060098B9 RID: 39097 RVA: 0x003B18D4 File Offset: 0x003AFAD4
 	private void SelectDiseaseOption(int diseaseIdx)
 	{
 		if (diseaseIdx == 255)
 		{
-			diseaseButton.GetComponentInChildren<LocText>().text = "None";
+			this.diseaseButton.GetComponentInChildren<LocText>().text = "None";
 			return;
 		}
-		string text = Db.Get().Diseases[diseaseIdx].Name;
-		diseaseButton.GetComponentInChildren<LocText>().text = text;
+		string name = Db.Get().Diseases[diseaseIdx].Name;
+		this.diseaseButton.GetComponentInChildren<LocText>().text = name;
 	}
 
+	// Token: 0x060098BA RID: 39098 RVA: 0x003B1928 File Offset: 0x003AFB28
 	private void OnChangeFOWReveal()
 	{
-		if (paintPreventFOWReveal.isOn)
+		if (this.paintPreventFOWReveal.isOn)
 		{
-			paintAllowFOWReveal.isOn = false;
+			this.paintAllowFOWReveal.isOn = false;
 		}
-		if (paintAllowFOWReveal.isOn)
+		if (this.paintAllowFOWReveal.isOn)
 		{
-			paintPreventFOWReveal.isOn = false;
+			this.paintPreventFOWReveal.isOn = false;
 		}
-		set_prevent_fow_reveal = paintPreventFOWReveal.isOn;
-		set_allow_fow_reveal = paintAllowFOWReveal.isOn;
+		this.set_prevent_fow_reveal = this.paintPreventFOWReveal.isOn;
+		this.set_allow_fow_reveal = this.paintAllowFOWReveal.isOn;
 	}
 
+	// Token: 0x060098BB RID: 39099 RVA: 0x003B198C File Offset: 0x003AFB8C
 	public void OnChangeMassPressure()
 	{
 		float num;
 		try
 		{
-			num = Convert.ToSingle(massPressureInput.text);
+			num = Convert.ToSingle(this.massPressureInput.text);
 		}
 		catch
 		{
@@ -382,17 +308,18 @@ public class DebugPaintElementScreen : KScreen
 		if (num <= 0f)
 		{
 			num = 1f;
-			massPressureInput.text = "1";
+			this.massPressureInput.text = "1";
 		}
-		mass = num;
+		this.mass = num;
 	}
 
+	// Token: 0x060098BC RID: 39100 RVA: 0x003B19EC File Offset: 0x003AFBEC
 	public void OnChangeTemperature()
 	{
 		float num;
 		try
 		{
-			num = Convert.ToSingle(temperatureInput.text);
+			num = Convert.ToSingle(this.temperatureInput.text);
 		}
 		catch
 		{
@@ -401,34 +328,168 @@ public class DebugPaintElementScreen : KScreen
 		if (num <= 0f)
 		{
 			num = 1f;
-			temperatureInput.text = "1";
+			this.temperatureInput.text = "1";
 		}
-		temperature = num;
+		this.temperature = num;
 	}
 
+	// Token: 0x060098BD RID: 39101 RVA: 0x003B1A4C File Offset: 0x003AFC4C
 	public void OnDiseaseCountChange()
 	{
-		int.TryParse(diseaseCountInput.text, out var result);
-		if (result < 0)
+		int num;
+		int.TryParse(this.diseaseCountInput.text, out num);
+		if (num < 0)
 		{
-			result = 0;
-			diseaseCountInput.text = "0";
+			num = 0;
+			this.diseaseCountInput.text = "0";
 		}
-		diseaseCount = result;
+		this.diseaseCount = num;
 	}
 
+	// Token: 0x060098BE RID: 39102 RVA: 0x00103653 File Offset: 0x00101853
 	public void OnElementsFilterEdited(string new_filter)
 	{
-		filter = (string.IsNullOrEmpty(filterInput.text) ? null : filterInput.text);
-		FilterElements(filter);
+		this.filter = (string.IsNullOrEmpty(this.filterInput.text) ? null : this.filterInput.text);
+		this.FilterElements(this.filter);
 	}
 
+	// Token: 0x060098BF RID: 39103 RVA: 0x003B1A8C File Offset: 0x003AFC8C
 	public void SampleCell(int cell)
 	{
-		massPressureInput.text = (Grid.Pressure[cell] * 0.010000001f).ToString();
-		temperatureInput.text = Grid.Temperature[cell].ToString();
-		OnSelectElement(ElementLoader.GetElementID(Grid.Element[cell].tag));
-		OnChangeMassPressure();
-		OnChangeTemperature();
+		this.massPressureInput.text = (Grid.Pressure[cell] * 0.010000001f).ToString();
+		this.temperatureInput.text = Grid.Temperature[cell].ToString();
+		this.OnSelectElement(ElementLoader.GetElementID(Grid.Element[cell].tag));
+		this.OnChangeMassPressure();
+		this.OnChangeTemperature();
+	}
+
+	// Token: 0x040076E4 RID: 30436
+	[Header("Current State")]
+	public SimHashes element;
+
+	// Token: 0x040076E5 RID: 30437
+	[NonSerialized]
+	public float mass = 1000f;
+
+	// Token: 0x040076E6 RID: 30438
+	[NonSerialized]
+	public float temperature = -1f;
+
+	// Token: 0x040076E7 RID: 30439
+	[NonSerialized]
+	public bool set_prevent_fow_reveal;
+
+	// Token: 0x040076E8 RID: 30440
+	[NonSerialized]
+	public bool set_allow_fow_reveal;
+
+	// Token: 0x040076E9 RID: 30441
+	[NonSerialized]
+	public int diseaseCount;
+
+	// Token: 0x040076EA RID: 30442
+	public byte diseaseIdx;
+
+	// Token: 0x040076EB RID: 30443
+	[Header("Popup Buttons")]
+	[SerializeField]
+	private KButton elementButton;
+
+	// Token: 0x040076EC RID: 30444
+	[SerializeField]
+	private KButton diseaseButton;
+
+	// Token: 0x040076ED RID: 30445
+	[Header("Popup Menus")]
+	[SerializeField]
+	private KPopupMenu elementPopup;
+
+	// Token: 0x040076EE RID: 30446
+	[SerializeField]
+	private KPopupMenu diseasePopup;
+
+	// Token: 0x040076EF RID: 30447
+	[Header("Value Inputs")]
+	[SerializeField]
+	private KInputTextField massPressureInput;
+
+	// Token: 0x040076F0 RID: 30448
+	[SerializeField]
+	private KInputTextField temperatureInput;
+
+	// Token: 0x040076F1 RID: 30449
+	[SerializeField]
+	private KInputTextField diseaseCountInput;
+
+	// Token: 0x040076F2 RID: 30450
+	[SerializeField]
+	private KInputTextField filterInput;
+
+	// Token: 0x040076F3 RID: 30451
+	[Header("Tool Buttons")]
+	[SerializeField]
+	private KButton paintButton;
+
+	// Token: 0x040076F4 RID: 30452
+	[SerializeField]
+	private KButton fillButton;
+
+	// Token: 0x040076F5 RID: 30453
+	[SerializeField]
+	private KButton sampleButton;
+
+	// Token: 0x040076F6 RID: 30454
+	[SerializeField]
+	private KButton spawnButton;
+
+	// Token: 0x040076F7 RID: 30455
+	[SerializeField]
+	private KButton storeButton;
+
+	// Token: 0x040076F8 RID: 30456
+	[Header("Parameter Toggles")]
+	public Toggle paintElement;
+
+	// Token: 0x040076F9 RID: 30457
+	public Toggle paintMass;
+
+	// Token: 0x040076FA RID: 30458
+	public Toggle paintTemperature;
+
+	// Token: 0x040076FB RID: 30459
+	public Toggle paintDisease;
+
+	// Token: 0x040076FC RID: 30460
+	public Toggle paintDiseaseCount;
+
+	// Token: 0x040076FD RID: 30461
+	public Toggle affectBuildings;
+
+	// Token: 0x040076FE RID: 30462
+	public Toggle affectCells;
+
+	// Token: 0x040076FF RID: 30463
+	public Toggle paintPreventFOWReveal;
+
+	// Token: 0x04007700 RID: 30464
+	public Toggle paintAllowFOWReveal;
+
+	// Token: 0x04007701 RID: 30465
+	private List<KInputTextField> inputFields = new List<KInputTextField>();
+
+	// Token: 0x04007702 RID: 30466
+	private List<string> options_list = new List<string>();
+
+	// Token: 0x04007703 RID: 30467
+	private string filter;
+
+	// Token: 0x02001C99 RID: 7321
+	private struct ElemDisplayInfo
+	{
+		// Token: 0x04007704 RID: 30468
+		public SimHashes id;
+
+		// Token: 0x04007705 RID: 30469
+		public string displayStr;
 	}
 }

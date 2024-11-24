@@ -1,203 +1,85 @@
+﻿using System;
 using System.Collections.Generic;
 using Klei.AI;
 using KSerialization;
+using UnityEngine;
 
+// Token: 0x02001577 RID: 5495
 public class GasLiquidExposureMonitor : GameStateMachine<GasLiquidExposureMonitor, GasLiquidExposureMonitor.Instance, IStateMachineTarget, GasLiquidExposureMonitor.Def>
 {
-	public class Def : BaseDef
+	// Token: 0x06007236 RID: 29238 RVA: 0x002FC878 File Offset: 0x002FAA78
+	public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
-	}
-
-	public class TUNING
-	{
-		public const float MINOR_IRRITATION_THRESHOLD = 8f;
-
-		public const float MAJOR_IRRITATION_THRESHOLD = 15f;
-
-		public const float MAX_EXPOSURE = 30f;
-
-		public const float GAS_UNITS = 1f;
-
-		public const float LIQUID_UNITS = 1000f;
-
-		public const float REDUCE_EXPOSURE_RATE_FAST = -1f;
-
-		public const float REDUCE_EXPOSURE_RATE_SLOW = -0.25f;
-
-		public const float NO_CHANGE = 0f;
-
-		public const float SLOW_EXPOSURE_RATE = 0.5f;
-
-		public const float NORMAL_EXPOSURE_RATE = 1f;
-
-		public const float QUICK_EXPOSURE_RATE = 3f;
-
-		public const float DEFAULT_MIN_TEMPERATURE = -13657.5f;
-
-		public const float DEFAULT_MAX_TEMPERATURE = 27315f;
-
-		public const float DEFAULT_LOW_RATE = 1f;
-
-		public const float DEFAULT_HIGH_RATE = 2f;
-	}
-
-	public class IrritatedStates : State
-	{
-		public State irritated;
-
-		public State rubbingEyes;
-	}
-
-	public new class Instance : GameInstance
-	{
-		[Serialize]
-		public float exposure;
-
-		[Serialize]
-		public float lastReactTime;
-
-		[Serialize]
-		public float exposureRate;
-
-		public Effects effects;
-
-		public bool isInAirtightEnvironment;
-
-		public bool isImmuneToIrritability;
-
-		public float minorIrritationThreshold => 8f;
-
-		public Instance(IStateMachineTarget master, Def def)
-			: base(master, def)
-		{
-			effects = master.GetComponent<Effects>();
-		}
-
-		public Reactable GetReactable()
-		{
-			Emote iritatedEyes = Db.Get().Emotes.Minion.IritatedEyes;
-			SelfEmoteReactable selfEmoteReactable = new SelfEmoteReactable(base.master.gameObject, "IrritatedEyes", Db.Get().ChoreTypes.Cough, 0f, 0f);
-			selfEmoteReactable.SetEmote(iritatedEyes);
-			selfEmoteReactable.preventChoreInterruption = true;
-			selfEmoteReactable.RegisterEmoteStepCallbacks("irritated_eyes", null, delegate
-			{
-				base.sm.reactFinished.Trigger(this);
-			});
-			return selfEmoteReactable;
-		}
-
-		public bool IsMinorIrritation()
-		{
-			if (exposure >= 8f)
-			{
-				return exposure < 15f;
-			}
-			return false;
-		}
-
-		public bool IsMajorIrritation()
-		{
-			return exposure >= 15f;
-		}
-
-		public Element CurrentlyExposedToElement()
-		{
-			if (isInAirtightEnvironment)
-			{
-				return ElementLoader.GetElement(SimHashes.Oxygen.CreateTag());
-			}
-			int num = Grid.CellAbove(Grid.PosToCell(base.smi.gameObject));
-			return Grid.Element[num];
-		}
-
-		public void ResetExposure()
-		{
-			exposure = 0f;
-		}
-	}
-
-	public const float MIN_REACT_INTERVAL = 60f;
-
-	private static Dictionary<SimHashes, float> customExposureRates;
-
-	private static Effect minorIrritationEffect;
-
-	private static Effect majorIrritationEffect;
-
-	public BoolParameter isIrritated;
-
-	public Signal reactFinished;
-
-	public State normal;
-
-	public IrritatedStates irritated;
-
-	public override void InitializeStates(out BaseState default_state)
-	{
-		default_state = normal;
-		root.Update(UpdateExposure, UpdateRate.SIM_33ms);
-		normal.ParamTransition(isIrritated, irritated, (Instance smi, bool p) => isIrritated.Get(smi));
-		irritated.ParamTransition(isIrritated, normal, (Instance smi, bool p) => !isIrritated.Get(smi)).ToggleStatusItem(Db.Get().DuplicantStatusItems.GasLiquidIrritation, (Instance smi) => smi).DefaultState(irritated.irritated);
-		irritated.irritated.Transition(irritated.rubbingEyes, CanReact);
-		irritated.rubbingEyes.Exit(delegate(Instance smi)
+		default_state = this.normal;
+		this.root.Update(new Action<GasLiquidExposureMonitor.Instance, float>(this.UpdateExposure), UpdateRate.SIM_33ms, false);
+		this.normal.ParamTransition<bool>(this.isIrritated, this.irritated, (GasLiquidExposureMonitor.Instance smi, bool p) => this.isIrritated.Get(smi));
+		this.irritated.ParamTransition<bool>(this.isIrritated, this.normal, (GasLiquidExposureMonitor.Instance smi, bool p) => !this.isIrritated.Get(smi)).ToggleStatusItem(Db.Get().DuplicantStatusItems.GasLiquidIrritation, (GasLiquidExposureMonitor.Instance smi) => smi).DefaultState(this.irritated.irritated);
+		this.irritated.irritated.Transition(this.irritated.rubbingEyes, new StateMachine<GasLiquidExposureMonitor, GasLiquidExposureMonitor.Instance, IStateMachineTarget, GasLiquidExposureMonitor.Def>.Transition.ConditionCallback(GasLiquidExposureMonitor.CanReact), UpdateRate.SIM_200ms);
+		this.irritated.rubbingEyes.Exit(delegate(GasLiquidExposureMonitor.Instance smi)
 		{
 			smi.lastReactTime = GameClock.Instance.GetTime();
-		}).ToggleReactable((Instance smi) => smi.GetReactable()).OnSignal(reactFinished, irritated.irritated);
+		}).ToggleReactable((GasLiquidExposureMonitor.Instance smi) => smi.GetReactable()).OnSignal(this.reactFinished, this.irritated.irritated);
 	}
 
-	private static bool CanReact(Instance smi)
+	// Token: 0x06007237 RID: 29239 RVA: 0x000EAD15 File Offset: 0x000E8F15
+	private static bool CanReact(GasLiquidExposureMonitor.Instance smi)
 	{
 		return GameClock.Instance.GetTime() > smi.lastReactTime + 60f;
 	}
 
+	// Token: 0x06007238 RID: 29240 RVA: 0x002FC9C8 File Offset: 0x002FABC8
 	private static void InitializeCustomRates()
 	{
-		if (customExposureRates == null)
+		if (GasLiquidExposureMonitor.customExposureRates != null)
 		{
-			minorIrritationEffect = Db.Get().effects.Get("MinorIrritation");
-			majorIrritationEffect = Db.Get().effects.Get("MajorIrritation");
-			customExposureRates = new Dictionary<SimHashes, float>();
-			float value = -1f;
-			customExposureRates[SimHashes.Water] = value;
-			float value2 = -0.25f;
-			customExposureRates[SimHashes.CarbonDioxide] = value2;
-			customExposureRates[SimHashes.Oxygen] = value2;
-			float value3 = 0f;
-			customExposureRates[SimHashes.ContaminatedOxygen] = value3;
-			customExposureRates[SimHashes.DirtyWater] = value3;
-			customExposureRates[SimHashes.ViscoGel] = value3;
-			float value4 = 0.5f;
-			customExposureRates[SimHashes.Hydrogen] = value4;
-			customExposureRates[SimHashes.SaltWater] = value4;
-			float value5 = 1f;
-			customExposureRates[SimHashes.ChlorineGas] = value5;
-			customExposureRates[SimHashes.EthanolGas] = value5;
-			float value6 = 3f;
-			customExposureRates[SimHashes.Chlorine] = value6;
-			customExposureRates[SimHashes.SourGas] = value6;
-			customExposureRates[SimHashes.Brine] = value6;
-			customExposureRates[SimHashes.Ethanol] = value6;
-			customExposureRates[SimHashes.SuperCoolant] = value6;
-			customExposureRates[SimHashes.CrudeOil] = value6;
-			customExposureRates[SimHashes.Naphtha] = value6;
-			customExposureRates[SimHashes.Petroleum] = value6;
-			customExposureRates[SimHashes.Mercury] = value6;
-			customExposureRates[SimHashes.MercuryGas] = value6;
+			return;
 		}
+		GasLiquidExposureMonitor.minorIrritationEffect = Db.Get().effects.Get("MinorIrritation");
+		GasLiquidExposureMonitor.majorIrritationEffect = Db.Get().effects.Get("MajorIrritation");
+		GasLiquidExposureMonitor.customExposureRates = new Dictionary<SimHashes, float>();
+		float value = -1f;
+		GasLiquidExposureMonitor.customExposureRates[SimHashes.Water] = value;
+		float value2 = -0.25f;
+		GasLiquidExposureMonitor.customExposureRates[SimHashes.CarbonDioxide] = value2;
+		GasLiquidExposureMonitor.customExposureRates[SimHashes.Oxygen] = value2;
+		float value3 = 0f;
+		GasLiquidExposureMonitor.customExposureRates[SimHashes.ContaminatedOxygen] = value3;
+		GasLiquidExposureMonitor.customExposureRates[SimHashes.DirtyWater] = value3;
+		GasLiquidExposureMonitor.customExposureRates[SimHashes.ViscoGel] = value3;
+		float value4 = 0.5f;
+		GasLiquidExposureMonitor.customExposureRates[SimHashes.Hydrogen] = value4;
+		GasLiquidExposureMonitor.customExposureRates[SimHashes.SaltWater] = value4;
+		float value5 = 1f;
+		GasLiquidExposureMonitor.customExposureRates[SimHashes.ChlorineGas] = value5;
+		GasLiquidExposureMonitor.customExposureRates[SimHashes.EthanolGas] = value5;
+		float value6 = 3f;
+		GasLiquidExposureMonitor.customExposureRates[SimHashes.Chlorine] = value6;
+		GasLiquidExposureMonitor.customExposureRates[SimHashes.SourGas] = value6;
+		GasLiquidExposureMonitor.customExposureRates[SimHashes.Brine] = value6;
+		GasLiquidExposureMonitor.customExposureRates[SimHashes.Ethanol] = value6;
+		GasLiquidExposureMonitor.customExposureRates[SimHashes.SuperCoolant] = value6;
+		GasLiquidExposureMonitor.customExposureRates[SimHashes.CrudeOil] = value6;
+		GasLiquidExposureMonitor.customExposureRates[SimHashes.Naphtha] = value6;
+		GasLiquidExposureMonitor.customExposureRates[SimHashes.Petroleum] = value6;
+		GasLiquidExposureMonitor.customExposureRates[SimHashes.Mercury] = value6;
+		GasLiquidExposureMonitor.customExposureRates[SimHashes.MercuryGas] = value6;
 	}
 
-	public float GetCurrentExposure(Instance smi)
+	// Token: 0x06007239 RID: 29241 RVA: 0x002FCB8C File Offset: 0x002FAD8C
+	public float GetCurrentExposure(GasLiquidExposureMonitor.Instance smi)
 	{
-		if (customExposureRates.TryGetValue(smi.CurrentlyExposedToElement().id, out var value))
+		float result;
+		if (GasLiquidExposureMonitor.customExposureRates.TryGetValue(smi.CurrentlyExposedToElement().id, out result))
 		{
-			return value;
+			return result;
 		}
 		return 0f;
 	}
 
-	private void UpdateExposure(Instance smi, float dt)
+	// Token: 0x0600723A RID: 29242 RVA: 0x002FCBBC File Offset: 0x002FADBC
+	private void UpdateExposure(GasLiquidExposureMonitor.Instance smi, float dt)
 	{
-		InitializeCustomRates();
+		GasLiquidExposureMonitor.InitializeCustomRates();
 		float exposureRate = 0f;
 		smi.isInAirtightEnvironment = false;
 		smi.isImmuneToIrritability = false;
@@ -205,72 +87,256 @@ public class GasLiquidExposureMonitor : GameStateMachine<GasLiquidExposureMonito
 		if (Grid.IsValidCell(num))
 		{
 			Element element = Grid.Element[num];
-			if (!customExposureRates.TryGetValue(element.id, out var value))
+			float num2;
+			if (!GasLiquidExposureMonitor.customExposureRates.TryGetValue(element.id, out num2))
 			{
-				value = ((!(Grid.Temperature[num] >= -13657.5f) || !(Grid.Temperature[num] <= 27315f)) ? 2f : 1f);
+				if (Grid.Temperature[num] >= -13657.5f && Grid.Temperature[num] <= 27315f)
+				{
+					num2 = 1f;
+				}
+				else
+				{
+					num2 = 2f;
+				}
 			}
-			if (smi.effects.HasImmunityTo(minorIrritationEffect) || smi.effects.HasImmunityTo(majorIrritationEffect))
+			if (smi.effects.HasImmunityTo(GasLiquidExposureMonitor.minorIrritationEffect) || smi.effects.HasImmunityTo(GasLiquidExposureMonitor.majorIrritationEffect))
 			{
 				smi.isImmuneToIrritability = true;
-				exposureRate = customExposureRates[SimHashes.Oxygen];
+				exposureRate = GasLiquidExposureMonitor.customExposureRates[SimHashes.Oxygen];
 			}
-			if ((smi.master.gameObject.HasTag(GameTags.HasSuitTank) && (bool)smi.gameObject.GetComponent<SuitEquipper>().IsWearingAirtightSuit()) || smi.master.gameObject.HasTag(GameTags.InTransitTube))
+			if ((smi.master.gameObject.HasTag(GameTags.HasSuitTank) && smi.gameObject.GetComponent<SuitEquipper>().IsWearingAirtightSuit()) || smi.master.gameObject.HasTag(GameTags.InTransitTube))
 			{
 				smi.isInAirtightEnvironment = true;
-				exposureRate = customExposureRates[SimHashes.Oxygen];
+				exposureRate = GasLiquidExposureMonitor.customExposureRates[SimHashes.Oxygen];
 			}
 			if (!smi.isInAirtightEnvironment && !smi.isImmuneToIrritability)
 			{
 				if (element.IsGas)
 				{
-					exposureRate = value * Grid.Mass[num] / 1f;
+					exposureRate = num2 * Grid.Mass[num] / 1f;
 				}
 				else if (element.IsLiquid)
 				{
-					exposureRate = value * Grid.Mass[num] / 1000f;
+					exposureRate = num2 * Grid.Mass[num] / 1000f;
 				}
 			}
 		}
 		smi.exposureRate = exposureRate;
 		smi.exposure += smi.exposureRate * dt;
 		smi.exposure = MathUtil.Clamp(0f, 30f, smi.exposure);
-		ApplyEffects(smi);
+		this.ApplyEffects(smi);
 	}
 
-	private void ApplyEffects(Instance smi)
+	// Token: 0x0600723B RID: 29243 RVA: 0x002FCD6C File Offset: 0x002FAF6C
+	private void ApplyEffects(GasLiquidExposureMonitor.Instance smi)
 	{
 		if (smi.IsMinorIrritation())
 		{
-			if (smi.effects.Add(minorIrritationEffect, should_save: true) != null)
+			if (smi.effects.Add(GasLiquidExposureMonitor.minorIrritationEffect, true) != null)
 			{
-				isIrritated.Set(value: true, smi);
+				this.isIrritated.Set(true, smi, false);
+				return;
 			}
 		}
 		else if (smi.IsMajorIrritation())
 		{
-			if (smi.effects.Add(majorIrritationEffect, should_save: true) != null)
+			if (smi.effects.Add(GasLiquidExposureMonitor.majorIrritationEffect, true) != null)
 			{
-				isIrritated.Set(value: true, smi);
+				this.isIrritated.Set(true, smi, false);
+				return;
 			}
 		}
 		else
 		{
-			smi.effects.Remove(minorIrritationEffect);
-			smi.effects.Remove(majorIrritationEffect);
-			isIrritated.Set(value: false, smi);
+			smi.effects.Remove(GasLiquidExposureMonitor.minorIrritationEffect);
+			smi.effects.Remove(GasLiquidExposureMonitor.majorIrritationEffect);
+			this.isIrritated.Set(false, smi, false);
 		}
 	}
 
-	public Effect GetAppliedEffect(Instance smi)
+	// Token: 0x0600723C RID: 29244 RVA: 0x000EAD2F File Offset: 0x000E8F2F
+	public Effect GetAppliedEffect(GasLiquidExposureMonitor.Instance smi)
 	{
 		if (smi.IsMinorIrritation())
 		{
-			return minorIrritationEffect;
+			return GasLiquidExposureMonitor.minorIrritationEffect;
 		}
 		if (smi.IsMajorIrritation())
 		{
-			return majorIrritationEffect;
+			return GasLiquidExposureMonitor.majorIrritationEffect;
 		}
 		return null;
+	}
+
+	// Token: 0x04005553 RID: 21843
+	public const float MIN_REACT_INTERVAL = 60f;
+
+	// Token: 0x04005554 RID: 21844
+	private static Dictionary<SimHashes, float> customExposureRates;
+
+	// Token: 0x04005555 RID: 21845
+	private static Effect minorIrritationEffect;
+
+	// Token: 0x04005556 RID: 21846
+	private static Effect majorIrritationEffect;
+
+	// Token: 0x04005557 RID: 21847
+	public StateMachine<GasLiquidExposureMonitor, GasLiquidExposureMonitor.Instance, IStateMachineTarget, GasLiquidExposureMonitor.Def>.BoolParameter isIrritated;
+
+	// Token: 0x04005558 RID: 21848
+	public StateMachine<GasLiquidExposureMonitor, GasLiquidExposureMonitor.Instance, IStateMachineTarget, GasLiquidExposureMonitor.Def>.Signal reactFinished;
+
+	// Token: 0x04005559 RID: 21849
+	public GameStateMachine<GasLiquidExposureMonitor, GasLiquidExposureMonitor.Instance, IStateMachineTarget, GasLiquidExposureMonitor.Def>.State normal;
+
+	// Token: 0x0400555A RID: 21850
+	public GasLiquidExposureMonitor.IrritatedStates irritated;
+
+	// Token: 0x02001578 RID: 5496
+	public class Def : StateMachine.BaseDef
+	{
+	}
+
+	// Token: 0x02001579 RID: 5497
+	public class TUNING
+	{
+		// Token: 0x0400555B RID: 21851
+		public const float MINOR_IRRITATION_THRESHOLD = 8f;
+
+		// Token: 0x0400555C RID: 21852
+		public const float MAJOR_IRRITATION_THRESHOLD = 15f;
+
+		// Token: 0x0400555D RID: 21853
+		public const float MAX_EXPOSURE = 30f;
+
+		// Token: 0x0400555E RID: 21854
+		public const float GAS_UNITS = 1f;
+
+		// Token: 0x0400555F RID: 21855
+		public const float LIQUID_UNITS = 1000f;
+
+		// Token: 0x04005560 RID: 21856
+		public const float REDUCE_EXPOSURE_RATE_FAST = -1f;
+
+		// Token: 0x04005561 RID: 21857
+		public const float REDUCE_EXPOSURE_RATE_SLOW = -0.25f;
+
+		// Token: 0x04005562 RID: 21858
+		public const float NO_CHANGE = 0f;
+
+		// Token: 0x04005563 RID: 21859
+		public const float SLOW_EXPOSURE_RATE = 0.5f;
+
+		// Token: 0x04005564 RID: 21860
+		public const float NORMAL_EXPOSURE_RATE = 1f;
+
+		// Token: 0x04005565 RID: 21861
+		public const float QUICK_EXPOSURE_RATE = 3f;
+
+		// Token: 0x04005566 RID: 21862
+		public const float DEFAULT_MIN_TEMPERATURE = -13657.5f;
+
+		// Token: 0x04005567 RID: 21863
+		public const float DEFAULT_MAX_TEMPERATURE = 27315f;
+
+		// Token: 0x04005568 RID: 21864
+		public const float DEFAULT_LOW_RATE = 1f;
+
+		// Token: 0x04005569 RID: 21865
+		public const float DEFAULT_HIGH_RATE = 2f;
+	}
+
+	// Token: 0x0200157A RID: 5498
+	public class IrritatedStates : GameStateMachine<GasLiquidExposureMonitor, GasLiquidExposureMonitor.Instance, IStateMachineTarget, GasLiquidExposureMonitor.Def>.State
+	{
+		// Token: 0x0400556A RID: 21866
+		public GameStateMachine<GasLiquidExposureMonitor, GasLiquidExposureMonitor.Instance, IStateMachineTarget, GasLiquidExposureMonitor.Def>.State irritated;
+
+		// Token: 0x0400556B RID: 21867
+		public GameStateMachine<GasLiquidExposureMonitor, GasLiquidExposureMonitor.Instance, IStateMachineTarget, GasLiquidExposureMonitor.Def>.State rubbingEyes;
+	}
+
+	// Token: 0x0200157B RID: 5499
+	public new class Instance : GameStateMachine<GasLiquidExposureMonitor, GasLiquidExposureMonitor.Instance, IStateMachineTarget, GasLiquidExposureMonitor.Def>.GameInstance
+	{
+		// Token: 0x17000755 RID: 1877
+		// (get) Token: 0x06007243 RID: 29251 RVA: 0x000EAD7D File Offset: 0x000E8F7D
+		public float minorIrritationThreshold
+		{
+			get
+			{
+				return 8f;
+			}
+		}
+
+		// Token: 0x06007244 RID: 29252 RVA: 0x000EAD84 File Offset: 0x000E8F84
+		public Instance(IStateMachineTarget master, GasLiquidExposureMonitor.Def def) : base(master, def)
+		{
+			this.effects = master.GetComponent<Effects>();
+		}
+
+		// Token: 0x06007245 RID: 29253 RVA: 0x002FCE00 File Offset: 0x002FB000
+		public Reactable GetReactable()
+		{
+			Emote iritatedEyes = Db.Get().Emotes.Minion.IritatedEyes;
+			SelfEmoteReactable selfEmoteReactable = new SelfEmoteReactable(base.master.gameObject, "IrritatedEyes", Db.Get().ChoreTypes.Cough, 0f, 0f, float.PositiveInfinity, 0f);
+			selfEmoteReactable.SetEmote(iritatedEyes);
+			selfEmoteReactable.preventChoreInterruption = true;
+			selfEmoteReactable.RegisterEmoteStepCallbacks("irritated_eyes", null, delegate(GameObject go)
+			{
+				base.sm.reactFinished.Trigger(this);
+			});
+			return selfEmoteReactable;
+		}
+
+		// Token: 0x06007246 RID: 29254 RVA: 0x000EAD9A File Offset: 0x000E8F9A
+		public bool IsMinorIrritation()
+		{
+			return this.exposure >= 8f && this.exposure < 15f;
+		}
+
+		// Token: 0x06007247 RID: 29255 RVA: 0x000EADB8 File Offset: 0x000E8FB8
+		public bool IsMajorIrritation()
+		{
+			return this.exposure >= 15f;
+		}
+
+		// Token: 0x06007248 RID: 29256 RVA: 0x002FCE8C File Offset: 0x002FB08C
+		public Element CurrentlyExposedToElement()
+		{
+			if (this.isInAirtightEnvironment)
+			{
+				return ElementLoader.GetElement(SimHashes.Oxygen.CreateTag());
+			}
+			int num = Grid.CellAbove(Grid.PosToCell(base.smi.gameObject));
+			return Grid.Element[num];
+		}
+
+		// Token: 0x06007249 RID: 29257 RVA: 0x000EADCA File Offset: 0x000E8FCA
+		public void ResetExposure()
+		{
+			this.exposure = 0f;
+		}
+
+		// Token: 0x0400556C RID: 21868
+		[Serialize]
+		public float exposure;
+
+		// Token: 0x0400556D RID: 21869
+		[Serialize]
+		public float lastReactTime;
+
+		// Token: 0x0400556E RID: 21870
+		[Serialize]
+		public float exposureRate;
+
+		// Token: 0x0400556F RID: 21871
+		public Effects effects;
+
+		// Token: 0x04005570 RID: 21872
+		public bool isInAirtightEnvironment;
+
+		// Token: 0x04005571 RID: 21873
+		public bool isImmuneToIrritability;
 	}
 }

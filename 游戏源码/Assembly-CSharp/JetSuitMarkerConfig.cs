@@ -1,33 +1,49 @@
+﻿using System;
 using TUNING;
 using UnityEngine;
 
+// Token: 0x020003A4 RID: 932
 public class JetSuitMarkerConfig : IBuildingConfig
 {
-	public const string ID = "JetSuitMarker";
-
+	// Token: 0x06000F67 RID: 3943 RVA: 0x0017C83C File Offset: 0x0017AA3C
 	public override BuildingDef CreateBuildingDef()
 	{
-		string[] rEFINED_METALS = MATERIALS.REFINED_METALS;
-		BuildingDef obj = BuildingTemplates.CreateBuildingDef(construction_mass: new float[1] { BUILDINGS.CONSTRUCTION_MASS_KG.TIER3[0] }, construction_materials: rEFINED_METALS, melting_point: 1600f, build_location_rule: BuildLocationRule.OnFloor, noise: NOISE_POLLUTION.NONE, id: "JetSuitMarker", width: 2, height: 4, anim: "changingarea_jetsuit_arrow_kanim", hitpoints: 30, construction_time: 30f, decor: BUILDINGS.DECOR.BONUS.TIER1);
-		obj.PermittedRotations = PermittedRotations.FlipH;
-		obj.PreventIdleTraversalPastBuilding = true;
-		obj.SceneLayer = Grid.SceneLayer.BuildingUse;
-		obj.ForegroundLayer = Grid.SceneLayer.TileMain;
-		obj.LogicInputPorts = LogicOperationalController.CreateSingleInputPortList(new CellOffset(0, 0));
+		string id = "JetSuitMarker";
+		int width = 2;
+		int height = 4;
+		string anim = "changingarea_jetsuit_arrow_kanim";
+		int hitpoints = 30;
+		float construction_time = 30f;
+		string[] refined_METALS = MATERIALS.REFINED_METALS;
+		float[] construction_mass = new float[]
+		{
+			BUILDINGS.CONSTRUCTION_MASS_KG.TIER3[0]
+		};
+		string[] construction_materials = refined_METALS;
+		float melting_point = 1600f;
+		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
+		EffectorValues none = NOISE_POLLUTION.NONE;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, construction_mass, construction_materials, melting_point, build_location_rule, BUILDINGS.DECOR.BONUS.TIER1, none, 0.2f);
+		buildingDef.PermittedRotations = PermittedRotations.FlipH;
+		buildingDef.PreventIdleTraversalPastBuilding = true;
+		buildingDef.SceneLayer = Grid.SceneLayer.BuildingUse;
+		buildingDef.ForegroundLayer = Grid.SceneLayer.TileMain;
+		buildingDef.LogicInputPorts = LogicOperationalController.CreateSingleInputPortList(new CellOffset(0, 0));
 		GeneratedBuildings.RegisterWithOverlay(OverlayScreen.SuitIDs, "JetSuitMarker");
-		return obj;
+		return buildingDef;
 	}
 
+	// Token: 0x06000F68 RID: 3944 RVA: 0x0017C8D0 File Offset: 0x0017AAD0
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		SuitMarker suitMarker = go.AddOrGet<SuitMarker>();
-		suitMarker.LockerTags = new Tag[1]
+		suitMarker.LockerTags = new Tag[]
 		{
 			new Tag("JetSuitLocker")
 		};
 		suitMarker.PathFlag = PathFinder.PotentialPath.Flags.HasJetPack;
 		suitMarker.interactAnim = Assets.GetAnim("anim_interacts_changingarea_jetsuit_arrow_kanim");
-		go.AddOrGet<AnimTileable>().tags = new Tag[2]
+		go.AddOrGet<AnimTileable>().tags = new Tag[]
 		{
 			new Tag("JetSuitMarker"),
 			new Tag("JetSuitLocker")
@@ -35,8 +51,12 @@ public class JetSuitMarkerConfig : IBuildingConfig
 		go.AddTag(GameTags.JetSuitBlocker);
 	}
 
+	// Token: 0x06000F69 RID: 3945 RVA: 0x000A6D53 File Offset: 0x000A4F53
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicOperationalController>();
 	}
+
+	// Token: 0x04000B0D RID: 2829
+	public const string ID = "JetSuitMarker";
 }

@@ -1,105 +1,120 @@
+﻿using System;
 using UnityEngine;
 
+// Token: 0x02000CB8 RID: 3256
 public class BuildingFacadeAnimateIn : MonoBehaviour
 {
-	private KBatchedAnimController sourceAnimController;
-
-	private KBatchedAnimController placeAnimController;
-
-	private KBatchedAnimController colorAnimController;
-
-	private Updater updater;
-
+	// Token: 0x06003F0A RID: 16138 RVA: 0x002361BC File Offset: 0x002343BC
 	private void Awake()
 	{
-		placeAnimController.TintColour = new Color32(byte.MaxValue, byte.MaxValue, byte.MaxValue, 1);
-		colorAnimController.TintColour = new Color32(byte.MaxValue, byte.MaxValue, byte.MaxValue, 1);
-		updater = Updater.Series(KleiPermitBuildingAnimateIn.MakeAnimInUpdater(sourceAnimController, placeAnimController, colorAnimController), Updater.Do(delegate
+		this.placeAnimController.TintColour = new Color32(byte.MaxValue, byte.MaxValue, byte.MaxValue, 1);
+		this.colorAnimController.TintColour = new Color32(byte.MaxValue, byte.MaxValue, byte.MaxValue, 1);
+		this.updater = Updater.Series(new Updater[]
 		{
-			Object.Destroy(base.gameObject);
-		}));
+			KleiPermitBuildingAnimateIn.MakeAnimInUpdater(this.sourceAnimController, this.placeAnimController, this.colorAnimController),
+			Updater.Do(delegate()
+			{
+				UnityEngine.Object.Destroy(base.gameObject);
+			})
+		});
 	}
 
+	// Token: 0x06003F0B RID: 16139 RVA: 0x000C8F6E File Offset: 0x000C716E
 	private void Update()
 	{
-		if (sourceAnimController.IsNullOrDestroyed())
+		if (this.sourceAnimController.IsNullOrDestroyed())
 		{
-			Object.Destroy(base.gameObject);
+			UnityEngine.Object.Destroy(base.gameObject);
 			return;
 		}
-		SetVisibilityOn(sourceAnimController, isVisible: false);
-		updater.Internal_Update(Time.unscaledDeltaTime);
+		BuildingFacadeAnimateIn.SetVisibilityOn(this.sourceAnimController, false);
+		this.updater.Internal_Update(Time.unscaledDeltaTime);
 	}
 
+	// Token: 0x06003F0C RID: 16140 RVA: 0x00236250 File Offset: 0x00234450
 	private void OnDisable()
 	{
-		if (!sourceAnimController.IsNullOrDestroyed())
+		if (!this.sourceAnimController.IsNullOrDestroyed())
 		{
-			SetVisibilityOn(sourceAnimController, isVisible: true);
+			BuildingFacadeAnimateIn.SetVisibilityOn(this.sourceAnimController, true);
 		}
-		Object.Destroy(placeAnimController.gameObject);
-		Object.Destroy(colorAnimController.gameObject);
-		Object.Destroy(base.gameObject);
+		UnityEngine.Object.Destroy(this.placeAnimController.gameObject);
+		UnityEngine.Object.Destroy(this.colorAnimController.gameObject);
+		UnityEngine.Object.Destroy(base.gameObject);
 	}
 
+	// Token: 0x06003F0D RID: 16141 RVA: 0x002362A4 File Offset: 0x002344A4
 	public static BuildingFacadeAnimateIn MakeFor(KBatchedAnimController sourceAnimController)
 	{
-		SetVisibilityOn(sourceAnimController, isVisible: false);
-		KBatchedAnimController kBatchedAnimController = SpawnAnimFrom(sourceAnimController);
-		kBatchedAnimController.gameObject.name = "BuildingFacadeAnimateIn.placeAnimController";
-		kBatchedAnimController.initialAnim = "place";
-		KBatchedAnimController kBatchedAnimController2 = SpawnAnimFrom(sourceAnimController);
-		kBatchedAnimController2.gameObject.name = "BuildingFacadeAnimateIn.colorAnimController";
-		kBatchedAnimController2.initialAnim = ((sourceAnimController.CurrentAnim != null) ? sourceAnimController.CurrentAnim.name : sourceAnimController.AnimFiles[0].GetData().GetAnim(0).name);
+		BuildingFacadeAnimateIn.SetVisibilityOn(sourceAnimController, false);
+		KBatchedAnimController kbatchedAnimController = BuildingFacadeAnimateIn.SpawnAnimFrom(sourceAnimController);
+		kbatchedAnimController.gameObject.name = "BuildingFacadeAnimateIn.placeAnimController";
+		kbatchedAnimController.initialAnim = "place";
+		KBatchedAnimController kbatchedAnimController2 = BuildingFacadeAnimateIn.SpawnAnimFrom(sourceAnimController);
+		kbatchedAnimController2.gameObject.name = "BuildingFacadeAnimateIn.colorAnimController";
+		kbatchedAnimController2.initialAnim = ((sourceAnimController.CurrentAnim != null) ? sourceAnimController.CurrentAnim.name : sourceAnimController.AnimFiles[0].GetData().GetAnim(0).name);
 		GameObject gameObject = new GameObject("BuildingFacadeAnimateIn");
-		gameObject.SetActive(value: false);
-		gameObject.transform.SetParent(sourceAnimController.transform.parent, worldPositionStays: false);
+		gameObject.SetActive(false);
+		gameObject.transform.SetParent(sourceAnimController.transform.parent, false);
 		BuildingFacadeAnimateIn buildingFacadeAnimateIn = gameObject.AddComponent<BuildingFacadeAnimateIn>();
 		buildingFacadeAnimateIn.sourceAnimController = sourceAnimController;
-		buildingFacadeAnimateIn.placeAnimController = kBatchedAnimController;
-		buildingFacadeAnimateIn.colorAnimController = kBatchedAnimController2;
-		kBatchedAnimController.gameObject.SetActive(value: true);
-		kBatchedAnimController2.gameObject.SetActive(value: true);
-		gameObject.SetActive(value: true);
+		buildingFacadeAnimateIn.placeAnimController = kbatchedAnimController;
+		buildingFacadeAnimateIn.colorAnimController = kbatchedAnimController2;
+		kbatchedAnimController.gameObject.SetActive(true);
+		kbatchedAnimController2.gameObject.SetActive(true);
+		gameObject.SetActive(true);
 		return buildingFacadeAnimateIn;
 	}
 
+	// Token: 0x06003F0E RID: 16142 RVA: 0x00236388 File Offset: 0x00234588
 	private static void SetVisibilityOn(KBatchedAnimController animController, bool isVisible)
 	{
 		animController.SetVisiblity(isVisible);
-		KBatchedAnimController[] componentsInChildren = animController.GetComponentsInChildren<KBatchedAnimController>(includeInactive: true);
-		foreach (KBatchedAnimController kBatchedAnimController in componentsInChildren)
+		foreach (KBatchedAnimController kbatchedAnimController in animController.GetComponentsInChildren<KBatchedAnimController>(true))
 		{
-			if (kBatchedAnimController.batchGroupID == animController.batchGroupID)
+			if (kbatchedAnimController.batchGroupID == animController.batchGroupID)
 			{
-				kBatchedAnimController.SetVisiblity(isVisible);
+				kbatchedAnimController.SetVisiblity(isVisible);
 			}
 		}
 	}
 
+	// Token: 0x06003F0F RID: 16143 RVA: 0x002363D0 File Offset: 0x002345D0
 	private static KBatchedAnimController SpawnAnimFrom(KBatchedAnimController sourceAnimController)
 	{
-		GameObject obj = new GameObject();
-		obj.SetActive(value: false);
-		obj.transform.SetParent(sourceAnimController.transform.parent, worldPositionStays: false);
-		obj.transform.localPosition = sourceAnimController.transform.localPosition;
-		obj.transform.localRotation = sourceAnimController.transform.localRotation;
-		obj.transform.localScale = sourceAnimController.transform.localScale;
-		obj.layer = sourceAnimController.gameObject.layer;
-		KBatchedAnimController kBatchedAnimController = obj.AddComponent<KBatchedAnimController>();
-		kBatchedAnimController.materialType = sourceAnimController.materialType;
-		kBatchedAnimController.initialMode = sourceAnimController.initialMode;
-		kBatchedAnimController.AnimFiles = sourceAnimController.AnimFiles;
-		kBatchedAnimController.Offset = sourceAnimController.Offset;
-		kBatchedAnimController.animWidth = sourceAnimController.animWidth;
-		kBatchedAnimController.animHeight = sourceAnimController.animHeight;
-		kBatchedAnimController.animScale = sourceAnimController.animScale;
-		kBatchedAnimController.sceneLayer = sourceAnimController.sceneLayer;
-		kBatchedAnimController.fgLayer = sourceAnimController.fgLayer;
-		kBatchedAnimController.FlipX = sourceAnimController.FlipX;
-		kBatchedAnimController.FlipY = sourceAnimController.FlipY;
-		kBatchedAnimController.Rotation = sourceAnimController.Rotation;
-		kBatchedAnimController.Pivot = sourceAnimController.Pivot;
-		return kBatchedAnimController;
+		GameObject gameObject = new GameObject();
+		gameObject.SetActive(false);
+		gameObject.transform.SetParent(sourceAnimController.transform.parent, false);
+		gameObject.transform.localPosition = sourceAnimController.transform.localPosition;
+		gameObject.transform.localRotation = sourceAnimController.transform.localRotation;
+		gameObject.transform.localScale = sourceAnimController.transform.localScale;
+		gameObject.layer = sourceAnimController.gameObject.layer;
+		KBatchedAnimController kbatchedAnimController = gameObject.AddComponent<KBatchedAnimController>();
+		kbatchedAnimController.materialType = sourceAnimController.materialType;
+		kbatchedAnimController.initialMode = sourceAnimController.initialMode;
+		kbatchedAnimController.AnimFiles = sourceAnimController.AnimFiles;
+		kbatchedAnimController.Offset = sourceAnimController.Offset;
+		kbatchedAnimController.animWidth = sourceAnimController.animWidth;
+		kbatchedAnimController.animHeight = sourceAnimController.animHeight;
+		kbatchedAnimController.animScale = sourceAnimController.animScale;
+		kbatchedAnimController.sceneLayer = sourceAnimController.sceneLayer;
+		kbatchedAnimController.fgLayer = sourceAnimController.fgLayer;
+		kbatchedAnimController.FlipX = sourceAnimController.FlipX;
+		kbatchedAnimController.FlipY = sourceAnimController.FlipY;
+		kbatchedAnimController.Rotation = sourceAnimController.Rotation;
+		kbatchedAnimController.Pivot = sourceAnimController.Pivot;
+		return kbatchedAnimController;
 	}
+
+	// Token: 0x04002AFB RID: 11003
+	private KBatchedAnimController sourceAnimController;
+
+	// Token: 0x04002AFC RID: 11004
+	private KBatchedAnimController placeAnimController;
+
+	// Token: 0x04002AFD RID: 11005
+	private KBatchedAnimController colorAnimController;
+
+	// Token: 0x04002AFE RID: 11006
+	private Updater updater;
 }

@@ -1,28 +1,32 @@
-using System;
+﻿using System;
 
-namespace Database;
-
-public class EquippableFacades : ResourceSet<EquippableFacadeResource>
+namespace Database
 {
-	public EquippableFacades(ResourceSet parent)
-		: base("EquippableFacades", parent)
+	// Token: 0x02002139 RID: 8505
+	public class EquippableFacades : ResourceSet<EquippableFacadeResource>
 	{
-		Initialize();
-		foreach (EquippableFacadeInfo equippableFacade in Blueprints.Get().all.equippableFacades)
+		// Token: 0x0600B545 RID: 46405 RVA: 0x0044E704 File Offset: 0x0044C904
+		public EquippableFacades(ResourceSet parent) : base("EquippableFacades", parent)
 		{
-			Add(equippableFacade.id, equippableFacade.name, equippableFacade.desc, equippableFacade.rarity, equippableFacade.defID, equippableFacade.buildOverride, equippableFacade.animFile, equippableFacade.dlcIds);
+			base.Initialize();
+			foreach (EquippableFacadeInfo equippableFacadeInfo in Blueprints.Get().all.equippableFacades)
+			{
+				this.Add(equippableFacadeInfo.id, equippableFacadeInfo.name, equippableFacadeInfo.desc, equippableFacadeInfo.rarity, equippableFacadeInfo.defID, equippableFacadeInfo.buildOverride, equippableFacadeInfo.animFile, equippableFacadeInfo.dlcIds);
+			}
 		}
-	}
 
-	[Obsolete("Please use Add(...) with dlcIds parameter")]
-	public void Add(string id, string name, string desc, PermitRarity rarity, string defID, string buildOverride, string animFile)
-	{
-		Add(id, name, desc, rarity, defID, buildOverride, animFile, DlcManager.AVAILABLE_ALL_VERSIONS);
-	}
+		// Token: 0x0600B546 RID: 46406 RVA: 0x0044E7A4 File Offset: 0x0044C9A4
+		[Obsolete("Please use Add(...) with dlcIds parameter")]
+		public void Add(string id, string name, string desc, PermitRarity rarity, string defID, string buildOverride, string animFile)
+		{
+			this.Add(id, name, desc, rarity, defID, buildOverride, animFile, DlcManager.AVAILABLE_ALL_VERSIONS);
+		}
 
-	public void Add(string id, string name, string desc, PermitRarity rarity, string defID, string buildOverride, string animFile, string[] dlcIds)
-	{
-		EquippableFacadeResource item = new EquippableFacadeResource(id, name, desc, rarity, buildOverride, defID, animFile, dlcIds);
-		resources.Add(item);
+		// Token: 0x0600B547 RID: 46407 RVA: 0x0044E7C8 File Offset: 0x0044C9C8
+		public void Add(string id, string name, string desc, PermitRarity rarity, string defID, string buildOverride, string animFile, string[] dlcIds)
+		{
+			EquippableFacadeResource item = new EquippableFacadeResource(id, name, desc, rarity, buildOverride, defID, animFile, dlcIds);
+			this.resources.Add(item);
+		}
 	}
 }

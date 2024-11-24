@@ -1,109 +1,132 @@
-using System;
+﻿using System;
 using STRINGS;
 using UnityEngine;
 
+// Token: 0x020016E0 RID: 5856
 public class PlantBranch : GameStateMachine<PlantBranch, PlantBranch.Instance, IStateMachineTarget, PlantBranch.Def>
 {
-	public class Def : BaseDef
+	// Token: 0x0600788F RID: 30863 RVA: 0x000EF44C File Offset: 0x000ED64C
+	public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
-		public Action<PlantBranchGrower.Instance, Instance> animationSetupCallback;
-
-		public Action<Instance> onEarlySpawn;
+		base.serializable = StateMachine.SerializeType.ParamsOnly;
+		default_state = this.root;
 	}
 
-	public new class Instance : GameInstance, IWiltCause
+	// Token: 0x04005A59 RID: 23129
+	private StateMachine<PlantBranch, PlantBranch.Instance, IStateMachineTarget, PlantBranch.Def>.TargetParameter Trunk;
+
+	// Token: 0x020016E1 RID: 5857
+	public class Def : StateMachine.BaseDef
 	{
-		public PlantBranchGrower.Instance trunk;
+		// Token: 0x04005A5A RID: 23130
+		public Action<PlantBranchGrower.Instance, PlantBranch.Instance> animationSetupCallback;
 
-		private int trunkWiltHandle = -1;
+		// Token: 0x04005A5B RID: 23131
+		public Action<PlantBranch.Instance> onEarlySpawn;
+	}
 
-		private int trunkWiltRecoverHandle = -1;
-
+	// Token: 0x020016E2 RID: 5858
+	public new class Instance : GameStateMachine<PlantBranch, PlantBranch.Instance, IStateMachineTarget, PlantBranch.Def>.GameInstance, IWiltCause
+	{
+		// Token: 0x1700078A RID: 1930
+		// (get) Token: 0x06007892 RID: 30866 RVA: 0x000EF465 File Offset: 0x000ED665
 		public bool HasTrunk
 		{
 			get
 			{
-				if (trunk != null && !trunk.IsNullOrDestroyed())
-				{
-					return !trunk.isMasterNull;
-				}
-				return false;
+				return this.trunk != null && !this.trunk.IsNullOrDestroyed() && !this.trunk.isMasterNull;
 			}
 		}
 
-		public string WiltStateString => "    • " + DUPLICANTS.STATS.TRUNKHEALTH.NAME;
-
-		public WiltCondition.Condition[] Conditions => new WiltCondition.Condition[1] { WiltCondition.Condition.UnhealthyRoot };
-
-		public Instance(IStateMachineTarget master, Def def)
-			: base(master, def)
+		// Token: 0x06007893 RID: 30867 RVA: 0x000EF48C File Offset: 0x000ED68C
+		public Instance(IStateMachineTarget master, PlantBranch.Def def) : base(master, def)
 		{
-			SetOccupyGridSpace(active: true);
-			Subscribe(1272413801, OnHarvest);
+			this.SetOccupyGridSpace(true);
+			base.Subscribe(1272413801, new Action<object>(this.OnHarvest));
 		}
 
+		// Token: 0x06007894 RID: 30868 RVA: 0x00311770 File Offset: 0x0030F970
 		public override void StartSM()
 		{
 			base.StartSM();
-			base.def.onEarlySpawn?.Invoke(this);
-			trunk = GetTrunk();
-			if (!HasTrunk)
+			Action<PlantBranch.Instance> onEarlySpawn = base.def.onEarlySpawn;
+			if (onEarlySpawn != null)
 			{
-				Debug.LogWarning("Tree Branch loaded with missing trunk reference. Destroying...");
+				onEarlySpawn(this);
+			}
+			this.trunk = this.GetTrunk();
+			if (!this.HasTrunk)
+			{
+				global::Debug.LogWarning("Tree Branch loaded with missing trunk reference. Destroying...");
 				Util.KDestroyGameObject(base.gameObject);
+				return;
 			}
-			else
+			this.SubscribeToTrunk();
+			Action<PlantBranchGrower.Instance, PlantBranch.Instance> animationSetupCallback = base.def.animationSetupCallback;
+			if (animationSetupCallback == null)
 			{
-				SubscribeToTrunk();
-				base.def.animationSetupCallback?.Invoke(trunk, this);
+				return;
 			}
+			animationSetupCallback(this.trunk, this);
 		}
 
+		// Token: 0x06007895 RID: 30869 RVA: 0x000EF4C2 File Offset: 0x000ED6C2
 		private void OnHarvest(object data)
 		{
-			if (HasTrunk)
+			if (this.HasTrunk)
 			{
-				trunk.OnBrancHarvested(this);
+				this.trunk.OnBrancHarvested(this);
 			}
 		}
 
+		// Token: 0x06007896 RID: 30870 RVA: 0x000EF4D8 File Offset: 0x000ED6D8
 		protected override void OnCleanUp()
 		{
-			UnsubscribeToTrunk();
-			SetOccupyGridSpace(active: false);
+			this.UnsubscribeToTrunk();
+			this.SetOccupyGridSpace(false);
 			base.OnCleanUp();
 		}
 
+		// Token: 0x06007897 RID: 30871 RVA: 0x003117E8 File Offset: 0x0030F9E8
 		private void SetOccupyGridSpace(bool active)
 		{
 			int cell = Grid.PosToCell(base.gameObject);
-			if (active)
+			if (!active)
 			{
-				GameObject gameObject = Grid.Objects[cell, 5];
-				if (gameObject != null && gameObject != base.gameObject)
+				if (Grid.Objects[cell, 5] == base.gameObject)
 				{
-					Debug.LogWarningFormat(base.gameObject, "PlantBranch.SetOccupyGridSpace already occupied by {0}", gameObject);
-					Util.KDestroyGameObject(base.gameObject);
+					Grid.Objects[cell, 5] = null;
 				}
-				else
-				{
-					Grid.Objects[cell, 5] = base.gameObject;
-				}
+				return;
 			}
-			else if (Grid.Objects[cell, 5] == base.gameObject)
+			GameObject gameObject = Grid.Objects[cell, 5];
+			if (gameObject != null && gameObject != base.gameObject)
 			{
-				Grid.Objects[cell, 5] = null;
+				global::Debug.LogWarningFormat(base.gameObject, "PlantBranch.SetOccupyGridSpace already occupied by {0}", new object[]
+				{
+					gameObject
+				});
+				Util.KDestroyGameObject(base.gameObject);
+				return;
 			}
+			Grid.Objects[cell, 5] = base.gameObject;
 		}
 
+		// Token: 0x06007898 RID: 30872 RVA: 0x00311888 File Offset: 0x0030FA88
 		public void SetTrunk(PlantBranchGrower.Instance trunk)
 		{
 			this.trunk = trunk;
-			base.smi.sm.Trunk.Set(trunk.gameObject, this);
-			SubscribeToTrunk();
-			base.def.animationSetupCallback?.Invoke(trunk, this);
+			base.smi.sm.Trunk.Set(trunk.gameObject, this, false);
+			this.SubscribeToTrunk();
+			Action<PlantBranchGrower.Instance, PlantBranch.Instance> animationSetupCallback = base.def.animationSetupCallback;
+			if (animationSetupCallback == null)
+			{
+				return;
+			}
+			animationSetupCallback(trunk, this);
 		}
 
+		// Token: 0x06007899 RID: 30873 RVA: 0x000EF4ED File Offset: 0x000ED6ED
 		public PlantBranchGrower.Instance GetTrunk()
 		{
 			if (base.smi.sm.Trunk.IsNull(this))
@@ -113,55 +136,85 @@ public class PlantBranch : GameStateMachine<PlantBranch, PlantBranch.Instance, I
 			return base.sm.Trunk.Get(this).GetSMI<PlantBranchGrower.Instance>();
 		}
 
+		// Token: 0x0600789A RID: 30874 RVA: 0x003118D8 File Offset: 0x0030FAD8
 		private void SubscribeToTrunk()
 		{
-			if (HasTrunk)
+			if (!this.HasTrunk)
 			{
-				if (trunkWiltHandle == -1)
-				{
-					trunkWiltHandle = trunk.gameObject.Subscribe(-724860998, OnTrunkWilt);
-				}
-				if (trunkWiltRecoverHandle == -1)
-				{
-					trunkWiltRecoverHandle = trunk.gameObject.Subscribe(712767498, OnTrunkRecover);
-				}
-				Trigger(912965142, !trunk.GetComponent<WiltCondition>().IsWilting());
-				ReceptacleMonitor component = GetComponent<ReceptacleMonitor>();
-				PlantablePlot receptacle = trunk.GetComponent<ReceptacleMonitor>().GetReceptacle();
-				component.SetReceptacle(receptacle);
-				trunk.RefreshBranchZPositionOffset(base.gameObject);
-				GetComponent<BudUprootedMonitor>().SetParentObject(trunk.GetComponent<KPrefabID>());
+				return;
 			}
+			if (this.trunkWiltHandle == -1)
+			{
+				this.trunkWiltHandle = this.trunk.gameObject.Subscribe(-724860998, new Action<object>(this.OnTrunkWilt));
+			}
+			if (this.trunkWiltRecoverHandle == -1)
+			{
+				this.trunkWiltRecoverHandle = this.trunk.gameObject.Subscribe(712767498, new Action<object>(this.OnTrunkRecover));
+			}
+			base.Trigger(912965142, !this.trunk.GetComponent<WiltCondition>().IsWilting());
+			ReceptacleMonitor component = base.GetComponent<ReceptacleMonitor>();
+			PlantablePlot receptacle = this.trunk.GetComponent<ReceptacleMonitor>().GetReceptacle();
+			component.SetReceptacle(receptacle);
+			this.trunk.RefreshBranchZPositionOffset(base.gameObject);
+			base.GetComponent<BudUprootedMonitor>().SetParentObject(this.trunk.GetComponent<KPrefabID>());
 		}
 
+		// Token: 0x0600789B RID: 30875 RVA: 0x003119B8 File Offset: 0x0030FBB8
 		private void UnsubscribeToTrunk()
 		{
-			if (HasTrunk)
+			if (!this.HasTrunk)
 			{
-				trunk.gameObject.Unsubscribe(trunkWiltHandle);
-				trunk.gameObject.Unsubscribe(trunkWiltRecoverHandle);
-				trunkWiltHandle = -1;
-				trunkWiltRecoverHandle = -1;
-				trunk.OnBranchRemoved(base.gameObject);
+				return;
+			}
+			this.trunk.gameObject.Unsubscribe(this.trunkWiltHandle);
+			this.trunk.gameObject.Unsubscribe(this.trunkWiltRecoverHandle);
+			this.trunkWiltHandle = -1;
+			this.trunkWiltRecoverHandle = -1;
+			this.trunk.OnBranchRemoved(base.gameObject);
+		}
+
+		// Token: 0x0600789C RID: 30876 RVA: 0x000EF51F File Offset: 0x000ED71F
+		private void OnTrunkWilt(object data = null)
+		{
+			base.Trigger(912965142, false);
+		}
+
+		// Token: 0x0600789D RID: 30877 RVA: 0x000EF532 File Offset: 0x000ED732
+		private void OnTrunkRecover(object data = null)
+		{
+			base.Trigger(912965142, true);
+		}
+
+		// Token: 0x1700078B RID: 1931
+		// (get) Token: 0x0600789E RID: 30878 RVA: 0x000EF545 File Offset: 0x000ED745
+		public string WiltStateString
+		{
+			get
+			{
+				return "    • " + DUPLICANTS.STATS.TRUNKHEALTH.NAME;
 			}
 		}
 
-		private void OnTrunkWilt(object data = null)
+		// Token: 0x1700078C RID: 1932
+		// (get) Token: 0x0600789F RID: 30879 RVA: 0x000EF55B File Offset: 0x000ED75B
+		public WiltCondition.Condition[] Conditions
 		{
-			Trigger(912965142, false);
+			get
+			{
+				return new WiltCondition.Condition[]
+				{
+					WiltCondition.Condition.UnhealthyRoot
+				};
+			}
 		}
 
-		private void OnTrunkRecover(object data = null)
-		{
-			Trigger(912965142, true);
-		}
-	}
+		// Token: 0x04005A5C RID: 23132
+		public PlantBranchGrower.Instance trunk;
 
-	private TargetParameter Trunk;
+		// Token: 0x04005A5D RID: 23133
+		private int trunkWiltHandle = -1;
 
-	public override void InitializeStates(out BaseState default_state)
-	{
-		base.serializable = SerializeType.ParamsOnly;
-		default_state = root;
+		// Token: 0x04005A5E RID: 23134
+		private int trunkWiltRecoverHandle = -1;
 	}
 }
